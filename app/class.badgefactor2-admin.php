@@ -53,8 +53,6 @@ class BadgeFactor2_Admin {
 			'title'        => 'Badge Factor 2',
 			'object_types' => ['options-page'],
 			'option_key'   => 'badgefactor2',
-			'tab_group'    => 'badgefactor2',
-			'tab_title'    => __('Settings', 'badgefactor2'),
 			'icon_url'     => plugin_dir_url(__FILE__).'../assets/images/badgefactor_icon.png',
 
 		];
