@@ -32,17 +32,25 @@
 
 namespace BadgeFactor2;
 
-require dirname(__FILE__).'/vendor/autoload.php';
+require_once dirname(__FILE__).'/vendor/autoload.php';
 require_once dirname(__FILE__).'/CMB2/init.php';
-require_once dirname(__FILE__).'/class.badgefactor2.php';
+require_once dirname( __FILE__ ) . '/app/class.badgr-client.php';
+require_once dirname( __FILE__ ) . '/app/class.badgefactor2.php';
+require_once dirname( __FILE__ ) . '/app/class.issuer.php';
+require_once dirname( __FILE__ ) . '/app/class.badge.php';
+require_once dirname( __FILE__ ) . '/app/class.assertion.php';
 
 if ( is_admin() || ( defined( 'WP_CLI' ) && WP_CLI ) ) {
-	require_once( dirname(__FILE__).'/class.badgefactor2-admin.php');
+	require_once( dirname( __FILE__ ) . '/app/class.badgefactor2-admin.php' );
 	add_action( 'init', array( BadgeFactor2_Admin::class, 'init' ) );
 }
 
 if ( defined( 'WP_CLI' ) && WP_CLI ) {
-	require_once( dirname(__FILE__).'/class.badgefactor2-cli.php');
+	require_once( dirname( __FILE__ ) . '/app/class.badgefactor2-cli.php' );
 }
 
-add_action( 'init', array( BadgeFactor2::class, 'init' ) );
+add_action('init', [BadgrClient::class, 'init']);
+add_action('init', [BadgeFactor2::class, 'init']);
+add_action('init', [Issuer::class, 'init']);
+add_action('init', [Badge::class, 'init']);
+add_action('init', [Assertion::class, 'init']);
