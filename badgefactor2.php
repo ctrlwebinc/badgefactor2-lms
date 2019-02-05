@@ -32,8 +32,8 @@
 
 namespace BadgeFactor2;
 
+require_once dirname(__FILE__).'/vendor/CMB2/init.php';
 require_once dirname(__FILE__).'/vendor/autoload.php';
-require_once dirname(__FILE__).'/CMB2/init.php';
 require_once dirname( __FILE__ ) . '/app/class.badgr-client.php';
 require_once dirname( __FILE__ ) . '/app/class.badgefactor2.php';
 require_once dirname( __FILE__ ) . '/app/class.issuer.php';
@@ -49,8 +49,8 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
 	require_once( dirname( __FILE__ ) . '/app/class.badgefactor2-cli.php' );
 }
 
-add_action('init', [BadgrClient::class, 'init']);
-add_action('init', [BadgeFactor2::class, 'init']);
-add_action('init', [Issuer::class, 'init']);
-add_action('init', [Badge::class, 'init']);
-add_action('init', [Assertion::class, 'init']);
+BadgrClient::init_hooks();
+BadgeFactor2::init_hooks();
+Issuer::init_hooks();
+Badge::init_hooks();
+Assertion::init_hooks();

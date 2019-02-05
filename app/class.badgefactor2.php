@@ -38,24 +38,10 @@ class BadgeFactor2 {
 	 */
 	public static $required_wp_version = '4.9.9';
 
-	private static $initiated = false;
+	private static $initialized = false;
 
-	public static function init() {
-		if ( ! self::$initiated ) {
-			self::init_hooks();
-		}
+	public static function init_hooks() {
+		self::$initialized = true;
 	}
-
-	private static function init_hooks() {
-		self::$initiated = true;
-		$badgr_settings = get_option('badgefactor2_badgr_settings');
-	}
-
-
-
-
-
-
-
 
 }

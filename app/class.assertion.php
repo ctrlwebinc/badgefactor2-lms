@@ -22,15 +22,10 @@ namespace BadgeFactor2;
 
 class Assertion {
 
-	private static $initiated = false;
+	private static $initialized = false;
 
 	public static function init() {
-		if (!self::$initiated) {
-			self::init_hooks();
-		}
-	}
 
-	public static function init_hooks() {
 		$labels = [
 			'name' => __("Assertions", 'badgefactor2'),
 			'singular_name' => __("Assertion", 'badgefactor2'),
@@ -45,6 +40,11 @@ class Assertion {
 			'public' => true,
 			'show_in_menu' => 'badgefactor2',
 		]);
-		self::$initiated = true;
+	}
+
+	public static function init_hooks() {
+		add_action('init', [Assertion::class, 'init'], 9966);
+
+		self::$initialized = true;
 	}
 }

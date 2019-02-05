@@ -24,13 +24,15 @@ class Issuer {
 
 	private static $initiated = false;
 
-	public static function init() {
-		if (!self::$initiated) {
-			self::init_hooks();
-		}
+	public static function init_hooks() {
+
+		add_action('init', [Issuer::class, 'init'], 9966);
+		add_action('cmb2_admin_init', [Issuer::class, 'cmb2_admin_init']);
+
+		self::$initiated = true;
 	}
 
-	public static function init_hooks() {
+	public static function init() {
 		$labels = [
 			'name' => __("Issuers", 'badgefactor2'),
 			'singular_name' => __("Issuer", 'badgefactor2'),
@@ -40,11 +42,32 @@ class Issuer {
 			'not_found' => __("No issuers found.", 'badgefactor2'),
 			'not_found_in_trash' => __("No issuers found in Trash.", 'badgefactor2'),
 		];
+
 		register_post_type('issuer', [
 			'labels' => $labels,
 			'public' => true,
 			'show_in_menu' => 'badgefactor2',
 		]);
-		self::$initiated = true;
+	}
+
+	public static function cmb2_admin_init() {
+		$cmb = new_cmb2_box([
+			'id' => 'issuer_fields',
+			'title'         => __('Issuer Fields', 'badgefactor2'),
+			'object_types'  => ['issuer'],
+			'context'       => 'normal',
+			'priority'      => 'high',
+			'show_names'    => true, // Show field names on the left
+			// 'cmb_styles' => false, // false to disable the CMB stylesheet
+			// 'closed'     => true, // Keep the metabox closed by default
+		]);
+
+		$cmb->add_field([
+			'name' => 'email',
+			'desc' => '',
+			'id'   => '_email',
+			'type' => 'text_emails',
+
+		]);
 	}
 }

@@ -22,15 +22,18 @@ namespace BadgeFactor2;
 
 class Badge {
 
-	private static $initiated = false;
+	private static $initialized = false;
 
-	public static function init() {
-		if (!self::$initiated) {
-			self::init_hooks();
-		}
-	}
+
 
 	public static function init_hooks() {
+
+		add_action('init', [Badge::class, 'init'], 9966);
+		self::$initialized = true;
+	}
+
+
+	public static function init() {
 		$labels = [
 			'name' => __("Badges", 'badgefactor2'),
 			'singular_name' => __("Badge", 'badgefactor2'),
@@ -45,8 +48,5 @@ class Badge {
 			'public' => true,
 			'show_in_menu' => 'badgefactor2',
 		]);
-
-		self::$initiated = true;
 	}
-
 }
