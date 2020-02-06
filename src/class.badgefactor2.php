@@ -84,13 +84,13 @@ class BadgeFactor2 {
 	}
 
 	public function includes() {
-		require_once BF2_ABSPATH . '/lib/CMB2/init.php';
-		require_once BF2_ABSPATH . '/lib/guzzle.phar';
-		require_once BF2_ABSPATH . '/src/core/class.badgr-client.php';
-		require_once BF2_ABSPATH . '/src/core/class.email.php';
-		require_once BF2_ABSPATH . '/src/core/class.issuer.php';
-		require_once BF2_ABSPATH . '/src/core/class.badge.php';
-		require_once BF2_ABSPATH . '/src/core/class.assertion.php';
+		require_once BF2_ABSPATH . 'lib/CMB2/init.php';
+		require_once 'phar://' . BF2_ABSPATH . 'lib/guzzle.phar/autoloader.php';
+		require_once BF2_ABSPATH . 'src/core/class.badgr-client.php';
+		require_once BF2_ABSPATH . 'src/core/class.email.php';
+		require_once BF2_ABSPATH . 'src/core/class.issuer.php';
+		require_once BF2_ABSPATH . 'src/core/class.badge.php';
+		require_once BF2_ABSPATH . 'src/core/class.assertion.php';
 
 		add_action( 'init', array( Email::class, 'init_hooks' ) );
 		add_action( 'init', array( Issuer::class, 'init_hooks' ) );
@@ -98,13 +98,13 @@ class BadgeFactor2 {
 		add_action( 'init', array( Assertion::class, 'init_hooks' ) );
 
 		if ( is_admin() || ( defined( 'WP_CLI' ) && WP_CLI ) ) {
-			require_once BF2_ABSPATH . '/src/admin/class.badgefactor2-admin.php';
+			require_once BF2_ABSPATH . 'src/admin/class.badgefactor2-admin.php';
 			add_action( 'init', array( BadgeFactor2_Admin::class, 'init_hooks' ) );
 			add_action( 'init', array( BadgrClient::class, 'init_hooks' ) );
 		}
 
 		if ( defined( 'WP_CLI' ) && WP_CLI ) {
-			require_once BF2_ABSPATH . '/src/cli/class.badgefactor2-cli.php';
+			require_once BF2_ABSPATH . 'src/cli/class.badgefactor2-cli.php';
 		}
 	}
 
