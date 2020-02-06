@@ -1,12 +1,12 @@
 <?php
 /**
  * Plugin Name: Badge Factor 2
- * Plugin URI: https://github.com/DigitalPygmalion/badgefactor2
- * GitHub Plugin URI: https://DigitalPygmalion/badgefactor2
+ * Plugin URI: https://github.com/ctrlwebinc/badgefactor2
+ * GitHub Plugin URI: https://ctrlwebinc/badgefactor2
  * Description: Issues and manages Open Badges with Badgr server
- * Author: Digital Pygmalion
+ * Author: ctrlweb
  * Version: 1.0.0
- * Author URI: https://digitalpygmalion.com/
+ * Author URI: https://badgefactor2.com/
  * License: GNU AGPL
  * Text Domain: badgefactor2
  * Domain Path: /languages
@@ -14,43 +14,46 @@
 
 /*
  * Badge Factor 2
- * Copyright (C) 2019 Digital Pygmalion Inc.
+ * Copyright (C) 2019 ctrlweb, ctrlweb
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as published
- * by the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
+ * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
 namespace BadgeFactor2;
 
-require_once dirname(__FILE__).'/vendor/CMB2/init.php';
-require_once dirname(__FILE__).'/vendor/autoload.php';
-require_once dirname( __FILE__ ) . '/app/class.badgr-client.php';
-require_once dirname( __FILE__ ) . '/app/class.badgefactor2.php';
-require_once dirname( __FILE__ ) . '/app/class.issuer.php';
-require_once dirname( __FILE__ ) . '/app/class.badge.php';
-require_once dirname( __FILE__ ) . '/app/class.assertion.php';
+defined( 'ABSPATH' ) || exit;
 
-if ( is_admin() || ( defined( 'WP_CLI' ) && WP_CLI ) ) {
-	require_once( dirname( __FILE__ ) . '/app/class.badgefactor2-admin.php' );
-	add_action( 'init', array( BadgeFactor2_Admin::class, 'init' ) );
+// Define BF2_FILE.
+if ( ! defined( 'BF2_FILE' ) ) {
+	define( 'BF2_FILE', __FILE__ );
 }
 
-if ( defined( 'WP_CLI' ) && WP_CLI ) {
-	require_once( dirname( __FILE__ ) . '/app/class.badgefactor2-cli.php' );
+// Include the main WooCommerce class.
+if ( ! class_exists( 'BadgeFactor2' ) ) {
+	require_once dirname( __FILE__ ) . '/src/class.badgefactor2.php';
 }
 
-BadgrClient::init_hooks();
-BadgeFactor2::init_hooks();
-Issuer::init_hooks();
-Badge::init_hooks();
-Assertion::init_hooks();
+/**
+ * Returns the main instance of BadgeFactor2.
+ *
+ * @since  2.0.0-alpha
+ * @return BadgeFactor2
+ */
+function BadgeFactor2() {
+	return BadgeFactor2::instance();
+}
+
+// Global for backwards compatibility.
+$GLOBALS['badgefactor2'] = BadgeFactor2();
