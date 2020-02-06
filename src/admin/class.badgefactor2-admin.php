@@ -47,7 +47,7 @@ class BadgeFactor2_Admin {
 			'menu_title'   => 'Badge Factor 2',
 			'object_types' => array( 'options-page' ),
 			'option_key'   => 'badgefactor2',
-			'icon_url'     => BF2_BASEURL . ( 'assets/images/badgefactor_icon.png' ),
+			'icon_url'     => BF2_BASEURL . ( 'assets/images/badgefactor2_logo.svg' ),
 			'tab_group'    => 'badgefactor2',
 			'tab_title'    => __( 'Settings', 'badgefactor2' ),
 
