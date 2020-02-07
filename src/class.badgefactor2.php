@@ -85,7 +85,7 @@ class BadgeFactor2 {
 
 	public function includes() {
 		require_once BF2_ABSPATH . 'lib/CMB2/init.php';
-		require_once 'phar://' . BF2_ABSPATH . 'lib/guzzle.phar/autoloader.php';
+		require_once 'phar://' . BF2_ABSPATH . 'lib/league-oauth2-client.phar/vendor/autoload.php';
 		require_once BF2_ABSPATH . 'src/core/class.badgr-client.php';
 		require_once BF2_ABSPATH . 'src/core/class.email.php';
 		require_once BF2_ABSPATH . 'src/core/class.issuer.php';
