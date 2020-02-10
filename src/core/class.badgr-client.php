@@ -52,7 +52,7 @@ class BadgrClient {
 		} else {
 			$client = new Client();
 			try {
-				$response = $client->request( 'GET', self::badgr_settings()['badgr_server_hostname'] );
+				$response = $client->request( 'GET', self::getInternalOrExernalServerUrl() );
 				if ( ! self::is_initialized() ) {
 					$is_active = self::authenticate();
 				} else {
@@ -78,7 +78,7 @@ class BadgrClient {
 	private static function is_configured() {
 		return isset( self::badgr_settings()['badgr_server_client_id'] ) &&
 		isset( self::badgr_settings()['badgr_server_client_secret'] ) &&
-		isset( self::badgr_settings()['badgr_server_hostname'] );
+		isset( self::badgr_settings()['badgr_server_public_url'] );
 	}
 
 	private static function is_initialized() {
@@ -90,6 +90,14 @@ class BadgrClient {
 
 	public static function init() {
 
+	}
+
+	private static function getInternalOrExernalServerUrl() {
+		$bagrSettings = self::badgr_settings();
+		if (isset($bagrSettings['badgr_server_internal_url']) && $bagrSettings['badgr_server_internal_url'] != '')
+			return $bagrSettings['badgr_server_internal_url'];
+		else
+			return $bagrSettings['badgr_server_public_url'];
 	}
 
 	private static function badgr_settings() {
@@ -108,19 +116,23 @@ class BadgrClient {
 		return null;
 	}
 
-	private static function authenticate() {
-
-		$provider = new GenericProvider(
+	private static function makeProvider() {
+		return new GenericProvider(
 			array(
 				'clientId'                => self::badgr_settings()['badgr_server_client_id'],
 				'clientSecret'            => self::badgr_settings()['badgr_server_client_secret'],
-				'redirectUri'             => 'https://badgefactor2.test/wp-admin/',
-				'urlAuthorize'            => self::badgr_settings()['badgr_server_hostname'] . '/o/authorize',
-				'urlAccessToken'          => self::badgr_settings()['badgr_server_hostname'] . '/o/token',
-				'urlResourceOwnerDetails' => self::badgr_settings()['badgr_server_hostname'] . '/o/resource',
+				'redirectUri'             => site_url('/wp-admin/admin.php?page=badgefactor2_badgr_settings'),
+				'urlAuthorize'            => self::badgr_settings()['badgr_server_public_url'] . '/o/authorize',
+				'urlAccessToken'          => self::getInternalOrExernalServerUrl() . '/o/token',
+				'urlResourceOwnerDetails' => self::getInternalOrExernalServerUrl() . '/o/resource',
 				'scopes'                  => 'rw:profile rw:issuer rw:backpack',
 			)
 		);
+	}
+
+	private static function authenticate() {
+
+		$provider = self::makeProvider();
 
 		// If we don't have an authorization code then get one
 		if ( ! isset( $_GET['code'] ) ) {
@@ -178,17 +190,7 @@ class BadgrClient {
 			( ! isset( self::$badgr_settings['badgr_server_token_expiration'] ) ||
 				self::$badgr_settings['badgr_server_token_expiration'] <= time() ) ) {
 
-			$provider = new GenericProvider(
-				array(
-					'clientId'                => self::$badgr_settings['badgr_server_client_id'],
-					'clientSecret'            => self::$badgr_settings['badgr_server_client_secret'],
-					'redirectUri'             => 'https://badgefactor2.test/wp-admin/',
-					'urlAuthorize'            => self::$badgr_settings['badgr_server_hostname'] . '/o/authorize',
-					'urlAccessToken'          => self::$badgr_settings['badgr_server_hostname'] . '/o/token',
-					'urlResourceOwnerDetails' => self::$badgr_settings['badgr_server_hostname'] . '/o/resource',
-					'scopes'                  => 'rw:profile rw:issuer rw:backpack',
-				)
-			);
+			$provider = self::makeProvider();
 
 			try {
 				$accessToken = $provider->getAccessToken(
@@ -247,7 +249,7 @@ class BadgrClient {
 			)
 		);
 		try {
-			$response = $client->request( $method, self::badgr_settings()['badgr_server_hostname'] . $path, $args );
+			$response = $client->request( $method, self::getInternalOrExernalServerUrl() . $path, $args );
 
 			return $response;
 
