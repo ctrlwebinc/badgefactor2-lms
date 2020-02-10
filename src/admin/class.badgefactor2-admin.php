@@ -81,11 +81,23 @@ class BadgeFactor2_Admin {
 
 		$badgr_settings->add_field(
 			array(
-				'name'      => __( 'Hostname', 'badgefactor2' ),
-				'desc'      => __( 'Format: URL:port', 'badgefactor2' ),
-				'id'        => 'badgr_server_hostname',
+				'name'      => __( 'Public URL', 'badgefactor2' ),
+				'desc'      => __( 'Format: scheme://URL:port', 'badgefactor2' ),
+				'id'        => 'badgr_server_public_url',
 				'type'      => 'text_url',
 				'default'   => 'http://localhost:8000',
+				'protocols' => array( 'http', 'https' ),
+
+			)
+		);
+
+		$badgr_settings->add_field(
+			array(
+				'name'      => __( 'Internal URL', 'badgefactor2' ),
+				'desc'      => __( 'Format: scheme://URL:port', 'badgefactor2' ),
+				'id'        => 'badgr_server_internal_url',
+				'type'      => 'text_url',
+				'default'   => '',
 				'protocols' => array( 'http', 'https' ),
 
 			)
@@ -107,23 +119,6 @@ class BadgeFactor2_Admin {
 				'after_row' => function ( $field_args, $field ) {
 					include BF2_ABSPATH . 'src/admin/tpl.badgr-server-status.php';
 				},
-			)
-		);
-
-		$badgr_settings->add_field(
-			array(
-				'name' => __( 'Access Token', 'badgefactor2' ),
-				'id'   => 'badgr_server_access_token',
-				'type' => 'hidden',
-			)
-		);
-
-		$badgr_settings->add_field(
-			array(
-				'name' => __( 'Refresh Token', 'badgefactor2' ),
-				'id'   => 'badgr_server_refresh_token',
-				'type' => 'hidden',
-
 			)
 		);
 
