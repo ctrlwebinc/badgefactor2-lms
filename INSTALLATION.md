@@ -19,14 +19,16 @@ Browse to /staff and check your installation by logging in using your super user
 
 ### Configure the oauth client
 
-Edit apps/mainsite/settings.py and specify the login url:
-```bash
+Edit apps/mainsite/settings.py and specify the login url and Http origin:
+```
 LOGIN_URL = '/staff/login/'
+HTTP_ORIGIN = 'http://127.0.0.1:8000'
 ```
 
-Edit apps/mainsite/settings_local.py to add your Badge Factor 2 host to the allowed hosts:
+Edit apps/mainsite/settings_local.py to add your Badge Factor 2 host to the allowed hosts and set the Http origin:
 ```bash
 ALLOWED_HOSTS = ['my-badge-factor-2.example.net']
+HTTP_ORIGIN = 'http://127.0.0.1:8000'
 ```
 
 Login using your super user account. Add an application under DJANGO OAUTH TOOLKIT > Applications and configure as follows:
