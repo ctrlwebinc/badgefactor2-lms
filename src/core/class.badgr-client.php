@@ -125,7 +125,7 @@ class BadgrClient {
 				'urlAuthorize'            => self::badgr_settings()['badgr_server_public_url'] . '/o/authorize',
 				'urlAccessToken'          => self::getInternalOrExernalServerUrl() . '/o/token',
 				'urlResourceOwnerDetails' => self::getInternalOrExernalServerUrl() . '/o/resource',
-				'scopes'                  => 'rw:profile rw:issuer rw:backpack',
+				'scopes'                  => 'rw:profile rw:issuer rw:backpack rw:serverAdmin ',
 			)
 		);
 	}
@@ -227,11 +227,13 @@ class BadgrClient {
 		}
 
 		if ( $args ) {
-			switch ( $args ) {
+			switch ( $method ) {
 				case 'GET':
 					$args = array( 'query' => $args );
 					break;
 				case 'POST':
+					$args = array( 'json' => $args );
+					break;
 				case 'PUT':
 					$args = array( 'json' => $args );
 					break;
@@ -277,5 +279,36 @@ class BadgrClient {
 
 	public static function delete( $path ) {
 		return self::request( 'DELETE', $path );
+	}
+
+	public static function addUser($firstname,$lastname,$email) {
+
+		// Setup body
+		$requestBody = [
+		  'first_name'=> $firstname,
+		  'last_name'=> $lastname,
+		  'email'=> $email,
+		  'url'=> '',
+		  'telephone'=> '',
+		  'slug'=> '',
+		  'agreed_terms_version'=> 1,
+		  'marketing_opt_in'=> false,
+		  'has_password_set'=> false,
+		  'source' => 'bf2',
+		  'password' => 'password1234',
+		];
+
+		// Make POST request to /v1/user/profile
+		$response = self::post('/v1/user/profile', $requestBody);
+
+		// Check for 201 response
+		if (null !== $response && $response->getStatusCode() == 201) {
+			// Return slug-entity_id or false if unsucessful
+			$responseInfo = json_decode($response->getBody());
+			if (isset($responseInfo->slug) && strlen($responseInfo->slug) > 0)
+				return $responseInfo->slug;
+		}
+
+		return false;
 	}
 }
