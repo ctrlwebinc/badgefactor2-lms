@@ -273,7 +273,7 @@ class BadgrClient {
 		return self::request( 'PUT', $path, $body );
 	}
 
-	public static function get( $path, $queries = null ) {
+	public static function get( $path, $queries = [] ) {
 		return self::request( 'GET', $path, $queries );
 	}
 
@@ -307,6 +307,25 @@ class BadgrClient {
 			$responseInfo = json_decode($response->getBody());
 			if (isset($responseInfo->slug) && strlen($responseInfo->slug) > 0)
 				return $responseInfo->slug;
+		}
+
+		return false;
+	}
+
+	public static function checkUserVerified($userEntityId) {
+
+		// Make GET request to /v2/users/{slug-entity_id}
+		$response = self::get('/v2/users/' . $userEntityId);
+
+		// Check for 200 response
+		if (null !== $response && $response->getStatusCode() == 200) {
+			// Check for a non-null recipient field
+			$responseInfo = json_decode($response->getBody());
+			if (isset($responseInfo->status->success) &&
+				$responseInfo->status->success == true &&
+				isset($responseInfo->result[0]) &&
+					null != $responseInfo->result[0]->recipient)
+				return true;
 		}
 
 		return false;
