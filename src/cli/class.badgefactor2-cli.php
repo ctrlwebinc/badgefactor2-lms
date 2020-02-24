@@ -65,4 +65,20 @@ class BadgeFactor2_CLI extends WP_CLI_Command
 		else
 			WP_CLI::success('User is not verified');
 	}
+
+	public function getUserBadgrInfo( $args, $assoc_args ) {
+		if (count($args) != 1) {
+			WP_CLI::error('Usage: getUserBadgrInfo user_id');
+		}
+
+		$user = get_userdata ($args[0]);
+
+		if ($user == false)
+			WP_CLI::error('No such user ' . $args[0]);
+
+		$state = get_user_meta( $user->ID, 'badgr_user_state', true);
+		$slug = get_user_meta( $user->ID, 'badgr_user_slug', true);
+			
+		WP_CLI::success(sprintf('User %s has state %s and slug %s', $args[0], $state, $slug));
+	}
 }
