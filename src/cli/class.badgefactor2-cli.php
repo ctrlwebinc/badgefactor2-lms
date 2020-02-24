@@ -34,5 +34,35 @@ WP_CLI::add_command('bf2', BadgeFactor2_CLI::class);
  */
 class BadgeFactor2_CLI extends WP_CLI_Command
 {
+	public function addUser( $args, $assoc_args ) {
 
+		if (count($args) != 3) {
+			WP_CLI::error('Usage: addUser firstname lastname email');
+		}
+
+		if (!filter_var($args[2], FILTER_VALIDATE_EMAIL)) {
+			WP_CLI::error('Please provide a valid email as the 3rd argument');
+		}
+
+		$slug = BadgrProvider::addUser($args[0], $args[1], $args[2]);
+
+		if ($slug) {
+			WP_CLI::success('User added with slug ' . $slug);
+		} else {
+			WP_CLI::error('Adding user failed.');
+		}
+	}
+
+	public function checkUserVerified( $args, $assoc_args ) {
+		if (count($args) != 1) {
+			WP_CLI::error('Usage: checkUserVerified slug');
+		}
+
+		$verified = BadgrProvider::checkUserVerified($args[0]);
+
+		if ($verified)
+			WP_CLI::success('User is verified');
+		else
+			WP_CLI::success('User is not verified');
+	}
 }
