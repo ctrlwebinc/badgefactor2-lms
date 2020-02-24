@@ -33,6 +33,8 @@ class BadgrUser {
 
 	public static function init() {
 		add_action( 'user_register', array( BadgrUser::class, 'new_user_registers' ), 9966 );
+		add_action( 'personal_options_update', array( BadgrUser::class, 'update_user' ), 9966 );
+		add_action( 'edit_user_profile_update', array( BadgrUser::class, 'update_user' ), 9966 );
 	}
 
 	public static function cmb2_admin_init() {
@@ -47,11 +49,42 @@ class BadgrUser {
 		$user_data = get_userdata( $user_id );
 		$slug = BadgrProvider::addUser($user_data->first_name, $user_data->last_name, $user_data->user_email);
 
-		// If successful set badgr user state to 'created'
+		// If successful set badgr user state to 'created' and save slug
 		if ($slug != false ) {
 			update_user_meta( $user_id, 'badgr_user_slug', $slug);
 			update_user_meta( $user_id, 'badgr_user_state', 'created');
 		}
+	}
+
+	public static function update_user($user_id) {
+		$badgr_user_state = get_user_meta( $user_id, 'badgr_user_state', true );
+		if (null !== $badgr_user_state && $badgr_user_state == 'created') {
+			$user = get_userdata( $user_id );
+			$result = BadgrProvider::updateUser(
+				get_user_meta( $user->ID, 'badgr_user_slug', true ),
+				$user->first_name, 
+				$user->last_name, 
+				$user->user_email);
+		}
+	}
+
+	public static function confirmCurrentUserVerified() {
+		// If the user already has the capability, just return
+		if (current_user_can('badge_factor_2_can_use_badgr'))
+			return true;
+
+		// If the user doesn't yet have the capability, check at badgr server
+		$user = wp_get_current_user();
+		$badgr_user_state = get_user_meta( $user->ID, 'badgr_user_state', true );
+		if (null !== $badgr_user_state && $badgr_user_state == 'created') {
+			$isVerified = BadgrProvider::checkUserVerified(get_user_meta( $user->ID, 'badgr_user_slug', true ));
+			if ($isVerified == true) {
+				$user->add_cap('badge_factor_2_can_use_badgr');
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 }

@@ -89,4 +89,26 @@ class BadgrProvider {
 		return false;
 	}
 
+	public static function updateUser($slug,$firstname,$lastname,$email) {
+		// Setup body
+		$requestBody = [
+			'firstName'=> $firstname,
+			'lastName'=> $lastname,
+			'emails'=> [[
+				'email' => $email,
+				'primary' => true,
+	  		]],
+		];
+
+		// Make POST request to /v2/users/{slug}
+		$response = BadgrClient::put('/v2/users/' . $slug, $requestBody);
+
+		// Check for 200 response
+		if (null !== $response && $response->getStatusCode() == 200) {
+			return true;
+		}
+
+		return false;
+	}
+
 }
