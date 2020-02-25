@@ -33,8 +33,7 @@ class BadgrUser {
 
 	public static function init() {
 		add_action( 'user_register', array( BadgrUser::class, 'new_user_registers' ), 9966 );
-		add_action( 'personal_options_update', array( BadgrUser::class, 'update_user' ), 9966 );
-		add_action( 'edit_user_profile_update', array( BadgrUser::class, 'update_user' ), 9966 );
+		add_action( 'profile_update', array( BadgrUser::class, 'update_user' ), 9966 );
 	}
 
 	public static function cmb2_admin_init() {
