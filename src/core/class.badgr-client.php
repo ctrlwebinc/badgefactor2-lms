@@ -125,7 +125,7 @@ class BadgrClient {
 				'urlAuthorize'            => self::badgr_settings()['badgr_server_public_url'] . '/o/authorize',
 				'urlAccessToken'          => self::getInternalOrExernalServerUrl() . '/o/token',
 				'urlResourceOwnerDetails' => self::getInternalOrExernalServerUrl() . '/o/resource',
-				'scopes'                  => 'rw:profile rw:issuer rw:backpack',
+				'scopes'                  => 'rw:profile rw:issuer rw:backpack rw:serverAdmin ',
 			)
 		);
 	}
@@ -227,11 +227,13 @@ class BadgrClient {
 		}
 
 		if ( $args ) {
-			switch ( $args ) {
+			switch ( $method ) {
 				case 'GET':
 					$args = array( 'query' => $args );
 					break;
 				case 'POST':
+					$args = array( 'json' => $args );
+					break;
 				case 'PUT':
 					$args = array( 'json' => $args );
 					break;
@@ -271,7 +273,7 @@ class BadgrClient {
 		return self::request( 'PUT', $path, $body );
 	}
 
-	public static function get( $path, $queries = null ) {
+	public static function get( $path, $queries = [] ) {
 		return self::request( 'GET', $path, $queries );
 	}
 
