@@ -60,3 +60,58 @@ The *Internal URL* should be set to whatever path your Badge Factor 2 instance n
 
 Refer to Docker's networking configuration documentation for help.
 https://docs.docker.com/v17.09/engine/userguide/networking/
+
+### Necessary adjustments to Badgr server
+
+For the moment badgr server needs some adjustments to be fully decoupled from its front-end and to operate with BF2. Here are the required changes based on release/jamiroquai :
+
+apps/badgeuser/api.py
+```patch
+     v2_serializer_class = BadgeUserSerializerV2
+     permission_classes = (permissions.AllowAny, BadgrOAuthTokenHasScope)
+     valid_scopes = {
+-        "post": ["*"],
++        "post": ["*","rw:profile"],
+         "get": ["r:profile", "rw:profile"],
+         "put": ["rw:profile"],
+     }
+```
+
+apps/mainsite/account_adapter.py
+```patch
+             if source:
+                 query_params['source'] = source
+ 
+-            signup = request.query_params.get('signup', None)
++            #signup = request.query_params.get('signup', None)
++            signup = False
+             if signup:
+                 query_params['signup'] = 'true'
+                 return set_url_query_params(badgr_app.get_path('/auth/welcome'), **query_params)
+
+```
+
+apps/mainsite/urls.py
+```patch
+     url(r'^apple-app-site-association', AppleAppSiteAssociation.as_view(), name="apple-app-site-association"),
+ 
+     # OAuth2 provider URLs
+-    url(r'^o/authorize/?$', AuthorizationApiView.as_view(), name='oauth2_api_authorize'),
++    #url(r'^o/authorize/?$', AuthorizationApiView.as_view(), name='oauth2_api_authorize'),
+     url(r'^o/token/?$', TokenView.as_view(), name='oauth2_provider_token'),
+     url(r'^o/code/?$', AuthCodeExchange.as_view(), name='oauth2_code_exchange'),
+     url(r'^o/', include(oauth2_provider_base_urlpatterns, namespace='oauth2_provider')),
+```
+
+apps/mainsite/settings.py
+```patch
+ ##
+ 
+ AUTH_USER_MODEL = 'badgeuser.BadgeUser'
+-LOGIN_URL = '/accounts/login/'
++LOGIN_URL = '/staff/login/'
+ LOGIN_REDIRECT_URL = '/docs'
+ 
+ AUTHENTICATION_BACKENDS = [
+```
+
