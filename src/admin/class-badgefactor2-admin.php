@@ -1,5 +1,5 @@
 <?php
-/*
+/**
  * Badge Factor 2
  * Copyright (C) 2019 ctrlweb
  *
@@ -16,31 +16,51 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
- */
-
-/**
+ *
  * @package Badge_Factor_2
  */
 
 namespace BadgeFactor2;
 
+/**
+ * Badge Factor 2 Admin Class.
+ */
 class BadgeFactor2_Admin {
 
-
+	/**
+	 * Init Hooks.
+	 *
+	 * @return void
+	 */
 	public static function init_hooks() {
 		add_action( 'cmb2_admin_init', array( BadgeFactor2_Admin::class, 'admin_init' ) );
 		add_action( 'admin_enqueue_scripts', array( BadgeFactor2_Admin::class, 'load_resources' ) );
 	}
 
+	/**
+	 * CMB2 Admin Init hook.
+	 *
+	 * @return void
+	 */
 	public static function admin_init() {
 		load_plugin_textdomain( 'badgefactor2' );
 		self::register_settings_metabox();
 	}
 
+	/**
+	 * Admin Resources Loader.
+	 *
+	 * @return void
+	 */
 	public static function load_resources() {
 
 	}
 
+	/**
+	 * Registers Settings Metabox.
+	 *
+	 * @return void
+	 */
 	private static function register_settings_metabox() {
 		$args = array(
 			'id'           => 'badgefactor2_settings',

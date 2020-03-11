@@ -1,5 +1,5 @@
 <?php
-/*
+/**
  * Badge Factor 2
  * Copyright (C) 2019 ctrlweb
  *
@@ -16,9 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
- */
-
-/**
+ *
  * @package Badge_Factor_2
  */
 
@@ -40,45 +38,47 @@ class BadgrUser {
 
 	}
 
-	public static function new_user_registers($user_id) {
-		// Set badgr user state to 'to_be_created'
-		update_user_meta( $user_id, 'badgr_user_state', 'to_be_created');
+	public static function new_user_registers( $user_id ) {
+		// Set badgr user state to 'to_be_created'.
+		update_user_meta( $user_id, 'badgr_user_state', 'to_be_created' );
 
-		// Add user to badgr
+		// Add user to badgr.
 		$user_data = get_userdata( $user_id );
-		$slug = BadgrProvider::addUser($user_data->first_name, $user_data->last_name, $user_data->user_email);
+		$slug      = BadgrProvider::addUser( $user_data->first_name, $user_data->last_name, $user_data->user_email );
 
-		// If successful set badgr user state to 'created' and save slug
-		if ($slug != false ) {
-			update_user_meta( $user_id, 'badgr_user_slug', $slug);
-			update_user_meta( $user_id, 'badgr_user_state', 'created');
+		// If successful set badgr user state to 'created' and save slug.
+		if ( false !== $slug ) {
+			update_user_meta( $user_id, 'badgr_user_slug', $slug );
+			update_user_meta( $user_id, 'badgr_user_state', 'created' );
 		}
 	}
 
-	public static function update_user($user_id) {
+	public static function update_user( $user_id ) {
 		$badgr_user_state = get_user_meta( $user_id, 'badgr_user_state', true );
-		if (null !== $badgr_user_state && $badgr_user_state == 'created') {
-			$user = get_userdata( $user_id );
+		if ( null !== $badgr_user_state && 'created' === $badgr_user_state ) {
+			$user   = get_userdata( $user_id );
 			$result = BadgrProvider::updateUser(
 				get_user_meta( $user->ID, 'badgr_user_slug', true ),
-				$user->first_name, 
-				$user->last_name, 
-				$user->user_email);
+				$user->first_name,
+				$user->last_name,
+				$user->user_email
+			);
 		}
 	}
 
 	public static function confirmCurrentUserVerified() {
-		// If the user already has the capability, just return
-		if (current_user_can('badge_factor_2_can_use_badgr'))
+		// If the user already has the capability, just return.
+		if ( current_user_can( 'badge_factor_2_can_use_badgr' ) ) {
 			return true;
+		}
 
-		// If the user doesn't yet have the capability, check at badgr server
-		$user = wp_get_current_user();
+		// If the user doesn't yet have the capability, check at badgr server.
+		$user             = wp_get_current_user();
 		$badgr_user_state = get_user_meta( $user->ID, 'badgr_user_state', true );
-		if (null !== $badgr_user_state && $badgr_user_state == 'created') {
-			$isVerified = BadgrProvider::checkUserVerified(get_user_meta( $user->ID, 'badgr_user_slug', true ));
-			if ($isVerified == true) {
-				$user->add_cap('badge_factor_2_can_use_badgr');
+		if ( null !== $badgr_user_state && 'created' === $badgr_user_state ) {
+			$is_verified = BadgrProvider::checkUserVerified( get_user_meta( $user->ID, 'badgr_user_slug', true ) );
+			if ( true === $is_verified ) {
+				$user->add_cap( 'badge_factor_2_can_use_badgr' );
 				return true;
 			}
 		}

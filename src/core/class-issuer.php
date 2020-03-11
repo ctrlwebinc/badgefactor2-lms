@@ -1,5 +1,5 @@
 <?php
-/*
+/**
  * Badge Factor 2
  * Copyright (C) 2019 ctrlweb
  *
@@ -16,9 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
- */
-
-/**
+ *
  * @package Badge_Factor_2
  */
 
@@ -29,7 +27,7 @@ class Issuer {
 
 	public static function init_hooks() {
 
-		add_action( 'init', array( Issuer::class, 'init' ), 9966 );
+		//add_action( 'init', array( Issuer::class, 'init' ), 9966 );
 		add_action( 'cmb2_admin_init', array( Issuer::class, 'cmb2_admin_init' ) );
 	}
 

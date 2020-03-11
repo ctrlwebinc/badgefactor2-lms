@@ -1,5 +1,5 @@
 <?php
-/*
+/**
  * Badge Factor 2
  * Copyright (C) 2019 ctrlweb
  *
@@ -16,9 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
- */
-
-/**
+ *
  * @package Badge_Factor_2
  */
 
@@ -27,42 +25,26 @@ namespace BadgeFactor2;
 class Email {
 
 	public static function init_hooks() {
-		add_action( 'init', array( Email::class, 'init' ), 9966 );
 		add_action( 'cmb2_admin_init', array( Email::class, 'cmb2_admin_init' ) );
 	}
 
-	public static function init() {
-		$labels = array(
-			'name'               => __( 'Verified Emails', 'badgefactor2' ),
-			'singular_name'      => __( 'Verified Email', 'badgefactor2' ),
-			'add_new_item'       => __( 'Add New Email', 'badgefactor2' ),
-			'edit_item'          => __( 'Edit Email', 'badgefactor2' ),
-			'search_items'       => __( 'Search Emails', 'badgefactor2' ),
-			'not_found'          => __( 'No emails found.', 'badgefactor2' ),
-			'not_found_in_trash' => __( 'No emails found in Trash.', 'badgefactor2' ),
-		);
-
-		register_post_type(
-			'email',
-			array(
-				'labels'       => $labels,
-				'public'       => true,
-				'show_in_menu' => 'badgefactor2',
-			)
-		);
-	}
 
 	public static function cmb2_admin_init() {
+
 		$cmb = new_cmb2_box(
 			array(
-				'id'           => 'email_fields',
-				'title'        => __( 'Email Fields', 'badgefactor2' ),
-				'object_types' => array( 'email' ),
-				'context'      => 'normal',
-				'priority'     => 'high',
-				'show_names'   => true, // Show field names on the left
-			// 'cmb_styles' => false, // false to disable the CMB stylesheet
-			// 'closed'     => true, // Keep the metabox closed by default
+				'id'           => 'badgefactor2_emails_page',
+				'title'        => esc_html__( 'Verified Emails', 'badgefactor2' ),
+				'object_types' => array( 'options-page' ),
+				'option_key'   => 'badgefactor2_verified_emails', // The option key and admin menu page slug.
+				'parent_slug'  => 'badgefactor2', // Make options page a submenu item of the themes menu.
+				// 'capability'      => 'manage_options', // Cap required to view options-page.
+				// 'position'        => 1, // Menu position. Only applicable if 'parent_slug' is left empty.
+				// 'admin_menu_hook' => 'network_admin_menu', // 'network_admin_menu' to add network-level options page.
+				// 'display_cb'      => false, // Override the options-page form output (CMB2_Hookup::options_page_output()).
+				// 'save_button'     => esc_html__( 'Save Theme Options', 'cmb2' ), // The text for the options-page save button. Defaults to 'Save'.
+				// 'disable_settings_errors' => true, // On settings pages (not options-general.php sub-pages), allows disabling.
+				// 'message_cb'      => 'yourprefix_options_page_message_callback',
 			)
 		);
 
