@@ -22,36 +22,34 @@
 
 namespace BadgeFactor2;
 
+/**
+ * Issuer Class.
+ */
 class Issuer {
 
-
+	/**
+	 * Issuer Init.
+	 *
+	 * @return void
+	 */
 	public static function init_hooks() {
-
-		//add_action( 'init', array( Issuer::class, 'init' ), 9966 );
 		add_action( 'cmb2_admin_init', array( Issuer::class, 'cmb2_admin_init' ) );
 	}
 
+	/**
+	 * Init hook.
+	 *
+	 * @return void
+	 */
 	public static function init() {
-		$labels = array(
-			'name'               => __( 'Issuers', 'badgefactor2' ),
-			'singular_name'      => __( 'Issuer', 'badgefactor2' ),
-			'add_new_item'       => __( 'Add New Issuer', 'badgefactor2' ),
-			'edit_item'          => __( 'Edit Issuer', 'badgefactor2' ),
-			'search_items'       => __( 'Search Issuers', 'badgefactor2' ),
-			'not_found'          => __( 'No issuers found.', 'badgefactor2' ),
-			'not_found_in_trash' => __( 'No issuers found in Trash.', 'badgefactor2' ),
-		);
-
-		register_post_type(
-			'issuer',
-			array(
-				'labels'       => $labels,
-				'public'       => true,
-				'show_in_menu' => 'badgefactor2',
-			)
-		);
+		// TODO.
 	}
 
+	/**
+	 * CMB2 Admin Init hook.
+	 *
+	 * @return void
+	 */
 	public static function cmb2_admin_init() {
 		$cmb = new_cmb2_box(
 			array(
@@ -60,9 +58,9 @@ class Issuer {
 				'object_types' => array( 'issuer' ),
 				'context'      => 'normal',
 				'priority'     => 'high',
-				'show_names'   => true, // Show field names on the left
-			// 'cmb_styles' => false, // false to disable the CMB stylesheet
-			// 'closed'     => true, // Keep the metabox closed by default
+				'show_names'   => true, // Show field names on the left.
+				// 'cmb_styles' => false, // false to disable the CMB stylesheet.
+				// 'closed'     => true, // Keep the metabox closed by default.
 			)
 		);
 

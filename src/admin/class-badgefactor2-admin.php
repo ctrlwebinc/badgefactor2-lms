@@ -35,6 +35,8 @@ class BadgeFactor2_Admin {
 	public static function init_hooks() {
 		add_action( 'cmb2_admin_init', array( BadgeFactor2_Admin::class, 'admin_init' ) );
 		add_action( 'admin_enqueue_scripts', array( BadgeFactor2_Admin::class, 'load_resources' ) );
+		add_action( 'init', array( BadgeFactor2_Admin::class, 'add_custom_roles_and_capabilities' ), 11 );
+		add_action( 'init', array( BadgeFactor2_Admin::class, 'add_custom_roles_and_capabilities' ), 11 );
 	}
 
 	/**
@@ -45,6 +47,27 @@ class BadgeFactor2_Admin {
 	public static function admin_init() {
 		load_plugin_textdomain( 'badgefactor2' );
 		self::register_settings_metabox();
+	}
+
+	/**
+	 * Adds custom roles and capabilities requires by Badge Factor 2.
+	 */
+	public static function add_custom_roles_and_capabilities() {
+		$approver = add_role(
+			'approver',
+			__( 'Approver' ),
+			array(
+				'read'                 => true,
+				'edit_posts'           => true,
+				'edit_published_posts' => true,
+				// FIXME List must be validated at a later development stage.
+			)
+		);
+
+		if ( null !== $approver ) {
+			$approver->add_cap( 'badgefactor2_approve_badge_requests' );
+		}
+
 	}
 
 	/**

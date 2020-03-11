@@ -22,13 +22,25 @@
 
 namespace BadgeFactor2;
 
+/**
+ * Email Class.
+ */
 class Email {
 
+	/**
+	 * Email Init.
+	 *
+	 * @return void
+	 */
 	public static function init_hooks() {
 		add_action( 'cmb2_admin_init', array( Email::class, 'cmb2_admin_init' ) );
 	}
 
-
+	/**
+	 * CMB2 Admin Init hook.
+	 *
+	 * @return void
+	 */
 	public static function cmb2_admin_init() {
 
 		$cmb = new_cmb2_box(
@@ -44,7 +56,7 @@ class Email {
 				// 'display_cb'      => false, // Override the options-page form output (CMB2_Hookup::options_page_output()).
 				// 'save_button'     => esc_html__( 'Save Theme Options', 'cmb2' ), // The text for the options-page save button. Defaults to 'Save'.
 				// 'disable_settings_errors' => true, // On settings pages (not options-general.php sub-pages), allows disabling.
-				// 'message_cb'      => 'yourprefix_options_page_message_callback',
+				// 'message_cb'      => 'yourprefix_options_page_message_callback'.
 			)
 		);
 

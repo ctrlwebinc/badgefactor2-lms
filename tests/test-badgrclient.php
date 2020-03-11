@@ -39,7 +39,7 @@ class BadgrClientTest extends WP_UnitTestCase {
 	}
 
 	public function test_make_provider_returns_provider() {
-		$this->assertEquals( \League\OAuth2\Client\Provider\GenericProvider::class, get_class( $this->callPrivateStaticMethod( BadgrClient::class, 'makeProvider' ) ) );
+		$this->assertEquals( \League\OAuth2\Client\Provider\GenericProvider::class, get_class( $this->callPrivateStaticMethod( BadgrClient::class, 'make_provider' ) ) );
 	}
 
 	public function test_badgr_client_initially_inactive() {

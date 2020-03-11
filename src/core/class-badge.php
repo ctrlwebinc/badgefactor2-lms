@@ -22,29 +22,26 @@
 
 namespace BadgeFactor2;
 
+/**
+ * Badge Class.
+ */
 class Badge {
 
+	/**
+	 * Badge Init.
+	 *
+	 * @return void
+	 */
 	public static function init_hooks() {
-		//add_action( 'init', array( Badge::class, 'init' ), 9966 );
+		add_action( 'init', array( Badge::class, 'init' ), 9966 );
 	}
 
+	/**
+	 * Init hook.
+	 *
+	 * @return void
+	 */
 	public static function init() {
-		$labels = array(
-			'name'               => __( 'Badges', 'badgefactor2' ),
-			'singular_name'      => __( 'Badge', 'badgefactor2' ),
-			'add_new_item'       => __( 'Add New Badge', 'badgefactor2' ),
-			'edit_item'          => __( 'Edit Badge', 'badgefactor2' ),
-			'search_items'       => __( 'Search Badges', 'badgefactor2' ),
-			'not_found'          => __( 'No badges found.', 'badgefactor2' ),
-			'not_found_in_trash' => __( 'No badges found in Trash.', 'badgefactor2' ),
-		);
-		register_post_type(
-			'badge',
-			array(
-				'labels'       => $labels,
-				'public'       => true,
-				'show_in_menu' => 'badgefactor2',
-			)
-		);
+		// TODO.
 	}
 }
