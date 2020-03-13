@@ -2,6 +2,7 @@ preset: psr2
 
 finder:
   exclude:
-    - "assets"
-    - "bin"
-    - "vendor"
+    - assets
+    - bin
+    - vendor
+    - lib

@@ -1,5 +1,5 @@
 <?php
-/*
+/**
  * Badge Factor 2
  * Copyright (C) 2019 ctrlweb
  *
@@ -16,9 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
- */
-
-/**
+ *
  * @package Badge_Factor_2
  */
 
@@ -31,13 +29,30 @@ use http\Exception\BadMethodCallException;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
 use League\OAuth2\Client\Provider\GenericProvider;
 
+/**
+ * BadgrClient Class.
+ */
 class BadgrClient {
 
-
+	/**
+	 * Whether or not the BadgrClient is initialized.
+	 *
+	 * @var boolean
+	 */
 	private static $initialized = false;
 
+	/**
+	 * Array of BadgrClient settings.
+	 *
+	 * @var array
+	 */
 	private static $badgr_settings;
 
+	/**
+	 * BadgrClient Init.
+	 *
+	 * @return void
+	 */
 	public static function init_hooks() {
 		if ( ! self::$initialized ) {
 			add_action( 'init', array( BadgrClient::class, 'init' ), 9966 );
@@ -45,6 +60,20 @@ class BadgrClient {
 		}
 	}
 
+	/**
+	 * Init hook.
+	 *
+	 * @return void
+	 */
+	public static function init() {
+		// TODO.
+	}
+
+	/**
+	 * Check whether or not the Badgr service is active.
+	 *
+	 * @return boolean
+	 */
 	public static function is_active() {
 
 		if ( ! self::is_configured() ) {
@@ -52,7 +81,7 @@ class BadgrClient {
 		} else {
 			$client = new Client();
 			try {
-				$response = $client->request( 'GET', self::getInternalOrExernalServerUrl() );
+				$response = $client->request( 'GET', self::get_internal_or_external_server_url() );
 				if ( ! self::is_initialized() ) {
 					$is_active = self::authenticate();
 				} else {
@@ -71,16 +100,31 @@ class BadgrClient {
 		return $is_active;
 	}
 
+	/**
+	 * Returns the Badgr service status.
+	 *
+	 * @return string
+	 */
 	public static function get_status() {
 		return ( self::is_active() ? __( 'Active', 'badgefactor2' ) : __( 'Inactive', 'badgefactor2' ) );
 	}
 
+	/**
+	 * Checks whether or not the Badgr server is properly configured.
+	 *
+	 * @return boolean
+	 */
 	private static function is_configured() {
 		return isset( self::badgr_settings()['badgr_server_client_id'] ) &&
 		isset( self::badgr_settings()['badgr_server_client_secret'] ) &&
 		isset( self::badgr_settings()['badgr_server_public_url'] );
 	}
 
+	/**
+	 * Checks whether or not the Badgr server is initialized.
+	 *
+	 * @return boolean
+	 */
 	private static function is_initialized() {
 		return isset( self::badgr_settings()['badgr_server_access_token'] ) &&
 		isset( self::badgr_settings()['badgr_server_refresh_token'] ) &&
@@ -88,18 +132,25 @@ class BadgrClient {
 		self::badgr_settings()['badgr_server_token_expiration'] >= time();
 	}
 
-	public static function init() {
-
+	/**
+	 * Checks whether to use internal or public url.
+	 *
+	 * @return string
+	 */
+	private static function get_internal_or_external_server_url() {
+		$bagr_settings = self::badgr_settings();
+		if ( isset( $bagr_settings['badgr_server_internal_url'] ) && $bagr_settings['badgr_server_internal_url'] != '' ) {
+			return $bagr_settings['badgr_server_internal_url'];
+		} else {
+			return $bagr_settings['badgr_server_public_url'];
+		}
 	}
 
-	private static function getInternalOrExernalServerUrl() {
-		$bagrSettings = self::badgr_settings();
-		if (isset($bagrSettings['badgr_server_internal_url']) && $bagrSettings['badgr_server_internal_url'] != '')
-			return $bagrSettings['badgr_server_internal_url'];
-		else
-			return $bagrSettings['badgr_server_public_url'];
-	}
-
+	/**
+	 * Returns Badgr settings.
+	 *
+	 * @return array
+	 */
 	private static function badgr_settings() {
 		if ( ! self::$badgr_settings ) {
 			self::$badgr_settings = get_option( 'badgefactor2_badgr_settings' );
@@ -108,6 +159,11 @@ class BadgrClient {
 		return self::$badgr_settings;
 	}
 
+	/**
+	 * Returns Badgr access token, or null if not configured.
+	 *
+	 * @return string|null
+	 */
 	private static function get_access_token() {
 		if ( self::is_active() ) {
 			return self::badgr_settings()['badgr_server_access_token'];
@@ -116,38 +172,48 @@ class BadgrClient {
 		return null;
 	}
 
-	private static function makeProvider() {
+	/**
+	 * Makes Badgr Server provider.
+	 *
+	 * @return GenericProvider
+	 */
+	private static function make_provider() {
 		return new GenericProvider(
 			array(
 				'clientId'                => self::badgr_settings()['badgr_server_client_id'],
 				'clientSecret'            => self::badgr_settings()['badgr_server_client_secret'],
-				'redirectUri'             => site_url('/wp-admin/admin.php?page=badgefactor2_badgr_settings'),
+				'redirectUri'             => site_url( '/wp-admin/admin.php?page=badgefactor2_badgr_settings' ),
 				'urlAuthorize'            => self::badgr_settings()['badgr_server_public_url'] . '/o/authorize',
-				'urlAccessToken'          => self::getInternalOrExernalServerUrl() . '/o/token',
-				'urlResourceOwnerDetails' => self::getInternalOrExernalServerUrl() . '/o/resource',
+				'urlAccessToken'          => self::get_internal_or_external_server_url() . '/o/token',
+				'urlResourceOwnerDetails' => self::get_internal_or_external_server_url() . '/o/resource',
 				'scopes'                  => 'rw:profile rw:issuer rw:backpack rw:serverAdmin ',
 			)
 		);
 	}
 
+	/**
+	 * Authenticates BadgeFactor 2 to Badgr Server.
+	 *
+	 * @return boolean
+	 */
 	private static function authenticate() {
 
-		$provider = self::makeProvider();
+		$provider = self::make_provider();
 
-		// If we don't have an authorization code then get one
+		// If we don't have an authorization code then get one.
 		if ( ! isset( $_GET['code'] ) ) {
 
 			// Fetch the authorization URL from the provider; this returns the
 			// urlAuthorize option and generates and applies any necessary parameters
 			// (e.g. state).
-			$authorizationUrl = $provider->getAuthorizationUrl();
+			$authorization_url = $provider->getAuthorizationUrl();
 
 			// Get the state generated for you and store it to the session.
 			$_SESSION['oauth2state'] = $provider->getState();
-			header( 'Location: ' . $authorizationUrl );
+			header( 'Location: ' . $authorization_url );
 			exit;
 
-			// Check given state against previously stored one to mitigate CSRF attack
+			// Check given state against previously stored one to mitigate CSRF attack.
 		} elseif ( empty( $_GET['state'] ) ||
 			( isset( $_SESSION['oauth2state'] ) && $_GET['state'] !== $_SESSION['oauth2state'] ) ) {
 
@@ -162,16 +228,16 @@ class BadgrClient {
 			try {
 
 				// Try to get an access token using the authorization code grant.
-				$accessToken = $provider->getAccessToken(
+				$access_token = $provider->get_access_token(
 					'authorization_code',
 					array(
 						'code' => $_GET['code'],
 					)
 				);
 
-				self::$badgr_settings['badgr_server_access_token']     = $accessToken->getToken();
-				self::$badgr_settings['badgr_server_refresh_token']    = $accessToken->getRefreshToken();
-				self::$badgr_settings['badgr_server_token_expiration'] = $accessToken->getExpires();
+				self::$badgr_settings['badgr_server_access_token']     = $access_token->getToken();
+				self::$badgr_settings['badgr_server_refresh_token']    = $access_token->getRefreshToken();
+				self::$badgr_settings['badgr_server_token_expiration'] = $access_token->getExpires();
 				update_option( 'badgefactor2_badgr_settings', self::$badgr_settings );
 
 			} catch ( IdentityProviderException $e ) {
@@ -184,25 +250,30 @@ class BadgrClient {
 		}
 	}
 
+	/**
+	 * Refreshes Badgr Server token.
+	 *
+	 * @return boolean
+	 */
 	private static function refresh_token() {
 
 		if ( isset( self::$badgr_settings ) && isset( self::$badgr_settings['badgr_server_access_token'] ) &&
 			( ! isset( self::$badgr_settings['badgr_server_token_expiration'] ) ||
 				self::$badgr_settings['badgr_server_token_expiration'] <= time() ) ) {
 
-			$provider = self::makeProvider();
+			$provider = self::make_provider();
 
 			try {
-				$accessToken = $provider->getAccessToken(
+				$access_token = $provider->get_access_token(
 					'refresh_token',
 					array(
 						'refresh_token' => self::$badgr_settings['badgr_server_refresh_token'],
 					)
 				);
 
-				self::$badgr_settings['badgr_server_access_token']     = $accessToken->getToken();
-				self::$badgr_settings['badgr_server_refresh_token']    = $accessToken->getRefreshToken();
-				self::$badgr_settings['badgr_server_token_expiration'] = $accessToken->getExpires();
+				self::$badgr_settings['badgr_server_access_token']     = $access_token->getToken();
+				self::$badgr_settings['badgr_server_refresh_token']    = $access_token->getRefreshToken();
+				self::$badgr_settings['badgr_server_token_expiration'] = $access_token->getExpires();
 				update_option( 'badgefactor2_badgr_settings', self::$badgr_settings );
 
 			} catch ( IdentityProviderException $e ) {
@@ -219,14 +290,23 @@ class BadgrClient {
 		return true;
 	}
 
-	private static function request( $method, $path, $args = null ) {
+	/**
+	 * Make a request to Badgr Server.
+	 *
+	 * @param string $method Method.
+	 * @param string $path Path.
+	 * @param array  $args Arguments.
+	 * @return GuzzleHttp\Psr7\Response|null
+	 * @throws BadMethodCallException Bad method call exception.
+	 */
+	private static function request( $method, $path, $args = array() ) {
 		$client = new Client();
 		$method = strtoupper( $method );
 		if ( ! in_array( $method, array( 'GET', 'PUT', 'POST', 'DELETE' ) ) ) {
 			throw new BadMethodCallException( 'Method not supported' );
 		}
 
-		if ( $args ) {
+		if ( ! empty( $args ) ) {
 			switch ( $method ) {
 				case 'GET':
 					$args = array( 'query' => $args );
@@ -251,7 +331,7 @@ class BadgrClient {
 			)
 		);
 		try {
-			$response = $client->request( $method, self::getInternalOrExernalServerUrl() . $path, $args );
+			$response = $client->request( $method, self::get_internal_or_external_server_url() . $path, $args );
 
 			return $response;
 
@@ -265,18 +345,45 @@ class BadgrClient {
 		}
 	}
 
+	/**
+	 * Post to Badgr Server.
+	 *
+	 * @param string $path Path.
+	 * @param string $body Body.
+	 * @return GuzzleHttp\Psr7\Response|null
+	 */
 	public static function post( $path, $body ) {
 		return self::request( 'POST', $path, $body );
 	}
 
+	/**
+	 * Put to Badgr Server.
+	 *
+	 * @param string $path Path.
+	 * @param string $body Body.
+	 * @return GuzzleHttp\Psr7\Response|null
+	 */
 	public static function put( $path, $body ) {
 		return self::request( 'PUT', $path, $body );
 	}
 
-	public static function get( $path, $queries = [] ) {
+	/**
+	 * Get to Badgr Server.
+	 *
+	 * @param string $path Path.
+	 * @param string $queries Queries array.
+	 * @return GuzzleHttp\Psr7\Response|null
+	 */
+	public static function get( $path, $queries = array() ) {
 		return self::request( 'GET', $path, $queries );
 	}
 
+	/**
+	 * Delete to Badgr Server.
+	 *
+	 * @param string $path Path.
+	 * @return GuzzleHttp\Psr7\Response|null
+	 */
 	public static function delete( $path ) {
 		return self::request( 'DELETE', $path );
 	}

@@ -1,5 +1,5 @@
 <?php
-/*
+/**
  * Badge Factor 2
  * Copyright (C) 2019 ctrlweb
  *
@@ -16,36 +16,61 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
- */
-
-/**
+ *
  * @package Badge_Factor_2
  */
 
 namespace BadgeFactor2;
 
-class Badge {
+/**
+ * Issuer Class.
+ */
+class Issuer {
 
+	/**
+	 * Issuer Init.
+	 *
+	 * @return void
+	 */
 	public static function init_hooks() {
-		add_action( 'init', array( Badge::class, 'init' ), 9966 );
+		add_action( 'cmb2_admin_init', array( Issuer::class, 'cmb2_admin_init' ) );
 	}
 
+	/**
+	 * Init hook.
+	 *
+	 * @return void
+	 */
 	public static function init() {
-		$labels = array(
-			'name'               => __( 'Badges', 'badgefactor2' ),
-			'singular_name'      => __( 'Badge', 'badgefactor2' ),
-			'add_new_item'       => __( 'Add New Badge', 'badgefactor2' ),
-			'edit_item'          => __( 'Edit Badge', 'badgefactor2' ),
-			'search_items'       => __( 'Search Badges', 'badgefactor2' ),
-			'not_found'          => __( 'No badges found.', 'badgefactor2' ),
-			'not_found_in_trash' => __( 'No badges found in Trash.', 'badgefactor2' ),
-		);
-		register_post_type(
-			'badge',
+		// TODO.
+	}
+
+	/**
+	 * CMB2 Admin Init hook.
+	 *
+	 * @return void
+	 */
+	public static function cmb2_admin_init() {
+		$cmb = new_cmb2_box(
 			array(
-				'labels'       => $labels,
-				'public'       => true,
-				'show_in_menu' => 'badgefactor2',
+				'id'           => 'issuer_fields',
+				'title'        => __( 'Issuer Fields', 'badgefactor2' ),
+				'object_types' => array( 'issuer' ),
+				'context'      => 'normal',
+				'priority'     => 'high',
+				'show_names'   => true, // Show field names on the left.
+				// 'cmb_styles' => false, // false to disable the CMB stylesheet.
+				// 'closed'     => true, // Keep the metabox closed by default.
+			)
+		);
+
+		$cmb->add_field(
+			array(
+				'name' => 'email',
+				'desc' => '',
+				'id'   => '_email',
+				'type' => 'text_emails',
+
 			)
 		);
 	}
