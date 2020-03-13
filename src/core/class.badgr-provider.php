@@ -53,7 +53,7 @@ class BadgrProvider {
 		  'marketing_opt_in'=> false,
 		  'has_password_set'=> false,
 		  'source' => 'bf2',
-		  'password' => 'password1234',
+		  'password' => self::generateRandomPassword(),
 		];
 
 		// Make POST request to /v1/user/profile
@@ -109,6 +109,17 @@ class BadgrProvider {
 		}
 
 		return false;
+	}
+
+	protected static function generateRandomPassword() {
+	    $alphabet = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
+	    $pass = ['p']; // Start with a letter
+	    $alphaMaxIndex = strlen($alphabet) - 1;
+	    for ($i = 0; $i < 11; $i++) {
+	        $n = rand(0, $alphaMaxIndex);
+	        $pass[] = $alphabet[$n];
+	    }
+	    return implode($pass);
 	}
 
 }
