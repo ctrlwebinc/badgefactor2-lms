@@ -154,4 +154,32 @@ class BadgrProvider {
 		return false;
 	}
 
+    protected static function generateRandomPassword() {
+        $alphabet = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
+        $pass = ['p']; // Start with a letter
+        $alphaMaxIndex = strlen($alphabet) - 1;
+        for ($i = 0; $i < 11; $i++) {
+            $n = rand(0, $alphaMaxIndex);
+            $pass[] = $alphabet[$n];
+        }
+        return implode($pass);
+    }
+
+    public static function getAllIssuers() {
+        // Make GET request to /v2/issuers
+        $response = BadgrClient::get('/v2/issuers');
+
+        // Check for 200 response
+        if (null !== $response && $response->getStatusCode() == 200) {
+            $responseInfo = json_decode($response->getBody());
+            if (isset($responseInfo->status->success) &&
+                $responseInfo->status->success == true &&
+                isset($responseInfo->result) && is_array($responseInfo->result)) {
+                return $responseInfo->result;
+            }
+        }
+
+        return false;
+    }
+
 }

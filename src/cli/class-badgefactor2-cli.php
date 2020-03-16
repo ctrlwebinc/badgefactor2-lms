@@ -81,4 +81,17 @@ class BadgeFactor2_CLI extends WP_CLI_Command
 			
 		WP_CLI::success(sprintf('User %s has state %s and slug %s', $args[0], $state, $slug));
 	}
+
+	public function listIssuers( $args, $assoc_args ) {
+        if (count($args) != 0) {
+            WP_CLI::error('Usage: listIssuers');
+        }
+
+        $issuers = BadgrProvider::getAllIssuers();
+        if ( false == $issuers) {
+            WP_CLI::error('Error retrieving issuers');
+        }
+
+        WP_CLI::success( 'Issuers successfully retrieved : ' . json_encode( $issuers ) );
+	}
 }
