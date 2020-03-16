@@ -94,4 +94,31 @@ class BadgeFactor2_CLI extends WP_CLI_Command
 
         WP_CLI::success( 'Issuers successfully retrieved : ' . json_encode( $issuers ) );
 	}
+
+    public function add_issuer( $args, $assoc_args ) {
+
+        if (count($args) != 4) {
+            WP_CLI::error('Usage: add_issuer name email url description');
+        }
+
+        if (!filter_var($args[1], FILTER_VALIDATE_EMAIL)) {
+            WP_CLI::error('Please provide a valid email as the 2nd argument');
+        }
+
+        if (!filter_var($args[2], FILTER_VALIDATE_URL)) {
+            WP_CLI::error('Please provide a valid url as the 3rd argument');
+        }
+
+        if (strlen( $args[3]) < 1) {
+            WP_CLI::error('Please provide a description as the 4th argument');
+        }
+
+        $slug = BadgrProvider::addIssuer($args[0], $args[1], $args[2], $args[3]);
+
+        if ($slug) {
+            WP_CLI::success('Issuer added with slug ' . $slug);
+        } else {
+            WP_CLI::error('Adding issuer failed.');
+        }
+    }
 }

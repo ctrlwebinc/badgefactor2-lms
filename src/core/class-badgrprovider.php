@@ -77,7 +77,8 @@ class BadgrProvider {
 			'marketing_opt_in'     => false,
 			'has_password_set'     => false,
 			'source'               => 'bf2',
-			'password'             => self::generateRandomPassword();
+			'password'             => self::generateRandomPassword(),
+    );
 
 		// Make POST request to /v1/user/profile.
 		$response = BadgrClient::post( '/v1/user/profile', $request_body );
@@ -181,4 +182,31 @@ class BadgrProvider {
         return false;
     }
 
+    public static function addIssuer($issuerName, $email, $url, $description) {
+
+	    // Setup body.
+        $request_body = array(
+            'name'                 => $issuerName,
+            'image'                => null,
+            'email'                => $email,
+            'url'                  => $url,
+            'description'          => $description,
+        );
+
+        // Make POST request to /v2/issuers.
+        $response = BadgrClient::post( '/v2/issuers', $request_body );
+
+        // Check for 201 response.
+        if ( null !== $response && $response->getStatusCode() == 201 ) {
+            // Return slug-entity_id or false if unsuccessful.
+            $responseInfo = json_decode( $response->getBody() );
+            if ( isset($responseInfo->status->success) &&
+                $responseInfo->status->success == true &&
+                isset($responseInfo->result[0]->entityId) ) {
+                return $responseInfo->result[0]->entityId;
+            }
+        }
+
+        return false;
+    }
 }
