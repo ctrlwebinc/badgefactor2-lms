@@ -77,8 +77,7 @@ class BadgrProvider {
 			'marketing_opt_in'     => false,
 			'has_password_set'     => false,
 			'source'               => 'bf2',
-			'password'             => 'password1234', // FIXME Add random password.
-		);
+			'password'             => self::generateRandomPassword();
 
 		// Make POST request to /v1/user/profile.
 		$response = BadgrClient::post( '/v1/user/profile', $request_body );
