@@ -121,4 +121,31 @@ class BadgeFactor2_CLI extends WP_CLI_Command
             WP_CLI::error('Adding issuer failed.');
         }
     }
+
+    public function add_badge_class( $args, $assoc_args ) {
+
+        if (count($args) != 3) {
+            WP_CLI::error('Usage: add_badge_class name issuer_slug description');
+        }
+
+        if (strlen( $args[0]) < 1) {
+            WP_CLI::error('Please provide a name as the 1st argument');
+        }
+
+        if (strlen( $args[1]) < 1) {
+            WP_CLI::error('Please provide an issuer slug as the 2nd argument');
+        }
+
+        if (strlen( $args[2]) < 1) {
+            WP_CLI::error('Please provide a description as the 3rd argument');
+        }
+
+        $slug = BadgrProvider::add_badge_class($args[0], $args[1], $args[2]);
+
+        if ($slug) {
+            WP_CLI::success('Badge class added with slug ' . $slug);
+        } else {
+            WP_CLI::error('Adding badge class failed.');
+        }
+    }
 }

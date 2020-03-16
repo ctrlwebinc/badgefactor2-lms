@@ -209,4 +209,31 @@ class BadgrProvider {
 
         return false;
     }
+
+    public static function add_badge_class($className, $issuer_slug, $description) {
+
+        // Setup body.
+        $request_body = array(
+            'name'                 => $className,
+            'image'                => null,
+            'issuer'                => $issuer_slug,
+            'description'          => $description,
+        );
+
+        // Make POST request to /v2/badgeclasses.
+        $response = BadgrClient::post( '/v2/badgeclasses', $request_body );
+
+        // Check for 201 response.
+        if ( null !== $response && $response->getStatusCode() == 201 ) {
+            // Return slug-entity_id or false if unsuccessful.
+            $responseInfo = json_decode( $response->getBody() );
+            if ( isset($responseInfo->status->success) &&
+                $responseInfo->status->success == true &&
+                isset($responseInfo->result[0]->entityId) ) {
+                return $responseInfo->result[0]->entityId;
+            }
+        }
+
+        return false;
+    }
 }
