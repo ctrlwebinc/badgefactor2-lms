@@ -123,9 +123,8 @@ class BadgeFactor2_CLI extends WP_CLI_Command
     }
 
     public function add_badge_class( $args, $assoc_args ) {
-
-        if (count($args) != 3) {
-            WP_CLI::error('Usage: add_badge_class name issuer_slug description');
+        if (count($args) != 4  ) {
+            WP_CLI::error('Usage: add_badge_class name issuer_slug description image_filename');
         }
 
         if (strlen( $args[0]) < 1) {
@@ -140,7 +139,12 @@ class BadgeFactor2_CLI extends WP_CLI_Command
             WP_CLI::error('Please provide a description as the 3rd argument');
         }
 
-        $slug = BadgrProvider::add_badge_class($args[0], $args[1], $args[2]);
+        if (strlen( $args[3]) < 1 || !file_exists($args[3]) ) {
+            WP_CLI::error('Please provide the name of an existing image file as the 4th argument');
+        }
+
+
+        $slug = BadgrProvider::add_badge_class($args[0], $args[1], $args[2], $args[3]);
 
         if ($slug) {
             WP_CLI::success('Badge class added with slug ' . $slug);

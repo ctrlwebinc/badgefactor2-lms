@@ -210,19 +210,32 @@ class BadgrProvider {
         return false;
     }
 
-    public static function add_badge_class($className, $issuer_slug, $description) {
+    public static function add_badge_class($className, $issuer_slug, $description, $image=null) {
 
+	    try {
+	        $imageRawData = file_get_contents($image);
+	        $mimeType = mime_content_type($image);
+
+	        // Badgr doesn't seem to like just svg add the +xml
+	        if ('image/svg' == $mimeType) {
+	            $mimeType .= '+xml';
+            }
+            $imageData = 'data:' . $mimeType . ';base64,' . base64_encode($imageRawData);
+        } catch (\Exception $e) {
+	        var_dump('ehre');
+	        return false;
+        }
         // Setup body.
         $request_body = array(
             'name'                 => $className,
-            'image'                => null,
-            'issuer'                => $issuer_slug,
+            'image'                => $imageData,
+            'issuer'               => $issuer_slug,
             'description'          => $description,
         );
 
         // Make POST request to /v2/badgeclasses.
         $response = BadgrClient::post( '/v2/badgeclasses', $request_body );
-
+var_dump((string) $response->getBody());
         // Check for 201 response.
         if ( null !== $response && $response->getStatusCode() == 201 ) {
             // Return slug-entity_id or false if unsuccessful.

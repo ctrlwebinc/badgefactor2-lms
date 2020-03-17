@@ -228,7 +228,7 @@ class BadgrClient {
 			try {
 
 				// Try to get an access token using the authorization code grant.
-				$access_token = $provider->get_access_token(
+				$access_token = $provider->getAccessToken(
 					'authorization_code',
 					array(
 						'code' => $_GET['code'],
@@ -264,7 +264,7 @@ class BadgrClient {
 			$provider = self::make_provider();
 
 			try {
-				$access_token = $provider->get_access_token(
+				$access_token = $provider->getAccessToken(
 					'refresh_token',
 					array(
 						'refresh_token' => self::$badgr_settings['badgr_server_refresh_token'],
