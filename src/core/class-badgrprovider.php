@@ -248,4 +248,29 @@ class BadgrProvider {
 
         return false;
     }
+
+    public static function add_assertion($issuer_slug, $badge_class_slug, $recipient_identifier, $recipient_type='email') {
+
+        // Setup body.
+        $request_body = array(
+            'recipient_identifier' => $recipient_identifier,
+            'recipient_type'      => $recipient_type,
+            'create_notification' => false,
+        );
+
+        // Make POST request to /v1/issuer/issuers/{issuerSlug}/badges/{slug}/assertions.
+        $response = BadgrClient::post( '/v1/issuer/issuers/' . $issuer_slug .'/badges/' . $badge_class_slug . '/assertions', $request_body );
+
+        // Check for 201 response.
+        if ( null !== $response && $response->getStatusCode() == 201 ) {
+            // Return slug-entity_id or false if unsuccessful.
+            $responseInfo = json_decode( $response->getBody() );
+            if ( isset( $responseInfo->slug ) && strlen( $responseInfo->slug ) > 0 ) {
+                return $responseInfo->slug;
+            }
+        }
+
+        return false;
+    }
+
 }

@@ -152,4 +152,30 @@ class BadgeFactor2_CLI extends WP_CLI_Command
             WP_CLI::error('Adding badge class failed.');
         }
     }
+
+    public function add_assertion( $args, $assoc_args ) {
+        if (count($args) != 3  ) {
+            WP_CLI::error('Usage: add_assertion issuer_slug badge_class_slug recipient_identity');
+        }
+
+        if (strlen( $args[0]) < 1) {
+            WP_CLI::error('Please provide an issuer slug as the 1st argument');
+        }
+
+        if (strlen( $args[1]) < 1) {
+            WP_CLI::error('Please provide a badge class slug as the 2nd argument');
+        }
+
+        if (strlen( $args[2]) < 1 || !filter_var($args[2], FILTER_VALIDATE_EMAIL)) {
+            WP_CLI::error('Please provide a recipient identity (email) as the 3rd argument');
+        }
+
+        $slug = BadgrProvider::add_assertion($args[0], $args[1], $args[2]);
+
+        if ($slug) {
+            WP_CLI::success('Assertion added with slug ' . $slug);
+        } else {
+            WP_CLI::error('Adding assertion failed.');
+        }
+    }
 }
