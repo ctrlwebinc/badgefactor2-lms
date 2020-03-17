@@ -222,7 +222,6 @@ class BadgrProvider {
             }
             $imageData = 'data:' . $mimeType . ';base64,' . base64_encode($imageRawData);
         } catch (\Exception $e) {
-	        var_dump('ehre');
 	        return false;
         }
         // Setup body.
@@ -235,7 +234,7 @@ class BadgrProvider {
 
         // Make POST request to /v2/badgeclasses.
         $response = BadgrClient::post( '/v2/badgeclasses', $request_body );
-var_dump((string) $response->getBody());
+
         // Check for 201 response.
         if ( null !== $response && $response->getStatusCode() == 201 ) {
             // Return slug-entity_id or false if unsuccessful.
