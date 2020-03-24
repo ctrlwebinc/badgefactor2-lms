@@ -87,7 +87,7 @@ class BadgeFactor2_CLI extends WP_CLI_Command
             WP_CLI::error('Usage: listIssuers');
         }
 
-        $issuers = BadgrProvider::getAllIssuers();
+        $issuers = BadgrProvider::get_all_issuers();
         if ( false == $issuers) {
             WP_CLI::error('Error retrieving issuers');
         }
@@ -113,7 +113,7 @@ class BadgeFactor2_CLI extends WP_CLI_Command
             WP_CLI::error('Please provide a description as the 4th argument');
         }
 
-        $slug = BadgrProvider::addIssuer($args[0], $args[1], $args[2], $args[3]);
+        $slug = BadgrProvider::add_issuer($args[0], $args[1], $args[2], $args[3]);
 
         if ($slug) {
             WP_CLI::success('Issuer added with slug ' . $slug);
