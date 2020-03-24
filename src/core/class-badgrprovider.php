@@ -192,7 +192,7 @@ class BadgrProvider {
 		return false;
 	}
 
-    public static function getIssuerBySlug($slug) {
+    public static function get_issuer_by_slug($slug) {
         // Make GET request to /v2/issuers
         $response = BadgrClient::get('/v2/issuers/' . $slug);
 
