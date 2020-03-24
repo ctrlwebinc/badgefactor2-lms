@@ -182,6 +182,23 @@ class BadgrProvider {
         return false;
     }
 
+    public static function getIssuerBySlug($slug) {
+        // Make GET request to /v2/issuers
+        $response = BadgrClient::get('/v2/issuers/' . $slug);
+
+        // Check for 200 response
+        if (null !== $response && $response->getStatusCode() == 200) {
+            $responseInfo = json_decode($response->getBody());
+            if (isset($responseInfo->status->success) &&
+                $responseInfo->status->success == true &&
+                isset($responseInfo->result[0])) {
+                return $responseInfo->result[0];
+            }
+        }
+
+        return false;
+    }
+
     public static function addIssuer($issuerName, $email, $url, $description) {
 
 	    // Setup body.
