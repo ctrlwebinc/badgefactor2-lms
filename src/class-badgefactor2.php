@@ -101,12 +101,13 @@ class BadgeFactor2 {
 	public function includes() {
 		require_once BF2_ABSPATH . 'lib/CMB2/init.php';
 		require_once 'phar://' . BF2_ABSPATH . 'lib/league-oauth2-client.phar/vendor/autoload.php';
+		require_once BF2_ABSPATH . 'src/core/interface-badgr-entity.php';
 		require_once BF2_ABSPATH . 'src/core/class-badgrclient.php';
+		require_once BF2_ABSPATH . 'src/core/class-badgrprovider.php';
 		require_once BF2_ABSPATH . 'src/core/class-email.php';
 		require_once BF2_ABSPATH . 'src/core/class-issuer.php';
 		require_once BF2_ABSPATH . 'src/core/class-badge.php';
 		require_once BF2_ABSPATH . 'src/core/class-assertion.php';
-		require_once BF2_ABSPATH . 'src/core/class-badgrprovider.php';
 		require_once BF2_ABSPATH . 'src/core/class-badgruser.php';
 
 		add_action( 'init', array( Email::class, 'init_hooks' ) );
@@ -124,6 +125,7 @@ class BadgeFactor2 {
 
 		if ( defined( 'WP_CLI' ) && WP_CLI ) {
 			require_once BF2_ABSPATH . 'src/cli/class-badgefactor2-cli.php';
+			require_once BF2_ABSPATH . 'src/cli/class-badgr-cli.php';
 		}
 	}
 

@@ -192,22 +192,28 @@ class BadgrProvider {
 		return false;
 	}
 
-    public static function get_issuer_by_slug($slug) {
-        // Make GET request to /v2/issuers
-        $response = BadgrClient::get('/v2/issuers/' . $slug);
+	/**
+	 * Get Badgr Issuer by entity ID / slug.
+	 *
+	 * @param string $slug Entity ID / slug.
+	 * @return void
+	 */
+	public static function get_issuer_by_slug( $slug ) {
+		// Make GET request to /v2/issuers.
+		$response = BadgrClient::get( '/v2/issuers/' . $slug );
 
-        // Check for 200 response
-        if (null !== $response && $response->getStatusCode() == 200) {
-            $responseInfo = json_decode($response->getBody());
-            if (isset($responseInfo->status->success) &&
-                $responseInfo->status->success == true &&
-                isset($responseInfo->result[0])) {
-                return $responseInfo->result[0];
-            }
-        }
+		// Check for 200 response.
+		if ( null !== $response && $response->getStatusCode() == 200 ) {
+			$response_info = json_decode( $response->getBody() );
+			if ( isset( $response_info->status->success ) &&
+				$response_info->status->success == true &&
+				isset( $response_info->result[0] ) ) {
+				return $response_info->result[0];
+			}
+		}
 
-        return false;
-    }
+		return false;
+	}
 
 	/**
 	 * Add an issuer to Badgr Server.
@@ -246,33 +252,43 @@ class BadgrProvider {
 		return false;
 	}
 
-    public static function update_issuer( $issuer_name, $email, $url, $description ) {
+	/**
+	 * Update Badgr Issuer.
+	 *
+	 * @param string $issuer_name Issuer name.
+	 * @param string $email Issuer email.
+	 * @param string $url Issuer URL.
+	 * @param string $description Issuer Description.
+	 * @return string|boolean Issuer Entity ID or false on error.
+	 */
+	public static function update_issuer( $issuer_name, $email, $url, $description ) {
 
-        // Setup body.
-        $request_body = array(
-            'name'        => $issuer_name,
-            'image'       => null,
-            'email'       => $email,
-            'url'         => $url,
-            'description' => $description,
-        );
+		// Setup body.
+		$request_body = array(
+			'name'        => $issuer_name,
+			'image'       => null,
+			'email'       => $email,
+			'url'         => $url,
+			'description' => $description,
+		);
 
-        // Make POST request to /v2/issuers.
-        $response = BadgrClient::post( '/v2/issuers', $request_body );
+		// Make POST request to /v2/issuers.
+		$response = BadgrClient::post( '/v2/issuers', $request_body );
 
-        // Check for 201 response.
-        if ( null !== $response && $response->getStatusCode() == 201 ) {
-            // Return slug-entity_id or false if unsuccessful.
-            $response_info = json_decode( $response->getBody() );
-            if ( isset( $response_info->status->success ) &&
-                $response_info->status->success == true &&
-                isset( $response_info->result[0]->entityId ) ) {
-                return $response_info->result[0]->entityId;
-            }
-        }
+		// Check for 201 response.
+		if ( null !== $response && $response->getStatusCode() == 201 ) {
+			// Return slug-entity_id or false if unsuccessful.
+			$response_info = json_decode( $response->getBody() );
+			if ( isset( $response_info->status->success ) &&
+				$response_info->status->success == true &&
+				isset( $response_info->result[0]->entityId ) ) {
+				return $response_info->result[0]->entityId;
+			}
+		}
 
-        return false;
-    }
+		return false;
+	}
+
 	/**
 	 * Add BadgeClass to Badgr Server.
 	 *
@@ -321,39 +337,51 @@ class BadgrProvider {
 		return false;
 	}
 
-	public static function get_all_badge_classes_by_issuer_slug($issuer_slug) {
-        // Make GET request to /v2/issuers/{entity_id}/badgeclasses
-        $response = BadgrClient::get('/v2/issuers/' . $issuer_slug . '/badgeclasses');
+	/**
+	 * Retrieve all badges by issuer slug from Badgr.
+	 *
+	 * @param string $issuer_slug Issuer Entity ID / Slug.
+	 * @return void TODO.
+	 */
+	public static function get_all_badge_classes_by_issuer_slug( $issuer_slug ) {
+		// Make GET request to /v2/issuers/{entity_id}/badgeclasses.
+		$response = BadgrClient::get( '/v2/issuers/' . $issuer_slug . '/badgeclasses' );
 
-        // Check for 200 response
-        if ( null !== $response && 200 === $response->getStatusCode() ) {
-            $response_info = json_decode( $response->getBody() );
-            if ( isset( $response_info->status->success ) &&
-                $response_info->status->success == true &&
-                isset( $response_info->result ) && is_array( $response_info->result ) ) {
-                return $response_info->result;
-            }
-        }
+		// Check for 200 response.
+		if ( null !== $response && 200 === $response->getStatusCode() ) {
+			$response_info = json_decode( $response->getBody() );
+			if ( isset( $response_info->status->success ) &&
+				$response_info->status->success == true &&
+				isset( $response_info->result ) && is_array( $response_info->result ) ) {
+				return $response_info->result;
+			}
+		}
 
-        return false;
-    }
+		return false;
+	}
 
-    public static function get_badge_class_by_badge_class_slug( $badge_class_slug ) {
-        // Make GET request to /v2/badgeclasses/{entity_id}
-        $response = BadgrClient::get('/v2/badgeclasses/' . $badge_class_slug);
+	/**
+	 * TODO.
+	 *
+	 * @param string $badge_class_slug Badge Entity ID / Slug.
+	 * @return void TODO.
+	 */
+	public static function get_badge_class_by_badge_class_slug( $badge_class_slug ) {
+		// Make GET request to /v2/badgeclasses/{entity_id}.
+		$response = BadgrClient::get( '/v2/badgeclasses/' . $badge_class_slug );
 
-        // Check for 200 response
-        if (null !== $response && $response->getStatusCode() == 200) {
-            $responseInfo = json_decode($response->getBody());
-            if (isset($responseInfo->status->success) &&
-                $responseInfo->status->success == true &&
-                isset($responseInfo->result[0])) {
-                return $responseInfo->result[0];
-            }
-        }
+		// Check for 200 response.
+		if ( null !== $response && $response->getStatusCode() == 200 ) {
+			$response_info = json_decode( $response->getBody() );
+			if ( isset( $response_info->status->success ) &&
+				$response_info->status->success == true &&
+				isset( $response_info->result[0] ) ) {
+				return $response_info->result[0];
+			}
+		}
 
-        return false;
-    }
+		return false;
+	}
 
 	/**
 	 * Add assertion to Badgr Server.
@@ -388,37 +416,49 @@ class BadgrProvider {
 		return false;
 	}
 
-    public static function get_all_assertions_by_badge_class_slug($badge_class_slug) {
-        // Make GET request to /v2/badgeclasses/{entity_id}/assertions
-        $response = BadgrClient::get('/v2/badgeclasses/' . $badge_class_slug . '/assertions');
+	/**
+	 * TODO.
+	 *
+	 * @param string $badge_class_slug BadgeClass slug.
+	 * @return void TODO.
+	 */
+	public static function get_all_assertions_by_badge_class_slug( $badge_class_slug ) {
+		// Make GET request to /v2/badgeclasses/{entity_id}/assertions.
+		$response = BadgrClient::get( '/v2/badgeclasses/' . $badge_class_slug . '/assertions' );
 
-        // Check for 200 response
-        if ( null !== $response && 200 === $response->getStatusCode() ) {
-            $response_info = json_decode( $response->getBody() );
-            if ( isset( $response_info->status->success ) &&
-                $response_info->status->success == true &&
-                isset( $response_info->result ) && is_array( $response_info->result ) ) {
-                return $response_info->result;
-            }
-        }
+		// Check for 200 response.
+		if ( null !== $response && 200 === $response->getStatusCode() ) {
+			$response_info = json_decode( $response->getBody() );
+			if ( isset( $response_info->status->success ) &&
+				$response_info->status->success == true &&
+				isset( $response_info->result ) && is_array( $response_info->result ) ) {
+				return $response_info->result;
+			}
+		}
 
-        return false;
-    }
+		return false;
+	}
 
-    public static function get_assertion_by_assertion_slug( $assertion_slug ) {
-        // Make GET request to /v2/assertions/{entity_id}
-        $response = BadgrClient::get('/v2/assertions/' . $assertion_slug);
+	/**
+	 * TOOD.
+	 *
+	 * @param string $assertion_slug Assertion slug.
+	 * @return void TODO.
+	 */
+	public static function get_assertion_by_assertion_slug( $assertion_slug ) {
+		// Make GET request to /v2/assertions/{entity_id}.
+		$response = BadgrClient::get( '/v2/assertions/' . $assertion_slug );
 
-        // Check for 200 response
-        if (null !== $response && $response->getStatusCode() == 200) {
-            $responseInfo = json_decode($response->getBody());
-            if (isset($responseInfo->status->success) &&
-                $responseInfo->status->success == true &&
-                isset($responseInfo->result[0])) {
-                return $responseInfo->result[0];
-            }
-        }
+		// Check for 200 response.
+		if ( null !== $response && $response->getStatusCode() == 200 ) {
+			$response_info = json_decode( $response->getBody() );
+			if ( isset( $response_info->status->success ) &&
+				$response_info->status->success == true &&
+				isset( $response_info->result[0] ) ) {
+				return $response_info->result[0];
+			}
+		}
 
-        return false;
-    }
+		return false;
+	}
 }
