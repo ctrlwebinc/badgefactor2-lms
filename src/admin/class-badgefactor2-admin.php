@@ -22,10 +22,14 @@
 
 namespace BadgeFactor2;
 
+use BadgeFactor2\Issuers_List;
+
 /**
  * Badge Factor 2 Admin Class.
  */
 class BadgeFactor2_Admin {
+
+	public static $customers_obj;
 
 	/**
 	 * Init Hooks.
@@ -33,10 +37,16 @@ class BadgeFactor2_Admin {
 	 * @return void
 	 */
 	public static function init_hooks() {
+		add_filter( 'set-screen-option', array( BadgeFactor2_Admin::class, 'set_screen' ), 10, 3 );
 		add_action( 'cmb2_admin_init', array( BadgeFactor2_Admin::class, 'admin_init' ) );
 		add_action( 'admin_enqueue_scripts', array( BadgeFactor2_Admin::class, 'load_resources' ) );
 		add_action( 'init', array( BadgeFactor2_Admin::class, 'add_custom_roles_and_capabilities' ), 11 );
-		add_action( 'init', array( BadgeFactor2_Admin::class, 'add_custom_roles_and_capabilities' ), 11 );
+		add_action( 'admin_menu', array( BadgeFactor2_Admin::class, 'admin_menus' ) );
+	}
+
+
+	public static function set_screen( $status, $option, $value ) {
+		return $value;
 	}
 
 	/**
@@ -68,6 +78,61 @@ class BadgeFactor2_Admin {
 			$approver->add_cap( 'badgefactor2_approve_badge_requests' );
 		}
 
+	}
+
+	public static function admin_menus() {
+
+		$hook = add_menu_page(
+			'Issuers',
+			'Issuers',
+			'manage_options',
+			'wp_list_table_class',
+			array( BadgeFactor2_Admin::class, 'issuers_page' ),
+			'dashicons-admin-home'
+		);
+
+		add_action(
+			"load-$hook",
+			array( BadgeFactor2_Admin::class, 'issuers_options' )
+		);
+
+	}
+
+	public static function issuers_page() {
+		?>
+		<div class="wrap">
+			<h2>Issuers</h2>
+
+			<div id="poststuff">
+				<div id="post-body" class="metabox-holder columns-2">
+					<div id="post-body-content">
+						<div class="meta-box-sortables ui-sortable">
+							<form method="post">
+								<?php
+								self::$customers_obj->prepare_items();
+								self::$customers_obj->display();
+								?>
+							</form>
+						</div>
+					</div>
+				</div>
+				<br class="clear">
+			</div>
+		</div>
+		<?php
+	}
+
+	public static function issuers_options() {
+		$option = 'per_page';
+		$args   = array(
+			'label'   => __( 'Issuers', 'badgefactor2' ),
+			'default' => 5,
+			'option'  => 'issuers_per_page',
+		);
+
+		add_screen_option( $option, $args );
+
+		self::$customers_obj = new Issuers_List();
 	}
 
 	/**

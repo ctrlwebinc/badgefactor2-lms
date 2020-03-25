@@ -111,7 +111,6 @@ class BadgeFactor2 {
 		require_once BF2_ABSPATH . 'src/core/class-badgruser.php';
 
 		add_action( 'init', array( Email::class, 'init_hooks' ) );
-		add_action( 'init', array( Issuer::class, 'init_hooks' ) );
 		add_action( 'init', array( Badge::class, 'init_hooks' ) );
 		add_action( 'init', array( Assertion::class, 'init_hooks' ) );
 		add_action( 'init', array( BadgrProvider::class, 'init_hooks' ) );
@@ -119,6 +118,7 @@ class BadgeFactor2 {
 
 		if ( is_admin() || ( defined( 'WP_CLI' ) && WP_CLI ) ) {
 			require_once BF2_ABSPATH . 'src/admin/class-badgefactor2-admin.php';
+			require_once BF2_ABSPATH . 'src/admin/class-issuers-list.php';
 			add_action( 'init', array( BadgeFactor2_Admin::class, 'init_hooks' ) );
 			add_action( 'init', array( BadgrClient::class, 'init_hooks' ) );
 		}
