@@ -361,6 +361,28 @@ class BadgrProvider {
 	}
 
 	/**
+	 * Retrieve all badges from Badgr.
+	 *
+	 * @return void TODO.
+	 */
+	public static function get_all_badge_classes( ) {
+		// Make GET request to /v2/badgeclasses.
+		$response = BadgrClient::get( '/v2/badgeclasses' );
+
+		// Check for 200 response.
+		if ( null !== $response && 200 === $response->getStatusCode() ) {
+			$response_info = json_decode( $response->getBody() );
+			if ( isset( $response_info->status->success ) &&
+				$response_info->status->success == true &&
+				isset( $response_info->result ) && is_array( $response_info->result ) ) {
+				return $response_info->result;
+			}
+		}
+
+		return false;
+	}
+
+	/**
 	 * TODO.
 	 *
 	 * @param string $badge_class_slug Badge Entity ID / Slug.
@@ -378,6 +400,55 @@ class BadgrProvider {
 				isset( $response_info->result[0] ) ) {
 				return $response_info->result[0];
 			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Update BadgeClass on Badgr Server.
+	 *
+	 * @param string $badge_class_slug Badge Class slug.
+	 * @param string $class_name BadgeClass name.
+	 * @param string $description BadgeClass description.
+	 * @param string $image Badge Image.
+	 * @return string|boolean BadgeClass Entity ID or false on error.
+	 */
+	public static function update_badge_class( $badge_class_slug, $class_name, $description, $image = null ) {
+
+		$image_data = null;
+
+		if ( null !== $image) {
+			try {
+				$image_raw_data = file_get_contents( $image );
+				$mime_type      = mime_content_type( $image );
+
+				// Badgr doesn't seem to like just svg add the +xml.
+				if ( 'image/svg' === $mime_type ) {
+					$mime_type .= '+xml';
+				}
+				$image_data = 'data:' . $mime_type . ';base64,' . base64_encode( $image_raw_data );
+			} catch ( \Exception $e ) {
+
+			}
+		}
+
+		// Setup body.
+		$request_body = array(
+			'name'        => $class_name,
+			'description' => $description,
+		);
+
+		if ( null !== $image_data) {
+			$request_body['image'] = $image_data;
+		}
+
+		// Make PUT request to /v2/badgeclasses/{entity_id}.
+		$response = BadgrClient::put( '/v2/badgeclasses/' . $badge_class_slug, $request_body );
+
+		// Check for 200 response.
+		if ( null !== $response && $response->getStatusCode() == 200 ) {
+			return true;
 		}
 
 		return false;

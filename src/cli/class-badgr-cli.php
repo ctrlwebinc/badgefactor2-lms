@@ -154,6 +154,34 @@ class Badgr_CLI extends WP_CLI_Command {
 		}
 	}
 
+	public function update_badge_class( $args, $assoc_args ) {
+		if ( ! (count( $args ) == 3 || count( $args ) == 4) ) {
+			WP_CLI::error( 'Usage: badge_class_slug name description [image_filename]' );
+		}
+
+		if ( strlen( $args[0] ) < 1 ) {
+			WP_CLI::error( 'Please provide a badge_class_slug as the 1st argument' );
+		}
+
+		if ( strlen( $args[1] ) < 1 ) {
+			WP_CLI::error( 'Please provide a name as the 2nd argument' );
+		}
+
+		if ( strlen( $args[2] ) < 1 ) {
+			WP_CLI::error( 'Please provide a description as the 3rd argument' );
+		}
+
+		if ( count( $args ) == 4 && ( strlen( $args[3] ) < 1 || ! file_exists( $args[3] ) ) ) {
+			WP_CLI::error( 'Please provide the name of an existing image file as the 4th argument' );
+		}
+
+		if ( BadgrProvider::update_badge_class( $args[0], $args[1], $args[2], $args[3] ) ) {
+			WP_CLI::success( 'Updated badge class with slug ' . $args[0] );
+		} else {
+			WP_CLI::error( 'Updating badge class failed.' );
+		}
+	}
+
 	public function add_assertion( $args, $assoc_args ) {
 		if ( count( $args ) != 3 ) {
 			WP_CLI::error( 'Usage: add_assertion issuer_slug badge_class_slug recipient_identity' );
