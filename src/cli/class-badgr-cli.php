@@ -192,6 +192,36 @@ class Badgr_CLI extends WP_CLI_Command {
 		}
 	}
 
+	public function list_badge_classes( $args, $assoc_args ) {
+		if ( count( $args ) != 0 ) {
+			WP_CLI::error( 'Usage: list_badge_classes' );
+		}
+
+		$badge_classes = BadgrProvider::get_all_badge_classes();
+		if ( false == $badge_classes ) {
+			WP_CLI::error( 'Error retrieving badge classes' );
+		}
+
+		WP_CLI::success( 'Badge classes successfully retrieved : ' . json_encode( $badge_classes ) );
+	}
+
+	public function list_badge_classes_by_issuer_slug( $args, $assoc_args ) {
+		if ( count( $args ) != 1 ) {
+			WP_CLI::error( 'Usage: list_badge_classes_by_issuer issuer_slug' );
+		}
+
+		if ( strlen( $args[0] ) < 1 ) {
+			WP_CLI::error( 'Please provide an issuer slug the 1st argument' );
+		}
+
+		$badge_classes = BadgrProvider::get_all_badge_classes_by_issuer_slug($args[0]);
+		if ( false == $badge_classes ) {
+			WP_CLI::error( 'Error retrieving badge classes' );
+		}
+
+		WP_CLI::success( 'Badge classes for issuer ' . $args[0] . 'successfully retrieved : ' . json_encode( $badge_classes ) );
+	}
+
 	public function add_badge_class( $args, $assoc_args ) {
 		if ( count( $args ) != 4 ) {
 			WP_CLI::error( 'Usage: add_badge_class name issuer_slug description image_filename' );
@@ -222,6 +252,24 @@ class Badgr_CLI extends WP_CLI_Command {
 		}
 	}
 
+	public function get_badge_class_by_slug( $args, $assoc_args ) {
+		if ( count( $args ) != 1 ) {
+			WP_CLI::error( 'Usage: get_badge_class_by_slug slug' );
+		}
+
+		if ( strlen( $args[0] ) < 1 ) {
+			WP_CLI::error( 'Please provide a badge class slug as the 1st argument' );
+		}
+
+		$badge_class = BadgrProvider::get_badge_class_by_badge_class_slug( $args[0] );
+
+		if ( $badge_class ) {
+			WP_CLI::success( 'Badge class ' . $args[0] . ' ' . json_encode($badge_class));
+		} else {
+			WP_CLI::error( 'Fetching badge class with slug ' . $args[0] . ' failed.' );
+		}
+	}
+
 	public function update_badge_class( $args, $assoc_args ) {
 		if ( ! (count( $args ) == 3 || count( $args ) == 4) ) {
 			WP_CLI::error( 'Usage: badge_class_slug name description [image_filename]' );
@@ -247,6 +295,24 @@ class Badgr_CLI extends WP_CLI_Command {
 			WP_CLI::success( 'Updated badge class with slug ' . $args[0] );
 		} else {
 			WP_CLI::error( 'Updating badge class failed.' );
+		}
+	}
+
+	public function delete_badge_class( $args, $assoc_args ) {
+		if ( count( $args ) != 1 ) {
+			WP_CLI::error( 'Usage: delete_badge_class slug' );
+		}
+
+		if ( strlen( $args[0] ) < 1 ) {
+			WP_CLI::error( 'Please provide a badge class slug as the 1st argument' );
+		}
+
+		WP_CLI::confirm( 'Are you sure you want to delete badge class ?' );
+
+		if ( BadgrProvider::delete_badge_class( $args[0] ) ) {
+			WP_CLI::success( 'Badge class ' . $args[0] . ' successfully deleted.' );
+		} else {
+			WP_CLI::error( 'Deleting badge class with slug ' . $args[0] . ' failed.' );
 		}
 	}
 

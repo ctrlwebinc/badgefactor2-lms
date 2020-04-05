@@ -472,6 +472,25 @@ class BadgrProvider {
 	}
 
 	/**
+	 * Delete Badgr Badge Class by entity ID / slug.
+	 *
+	 * @param string $slug Entity ID / slug.
+	 * @return void
+	 */
+	public static function delete_badge_class( $slug ) {
+		// Make DELETE request to /v2/badgeclasses/{entity_id}.
+		$response = BadgrClient::delete( '/v2/badgeclasses/' . $slug );
+
+		// Check for 204 or 404 response.
+		if ( null !== $response && ( $response->getStatusCode() == 204 || $response->getStatusCode() == 404 ) ) {
+
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
 	 * Add assertion to Badgr Server.
 	 *
 	 * @param string $issuer_slug Issuer slug.
