@@ -199,7 +199,7 @@ class BadgrProvider {
 	 * @return void
 	 */
 	public static function get_issuer_by_slug( $slug ) {
-		// Make GET request to /v2/issuers.
+		// Make GET request to /v2/issuers/{entity_id}.
 		$response = BadgrClient::get( '/v2/issuers/' . $slug );
 
 		// Check for 200 response.
@@ -210,6 +210,25 @@ class BadgrProvider {
 				isset( $response_info->result[0] ) ) {
 				return $response_info->result[0];
 			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Delete Badgr Issuer by entity ID / slug.
+	 *
+	 * @param string $slug Entity ID / slug.
+	 * @return void
+	 */
+	public static function delete_issuer( $slug ) {
+		// Make DELETE request to /v2/issuers/{entity_id}.
+		$response = BadgrClient::delete( '/v2/issuers/' . $slug );
+
+		// Check for 204 or 404 response.
+		if ( null !== $response && ( $response->getStatusCode() == 204 || $response->getStatusCode() == 404 ) ) {
+
+			return true;
 		}
 
 		return false;
@@ -255,13 +274,14 @@ class BadgrProvider {
 	/**
 	 * Update Badgr Issuer.
 	 *
+	 * @param string $issuer_slug Issuer slug.
 	 * @param string $issuer_name Issuer name.
 	 * @param string $email Issuer email.
 	 * @param string $url Issuer URL.
 	 * @param string $description Issuer Description.
 	 * @return string|boolean Issuer Entity ID or false on error.
 	 */
-	public static function update_issuer( $issuer_name, $email, $url, $description ) {
+	public static function update_issuer( $issuer_slug, $issuer_name, $email, $url, $description=null ) {
 
 		// Setup body.
 		$request_body = array(
@@ -269,21 +289,18 @@ class BadgrProvider {
 			'image'       => null,
 			'email'       => $email,
 			'url'         => $url,
-			'description' => $description,
 		);
 
-		// Make POST request to /v2/issuers.
-		$response = BadgrClient::post( '/v2/issuers', $request_body );
+		if ( null !== $description) {
+			$request_body['description'] = $description;
+		}
 
-		// Check for 201 response.
-		if ( null !== $response && $response->getStatusCode() == 201 ) {
-			// Return slug-entity_id or false if unsuccessful.
-			$response_info = json_decode( $response->getBody() );
-			if ( isset( $response_info->status->success ) &&
-				$response_info->status->success == true &&
-				isset( $response_info->result[0]->entityId ) ) {
-				return $response_info->result[0]->entityId;
-			}
+		// Make PUT request to /v2/issuers/{entity_id}.
+		$response = BadgrClient::put( '/v2/issuers/' . $issuer_slug, $request_body );
+
+		// Check for 200 response.
+		if ( null !== $response && $response->getStatusCode() == 200 ) {
+			return true;
 		}
 
 		return false;

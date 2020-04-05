@@ -124,6 +124,74 @@ class Badgr_CLI extends WP_CLI_Command {
 		}
 	}
 
+	public function update_issuer( $args, $assoc_args ) {
+		if ( ! (count( $args ) == 4 || count( $args ) == 5) ) {
+			WP_CLI::error( 'Usage: update_issuer issuer_slug name email url [description]' );
+		}
+
+		if ( strlen( $args[0] ) < 1 ) {
+			WP_CLI::error( 'Please provide an issuer slug as the 1st argument' );
+		}
+
+		if ( strlen( $args[1] ) < 1 ) {
+			WP_CLI::error( 'Please provide an issuer name as the 2nd argument' );
+		}
+
+		if ( ! filter_var( $args[2], FILTER_VALIDATE_EMAIL ) ) {
+			WP_CLI::error( 'Please provide an issuer email as the 3rd argument' );
+		}
+
+		if ( ! filter_var( $args[3], FILTER_VALIDATE_URL ) ) {
+			WP_CLI::error( 'Please provide an issuer url as the 4th argument' );
+		}
+
+		if ( count( $args ) == 5 && strlen( $args[4] ) < 1 ) {
+			WP_CLI::error( 'Please provide an issuer description as the 5th argument' );
+		}
+
+		if ( BadgrProvider::update_issuer( $args[0], $args[1], $args[2], $args[3], $args[4] ) ) {
+			WP_CLI::success( 'Updated issuer with slug ' . $args[0] );
+		} else {
+			WP_CLI::error( 'Updating issuer failed.' );
+		}
+	}
+
+	public function get_issuer_by_slug( $args, $assoc_args ) {
+		if ( count( $args ) != 1 ) {
+			WP_CLI::error( 'Usage: get_issuer_by_slug slug' );
+		}
+
+		if ( strlen( $args[0] ) < 1 ) {
+			WP_CLI::error( 'Please provide an issuer slug as the 1st argument' );
+		}
+
+		$issuer = BadgrProvider::get_issuer_by_slug( $args[0] );
+
+		if ( $issuer ) {
+			WP_CLI::success( 'Issuer ' . $args[0] . ' ' . json_encode($issuer));
+		} else {
+			WP_CLI::error( 'Fetching issuer with slug ' . $args[0] . ' failed.' );
+		}
+	}
+
+	public function delete_issuer( $args, $assoc_args ) {
+		if ( count( $args ) != 1 ) {
+			WP_CLI::error( 'Usage: delete_issuer slug' );
+		}
+
+		if ( strlen( $args[0] ) < 1 ) {
+			WP_CLI::error( 'Please provide an issuer slug as the 1st argument' );
+		}
+
+		WP_CLI::confirm( 'Are you sure you want to delete issuer ?' );
+
+		if ( BadgrProvider::delete_issuer( $args[0] ) ) {
+			WP_CLI::success( 'Issuer ' . $args[0] . ' successfully deleted.' );
+		} else {
+			WP_CLI::error( 'Deleting issuer with slug ' . $args[0] . ' failed.' );
+		}
+	}
+
 	public function add_badge_class( $args, $assoc_args ) {
 		if ( count( $args ) != 4 ) {
 			WP_CLI::error( 'Usage: add_badge_class name issuer_slug description image_filename' );
