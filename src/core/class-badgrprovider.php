@@ -547,6 +547,29 @@ class BadgrProvider {
 	}
 
 	/**
+	 * TODO.
+	 *
+	 * @param string $issuer_slug Issuer slug.
+	 * @return void TODO.
+	 */
+	public static function get_all_assertions_by_issuer_slug( $issuer_slug ) {
+		// Make GET request to /v2/issuers/{entity_id}/assertions.
+		$response = BadgrClient::get( '/v2/issuers/' . $issuer_slug . '/assertions' );
+
+		// Check for 200 response.
+		if ( null !== $response && 200 === $response->getStatusCode() ) {
+			$response_info = json_decode( $response->getBody() );
+			if ( isset( $response_info->status->success ) &&
+				$response_info->status->success == true &&
+				isset( $response_info->result ) && is_array( $response_info->result ) ) {
+				return $response_info->result;
+			}
+		}
+
+		return false;
+	}
+
+	/**
 	 * TOOD.
 	 *
 	 * @param string $assertion_slug Assertion slug.
@@ -564,6 +587,30 @@ class BadgrProvider {
 				isset( $response_info->result[0] ) ) {
 				return $response_info->result[0];
 			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Delete / Revoke Badge / Assertion by entity ID / slug.
+	 *
+	 * @param string $slug Entity ID / slug.
+	 * @return void
+	 */
+	public static function revoke_assertion( $slug, $reason ) {
+
+		$request_body = array(
+			'revocation_reason' => $reason,
+		);
+
+		// Make DELETE request to /v2/assertions/{entity_id}.
+		$response = BadgrClient::delete( '/v2/assertions/' . $slug, $request_body );
+
+		// Check for 200 response.
+		if ( null !== $response && $response->getStatusCode() == 200 ) {
+
+			return true;
 		}
 
 		return false;

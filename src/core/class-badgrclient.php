@@ -318,7 +318,7 @@ class BadgrClient {
 					$args = array( 'json' => $args );
 					break;
 				case 'DELETE':
-					$args = null;
+					$args = array( 'json' => $args );
 			}
 		}
 		$args = array_merge(
@@ -384,7 +384,7 @@ class BadgrClient {
 	 * @param string $path Path.
 	 * @return GuzzleHttp\Psr7\Response|null
 	 */
-	public static function delete( $path ) {
-		return self::request( 'DELETE', $path );
+	public static function delete( $path, $body = array() ) {
+		return self::request( 'DELETE', $path, $body );
 	}
 }

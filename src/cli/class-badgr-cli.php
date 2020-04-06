@@ -341,4 +341,79 @@ class Badgr_CLI extends WP_CLI_Command {
 			WP_CLI::error( 'Adding assertion failed.' );
 		}
 	}
+
+	public function list_assertions_by_issuer( $args, $assoc_args ) {
+		if ( count( $args ) != 1 ) {
+			WP_CLI::error( 'Usage: list_assertions_by_issuer issuer_slug' );
+		}
+
+		if ( strlen( $args[0] ) < 1 ) {
+			WP_CLI::error( 'Please provide an issuer slug the 1st argument' );
+		}
+
+		$badge_classes = BadgrProvider::get_all_assertions_by_issuer_slug($args[0]);
+		if ( false == $badge_classes ) {
+			WP_CLI::error( 'Error retrieving assertions' );
+		}
+
+		WP_CLI::success( 'Assertions for issuer ' . $args[0] . 'successfully retrieved : ' . json_encode( $badge_classes ) );
+	}
+
+	public function list_assertions_by_badge_class( $args, $assoc_args ) {
+		if ( count( $args ) != 1 ) {
+			WP_CLI::error( 'Usage: list_assertions_by_badge_class badge_class_slug' );
+		}
+
+		if ( strlen( $args[0] ) < 1 ) {
+			WP_CLI::error( 'Please provide a badge class slug the 1st argument' );
+		}
+
+		$badge_classes = BadgrProvider::get_all_assertions_by_badge_class_slug($args[0]);
+		if ( false == $badge_classes ) {
+			WP_CLI::error( 'Error retrieving assertion' );
+		}
+
+		WP_CLI::success( 'Assertions for badge class ' . $args[0] . 'successfully retrieved : ' . json_encode( $badge_classes ) );
+	}
+
+	public function get_assertion_by_slug( $args, $assoc_args ) {
+		if ( count( $args ) != 1 ) {
+			WP_CLI::error( 'Usage: get_assertion_by_slug slug' );
+		}
+
+		if ( strlen( $args[0] ) < 1 ) {
+			WP_CLI::error( 'Please provide an assertion slug as the 1st argument' );
+		}
+
+		$badge_class = BadgrProvider::get_assertion_by_assertion_slug( $args[0] );
+
+		if ( $badge_class ) {
+			WP_CLI::success( 'Assertion ' . $args[0] . ' ' . json_encode($badge_class));
+		} else {
+			WP_CLI::error( 'Fetching assertion with slug ' . $args[0] . ' failed.' );
+		}
+	}
+
+	public function revoke_assertion( $args, $assoc_args ) {
+		if ( count( $args ) != 2 ) {
+			WP_CLI::error( 'Usage: revoke_assertion slug reason' );
+		}
+
+		if ( strlen( $args[0] ) < 1 ) {
+			WP_CLI::error( 'Please provide an assertion slug as the 1st argument' );
+		}
+
+		if ( strlen( $args[1] ) < 1 ) {
+			WP_CLI::error( 'Please provide a reason for revocation as 2nd argument' );
+		}
+
+		WP_CLI::confirm( 'Are you sure you want to revoke assertion ?' );
+
+		if ( BadgrProvider::revoke_assertion( $args[0], $args[1] ) ) {
+			WP_CLI::success( 'Assertion ' . $args[0] . ' successfully revoked.' );
+		} else {
+			WP_CLI::error( 'Revoking assertion with slug ' . $args[0] . ' failed.' );
+		}
+	}
+
 }
