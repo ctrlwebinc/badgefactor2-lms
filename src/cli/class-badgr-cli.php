@@ -272,7 +272,7 @@ class Badgr_CLI extends WP_CLI_Command {
 
 	public function update_badge_class( $args, $assoc_args ) {
 		if ( ! (count( $args ) == 3 || count( $args ) == 4) ) {
-			WP_CLI::error( 'Usage: badge_class_slug name description [image_filename]' );
+			WP_CLI::error( 'Usage: update_badge_class badge_class_slug name description [image_filename]' );
 		}
 
 		if ( strlen( $args[0] ) < 1 ) {
