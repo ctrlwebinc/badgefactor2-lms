@@ -1,0 +1,23 @@
+<phpunit
+	bootstrap="tests/bootstrap.php"
+	backupGlobals="false"
+	colors="true"
+	convertErrorsToExceptions="true"
+	convertNoticesToExceptions="true"
+	convertWarningsToExceptions="true"
+	>
+	<testsuites>
+		<testsuite name="default">
+			<directory prefix="test-" suffix=".php">./tests/</directory>
+		</testsuite>
+	</testsuites>
+	<php>
+	    <env name="BADGR_SERVER_PUBLIC_URL" value="http://127.0.0.1:8000"/>
+	    <env name="BADGR_SERVER_INTERNAL_URL" value="http://host.docker.internal:8000"/>
+	    <env name="BADGR_SERVER_CLIENT_ID" value="YuQzXh4QJwRbzkTpfcXDJx6upDzVag6SgKn9KoDV"/>
+	    <env name="BADGR_SERVER_CLIENT_SECRET" value="Mw0oyRrFEgRjhAZtFmAoDTnBJidnroSoymDf46cEGXi7SOMDz9ZmzuDdpy014tvqhh51VRlnwpgC0NeqAlmbObvowUrrqW5Fgs2m8pn91vW9MfVXNHTUPzEk8tNUWLss"/>
+	    <env name="BADGR_SERVER_ACCESS_TOKEN" value="0Dz5Ss0yr7s4QADo4palMYxZEXbHjZ"/>
+	    <env name="BADGR_SERVER_REFRESH_TOKEN" value="9M48fwBYNTlTZ9Wql0CExhyN9XtAOR"/>
+	    <env name="BADGR_SERVER_TOKEN_EXPIRATION" value="1586284176"/>
+	</php>
+</phpunit>

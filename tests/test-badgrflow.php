@@ -21,11 +21,12 @@
  */
 
 use \BadgeFactor2\BadgrClient;
+use \BadgeFactor2\BadgrProvider;
 
 /**
  * Badgr Client Test.
  */
-class BadgrClientTest extends WP_UnitTestCase {
+class BadgrFlowTest extends WP_UnitTestCase {
 
 	private function callPrivateStaticMethod( $class, $method, ...$args ) {
 		$reflector = new ReflectionClass( $class );
@@ -34,53 +35,19 @@ class BadgrClientTest extends WP_UnitTestCase {
 		return $method->invoke( null, ...$args );
 	}
 
-	public function test_can_create_client() {
-		$this->assertNotNull( new \BadgeFactor2\BadgrClient );
+	private function generateRandomString($length = 10) {
+	    $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+	    $charactersLength = strlen($characters);
+	    $randomString = 'l';
+	    for ($i = 0; $i < $length; $i++) {
+	        $randomString .= $characters[rand(0, $charactersLength - 1)];
+	    }
+	    return $randomString;
 	}
-
-	public function test_make_provider_returns_provider() {
-		$this->assertEquals( \League\OAuth2\Client\Provider\GenericProvider::class, get_class( $this->callPrivateStaticMethod( BadgrClient::class, 'make_provider' ) ) );
-	}
-
-	public function test_badgr_client_initially_inactive() {
-		$this->assertFalse( BadgrClient::is_active() );
-	} 
-
     /**
      * @backupStaticAttributes enabled
      */
-    public function test_badgr_client_options() {
-		$options = get_option( 'badgefactor2_badgr_settings' );
-
-		// No options set: get_options will return false initially
-		$this->assertFalse( $options );
-
-		// Without options, client is not active, not configured, not initialized
-		$this->assertFalse( BadgrClient::is_active() );
-		$this->assertFalse( $this->callPrivateStaticMethod( BadgrClient::class, 'is_configured' ) );
-		$this->assertFalse( $this->callPrivateStaticMethod( BadgrClient::class, 'is_initialized' ) );
-
-		// Add options for urls, client id and client secret
-		update_option(
-			'badgefactor2_badgr_settings',
-			array(
-				'badgr_server_public_url'    => 'http://localhost:8000',
-				'badgr_server_client_id'     => 'a key',
-				'badgr_server_client_secret' => 'a secret',
-			)
-		);
-
-		// With options for urls, client id and client secret client is configured
-		$this->assertFalse( BadgrClient::is_active() );
-		$this->assertTrue( $this->callPrivateStaticMethod( BadgrClient::class, 'is_configured' ) );
-		$this->assertFalse( $this->callPrivateStaticMethod( BadgrClient::class, 'is_initialized' ) );
-
-	}
-
-    /**
-     * @backupStaticAttributes enabled
-     */
-	public function test_badgr_client_connectivity() {
+	public function test_issuer_to_assertion_flow() {
 
 		$options = get_option( 'badgefactor2_badgr_settings' );
 
@@ -101,9 +68,6 @@ class BadgrClientTest extends WP_UnitTestCase {
 			)
 		);
 
-		// Check that access token isn't null
-		$this->assertNotNull( $this->callPrivateStaticMethod( BadgrClient::class, 'get_access_token' ) );
-
 		// Check that we can retreive information on the authorized user
 		// Make GET request to /v2/users/self.
 		$response = BadgrClient::get( '/v2/users/self' );
@@ -119,8 +83,26 @@ class BadgrClientTest extends WP_UnitTestCase {
 		// Check that entity id exists
 		$this->assertTrue( isset( $response_info->result[0]->entityId ) );
 
-		// Check that entityId isn't empty
-		$this->assertNotEmpty( $response_info->result[0]->entityId );
+		// Setup a random string to avoid data collisions
+		$random = $this->generateRandomString(5);
+
+		// Create issuer
+		$issuer_slug = BadgrProvider::add_issuer( 'TestIssuer' . $random, 'issuer' . $random . '@example.net' , 'http://' . $random . 'example.net', 'A Description for ' . $random );
+
+		$this->assertTrue( false !== $issuer_slug );
+		$this->assertNotEmpty( $issuer_slug);
+
+		// Add a badge class
+		$badge_class_slug = BadgrProvider::add_badge_class( 'BadgeClass' . $random, $issuer_slug, 'Description for ' . $random, dirname(__FILE__).'/resources/test_badge_image.svg' );
+
+		$this->assertTrue( false !== $badge_class_slug );
+		$this->assertNotEmpty( $badge_class_slug);
+
+		// Issue a badge
+		$assertion_slug = BadgrProvider::add_assertion( $issuer_slug, $badge_class_slug, 'recipient' . $random . '@example.net');
+
+		$this->assertTrue( false !== $assertion_slug );
+		$this->assertNotEmpty( $assertion_slug);
 
 	}
 
