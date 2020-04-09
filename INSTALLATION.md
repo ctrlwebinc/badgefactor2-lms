@@ -25,10 +25,11 @@ LOGIN_URL = '/staff/login/'
 HTTP_ORIGIN = 'http://127.0.0.1:8000'
 ```
 
-Edit apps/mainsite/settings_local.py to add your Badge Factor 2 host to the allowed hosts and set the Http origin:
+Edit apps/mainsite/settings_local.py to add your Badge Factor 2 host to the allowed hosts, set the Http origin and provide an unsusbscribe secret key:
 ```bash
 ALLOWED_HOSTS = ['my-badge-factor-2.example.net']
 HTTP_ORIGIN = 'http://127.0.0.1:8000'
+UNSUBSCRIBE_SECRET_KEY = '7GGGDKOT4H4O7QU4GPGZ7ERY9GPE2FKALAO81WYP'
 ```
 
 Login using your super user account. Add an application under DJANGO OAUTH TOOLKIT > Applications and configure as follows:
@@ -39,6 +40,22 @@ Login using your super user account. Add an application under DJANGO OAUTH TOOLK
 - **Allowed scopes:** Enter *rw:issuer rw:backpack rw:profile*
 
 Make a note of client id and client secret and save the application.
+
+Under Home › Badgeuser › Terms versions, add a terms version.
+
+Create a new badgr app under Home › Mainsite › Badgr apps. If BadgeFactor2 is running at https:://my-badge-factor-2.example.net, use the following values:
+* CORS: ensure this setting matches the domain on which you are running BadgeFactor2, including the port if other than the standard HTTP or HTTPS ports. `https:://my-badge-factor-2.example.net`
+* Oauth authorization redirect: `https:://my-badge-factor-2.example.net`
+* User auth code exchange: should be checked
+* Oauth application: choose the one created previously
+* Is default: should be checked
+* Signup redirect: `https:://my-badge-factor-2.example.net/signup/`
+* Email confirmation redirect: `https:://my-badge-factor-2.example.net/auth/login/`
+* Forgot password redirect: `https:://my-badge-factor-2.example.net/change-password/`
+* UI login redirect: `https:://my-badge-factor-2.example.net/auth/login/`
+* UI signup success redirect: `https:://my-badge-factor-2.example.net/signup/success/`
+* UI connect success redirect: `https:://my-badge-factor-2.example.net/profile/`
+* Public pages redirect: `https:://my-badge-factor-2.example.net/public/`
 
 Add the application settings to your Badge Factor 2 installation under Badge Factor 2 > Badgr Server. Once configured, you'll be redirected to your Badgr instance to login and grant permissions to Badge Factor 2.
 
