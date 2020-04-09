@@ -8,6 +8,8 @@ Phpunit and WP-CLI are required for these tests.
 
 Optionally, you may wish to setup a test badgr server to keep your main instance clean.
 
+The WP testing environment requires subversion and php.7.(x).xml. These packages might not be installed by default in your distribution and can be added with apt-get install or equivalent.
+
 ## Setup
 
 The testing environment will create a whole new instance of WordPress.
