@@ -104,7 +104,6 @@ class BadgeFactor2 {
 		require_once BF2_ABSPATH . 'src/core/interface-badgr-entity.php';
 		require_once BF2_ABSPATH . 'src/core/class-badgrclient.php';
 		require_once BF2_ABSPATH . 'src/core/class-badgrprovider.php';
-		require_once BF2_ABSPATH . 'src/core/class-email.php';
 		require_once BF2_ABSPATH . 'src/core/class-issuer.php';
 		require_once BF2_ABSPATH . 'src/core/class-badge.php';
 		require_once BF2_ABSPATH . 'src/core/class-assertion.php';
@@ -118,6 +117,7 @@ class BadgeFactor2 {
 
 		if ( is_admin() || ( defined( 'WP_CLI' ) && WP_CLI ) ) {
 			require_once BF2_ABSPATH . 'src/admin/class-badgefactor2-admin.php';
+			require_once BF2_ABSPATH . 'src/admin/class-badgr-list.php';
 			require_once BF2_ABSPATH . 'src/admin/class-issuers-list.php';
 			add_action( 'init', array( BadgeFactor2_Admin::class, 'init_hooks' ) );
 			add_action( 'init', array( BadgrClient::class, 'init_hooks' ) );

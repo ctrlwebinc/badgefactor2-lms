@@ -81,8 +81,10 @@ class Issuer implements Badgr_Entity {
 		$badgr_issuers = BadgrProvider::get_all_issuers();
 		$wp_issuers    = array();
 
-		foreach ( $badgr_issuers as $badgr_issuer ) {
-			$wp_issuers[] = self::create_wp_post_from_badgr_object( $badgr_issuer );
+		if ( $badgr_issuers ) {
+			foreach ( $badgr_issuers as $badgr_issuer ) {
+				$wp_issuers[] = self::create_wp_post_from_badgr_object( $badgr_issuer );
+			}
 		}
 
 		return $wp_issuers;
@@ -106,7 +108,7 @@ class Issuer implements Badgr_Entity {
 	 * @param array $values Associated array of values of issuer to create.
 	 * @return string|boolean Id of created issuer, or false on error.
 	 */
-	public static function create ( $values ) {
+	public static function create( $values ) {
 
 	}
 
@@ -176,5 +178,22 @@ class Issuer implements Badgr_Entity {
 		// TODO Add all values from $badgr_object in $object.
 
 		return (array) $object;
+	}
+
+	public static function get_columns() {
+		return array(
+			'post_title'   => __( 'Name', 'badgefactor2' ),
+			'post_name'    => __( 'Slug', 'badgefactor2' ),
+			'issuer_email' => __( 'Email', 'badgefactor2' ),
+			'post_date'    => __( 'Created on', 'badgefactor2' ),
+		);
+	}
+
+	public static function get_sortable_columns() {
+		return array(
+			'name'       => array( 'name', true ),
+			'email'      => array( 'email', false ),
+			'created_at' => array( 'email', false ),
+		);
 	}
 }

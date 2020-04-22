@@ -30,7 +30,7 @@ use WP_CLI_Command;
 WP_CLI::add_command( 'bf2', BadgeFactor2_CLI::class );
 
 /**
- * Manage Open Badges.
+ * Manage Open Badges in Badge Factor 2.
  */
 class BadgeFactor2_CLI extends WP_CLI_Command {
 

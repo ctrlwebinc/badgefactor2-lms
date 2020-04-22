@@ -29,7 +29,7 @@ use BadgeFactor2\Issuers_List;
  */
 class BadgeFactor2_Admin {
 
-	public static $customers_obj;
+	public static $issuers;
 
 	/**
 	 * Init Hooks.
@@ -86,7 +86,7 @@ class BadgeFactor2_Admin {
 			'Issuers',
 			'Issuers',
 			'manage_options',
-			'wp_list_table_class',
+			'issuers',
 			array( BadgeFactor2_Admin::class, 'issuers_page' ),
 			'dashicons-admin-home'
 		);
@@ -109,8 +109,8 @@ class BadgeFactor2_Admin {
 						<div class="meta-box-sortables ui-sortable">
 							<form method="post">
 								<?php
-								self::$customers_obj->prepare_items();
-								self::$customers_obj->display();
+								self::$issuers->prepare_items();
+								self::$issuers->display();
 								?>
 							</form>
 						</div>
@@ -126,13 +126,13 @@ class BadgeFactor2_Admin {
 		$option = 'per_page';
 		$args   = array(
 			'label'   => __( 'Issuers', 'badgefactor2' ),
-			'default' => 5,
+			'default' => 10,
 			'option'  => 'issuers_per_page',
 		);
 
 		add_screen_option( $option, $args );
 
-		self::$customers_obj = new Issuers_List();
+		self::$issuers = new Issuers_List();
 	}
 
 	/**
@@ -225,7 +225,7 @@ class BadgeFactor2_Admin {
 				'id'        => 'badgr_server_client_secret',
 				'type'      => 'text',
 				'after_row' => function ( $field_args, $field ) {
-					include BF2_ABSPATH . 'src/admin/tpl.badgr-server-status.php';
+					include BF2_ABSPATH . 'templates/admin/tpl.badgr-server-status.php';
 				},
 			)
 		);

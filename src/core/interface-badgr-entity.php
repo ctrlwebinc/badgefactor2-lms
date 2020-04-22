@@ -75,4 +75,18 @@ interface Badgr_Entity {
 	 */
 	public static function create_wp_post_from_badgr_object( $badgr_object );
 
+	/**
+	 * Undocumented function
+	 *
+	 * @return void
+	 */
+	public static function get_columns();
+
+	/**
+	 * Undocumented function
+	 *
+	 * @return void
+	 */
+	public static function get_sortable_columns();
+
 }
