@@ -30,6 +30,7 @@ use BadgeFactor2\Issuers_List;
 class BadgeFactor2_Admin {
 
 	public static $issuers;
+	public static $badges;
 
 	/**
 	 * Init Hooks.
@@ -82,19 +83,33 @@ class BadgeFactor2_Admin {
 
 	public static function admin_menus() {
 
-		$hook = add_menu_page(
-			'Issuers',
-			'Issuers',
-			'manage_options',
-			'issuers',
-			array( BadgeFactor2_Admin::class, 'issuers_page' ),
-			'dashicons-admin-home'
+		$menus = array(
+			array(
+				__( 'Issuers', 'badgefactor2' ),
+				'issuers',
+				'dashicons-admin-home',
+			),
+			array(
+				__( 'Badges', 'badgefactor2' ),
+				'badges',
+				'dashicons-star-filled',
+			),
 		);
+		foreach ( $menus as $menu ) {
+			$hook = add_menu_page(
+				$menu[0],
+				$menu[0],
+				'manage_options',
+				$menu[1],
+				array( BadgeFactor2_Admin::class, $menu[1] . '_page' ),
+				$menu[2]
+			);
 
-		add_action(
-			"load-$hook",
-			array( BadgeFactor2_Admin::class, 'issuers_options' )
-		);
+			add_action(
+				"load-$hook",
+				array( BadgeFactor2_Admin::class, $menu[1] . '_options' )
+			);
+		}
 
 	}
 
@@ -122,6 +137,30 @@ class BadgeFactor2_Admin {
 		<?php
 	}
 
+	public static function badges_page() {
+		?>
+		<div class="wrap">
+			<h2>Badges</h2>
+
+			<div id="poststuff">
+				<div id="post-body" class="metabox-holder columns-2">
+					<div id="post-body-content">
+						<div class="meta-box-sortables ui-sortable">
+							<form method="post">
+								<?php
+								self::$badges->prepare_items();
+								self::$badges->display();
+								?>
+							</form>
+						</div>
+					</div>
+				</div>
+				<br class="clear">
+			</div>
+		</div>
+		<?php
+	}
+
 	public static function issuers_options() {
 		$option = 'per_page';
 		$args   = array(
@@ -135,12 +174,26 @@ class BadgeFactor2_Admin {
 		self::$issuers = new Issuers_List();
 	}
 
+	public static function badges_options() {
+		$option = 'per_page';
+		$args   = array(
+			'label'   => __( 'Badges', 'badgefactor2' ),
+			'default' => 10,
+			'option'  => 'badges_per_page',
+		);
+
+		add_screen_option( $option, $args );
+
+		self::$badges = new Badges_List();
+	}
+
 	/**
 	 * Admin Resources Loader.
 	 *
 	 * @return void
 	 */
 	public static function load_resources() {
+		wp_enqueue_style( 'cmb2-styles-css', BF2_BASEURL . '/lib/CMB2/css/cmb2.min.css', array(), '5.2.5', 'all' );
 
 	}
 

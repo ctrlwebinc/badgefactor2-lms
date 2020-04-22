@@ -77,17 +77,7 @@ class Issuer implements Badgr_Entity {
 	 * @return array|boolean Issuers array or false in case of error.
 	 */
 	public static function all() {
-
-		$badgr_issuers = BadgrProvider::get_all_issuers();
-		$wp_issuers    = array();
-
-		if ( $badgr_issuers ) {
-			foreach ( $badgr_issuers as $badgr_issuer ) {
-				$wp_issuers[] = self::create_wp_post_from_badgr_object( $badgr_issuer );
-			}
-		}
-
-		return $wp_issuers;
+		return BadgrProvider::get_all_issuers();
 	}
 
 	/**
@@ -97,9 +87,7 @@ class Issuer implements Badgr_Entity {
 	 * @return WP_Post Virtual WP_Post representation of the entity.
 	 */
 	public static function get( $entity_id ) {
-		$badgr_issuer = BadgrProvider::get_issuer_by_slug( $entity_id );
-		$wp_issuer    = self::create_wp_post_from_badgr_object( $badgr_issuer );
-		return $wp_issuer;
+		return BadgrProvider::get_issuer_by_slug( $entity_id );
 	}
 
 	/**
@@ -109,7 +97,10 @@ class Issuer implements Badgr_Entity {
 	 * @return string|boolean Id of created issuer, or false on error.
 	 */
 	public static function create( $values ) {
-
+		if ( self::validate( $values ) ) {
+			return BadgrProvider::add_issuer( $values['name'], $values['email'], $values['url'], $values['description'] );
+		}
+		return false;
 	}
 
 	/**
@@ -120,8 +111,10 @@ class Issuer implements Badgr_Entity {
 	 * @return boolean Whether or not update has succeeded.
 	 */
 	public static function update( $entity_id, $values ) {
-
-		$badgr_issuer = BadgrProvider::update_issuer( $entity_id );
+		if ( self::validate( $values ) ) {
+			return BadgrProvider::update_issuer( $entity_id, $values['name'], $values['email'], $values['url'], $values['description'] );
+		}
+		return false;
 
 	}
 
@@ -135,15 +128,28 @@ class Issuer implements Badgr_Entity {
 
 	}
 
-	/**
-	 * Create a WP_Post from provided Badgr Issuer object.
-	 *
-	 * @param stdClass $badgr_object Badgr Issuer Object.
-	 * @return WP_Post Virtual WP_Post Issuer.
-	 */
-	public static function create_wp_post_from_badgr_object( $badgr_object ) {
+	public static function get_columns() {
+		return array(
+			'entityId'  => __( 'Slug', 'badgefactor2' ),
+			'name'      => __( 'Name', 'badgefactor2' ),
+			'email'     => __( 'Email', 'badgefactor2' ),
+			'createdAt' => __( 'Created on', 'badgefactor2' ),
+		);
+	}
 
-		global $wp, $wp_query;
+	public static function get_sortable_columns() {
+		return array(
+			'name'       => array( 'name', true ),
+			'email'      => array( 'email', false ),
+			'createdAt' => array( 'email', false ),
+		);
+	}
+
+	public static function validate( $values ) {
+		return true;
+	}
+
+	/*
 
 		$date = strtotime( $badgr_object->createdAt );
 
@@ -174,26 +180,5 @@ class Issuer implements Badgr_Entity {
 		$object->issuer_email          = $badgr_object->email;
 		$object->issuer_url            = $badgr_object->url;
 		$object->filter                = 'raw';
-
-		// TODO Add all values from $badgr_object in $object.
-
-		return (array) $object;
-	}
-
-	public static function get_columns() {
-		return array(
-			'post_title'   => __( 'Name', 'badgefactor2' ),
-			'post_name'    => __( 'Slug', 'badgefactor2' ),
-			'issuer_email' => __( 'Email', 'badgefactor2' ),
-			'post_date'    => __( 'Created on', 'badgefactor2' ),
-		);
-	}
-
-	public static function get_sortable_columns() {
-		return array(
-			'name'       => array( 'name', true ),
-			'email'      => array( 'email', false ),
-			'created_at' => array( 'email', false ),
-		);
-	}
+		*/
 }

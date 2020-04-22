@@ -26,7 +26,7 @@ if ( ! class_exists( 'WP_List_Table' ) ) {
 	require_once( ABSPATH . 'wp-admin/includes/class-wp-list-table.php' );
 }
 
-class Issuers_List extends Badgr_List {
+class Badges_List extends Badgr_List {
 
 	/**
 	 * Class constructor.
@@ -34,11 +34,16 @@ class Issuers_List extends Badgr_List {
 	public function __construct() {
 
 		parent::__construct(
-			Issuer::class,
-			__( 'Issuer', 'badgefactor2' ),
-			__( 'Issuers', 'badgefactor2' ),
-			'issuers'
+			Badge::class,
+			__( 'Badge', 'badgefactor2' ),
+			__( 'Badges', 'badgefactor2' ),
+			'badges'
 		);
+	}
+
+	public function validate() {
+		// TODO
+		return true;
 	}
 
 }

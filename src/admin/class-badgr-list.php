@@ -97,7 +97,6 @@ class Badgr_List extends \WP_List_Table {
 		return $this->model::all();
 	}
 
-
 	/**
 	 * Delete a record through Badgr provider.
 	 *
@@ -137,9 +136,17 @@ class Badgr_List extends \WP_List_Table {
 	 * @return mixed
 	 */
 	public function column_default( $item, $column_name ) {
+		$return = '';
 		foreach ( $this->model::get_columns() as $column_slug => $column_title ) {
 			if ( $column_name === $column_slug ) {
-				return $item[ $column_name ];
+				if ( 'entityId' === $column_slug ) {
+					$return .= '<a href="admin.php?page=' . $this->slug . '&action=edit&entity_id=' . $item->$column_name . '">';
+				}
+				$return .= $item->$column_name;
+				if ( 'post_name' === $column_slug ) {
+					$return .= '</a>';
+				}
+				return $return;
 			}
 		}
 		// Show the whole array for troubleshooting purposes.
@@ -156,7 +163,7 @@ class Badgr_List extends \WP_List_Table {
 	function column_cb( $item ) {
 		return sprintf(
 			'<input type="checkbox" name="bulk-delete[]" value="%s" />',
-			$item['ID']
+			$item->entityId
 		);
 	}
 
@@ -172,7 +179,7 @@ class Badgr_List extends \WP_List_Table {
 
 		$delete_nonce = wp_create_nonce( 'bf2_delete_' . $this->slug );
 
-		$title = '<strong>' . $item['name'] . '</strong>';
+		$title = $item->name;
 
 		$actions = array(
 			'delete' => '', //sprintf( '<a href="?page=%s&action=%s&customer=%s&_wpnonce=%s">Delete</a>', esc_attr( $_REQUEST['page'] ), 'delete', absint( $item['ID'] ), $delete_nonce ),
@@ -205,7 +212,7 @@ class Badgr_List extends \WP_List_Table {
 	 * @return array
 	 */
 	public function get_sortable_columns() {
-		
+
 		return $this->model::get_sortable_columns();
 	}
 
@@ -249,8 +256,35 @@ class Badgr_List extends \WP_List_Table {
 
 
 	public function display() {
-		if ( isset( $_GET['action'] ) && 'new' === $_GET['action'] ) {
+		if ( isset( $_GET['action'] ) ) {
+			switch ( $_GET['action'] ) {
+				case 'new':
+					if ( 'POST' === $_SERVER['REQUEST_METHOD'] ) {
+						$entity_id = $this->model::create( $_POST );
+						// TODO redirect to edit with save message.
+					}
+					include BF2_ABSPATH . 'templates/admin/tpl.edit-' . $this->slug . '.php';
+					break;
+				case 'edit':
+					if ( isset( $_GET['entity_id'] ) ) {
+						// Entity ID is set.
 
+						$entity = $this->model::get( $_GET['entity_id'] );
+						if ( false === $entity ) {
+							wp_die( __( 'You attempted to edit an item that doesn\'t exist. Perhaps it was deleted?', 'badgefactor2' ) );
+						}
+
+						if ( 'POST' === $_SERVER['REQUEST_METHOD'] ) {
+							$entity_id = $this->model::update( $_GET['entity_id'], $_POST );
+						}
+						include BF2_ABSPATH . 'templates/admin/tpl.edit-' . $this->slug . '.php';
+					} else {
+						//Entity ID is not set.
+						wp_die( __( 'You are missing an entity ID.', 'badgefactor2' ) );
+					}
+
+					break;
+			}
 		} else {
 			parent::display();
 		}
@@ -306,8 +340,22 @@ class Badgr_List extends \WP_List_Table {
 	 */
 	public function extra_tablenav( $which ) {
 		if ( 'top' === $which ) {
-			echo '<a class="page-title-action" href="admin.php?page=' . $this->slug . '&action=new">' . __('Add New', 'badgefactor2') . '</a>';
+			if ( BadgrClient::is_active() ) {
+				echo '<div class="alignleft actions"><a class="button action button-primary" href="admin.php?page=' . $this->slug . '&action=new">' . __( 'Add New', 'badgefactor2' ) . '</a></div>';
+			} else {
+				echo __( 'Badgr connection inactive!', 'badgefactor2' );
+			}
 		}
+	}
+
+	/**
+	 * Undocumented function
+	 *
+	 * @return bool
+	 */
+	public function validate() {
+		// Defaults to false. Must be implemented in child class.
+		return false;
 	}
 
 }

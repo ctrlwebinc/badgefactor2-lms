@@ -25,23 +25,90 @@ namespace BadgeFactor2;
 /**
  * Badge Class.
  */
-class Badge {
+class Badge implements Badgr_Entity {
 
 	/**
-	 * Badge Init.
+	 * Issuer Badgr Entity ID / Slug.
 	 *
-	 * @return void
+	 * @var string
 	 */
-	public static function init_hooks() {
-		add_action( 'init', array( Badge::class, 'init' ), 9966 );
+	public $entity_id;
+
+	/**
+	 * Retrieve all issuers from Badgr provider.
+	 *
+	 * @return array|boolean Issuers array or false in case of error.
+	 */
+	public static function all() {
+		return BadgrProvider::get_all_badge_classes();
 	}
 
 	/**
-	 * Init hook.
+	 * Retrieve issuer from Badgr provider.
 	 *
-	 * @return void
+	 * @param string $entity_id Issuer ID.
+	 * @return WP_Post Virtual WP_Post representation of the entity.
 	 */
-	public static function init() {
-		// TODO.
+	public static function get( $entity_id ) {
+		return BadgrProvider::get_badge_class_by_badge_class_slug( $entity_id );
+	}
+
+	/**
+	 * Create Issuer through Badgr provider.
+	 *
+	 * @param array $values Associated array of values of issuer to create.
+	 * @return string|boolean Id of created issuer, or false on error.
+	 */
+	public static function create( $values ) {
+		if ( self::validate( $values ) ) {
+			return BadgrProvider::add_badge_class( $values['name'], $values['issuer_slug'], $values['description'], $values['image'] );
+		}
+		return false;
+	}
+
+	/**
+	 * Update issuer through Badgr provider.
+	 *
+	 * @param string $entity_id Issuer ID.
+	 * @param array  $values Associative array of values to change.
+	 * @return boolean Whether or not update has succeeded.
+	 */
+	public static function update( $entity_id, $values ) {
+		if ( self::validate( $values ) ) {
+			return BadgrProvider::update_badge_class( $entity_id, $values['name'], $values['description'], $values['image'] );
+		}
+		return false;
+
+	}
+
+	/**
+	 * Delete an Issuer through Badgr provider.
+	 *
+	 * @param string $entity_id Slug / Entity ID.
+	 * @return boolean Whether or not deletion has succeeded.
+	 */
+	public static function delete( $entity_id ) {
+
+	}
+
+	public static function get_columns() {
+		return array(
+			'post_name'    => __( 'Slug', 'badgefactor2' ),
+			'post_title'   => __( 'Name', 'badgefactor2' ),
+			'issuer_email' => __( 'Email', 'badgefactor2' ),
+			'post_date'    => __( 'Created on', 'badgefactor2' ),
+		);
+	}
+
+	public static function get_sortable_columns() {
+		return array(
+			'name'       => array( 'name', true ),
+			'email'      => array( 'email', false ),
+			'created_at' => array( 'email', false ),
+		);
+	}
+
+	public static function validate( $values ) {
+		return true;
 	}
 }

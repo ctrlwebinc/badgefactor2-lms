@@ -68,14 +68,6 @@ interface Badgr_Entity {
 	public static function delete( $entity_id );
 
 	/**
-	 * Create a WP_Post from provided Badgr object.
-	 *
-	 * @param stdClass $badgr_object Badgr Object.
-	 * @return WP_Post Virtual WP_Post object.
-	 */
-	public static function create_wp_post_from_badgr_object( $badgr_object );
-
-	/**
 	 * Undocumented function
 	 *
 	 * @return void
