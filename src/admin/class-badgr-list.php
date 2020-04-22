@@ -116,7 +116,10 @@ class Badgr_List extends \WP_List_Table {
 	 */
 	public function record_count() {
 		$objects = $this->model::all();
-		return count( $objects );
+		if ($objects) {
+			return count( $objects );
+		}
+		return 0;
 	}
 
 
