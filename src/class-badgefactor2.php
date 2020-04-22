@@ -22,6 +22,7 @@
 
 namespace BadgeFactor2;
 
+
 /**
  * Badge Factor 2 Main Class.
  */
@@ -115,9 +116,9 @@ class BadgeFactor2 {
 		if ( is_admin() || ( defined( 'WP_CLI' ) && WP_CLI ) ) {
 			require_once BF2_ABSPATH . 'src/admin/class-badgefactor2-admin.php';
 			require_once BF2_ABSPATH . 'src/admin/class-badgr-list.php';
-			require_once BF2_ABSPATH . 'src/admin/lists/class-issuers-list.php';
-			require_once BF2_ABSPATH . 'src/admin/lists/class-badges-list.php';
-			require_once BF2_ABSPATH . 'src/admin/lists/class-assertions-list.php';
+			require_once BF2_ABSPATH . 'src/admin/lists/class-issuers.php';
+			require_once BF2_ABSPATH . 'src/admin/lists/class-badges.php';
+			require_once BF2_ABSPATH . 'src/admin/lists/class-assertions.php';
 			add_action( 'init', array( BadgeFactor2_Admin::class, 'init_hooks' ) );
 			add_action( 'init', array( BadgrClient::class, 'init_hooks' ) );
 		}

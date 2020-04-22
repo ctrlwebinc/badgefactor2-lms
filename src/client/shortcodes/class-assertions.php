@@ -20,30 +20,13 @@
  * @package Badge_Factor_2
  */
 
-namespace BadgeFactor2;
+namespace BadgeFactor2\Shortcodes;
 
-if ( ! class_exists( 'WP_List_Table' ) ) {
-	require_once( ABSPATH . 'wp-admin/includes/class-wp-list-table.php' );
-}
+/**
+ * Shortcodes Class.
+ */
+class Assertions {
 
-class Issuers_List extends Badgr_List {
 
-	/**
-	 * Class constructor.
-	 */
-	public function __construct() {
-
-		parent::__construct(
-			Issuer::class,
-			__( 'Issuer', 'badgefactor2' ),
-			__( 'Issuers', 'badgefactor2' ),
-			'issuers'
-		);
-	}
-
-	public function validate() {
-		// TODO
-		return true;
-	}
 
 }

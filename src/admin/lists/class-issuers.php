@@ -20,13 +20,16 @@
  * @package Badge_Factor_2
  */
 
-namespace BadgeFactor2;
+namespace BadgeFactor2\Admin\Lists;
+
+use BadgeFactor2\Admin\Badgr_List;
+use BadgeFactor2\Issuer;
 
 if ( ! class_exists( 'WP_List_Table' ) ) {
 	require_once( ABSPATH . 'wp-admin/includes/class-wp-list-table.php' );
 }
 
-class Badges_List extends Badgr_List {
+class Issuers extends Badgr_List {
 
 	/**
 	 * Class constructor.
@@ -34,10 +37,10 @@ class Badges_List extends Badgr_List {
 	public function __construct() {
 
 		parent::__construct(
-			Badge::class,
-			__( 'Badge', 'badgefactor2' ),
-			__( 'Badges', 'badgefactor2' ),
-			'badges'
+			Issuer::class,
+			__( 'Issuer', 'badgefactor2' ),
+			__( 'Issuers', 'badgefactor2' ),
+			'issuers'
 		);
 	}
 

@@ -22,7 +22,10 @@
 
 namespace BadgeFactor2;
 
-use BadgeFactor2\Issuers_List;
+use BadgeFactor2\Admin\Lists\Assertions;
+use BadgeFactor2\Admin\Lists\Badges;
+use BadgeFactor2\Admin\Lists\Issuers;
+use BadgeFactor2\Admin\Lists\Issuers_List;
 
 /**
  * Badge Factor 2 Admin Class.
@@ -201,7 +204,7 @@ class BadgeFactor2_Admin {
 
 		add_screen_option( $option, $args );
 
-		self::$issuers = new Issuers_List();
+		self::$issuers = new Issuers();
 	}
 
 	public static function badges_options() {
@@ -214,7 +217,7 @@ class BadgeFactor2_Admin {
 
 		add_screen_option( $option, $args );
 
-		self::$badges = new Badges_List();
+		self::$badges = new Badges();
 	}
 
 	public static function assertions_options() {
@@ -227,7 +230,7 @@ class BadgeFactor2_Admin {
 
 		add_screen_option( $option, $args );
 
-		self::$assertions = new Assertions_List();
+		self::$assertions = new Assertions();
 	}
 
 
