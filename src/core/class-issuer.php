@@ -139,46 +139,13 @@ class Issuer implements Badgr_Entity {
 
 	public static function get_sortable_columns() {
 		return array(
-			'name'       => array( 'name', true ),
-			'email'      => array( 'email', false ),
-			'createdAt' => array( 'email', false ),
+			'name'      => array( 'name', true ),
+			'email'     => array( 'email', false ),
+			'createdAt' => array( 'createdAt', false ),
 		);
 	}
 
 	public static function validate( $values ) {
 		return true;
 	}
-
-	/*
-
-		$date = strtotime( $badgr_object->createdAt );
-
-		$object                        = new \stdClass();
-		$object->ID                    = -99;
-		$object->post_author           = 1;
-		$object->post_date             = date( 'Y-m-d H:i:s', $date );
-		$object->post_date_gmt         = gmdate( 'Y-m-d H:i:s', $date );
-		$object->post_content          = $badgr_object->description;
-		$object->post_title            = $badgr_object->name;
-		$object->post_excerpt          = '';
-		$object->post_status           = 'publish';
-		$object->comment_status        = 'closed';
-		$object->ping_status           = 'closed';
-		$object->post_password         = '';
-		$object->post_name             = $badgr_object->entityId;
-		$object->to_ping               = '';
-		$object->pinged                = '';
-		$object->post_modified         = date( 'Y-m-d H:i:s', $date );
-		$object->post_modified_gmt     = gmdate( 'Y-m-d H:i:s', $date );
-		$object->post_content_filtered = '';
-		$object->post_parent           = 0;
-		$object->guid                  = get_option( 'siteurl' ) . '?post_type=issuer&source=badgr&id=' . $badgr_object->entityId;
-		$object->menu_order            = 0;
-		$object->post_type             = 'issuer';
-		$object->post_mime_type        = '';
-		$object->comment_count         = 0;
-		$object->issuer_email          = $badgr_object->email;
-		$object->issuer_url            = $badgr_object->url;
-		$object->filter                = 'raw';
-		*/
 }

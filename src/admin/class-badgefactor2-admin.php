@@ -31,6 +31,7 @@ class BadgeFactor2_Admin {
 
 	public static $issuers;
 	public static $badges;
+	public static $assertions;
 
 	/**
 	 * Init Hooks.
@@ -92,6 +93,11 @@ class BadgeFactor2_Admin {
 			array(
 				__( 'Badges', 'badgefactor2' ),
 				'badges',
+				'dashicons-star-empty',
+			),
+			array(
+				__( 'Assertions', 'badgefactor2' ),
+				'assertions',
 				'dashicons-star-filled',
 			),
 		);
@@ -116,7 +122,7 @@ class BadgeFactor2_Admin {
 	public static function issuers_page() {
 		?>
 		<div class="wrap">
-			<h2>Issuers</h2>
+			<h2><?php echo __( 'Issuers', 'badgefactor' ); ?></h2>
 
 			<div id="poststuff">
 				<div id="post-body" class="metabox-holder columns-2">
@@ -140,7 +146,7 @@ class BadgeFactor2_Admin {
 	public static function badges_page() {
 		?>
 		<div class="wrap">
-			<h2>Badges</h2>
+			<h2><?php echo __( 'Badges', 'badgefactor' ); ?></h2>
 
 			<div id="poststuff">
 				<div id="post-body" class="metabox-holder columns-2">
@@ -150,6 +156,30 @@ class BadgeFactor2_Admin {
 								<?php
 								self::$badges->prepare_items();
 								self::$badges->display();
+								?>
+							</form>
+						</div>
+					</div>
+				</div>
+				<br class="clear">
+			</div>
+		</div>
+		<?php
+	}
+
+	public static function assertions_page() {
+		?>
+		<div class="wrap">
+			<h2><?php echo __( 'Assertions', 'badgefactor' ); ?></h2>
+
+			<div id="poststuff">
+				<div id="post-body" class="metabox-holder columns-2">
+					<div id="post-body-content">
+						<div class="meta-box-sortables ui-sortable">
+							<form method="post">
+								<?php
+								self::$assertions->prepare_items();
+								self::$assertions->display();
 								?>
 							</form>
 						</div>
@@ -187,6 +217,20 @@ class BadgeFactor2_Admin {
 		self::$badges = new Badges_List();
 	}
 
+	public static function assertions_options() {
+		$option = 'per_page';
+		$args   = array(
+			'label'   => __( 'Assertions', 'badgefactor2' ),
+			'default' => 10,
+			'option'  => 'assertions_per_page',
+		);
+
+		add_screen_option( $option, $args );
+
+		self::$assertions = new Assertions_List();
+	}
+
+
 	/**
 	 * Admin Resources Loader.
 	 *
@@ -218,7 +262,8 @@ class BadgeFactor2_Admin {
 		if ( version_compare( CMB2_VERSION, '2.4.0' ) ) {
 			$args['display_cb'] = 'badgefactor2_options_display_with_tabs';
 		}
-		new_cmb2_box( $args );
+		$badgefactor2_settings = new_cmb2_box( $args );
+
 
 		/**
 		 * Registers Badgr options page.

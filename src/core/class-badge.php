@@ -28,25 +28,25 @@ namespace BadgeFactor2;
 class Badge implements Badgr_Entity {
 
 	/**
-	 * Issuer Badgr Entity ID / Slug.
+	 * Badge Badgr Entity ID / Slug.
 	 *
 	 * @var string
 	 */
 	public $entity_id;
 
 	/**
-	 * Retrieve all issuers from Badgr provider.
+	 * Retrieve all badges from Badgr provider.
 	 *
-	 * @return array|boolean Issuers array or false in case of error.
+	 * @return array|boolean Badges array or false in case of error.
 	 */
 	public static function all() {
 		return BadgrProvider::get_all_badge_classes();
 	}
 
 	/**
-	 * Retrieve issuer from Badgr provider.
+	 * Retrieve badge from Badgr provider.
 	 *
-	 * @param string $entity_id Issuer ID.
+	 * @param string $entity_id Badge ID.
 	 * @return WP_Post Virtual WP_Post representation of the entity.
 	 */
 	public static function get( $entity_id ) {
@@ -54,10 +54,10 @@ class Badge implements Badgr_Entity {
 	}
 
 	/**
-	 * Create Issuer through Badgr provider.
+	 * Create Badge through Badgr provider.
 	 *
-	 * @param array $values Associated array of values of issuer to create.
-	 * @return string|boolean Id of created issuer, or false on error.
+	 * @param array $values Associated array of values of badge to create.
+	 * @return string|boolean Id of created badge, or false on error.
 	 */
 	public static function create( $values ) {
 		if ( self::validate( $values ) ) {
@@ -67,9 +67,9 @@ class Badge implements Badgr_Entity {
 	}
 
 	/**
-	 * Update issuer through Badgr provider.
+	 * Update badge through Badgr provider.
 	 *
-	 * @param string $entity_id Issuer ID.
+	 * @param string $entity_id Badge ID.
 	 * @param array  $values Associative array of values to change.
 	 * @return boolean Whether or not update has succeeded.
 	 */
@@ -82,7 +82,7 @@ class Badge implements Badgr_Entity {
 	}
 
 	/**
-	 * Delete an Issuer through Badgr provider.
+	 * Delete an Badge through Badgr provider.
 	 *
 	 * @param string $entity_id Slug / Entity ID.
 	 * @return boolean Whether or not deletion has succeeded.
@@ -93,18 +93,20 @@ class Badge implements Badgr_Entity {
 
 	public static function get_columns() {
 		return array(
-			'post_name'    => __( 'Slug', 'badgefactor2' ),
-			'post_title'   => __( 'Name', 'badgefactor2' ),
-			'issuer_email' => __( 'Email', 'badgefactor2' ),
-			'post_date'    => __( 'Created on', 'badgefactor2' ),
+			'entityId'    => __( 'Slug', 'badgefactor2' ),
+			'name'        => __( 'Name', 'badgefactor2' ),
+			'issuer_slug' => __( 'Issuer', 'badgefactor2' ),
+			'description' => __( 'Description', 'badgefactor2' ),
+			'image'       => __( 'Image', 'badgefactor2' ),
+			'createdAt'   => __( 'Created on', 'badgefactor2' ),
 		);
 	}
 
 	public static function get_sortable_columns() {
 		return array(
-			'name'       => array( 'name', true ),
-			'email'      => array( 'email', false ),
-			'created_at' => array( 'email', false ),
+			'name'        => array( 'name', true ),
+			'issuer_slug' => array( 'email', false ),
+			'createdAt'   => array( 'createdAt', false ),
 		);
 	}
 
