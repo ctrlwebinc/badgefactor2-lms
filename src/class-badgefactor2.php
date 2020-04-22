@@ -109,7 +109,6 @@ class BadgeFactor2 {
 		require_once BF2_ABSPATH . 'src/core/class-assertion.php';
 		require_once BF2_ABSPATH . 'src/core/class-badgruser.php';
 
-		add_action( 'init', array( Email::class, 'init_hooks' ) );
 		add_action( 'init', array( Badge::class, 'init_hooks' ) );
 		add_action( 'init', array( Assertion::class, 'init_hooks' ) );
 		add_action( 'init', array( BadgrProvider::class, 'init_hooks' ) );
