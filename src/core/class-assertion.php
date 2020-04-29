@@ -93,18 +93,18 @@ class Assertion {
 
 	public static function get_columns() {
 		return array(
-			'post_name'    => __( 'Slug', 'badgefactor2' ),
-			'post_title'   => __( 'Name', 'badgefactor2' ),
-			'issuer_email' => __( 'Email', 'badgefactor2' ),
-			'post_date'    => __( 'Created on', 'badgefactor2' ),
+			'entityId'          => __( 'Slug', 'badgefactor2' ),
+			'issuerOpenBadgeId' => __( 'Link', 'badgefactor2' ),
+			'issuedOn'          => __( 'Issued on', 'badgefactor2' ),
+			// TODO Add pertinent fields
 		);
 	}
 
 	public static function get_sortable_columns() {
 		return array(
-			'name'       => array( 'name', true ),
-			'email'      => array( 'email', false ),
-			'created_at' => array( 'email', false ),
+			'entityId'          => array( 'entityId', true ),
+			'issuerOpenBadgeId' => array( 'issuerOpenBadgeId', false ),
+			'issuedOn'          => array( 'issuedOn', false ),
 		);
 	}
 
