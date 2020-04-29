@@ -116,7 +116,7 @@ class Badgr_List extends \WP_List_Table {
 	 */
 	public function record_count() {
 		$objects = $this->model::all();
-		if ($objects) {
+		if ( $objects ) {
 			return count( $objects );
 		}
 		return 0;
@@ -144,12 +144,16 @@ class Badgr_List extends \WP_List_Table {
 		$return = '';
 		foreach ( $this->model::get_columns() as $column_slug => $column_title ) {
 			if ( $column_name === $column_slug ) {
-				if ( 'entityId' === $column_slug ) {
-					$return .= '<a href="admin.php?page=' . $this->slug . '&action=edit&entity_id=' . $item->$column_name . '">';
-				}
-				$return .= $item->$column_name;
-				if ( 'post_name' === $column_slug ) {
-					$return .= '</a>';
+				switch ( $column_slug ) {
+					case 'image':
+						$return .= '<img src="' . $item->$column_name . '">';
+						break;
+					case 'entityId':
+						$return .= '<a href="admin.php?page=' . $this->slug . '&action=edit&entity_id=' . $item->$column_name . '">' . $item->$column_name . '</a>';
+						break;
+					default:
+						$return .= $item->$column_name;
+						break;
 				}
 				return $return;
 			}
