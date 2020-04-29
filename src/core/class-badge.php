@@ -95,7 +95,7 @@ class Badge implements Badgr_Entity {
 		return array(
 			'entityId'    => __( 'Slug', 'badgefactor2' ),
 			'name'        => __( 'Name', 'badgefactor2' ),
-			'issuer_slug' => __( 'Issuer', 'badgefactor2' ),
+			'issuer'      => __( 'Issuer', 'badgefactor2' ),
 			'description' => __( 'Description', 'badgefactor2' ),
 			'image'       => __( 'Image', 'badgefactor2' ),
 			'createdAt'   => __( 'Created on', 'badgefactor2' ),
@@ -104,9 +104,9 @@ class Badge implements Badgr_Entity {
 
 	public static function get_sortable_columns() {
 		return array(
-			'name'        => array( 'name', true ),
-			'issuer_slug' => array( 'email', false ),
-			'createdAt'   => array( 'createdAt', false ),
+			'name'      => array( 'name', true ),
+			'issuer'    => array( 'email', false ),
+			'createdAt' => array( 'createdAt', false ),
 		);
 	}
 
