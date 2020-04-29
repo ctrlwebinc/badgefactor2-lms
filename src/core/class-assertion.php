@@ -95,7 +95,7 @@ class Assertion {
 		return array(
 			'entityId'          => __( 'Slug', 'badgefactor2' ),
 			'issuerOpenBadgeId' => __( 'Link', 'badgefactor2' ),
-			'issuedOn'          => __( 'Issued on', 'badgefactor2' ),
+			'createdAt'         => __( 'Created on', 'badgefactor2' ),
 			// TODO Add pertinent fields
 		);
 	}
@@ -104,7 +104,7 @@ class Assertion {
 		return array(
 			'entityId'          => array( 'entityId', true ),
 			'issuerOpenBadgeId' => array( 'issuerOpenBadgeId', false ),
-			'issuedOn'          => array( 'issuedOn', false ),
+			'createdAt'         => array( 'createdAt', false ),
 		);
 	}
 
