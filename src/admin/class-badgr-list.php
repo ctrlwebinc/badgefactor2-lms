@@ -146,7 +146,7 @@ class Badgr_List extends \WP_List_Table {
 			if ( $column_name === $column_slug ) {
 				switch ( $column_slug ) {
 					case 'image':
-						$return .= '<img class="width:50%" src="' . $item->$column_name . '">';
+						$return .= '<img style="width:50%" src="' . $item->$column_name . '">';
 						break;
 					case 'entityId':
 						$return .= '<a href="admin.php?page=' . $this->slug . '&action=edit&entity_id=' . $item->$column_name . '">' . $item->$column_name . '</a>';
