@@ -23,7 +23,7 @@
 namespace BadgeFactor2\Admin\Lists;
 
 use BadgeFactor2\Admin\Badgr_List;
-use BadgeFactor2\Badge;
+use BadgeFactor2\Models\BadgeClass;
 
 if ( ! class_exists( 'WP_List_Table' ) ) {
 	require_once( ABSPATH . 'wp-admin/includes/class-wp-list-table.php' );
@@ -37,7 +37,7 @@ class Badges extends Badgr_List {
 	public function __construct() {
 
 		parent::__construct(
-			Badge::class,
+			BadgeClass::class,
 			__( 'Badge', 'badgefactor2' ),
 			__( 'Badges', 'badgefactor2' ),
 			'badges'

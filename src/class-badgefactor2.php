@@ -105,9 +105,9 @@ class BadgeFactor2 {
 		require_once BF2_ABSPATH . 'src/core/interface-badgr-entity.php';
 		require_once BF2_ABSPATH . 'src/core/class-badgrclient.php';
 		require_once BF2_ABSPATH . 'src/core/class-badgrprovider.php';
-		require_once BF2_ABSPATH . 'src/core/class-issuer.php';
-		require_once BF2_ABSPATH . 'src/core/class-badge.php';
-		require_once BF2_ABSPATH . 'src/core/class-assertion.php';
+		require_once BF2_ABSPATH . 'src/models/class-issuer.php';
+		require_once BF2_ABSPATH . 'src/models/class-badgeclass.php';
+		require_once BF2_ABSPATH . 'src/models/class-assertion.php';
 		require_once BF2_ABSPATH . 'src/core/class-badgruser.php';
 		require_once BF2_ABSPATH . 'src/client/shortcodes/class-issuers.php';
 

@@ -20,69 +20,108 @@
  * @package Badge_Factor_2
  */
 
-namespace BadgeFactor2;
+namespace BadgeFactor2\Models;
+
+use WP_Post;
+use BadgeFactor2\Badgr_Entity;
+use BadgeFactor2\BadgrProvider;
 
 /**
- * Badge Class.
+ * Issuer Class.
  */
-class Badge implements Badgr_Entity {
+class Issuer implements Badgr_Entity {
 
 	/**
-	 * Badge Badgr Entity ID / Slug.
+	 * Issuer Badgr Entity ID / Slug.
 	 *
 	 * @var string
 	 */
 	public $entity_id;
 
 	/**
-	 * Retrieve all badges from Badgr provider.
+	 * Issuer Creation Timestamp.
 	 *
-	 * @return array|boolean Badges array or false in case of error.
+	 * @var string
+	 */
+	public $created_at;
+
+	/**
+	 * Issuer Name.
+	 *
+	 * @var string
+	 */
+	public $name;
+
+	/**
+	 * Issuer Email.
+	 *
+	 * @var string
+	 */
+	public $email;
+
+	/**
+	 * Issuer URL.
+	 *
+	 * @var string
+	 */
+	public $url;
+
+	/**
+	 * Issuer Description.
+	 *
+	 * @var string
+	 */
+	public $description;
+
+	/**
+	 * Retrieve all issuers from Badgr provider.
+	 *
+	 * @return array|boolean Issuers array or false in case of error.
 	 */
 	public static function all() {
-		return BadgrProvider::get_all_badge_classes();
+		return BadgrProvider::get_all_issuers();
 	}
 
 	/**
-	 * Retrieve badge from Badgr provider.
+	 * Retrieve issuer from Badgr provider.
 	 *
-	 * @param string $entity_id Badge ID.
+	 * @param string $entity_id Issuer ID.
 	 * @return WP_Post Virtual WP_Post representation of the entity.
 	 */
 	public static function get( $entity_id ) {
-		return BadgrProvider::get_badge_class_by_badge_class_slug( $entity_id );
+		return BadgrProvider::get_issuer_by_slug( $entity_id );
 	}
 
 	/**
-	 * Create Badge through Badgr provider.
+	 * Create Issuer through Badgr provider.
 	 *
-	 * @param array $values Associated array of values of badge to create.
-	 * @return string|boolean Id of created badge, or false on error.
+	 * @param array $values Associated array of values of issuer to create.
+	 * @return string|boolean Id of created issuer, or false on error.
 	 */
 	public static function create( $values, $files = null ) {
 		if ( self::validate( $values, $files ) ) {
-			return BadgrProvider::add_badge_class( $values['name'], $values['issuer_slug'], $values['description'], $files['image']['tmp_name'] );
+			return BadgrProvider::add_issuer( $values['name'], $values['email'], $values['url'], $values['description'] );
 		}
 		return false;
 	}
 
 	/**
-	 * Update badge through Badgr provider.
+	 * Update issuer through Badgr provider.
 	 *
-	 * @param string $entity_id Badge ID.
+	 * @param string $entity_id Issuer ID.
 	 * @param array  $values Associative array of values to change.
 	 * @return boolean Whether or not update has succeeded.
 	 */
 	public static function update( $entity_id, $values ) {
 		if ( self::validate( $values ) ) {
-			return BadgrProvider::update_badge_class( $entity_id, $values['name'], $values['description'], $values['image'] );
+			return BadgrProvider::update_issuer( $entity_id, $values['name'], $values['email'], $values['url'], $values['description'] );
 		}
 		return false;
 
 	}
 
 	/**
-	 * Delete an Badge through Badgr provider.
+	 * Delete an Issuer through Badgr provider.
 	 *
 	 * @param string $entity_id Slug / Entity ID.
 	 * @return boolean Whether or not deletion has succeeded.
@@ -93,19 +132,17 @@ class Badge implements Badgr_Entity {
 
 	public static function get_columns() {
 		return array(
-			'entityId'    => __( 'Slug', 'badgefactor2' ),
-			'name'        => __( 'Name', 'badgefactor2' ),
-			'issuer'      => __( 'Issuer', 'badgefactor2' ),
-			'description' => __( 'Description', 'badgefactor2' ),
-			'image'       => __( 'Image', 'badgefactor2' ),
-			'createdAt'   => __( 'Created on', 'badgefactor2' ),
+			'entityId'  => __( 'Slug', 'badgefactor2' ),
+			'name'      => __( 'Name', 'badgefactor2' ),
+			'email'     => __( 'Email', 'badgefactor2' ),
+			'createdAt' => __( 'Created on', 'badgefactor2' ),
 		);
 	}
 
 	public static function get_sortable_columns() {
 		return array(
 			'name'      => array( 'name', true ),
-			'issuer'    => array( 'email', false ),
+			'email'     => array( 'email', false ),
 			'createdAt' => array( 'createdAt', false ),
 		);
 	}

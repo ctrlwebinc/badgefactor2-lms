@@ -23,7 +23,7 @@
 namespace BadgeFactor2\Admin\Lists;
 
 use BadgeFactor2\Admin\Badgr_List;
-use BadgeFactor2\Issuer;
+use BadgeFactor2\Models\Issuer;
 
 if ( ! class_exists( 'WP_List_Table' ) ) {
 	require_once( ABSPATH . 'wp-admin/includes/class-wp-list-table.php' );

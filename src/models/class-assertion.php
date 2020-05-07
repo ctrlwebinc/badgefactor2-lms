@@ -20,7 +20,10 @@
  * @package Badge_Factor_2
  */
 
-namespace BadgeFactor2;
+namespace BadgeFactor2\Models;
+
+use BadgeFactor2\Badgr_Entity;
+use BadgeFactor2\BadgrProvider;
 
 /**
  * Assertion Class.
