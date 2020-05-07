@@ -96,8 +96,8 @@ class Issuer implements Badgr_Entity {
 	 * @param array $values Associated array of values of issuer to create.
 	 * @return string|boolean Id of created issuer, or false on error.
 	 */
-	public static function create( $values ) {
-		if ( self::validate( $values ) ) {
+	public static function create( $values, $files = null ) {
+		if ( self::validate( $values, $files ) ) {
 			return BadgrProvider::add_issuer( $values['name'], $values['email'], $values['url'], $values['description'] );
 		}
 		return false;
@@ -145,7 +145,7 @@ class Issuer implements Badgr_Entity {
 		);
 	}
 
-	public static function validate( $values ) {
+	public static function validate( $values, $files = null ) {
 		return true;
 	}
 }

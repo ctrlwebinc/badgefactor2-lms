@@ -25,7 +25,7 @@ namespace BadgeFactor2;
 /**
  * Assertion Class.
  */
-class Assertion {
+class Assertion implements Badgr_Entity {
 
 	/**
 	 * Assertion Badgr Entity ID / Slug.
@@ -59,8 +59,8 @@ class Assertion {
 	 * @param array $values Associated array of values of issuer to create.
 	 * @return string|boolean Id of created issuer, or false on error.
 	 */
-	public static function create( $values ) {
-		if ( self::validate( $values ) ) {
+	public static function create( $values, $files = null ) {
+		if ( self::validate( $values, $files ) ) {
 			return BadgrProvider::add_badge_class( $values['name'], $values['issuer_slug'], $values['description'], $values['image'] );
 		}
 		return false;

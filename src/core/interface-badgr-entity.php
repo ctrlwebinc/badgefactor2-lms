@@ -48,7 +48,7 @@ interface Badgr_Entity {
 	 * @param array $values Associated array of values of entity to create.
 	 * @return string|boolean Id of created entity, or false on error.
 	 */
-	public static function create ( $values );
+	public static function create ( $values, $files = null );
 
 	/**
 	 * Update single entity through Badgr provider.

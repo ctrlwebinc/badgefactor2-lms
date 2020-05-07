@@ -131,12 +131,10 @@ class BadgeFactor2_Admin {
 				<div id="post-body" class="metabox-holder columns-2">
 					<div id="post-body-content">
 						<div class="meta-box-sortables ui-sortable">
-							<form method="post">
-								<?php
-								self::$issuers->prepare_items();
-								self::$issuers->display();
-								?>
-							</form>
+							<?php
+							self::$issuers->prepare_items();
+							self::$issuers->display();
+							?>
 						</div>
 					</div>
 				</div>
@@ -155,12 +153,10 @@ class BadgeFactor2_Admin {
 				<div id="post-body" class="metabox-holder columns-2">
 					<div id="post-body-content">
 						<div class="meta-box-sortables ui-sortable">
-							<form method="post">
-								<?php
-								self::$badges->prepare_items();
-								self::$badges->display();
-								?>
-							</form>
+							<?php
+							self::$badges->prepare_items();
+							self::$badges->display();
+							?>
 						</div>
 					</div>
 				</div>
@@ -179,12 +175,10 @@ class BadgeFactor2_Admin {
 				<div id="post-body" class="metabox-holder columns-2">
 					<div id="post-body-content">
 						<div class="meta-box-sortables ui-sortable">
-							<form method="post">
-								<?php
-								self::$assertions->prepare_items();
-								self::$assertions->display();
-								?>
-							</form>
+							<?php
+							self::$assertions->prepare_items();
+							self::$assertions->display();
+							?>
 						</div>
 					</div>
 				</div>

@@ -148,7 +148,13 @@ class Badgr_List extends \WP_List_Table {
 					case 'image':
 						$return .= '<img style="width:50%" src="' . $item->$column_name . '">';
 						break;
+					case 'issuer':
+						$return .= $item->$column_name;
+						break;
 					case 'entityId':
+						$return .= '<a href="admin.php?page=' . $this->slug . '&action=edit&entity_id=' . $item->$column_name . '">' . $item->$column_name . '</a>';
+						break;
+					case 'issuerOpenBadgeId':
 						$return .= '<a href="admin.php?page=' . $this->slug . '&action=edit&entity_id=' . $item->$column_name . '">' . $item->$column_name . '</a>';
 						break;
 					default:
@@ -269,7 +275,7 @@ class Badgr_List extends \WP_List_Table {
 			switch ( $_GET['action'] ) {
 				case 'new':
 					if ( 'POST' === $_SERVER['REQUEST_METHOD'] ) {
-						$entity_id = $this->model::create( $_POST );
+						$entity_id = $this->model::create( $_POST, $_FILES );
 						// TODO redirect to edit with save message.
 					}
 					include BF2_ABSPATH . 'templates/admin/tpl.edit-' . $this->slug . '.php';

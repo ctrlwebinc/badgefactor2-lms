@@ -1,5 +1,5 @@
 <div class="cmb2-options-page">
-	<form class="cmb-form" method="post">
+	<form class="cmb-form" method="post" enctype="multipart/form-data">
 		<div class="cmb2-wrapform-table">
 			<div class="cmb2-metabox cmb-field-list">
 				<div class="cmb-row cmb-type-text table-layout">	

@@ -1,5 +1,5 @@
 <div class="cmb2-options-page">
-	<form class="cmb-form" method="post">
+	<form class="cmb-form" method="post" enctype="multipart/form-data">
 		<div class="cmb2-wrapform-table">
 			<div class="cmb2-metabox cmb-field-list">
 				<div class="cmb-row cmb-type-text table-layout">	
@@ -43,12 +43,12 @@
 						<label for="image"><?php echo __( 'Image', 'badgefactor2' ); ?></label>
 					</div>
 					<div class="cmb-td">
-						<!-- FIXME -->
-						<input type="file" name="image" accept="image/png, image/jpeg" required 
 						<?php
-						if ( isset( $entity ) ) :
-							?>
-							value="<?php echo $entity->image; ?>"<?php endif; ?>>
+						if ( isset( $entity ) ) : ?>
+							<img style="max-width: 50px" src="<?php echo $entity->image; ?>">
+						<?php endif; ?>
+						<br/>
+						<input type="file" name="image" accept="image/png, image/jpeg, image/svg+xml" required>
 					</div>
 				</div>
 			</div>

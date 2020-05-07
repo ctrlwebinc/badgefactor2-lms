@@ -59,9 +59,9 @@ class Badge implements Badgr_Entity {
 	 * @param array $values Associated array of values of badge to create.
 	 * @return string|boolean Id of created badge, or false on error.
 	 */
-	public static function create( $values ) {
-		if ( self::validate( $values ) ) {
-			return BadgrProvider::add_badge_class( $values['name'], $values['issuer_slug'], $values['description'], $values['image'] );
+	public static function create( $values, $files = null ) {
+		if ( self::validate( $values, $files ) ) {
+			return BadgrProvider::add_badge_class( $values['name'], $values['issuer_slug'], $values['description'], $files['image']['tmp_name'] );
 		}
 		return false;
 	}
@@ -110,7 +110,7 @@ class Badge implements Badgr_Entity {
 		);
 	}
 
-	public static function validate( $values ) {
+	public static function validate( $values, $files = null ) {
 		return true;
 	}
 }
