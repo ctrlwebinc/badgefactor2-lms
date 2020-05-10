@@ -32,7 +32,7 @@ class IndividualBadgrClientTest extends WP_UnitTestCase {
 		// Needs userName, isAdmin, Badgr server public url and badgrServerFlavor
 		$basicParameters = [
 			'username' => 'dave@example.net',
-			'is_admin' => true,
+			'as_admin' => true,
 			'badgr_server_public_url' => 'http://127.0.0.1:8000',
 			'badgr_server_flavor' => BadgrIndividualClient::FLAVOR_LOCAL_R_JAMIROQUAI,
 		];
@@ -53,7 +53,7 @@ class IndividualBadgrClientTest extends WP_UnitTestCase {
 		// Needs userName, isAdmin, Badgr server public url and badgrServerFlavor
 		$basicParameters = [
 			'username' => 'dave@example.net',
-			'is_admin' => true,
+			'as_admin' => true,
 			'badgr_server_public_url' => 'http://127.0.0.1:8000',
 			'badgr_server_flavor' => BadgrIndividualClient::FLAVOR_LOCAL_R_JAMIROQUAI,
 		];

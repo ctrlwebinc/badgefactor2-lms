@@ -43,7 +43,7 @@ class BadgrIndividualClient {
 
 	// Minimal properties of instances
 	private $username = null;
-	private $is_admin = false;
+	private $as_admin = false;
 	private $badgr_server_public_url = null;
 	private $badgr_server_flavor = null;
 
@@ -70,7 +70,7 @@ class BadgrIndividualClient {
 		// Check that basic parameters are present
 		$key_parameters = [
 			'username',
-			'is_admin',
+			'as_admin',
 			'badgr_server_public_url',
 			'badgr_server_flavor'
 		];
@@ -87,7 +87,7 @@ class BadgrIndividualClient {
 
 		$client = new self();
 		$client->username = $parameters['username'];
-		$client->is_admin = $parameters['is_admin'];
+		$client->as_admin = $parameters['as_admin'];
 		$client->badgr_server_public_url = $parameters['badgr_server_public_url'];
 		$client->badgr_server_flavor = $parameters['badgr_server_flavor'];
 
@@ -97,7 +97,7 @@ class BadgrIndividualClient {
 
 
 		// Add new client instance to our list
-		$client_key = $parameters['username'] . '|' . $parameters['is_admin'] ? 'admin' : 'not_admin' . '|' . $parameters['badgr_server_public_url'];
+		$client_key = $parameters['username'] . '|' . $parameters['as_admin'] ? 'admin' : 'not_admin' . '|' . $parameters['badgr_server_public_url'];
 		self::$clients[$client_key] = $client;
 
 		return ($client);
