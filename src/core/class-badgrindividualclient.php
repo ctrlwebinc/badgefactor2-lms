@@ -47,21 +47,15 @@ class BadgrIndividualClient {
 	private $badgr_server_public_url = null;
 	private $badgr_server_flavor = null;
 
-	protected $WPUserId = null;
-	protected $isBadgrAdmin = false;
+	private $wp_user_id = null;
+	private $badgr_server_internal_url = null;
 
-	protected $badgrServer = null; // Flavor of server, base url, password or auth or both, adminPossible, for admin and for self client_id and client_secret
-	protected $badgrServerBaseUrl = null;
-	protected $badgrServerFlavour = 'local_jamaroquai' ; // badgrio_version,local_version, ourcloud_version
-	protected $isAdmin = false; // Can we get admin access
+	private $scope; // Scope applicable to token
 
-	protected $scope; // Scope applicable to token
+	private $badgr_password = null;
 
-	protected $badgrUserName = null; // Email
-	protected $badgrPassword = null;
-
-	protected $clientId = null; // Client used for admin access will be different than password grant client
-	protected $clientSecret = null;
+	private $client_id = null; // Client used for admin access will be different than password grant client
+	protected $client_secret = null;
 
 	protected $needsConfiguration = true;
 	protected $needsAuth = true; // Needs auth is true whenever token is expired or if we get a 401 status during a call 
@@ -97,13 +91,14 @@ class BadgrIndividualClient {
 		$client->badgr_server_public_url = $parameters['badgr_server_public_url'];
 		$client->badgr_server_flavor = $parameters['badgr_server_flavor'];
 
-		// TODO: check validety of optionnal parameters
+		// TODO: check validity of optionnal parameters
 
 		// TODO: save optionnal parameters in new instance
 
 
 		// Add new client instance to our list
-		array_push(self::$clients, $client);
+		$client_key = $parameters['username'] . '|' . $parameters['is_admin'] ? 'admin' : 'not_admin' . '|' . $parameters['badgr_server_public_url'];
+		self::$clients[$client_key] = $client;
 
 		return ($client);
 

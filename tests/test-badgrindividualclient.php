@@ -47,4 +47,31 @@ class IndividualBadgrClientTest extends WP_UnitTestCase {
 
 		$this->assertNotNull($client);
 	}
+
+	public function test_creation_missing_key_params_generates_exception() {
+
+		// Needs userName, isAdmin, Badgr server public url and badgrServerFlavor
+		$basicParameters = [
+			'username' => 'dave@example.net',
+			'is_admin' => true,
+			'badgr_server_public_url' => 'http://127.0.0.1:8000',
+			'badgr_server_flavor' => BadgrIndividualClient::FLAVOR_LOCAL_R_JAMIROQUAI,
+		];
+
+		foreach ($basicParameters as $key => $value) {
+			$client = null;
+
+			$incompleteParameters = $basicParameters;
+			unset($incompleteParameters[$key]);
+
+			try {
+				$client = BadgrIndividualClient::makeInstance($incompleteParameters);
+
+				// We should make it to the next line if exceptions are generated
+				$this->fail('Exception not thrown');
+			} catch ( BadMethodCallException $e ) {
+				$this->assertTrue(true);
+			}
+		}
+	}
 }
