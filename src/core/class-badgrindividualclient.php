@@ -80,6 +80,7 @@ class BadgrIndividualClient {
 	const STATE_EXPECTING_ACCESS_TOKEN_FROM_CODE = 9;
 	const STATE_HAVE_ACCESS_TOKEN = 10;
 	const STATE_FAILED_GETTING_ACCESS_TOKEN = 11;
+	const STATE_EXPECTING_ACCESS_TOKEN_FROM_PASSWORD = 12;
 
 	private $state; // configuredAndActive, needsRefresh, needsToken, needsAuth, needsLogin, needsUserAction, needsAdminAction
 	public $retryAuthBeforeFailing = true;
@@ -199,10 +200,10 @@ class BadgrIndividualClient {
 		$redirectUri = site_url( self::$authRedirectUri ) . '&client_hash=' . $this->client_hash;
 
 		// Build the scope list
-		$scope = 'rw:profile rw:issuer rw:backpack';
+		$scopes = 'rw:profile rw:issuer rw:backpack';
 		if ( $this->as_admin == true )
 		{
-			$scope .= ' rw:serverAdmin';
+			$scopes .= ' rw:serverAdmin';
 		}
 
 		$authProvider = new GenericProvider(
@@ -226,7 +227,7 @@ class BadgrIndividualClient {
 		$_SESSION['oauth2state'] = $provider->getState();
 
 		// Set internal state
-		$this->state = STATE_EXPECTING_AUTHORIZATION_CODE;
+		$this->state = self::STATE_EXPECTING_AUTHORIZATION_CODE;
 		$this->save();
 
 		// Redirect to server
@@ -254,7 +255,7 @@ class BadgrIndividualClient {
 		}
 
 		// Check that we're expecting an authorization code
-		if ( $client->state != STATE_EXPECTING_AUTHORIZATION_CODE)
+		if ( $client->state != self::STATE_EXPECTING_AUTHORIZATION_CODE)
 		{
 			throw new BadMethodCallException('Not expecting code for client ' . $client->client_hash );
 		}
@@ -306,11 +307,11 @@ class BadgrIndividualClient {
 		);
 
 		try {
-			$this->state = STATE_EXPECTING_ACCESS_TOKEN_FROM_CODE;
+			$this->state = self::STATE_EXPECTING_ACCESS_TOKEN_FROM_CODE;
 			$this->save();
 
 			// Try to get an access token using the authorization code grant.
-			$this->access_token = $provider->getAccessToken(
+			$access_token = $authProvider->getAccessToken(
 				'authorization_code',
 				array(
 					'code' => $code,
@@ -322,19 +323,90 @@ class BadgrIndividualClient {
 			$this->token_expiration = $access_token->getExpires();
 			$this->resource_owner_id = $access_token->getResourceOwnerId();
 
-			$this->state = STATE_HAVE_ACCESS_TOKEN;
+			$this->state = self::STATE_HAVE_ACCESS_TOKEN;
 			$this->save();
 
 		} catch ( IdentityProviderException $e ) {
-			$this->state = STATE_FAILED_GETTING_ACCESS_TOKEN;
+			$this->state = self::STATE_FAILED_GETTING_ACCESS_TOKEN;
 			$this->save();
 			throw new BadMethodCallException('Idendity provider raised exception ' . $e->getMessage());
 
 		} catch ( ConnectException $e ) {
-			$this->state = STATE_FAILED_GETTING_ACCESS_TOKEN;
+			$this->state = self::STATE_FAILED_GETTING_ACCESS_TOKEN;
 			$this->save();
 			throw new BadMethodCallException('Connection exception ' . $e->getMessage());
 		}
+	}
+
+	public function getAccessTokenFromPasswordGrant()
+	{
+		// TODO: check that we have all the required parameters
+
+		$redirectUri = site_url( self::$authRedirectUri ) . '&client_hash=' . $this->client_hash;
+
+		// Build the scope list
+		$scopes = 'rw:profile rw:issuer rw:backpack';
+		if ( $this->as_admin == true )
+		{
+			$scopes .= ' rw:serverAdmin';
+		}
+
+		$authProvider = new GenericProvider(
+			array(
+				'clientId'                => $this->client_id,
+				'clientSecret'            => $this->client_secret,
+				'redirectUri'             => $redirectUri ,
+				'urlAuthorize'            => $this->badgr_server_public_url . '/o/authorize',
+				'urlAccessToken'          => $this->get_internal_or_external_server_url() . '/o/token',
+				'urlResourceOwnerDetails' => $this->get_internal_or_external_server_url() . '/o/resource',
+				'scopes'                  => $scopes
+			)
+		);
+
+		try {
+			$this->state = self::STATE_EXPECTING_ACCESS_TOKEN_FROM_PASSWORD;
+			$this->save();
+
+			if ( $this->badgr_server_flavor == self::FLAVOR_BADGRIO_01)
+			{
+				$access_token = $authProvider->getAccessToken(
+					'password',
+					array(
+						'username' => $this->username,
+						'password' => $this->badgr_password,
+					)
+				);
+			} else
+			{
+				$access_token = $authProvider->getAccessToken(
+					'password',
+					array(
+						'username' => $this->username,
+						'password' => $this->badgr_password,
+						'client_id' => $this->client_id
+					)
+				);
+			}
+
+			$this->access_token = $access_token->getToken();
+			$this->refresh_token = $access_token->getRefreshToken();
+			$this->token_expiration = $access_token->getExpires();
+			$this->resource_owner_id = $access_token->getResourceOwnerId();
+
+			$this->state = self::STATE_HAVE_ACCESS_TOKEN;
+			$this->save();
+
+		} catch ( IdentityProviderException $e ) {
+			$this->state = self::STATE_FAILED_GETTING_ACCESS_TOKEN;
+			$this->save();
+			throw new BadMethodCallException('Idendity provider raised exception ' . $e->getMessage());
+
+		} catch ( ConnectException $e ) {
+			$this->state = self::STATE_FAILED_GETTING_ACCESS_TOKEN;
+			$this->save();
+			throw new BadMethodCallException('Connection exception ' . $e->getMessage());
+		}
+
 	}
 
 	public function save()

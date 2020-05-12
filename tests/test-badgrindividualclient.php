@@ -99,7 +99,7 @@ class IndividualBadgrClientTest extends WP_UnitTestCase {
 		$this->assertNotNull($client);
 	}
 
-	public function test_badgr_client_connectivity() {
+	public function test_badgr_client_auth_code_connectivity() {
 
 		// Setup a completely configured client and check that we can get the profile info
 
@@ -125,6 +125,53 @@ class IndividualBadgrClientTest extends WP_UnitTestCase {
 		}
 
 		$this->assertNotNull($client);
+
+		// Check that we can retreive information on the authorized user
+		// Make GET request to /v2/users/self.
+		$response = $client->get( '/v2/users/self' );
+
+		// Check response isn't null.
+		$this->assertNotNull($response);
+
+		// Check response has status code 200.
+		$this->assertEquals( 200, $response->getStatusCode() );
+
+		$response_info = json_decode( $response->getBody() );
+
+		// Check that entity id exists
+		$this->assertTrue( isset( $response_info->result[0]->entityId ) );
+
+		// Check that entityId isn't empty
+		$this->assertNotEmpty( $response_info->result[0]->entityId );
+
+	}
+
+	public function test_badgr_client_password_grant_connectivity() {
+
+		// Setup a completely configured client and check that we can get the profile info
+
+		$clientParameters = [
+			'username' => 'dev@ctrlweb.ca',
+			'as_admin' => false,
+			'badgr_server_public_url' => getenv('BADGR_SERVER_PUBLIC_URL'),
+			'badgr_server_flavor' => BadgrIndividualClient::FLAVOR_LOCAL_R_JAMIROQUAI,
+			'badgr_server_internal_url'    => getenv('BADGR_SERVER_INTERNAL_URL'),
+			'client_id'     => getenv('BADGR_SERVER_PASSWORD_GRANT_CLIENT_ID'),
+			'badgr_password' => getenv('BADGR_SERVER_PASSWORD_GRANT_PASSWORD'),
+		];
+
+		$client = null;
+
+		try {
+			$client = BadgrIndividualClient::makeInstance($clientParameters);
+		} catch ( BadMethodCallException $e ) {
+			$this->fail('Exception thrown on client creation: ' . $e->getMessage());
+		}
+
+		$this->assertNotNull($client);
+
+		// Attempt to get token
+		$client->getAccessTokenFromPasswordGrant();
 
 		// Check that we can retreive information on the authorized user
 		// Make GET request to /v2/users/self.
