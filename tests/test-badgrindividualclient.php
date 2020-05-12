@@ -192,4 +192,39 @@ class IndividualBadgrClientTest extends WP_UnitTestCase {
 		$this->assertNotEmpty( $response_info->result[0]->entityId );
 
 	}
+
+	public function test_badgr_client_password_grant_bad_credentials_raise_exception() {
+
+		// Setup a completely configured client and check that we can get the profile info
+
+		$clientParameters = [
+			'username' => 'dev@ctrlweb.ca',
+			'as_admin' => false,
+			'badgr_server_public_url' => getenv('BADGR_SERVER_PUBLIC_URL'),
+			'badgr_server_flavor' => BadgrIndividualClient::FLAVOR_LOCAL_R_JAMIROQUAI,
+			'badgr_server_internal_url'    => getenv('BADGR_SERVER_INTERNAL_URL'),
+			'client_id'     => getenv('BADGR_SERVER_PASSWORD_GRANT_CLIENT_ID'),
+			'badgr_password' => 'WRONG_PASSWORD',
+		];
+
+		$client = null;
+
+		try {
+			$client = BadgrIndividualClient::makeInstance($clientParameters);
+		} catch ( BadMethodCallException $e ) {
+			$this->fail('Exception thrown on client creation: ' . $e->getMessage());
+		}
+
+		$this->assertNotNull($client);
+
+		try {
+			// Attempt to get token
+			$client->getAccessTokenFromPasswordGrant();
+
+			// If exception is thrown, we shouldn't get this far
+			$this->fail('Bad credentials didn\'t raise exception');
+		} catch ( Exception $e) {
+			$this->assertTrue(true);
+		}
+	}
 }

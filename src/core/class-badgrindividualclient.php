@@ -25,7 +25,6 @@ namespace BadgeFactor2;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Exception\GuzzleException;
-use http\Exception\BadMethodCallException;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
 use League\OAuth2\Client\Provider\GenericProvider;
 
@@ -244,20 +243,20 @@ class BadgrIndividualClient {
 		if ( ! isset( $_GET['client_hash'] ))
 		{
 			// No client_hash parameter
-			throw new BadMethodCallException('Missing client hash on auth callback.');
+			throw new \BadMethodCallException('Missing client hash on auth callback.');
 		}
 
 		// Find the badgr client instance
 		$client = self::getClientByHash($_GET['client_hash']);
 		if ( null === $client)
 		{
-			throw new BadMethodCallException('Unknown client hash on auth callback.');
+			throw new \BadMethodCallException('Unknown client hash on auth callback.');
 		}
 
 		// Check that we're expecting an authorization code
 		if ( $client->state != self::STATE_EXPECTING_AUTHORIZATION_CODE)
 		{
-			throw new BadMethodCallException('Not expecting code for client ' . $client->client_hash );
+			throw new \BadMethodCallException('Not expecting code for client ' . $client->client_hash );
 		}
 
 		// CSRF check
@@ -268,7 +267,7 @@ class BadgrIndividualClient {
 				unset( $_SESSION['oauth2state'] );
 			}
 
-			throw new BadMethodCallException('CSRF check failed.');
+			throw new \BadMethodCallException('CSRF check failed.');
 
 		}
 
@@ -276,7 +275,7 @@ class BadgrIndividualClient {
 
 		// Check that we have an actual code
 		if ( ! isset( $_GET['code'] ) ) {
-			throw new BadMethodCallException('No authorization code present.');
+			throw new \BadMethodCallException('No authorization code present.');
 		}
 
 		// Attempt to get an access token
@@ -329,12 +328,12 @@ class BadgrIndividualClient {
 		} catch ( IdentityProviderException $e ) {
 			$this->state = self::STATE_FAILED_GETTING_ACCESS_TOKEN;
 			$this->save();
-			throw new BadMethodCallException('Idendity provider raised exception ' . $e->getMessage());
+			throw new \BadMethodCallException('Idendity provider raised exception ' . $e->getMessage());
 
 		} catch ( ConnectException $e ) {
 			$this->state = self::STATE_FAILED_GETTING_ACCESS_TOKEN;
 			$this->save();
-			throw new BadMethodCallException('Connection exception ' . $e->getMessage());
+			throw new \BadMethodCallException('Connection exception ' . $e->getMessage());
 		}
 	}
 
@@ -399,12 +398,12 @@ class BadgrIndividualClient {
 		} catch ( IdentityProviderException $e ) {
 			$this->state = self::STATE_FAILED_GETTING_ACCESS_TOKEN;
 			$this->save();
-			throw new BadMethodCallException('Idendity provider raised exception ' . $e->getMessage());
+			throw new \BadMethodCallException('Idendity provider raised exception ' . $e->getMessage());
 
 		} catch ( ConnectException $e ) {
 			$this->state = self::STATE_FAILED_GETTING_ACCESS_TOKEN;
 			$this->save();
-			throw new BadMethodCallException('Connection exception ' . $e->getMessage());
+			throw new \BadMethodCallException('Connection exception ' . $e->getMessage());
 		}
 
 	}
@@ -691,14 +690,14 @@ class BadgrIndividualClient {
 	 * @param string $path Path.
 	 * @param array  $args Arguments.
 	 * @return GuzzleHttp\Psr7\Response|null
-	 * @throws BadMethodCallException Bad method call exception.
+	 * @throws \BadMethodCallException Bad method call exception.
 	 */
 	private function request( $method, $path, $args = array() ) {
 
 		$client = self::getGuzzleClient();
 		$method = strtoupper( $method );
 		if ( ! in_array( $method, array( 'GET', 'PUT', 'POST', 'DELETE' ) ) ) {
-			throw new BadMethodCallException( 'Method not supported' );
+			throw new \BadMethodCallException( 'Method not supported' );
 		}
 
 		if ( ! empty( $args ) ) {
