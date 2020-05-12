@@ -67,11 +67,82 @@ class IndividualBadgrClientTest extends WP_UnitTestCase {
 			try {
 				$client = BadgrIndividualClient::makeInstance($incompleteParameters);
 
-				// We should make it to the next line if exceptions are generated
+				// We shouldn't make it to the next line if exceptions are generated
 				$this->fail('Exception not thrown');
 			} catch ( BadMethodCallException $e ) {
 				$this->assertTrue(true);
 			}
 		}
+	}
+
+	public function test_client_creation_accepts_additional_parameters() {
+
+		// Basic parameters userName, isAdmin, Badgr server public url and badgrServerFlavor
+		$parameters = [
+			'username' => 'dave@example.net',
+			'as_admin' => true,
+			'badgr_server_public_url' => 'http://127.0.0.1:8000',
+			'badgr_server_flavor' => BadgrIndividualClient::FLAVOR_LOCAL_R_JAMIROQUAI,
+		];
+
+		// client_id is an additional parameter
+		$parameters['client_id'] = 'AClientId';
+
+		$client = null;
+
+		try {
+			$client = BadgrIndividualClient::makeInstance($parameters);
+		} catch ( BadMethodCallException $e ) {
+
+		}
+
+		$this->assertNotNull($client);
+	}
+
+	public function test_badgr_client_connectivity() {
+
+		// Setup a completely configured client and check that we can get the profile info
+
+		$clientParameters = [
+			'username' => 'dave@example.net',
+			'as_admin' => true,
+			'badgr_server_public_url' => getenv('BADGR_SERVER_PUBLIC_URL'),
+			'badgr_server_flavor' => BadgrIndividualClient::FLAVOR_LOCAL_R_JAMIROQUAI,
+			'badgr_server_internal_url'    => getenv('BADGR_SERVER_INTERNAL_URL'),
+			'client_id'     => getenv('BADGR_SERVER_CLIENT_ID'),
+			'client_secret' => getenv('BADGR_SERVER_CLIENT_SECRET'),
+			'access_token' => getenv('BADGR_SERVER_ACCESS_TOKEN'),
+			'refresh_token' => getenv('BADGR_SERVER_REFRESH_TOKEN'),
+			'token_expiration' => getenv('BADGR_SERVER_TOKEN_EXPIRATION'),
+		];
+
+		$client = null;
+
+		try {
+			$client = BadgrIndividualClient::makeInstance($clientParameters);
+		} catch ( BadMethodCallException $e ) {
+			$this->fail('Exception thrown on client creation: ' . $e->getMessage());
+		}
+
+		$this->assertNotNull($client);
+
+		// Check that we can retreive information on the authorized user
+		// Make GET request to /v2/users/self.
+		$response = $client->get( '/v2/users/self' );
+
+		// Check response isn't null.
+		$this->assertNotNull($response);
+
+		// Check response has status code 200.
+		$this->assertEquals( 200, $response->getStatusCode() );
+
+		$response_info = json_decode( $response->getBody() );
+
+		// Check that entity id exists
+		$this->assertTrue( isset( $response_info->result[0]->entityId ) );
+
+		// Check that entityId isn't empty
+		$this->assertNotEmpty( $response_info->result[0]->entityId );
+
 	}
 }

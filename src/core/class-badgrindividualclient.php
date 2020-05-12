@@ -40,6 +40,8 @@ class BadgrIndividualClient {
 
 	// Class properties
 	protected static $clients = [];
+	private static $guzzleClient = null;
+	public static $authRedirectUri = '/wp-admin/admin.php?page=badgefactor2_badgr_settings';
 
 	// Minimal properties of instances
 	private $username = null;
@@ -47,6 +49,7 @@ class BadgrIndividualClient {
 	private $badgr_server_public_url = null;
 	private $badgr_server_flavor = null;
 
+	// Additional instance properties
 	private $wp_user_id = null;
 	private $badgr_server_internal_url = null;
 
@@ -55,12 +58,37 @@ class BadgrIndividualClient {
 	private $badgr_password = null;
 
 	private $client_id = null; // Client used for admin access will be different than password grant client
-	protected $client_secret = null;
+	private $client_secret = null;
 
-	protected $needsConfiguration = true;
-	protected $needsAuth = true; // Needs auth is true whenever token is expired or if we get a 401 status during a call 
+	//private $authorization_code = null;
+	private $access_token = null;
+	private $refresh_token = null;
+	private $token_expiration = null;
+	private $resource_owner_id = null;
+
+	private $needsConfiguration = true;
+	private $needsAuth = true; // Needs auth is true whenever token is expired or if we get a 401 status during a call 
+
+	const STATE_CONFIGURED_AND_ACTIVE = 1;
+	const STATE_NEEDS_REFRESH = 2;
+	const STATE_NEEDS_TOKEN = 3;
+	const STATE_NEEDS_AUTH = 4;
+	const STATE_NEEDS_LOGIN = 5;
+	const STATE_NEEDS_USER_ACTION = 6;
+	const STATE_NEEDS_ADMIN_ACTION = 7;
+	const STATE_EXPECTING_AUTHORIZATION_CODE = 8;
+	const STATE_EXPECTING_ACCESS_TOKEN_FROM_CODE = 9;
+	const STATE_HAVE_ACCESS_TOKEN = 10;
+	const STATE_FAILED_GETTING_ACCESS_TOKEN = 11;
 
 	private $state; // configuredAndActive, needsRefresh, needsToken, needsAuth, needsLogin, needsUserAction, needsAdminAction
+	public $retryAuthBeforeFailing = true;
+
+	public $client_key = null;
+	public $client_hash = null;
+
+	private $lastMessageFromBadgrServer = null;
+
 
 	// temporary faillures: urls faillures, won't clear tokens
 	// identity faillures: clears tokens
@@ -94,27 +122,228 @@ class BadgrIndividualClient {
 		// TODO: check validity of optionnal parameters
 
 		// TODO: save optionnal parameters in new instance
+		$optionnalParameters = [
+			'wp_user_id',
+			'badgr_server_internal_url',
+			'scope',
+			'badgr_password',
+			'client_id',
+			'client_secret',
+			'authorization_code',
+			'access_token',
+			'refresh_token',
+			'token_expiration',
+			'badgr_profile',
+		];
 
+		foreach ( $optionnalParameters as $optionnalParameter)
+		{
+			if ( isset($parameters[$optionnalParameter]))
+			{
+				$client->{$optionnalParameter} = $parameters[$optionnalParameter];
+			}
+		}
 
-		// Add new client instance to our list
-		$client_key = $parameters['username'] . '|' . $parameters['as_admin'] ? 'admin' : 'not_admin' . '|' . $parameters['badgr_server_public_url'];
-		self::$clients[$client_key] = $client;
+		// TODO: figureOutState
+
+		// Generate key and hash
+		$client->client_key = $parameters['username'] . '|' . $parameters['as_admin'] ? 'admin' : 'not_admin' . '|' . $parameters['badgr_server_public_url'];
+		$client->client_hash = hash('md5', $client->client_key);
+
+		// Add client to class list
+		self::$clients[$client->client_hash] = $client;
 
 		return ($client);
 
 	}
 
-	private $lastMessageFromBadgrServer = null;
+
+	public static function setGuzzleClient(Client $client)
+	{
+		self::$guzzleClient = $client;
+	}
+
+	private static function getGuzzleClient()
+	{
+		if ( null === self::$guzzleClient)
+		{
+			self::$guzzleClient = new Client();
+		}
+
+		return self::$guzzleClient;
+	}
 
 	public static function getClientByUsername($userName, $asAdmin=false, BadgrServer $badgrServer=null){}
 	public static function getClient(WPUser $wp_user, $asAdmin=false, BadgrServer $badgrServer=null){}
+
+	public function getClientByHash($hash)
+	{
+		if ( isset( self::$clients[$hash] ) )
+		{
+			return self::$clients[$hash];
+		} else
+		{
+			return null;
+		}
+	}
+
 	protected function getDefaultBadgrServer(){}
 
-	public function list_clients(){} // BadgrServer,WPUserId,Email
+	public static function list_clients(){} // BadgrServer,WPUserId,Email
 
-	public function performDiagnostics(){}
+	public function initiateCodeAuthorization()
+	{
+		// TODO: Check that we have the required parameters
 
-	public function getServerProfileView(){}
+		// Build a callback url with the client's hash
+		$redirectUri = site_url( self::$authRedirectUri ) . '&client_hash=' . $this->client_hash;
+
+		// Build the scope list
+		$scope = 'rw:profile rw:issuer rw:backpack';
+		if ( $this->as_admin == true )
+		{
+			$scope .= ' rw:serverAdmin';
+		}
+
+		$authProvider = new GenericProvider(
+			array(
+				'clientId'                => $this->client_id,
+				'clientSecret'            => $this->client_secret,
+				'redirectUri'             => $redirectUri ,
+				'urlAuthorize'            => $this->badgr_server_public_url . '/o/authorize',
+				'urlAccessToken'          => $this->get_internal_or_external_server_url() . '/o/token',
+				'urlResourceOwnerDetails' => $this->get_internal_or_external_server_url() . '/o/resource',
+				'scopes'                  => $scopes
+			)
+		);
+
+		// Fetch the authorization URL from the provider; this returns the
+		// urlAuthorize option, generates and applies any necessary parameters
+		// (e.g. state).
+		$authorization_url = $provider->getAuthorizationUrl();
+
+		// Get the state generated for you and store it to the session.
+		$_SESSION['oauth2state'] = $provider->getState();
+
+		// Set internal state
+		$this->state = STATE_EXPECTING_AUTHORIZATION_CODE;
+		$this->save();
+
+		// Redirect to server
+		header( 'Location: ' . $authorization_url );
+		exit;
+
+	}
+
+	public static function handleAuthReturn()
+	{
+		// Called when an auth callback url is invoked
+
+		// Valid auth callbacks have a client_hash parameter
+		if ( ! isset( $_GET['client_hash'] ))
+		{
+			// No client_hash parameter
+			throw new BadMethodCallException('Missing client hash on auth callback.');
+		}
+
+		// Find the badgr client instance
+		$client = self::getClientByHash($_GET['client_hash']);
+		if ( null === $client)
+		{
+			throw new BadMethodCallException('Unknown client hash on auth callback.');
+		}
+
+		// Check that we're expecting an authorization code
+		if ( $client->state != STATE_EXPECTING_AUTHORIZATION_CODE)
+		{
+			throw new BadMethodCallException('Not expecting code for client ' . $client->client_hash );
+		}
+
+		// CSRF check
+		if ( empty( $_GET['state'] ) ||
+			( isset( $_SESSION['oauth2state'] ) && $_GET['state'] !== $_SESSION['oauth2state'] ) ) {
+
+			if ( isset( $_SESSION['oauth2state'] ) ) {
+				unset( $_SESSION['oauth2state'] );
+			}
+
+			throw new BadMethodCallException('CSRF check failed.');
+
+		}
+
+		// TODO: handle user refusal at server
+
+		// Check that we have an actual code
+		if ( ! isset( $_GET['code'] ) ) {
+			throw new BadMethodCallException('No authorization code present.');
+		}
+
+		// Attempt to get an access token
+		$client->getAccessTokenFromAuthorizationCode($_GET['code']);
+	}
+
+	public function getAccessTokenFromAuthorizationCode($code)
+	{
+		$redirectUri = site_url( self::$authRedirectUri ) . '&client_hash=' . $this->client_hash;
+
+		// Build the scope list
+		$scope = 'rw:profile rw:issuer rw:backpack';
+		if ( $this->as_admin == true )
+		{
+			$scope .= ' rw:serverAdmin';
+		}
+
+		$authProvider = new GenericProvider(
+			array(
+				'clientId'                => $this->client_id,
+				'clientSecret'            => $this->client_secret,
+				'redirectUri'             => $redirectUri ,
+				'urlAuthorize'            => $this->badgr_server_public_url . '/o/authorize',
+				'urlAccessToken'          => $this->get_internal_or_external_server_url() . '/o/token',
+				'urlResourceOwnerDetails' => $this->get_internal_or_external_server_url() . '/o/resource',
+				'scopes'                  => $scopes
+			)
+		);
+
+		try {
+			$this->state = STATE_EXPECTING_ACCESS_TOKEN_FROM_CODE;
+			$this->save();
+
+			// Try to get an access token using the authorization code grant.
+			$this->access_token = $provider->getAccessToken(
+				'authorization_code',
+				array(
+					'code' => $code,
+				)
+			);
+
+			$this->access_token = $access_token->getToken();
+			$this->refresh_token = $access_token->getRefreshToken();
+			$this->token_expiration = $access_token->getExpires();
+			$this->resource_owner_id = $access_token->getResourceOwnerId();
+
+			$this->state = STATE_HAVE_ACCESS_TOKEN;
+			$this->save();
+
+		} catch ( IdentityProviderException $e ) {
+			$this->state = STATE_FAILED_GETTING_ACCESS_TOKEN;
+			$this->save();
+			throw new BadMethodCallException('Idendity provider raised exception ' . $e->getMessage());
+
+		} catch ( ConnectException $e ) {
+			$this->state = STATE_FAILED_GETTING_ACCESS_TOKEN;
+			$this->save();
+			throw new BadMethodCallException('Connection exception ' . $e->getMessage());
+		}
+	}
+
+	public function save()
+	{
+		// Placeholder for saving client to storage
+		// TODO: implement
+	}
+
+	public function probeBadgrServer(){}
 
 	// getUserInfo: get user info from WP storage
 	// setUserInfo: set user info in WP storage
@@ -148,10 +377,10 @@ class BadgrIndividualClient {
 	 * @return void
 	 */
 	public static function init_hooks() {
-		if ( ! self::$initialized ) {
+/*		if ( ! self::$initialized ) {
 			add_action( 'init', array( BadgrClient::class, 'init' ), 9966 );
 			self::$initialized = self::is_active();
-		}
+		}*/
 	}
 
 	/**
@@ -168,7 +397,7 @@ class BadgrIndividualClient {
 	 *
 	 * @return boolean
 	 */
-	public static function is_active() {
+/*	public static function is_active() {
 
 		if ( ! self::is_configured() ) {
 			$is_active = false;
@@ -192,51 +421,50 @@ class BadgrIndividualClient {
 		}
 
 		return $is_active;
-	}
+	}*/
 
 	/**
 	 * Returns the Badgr service status.
 	 *
 	 * @return string
 	 */
-	public static function get_status() {
+/*	public static function get_status() {
 		return ( self::is_active() ? __( 'Active', 'badgefactor2' ) : __( 'Inactive', 'badgefactor2' ) );
 	}
-
+*/
 	/**
 	 * Checks whether or not the Badgr server is properly configured.
 	 *
 	 * @return boolean
 	 */
-	private static function is_configured() {
+/*	private static function is_configured() {
 		return isset( self::badgr_settings()['badgr_server_client_id'] ) &&
 		isset( self::badgr_settings()['badgr_server_client_secret'] ) &&
 		isset( self::badgr_settings()['badgr_server_public_url'] );
-	}
+	}*/
 
 	/**
 	 * Checks whether or not the Badgr server is initialized.
 	 *
 	 * @return boolean
 	 */
-	private static function is_initialized() {
+/*	private static function is_initialized() {
 		return isset( self::badgr_settings()['badgr_server_access_token'] ) &&
 		isset( self::badgr_settings()['badgr_server_refresh_token'] ) &&
 		isset( self::badgr_settings()['badgr_server_token_expiration'] ) &&
 		self::badgr_settings()['badgr_server_token_expiration'] >= time();
-	}
+	}*/
 
 	/**
 	 * Checks whether to use internal or public url.
 	 *
 	 * @return string
 	 */
-	private static function get_internal_or_external_server_url() {
-		$bagr_settings = self::badgr_settings();
-		if ( isset( $bagr_settings['badgr_server_internal_url'] ) && $bagr_settings['badgr_server_internal_url'] != '' ) {
-			return $bagr_settings['badgr_server_internal_url'];
+	private function get_internal_or_external_server_url() {
+		if ( null !== $this->badgr_server_internal_url && $this->badgr_server_internal_url != '' ) {
+			return $this->badgr_server_internal_url;
 		} else {
-			return $bagr_settings['badgr_server_public_url'];
+			return $this->badgr_server_public_url;
 		}
 	}
 
@@ -245,52 +473,52 @@ class BadgrIndividualClient {
 	 *
 	 * @return array
 	 */
-	private static function badgr_settings() {
+/*	private static function badgr_settings() {
 		if ( ! self::$badgr_settings ) {
 			self::$badgr_settings = get_option( 'badgefactor2_badgr_settings' );
 		}
 
 		return self::$badgr_settings;
-	}
+	}*/
 
 	/**
 	 * Returns Badgr access token, or null if not configured.
 	 *
 	 * @return string|null
 	 */
-	private static function get_access_token() {
+/*	private static function get_access_token() {
 		if ( self::is_active() ) {
 			return self::badgr_settings()['badgr_server_access_token'];
 		}
 
 		return null;
 	}
-
+*/
 	/**
 	 * Makes Badgr Server provider.
 	 *
 	 * @return GenericProvider
 	 */
-	private static function make_provider() {
+/*	private static function make_provider() {
 		return new GenericProvider(
 			array(
 				'clientId'                => self::badgr_settings()['badgr_server_client_id'],
 				'clientSecret'            => self::badgr_settings()['badgr_server_client_secret'],
-				'redirectUri'             => site_url( '/wp-admin/admin.php?page=badgefactor2_badgr_settings' ),
+				'redirectUri'             => site_url( self::$authRedirectUri ),
 				'urlAuthorize'            => self::badgr_settings()['badgr_server_public_url'] . '/o/authorize',
 				'urlAccessToken'          => self::get_internal_or_external_server_url() . '/o/token',
 				'urlResourceOwnerDetails' => self::get_internal_or_external_server_url() . '/o/resource',
 				'scopes'                  => 'rw:profile rw:issuer rw:backpack rw:serverAdmin ',
 			)
 		);
-	}
+	}*/
 
 	/**
 	 * Authenticates BadgeFactor 2 to Badgr Server.
 	 *
 	 * @return boolean
 	 */
-	private static function authenticate() {
+/*	private static function authenticate() {
 
 		$provider = self::make_provider();
 
@@ -342,14 +570,14 @@ class BadgrIndividualClient {
 
 			return true;
 		}
-	}
+	}*/
 
 	/**
 	 * Refreshes Badgr Server token.
 	 *
 	 * @return boolean
 	 */
-	private static function refresh_token() {
+/*	private static function refresh_token() {
 
 		if ( isset( self::$badgr_settings ) && isset( self::$badgr_settings['badgr_server_access_token'] ) &&
 			( ! isset( self::$badgr_settings['badgr_server_token_expiration'] ) ||
@@ -382,7 +610,7 @@ class BadgrIndividualClient {
 		}
 
 		return true;
-	}
+	}*/
 
 	/**
 	 * Make a request to Badgr Server.
@@ -393,8 +621,9 @@ class BadgrIndividualClient {
 	 * @return GuzzleHttp\Psr7\Response|null
 	 * @throws BadMethodCallException Bad method call exception.
 	 */
-	private static function request( $method, $path, $args = array() ) {
-		$client = new Client();
+	private function request( $method, $path, $args = array() ) {
+
+		$client = self::getGuzzleClient();
 		$method = strtoupper( $method );
 		if ( ! in_array( $method, array( 'GET', 'PUT', 'POST', 'DELETE' ) ) ) {
 			throw new BadMethodCallException( 'Method not supported' );
@@ -419,7 +648,7 @@ class BadgrIndividualClient {
 			$args,
 			array(
 				'headers' => array(
-					'Authorization' => 'Bearer ' . self::get_access_token(),
+					'Authorization' => 'Bearer ' . $this->access_token,
 					'Accept'        => 'application/json',
 				),
 			)
@@ -435,7 +664,7 @@ class BadgrIndividualClient {
 
 		} catch ( GuzzleException $e ) {
 
-			return null;
+			return null; // 401
 		}
 	}
 
@@ -446,8 +675,8 @@ class BadgrIndividualClient {
 	 * @param string $body Body.
 	 * @return GuzzleHttp\Psr7\Response|null
 	 */
-	public static function post( $path, $body ) {
-		return self::request( 'POST', $path, $body );
+	public function post( $path, $body ) {
+		return $this->request( 'POST', $path, $body );
 	}
 
 	/**
@@ -457,8 +686,8 @@ class BadgrIndividualClient {
 	 * @param string $body Body.
 	 * @return GuzzleHttp\Psr7\Response|null
 	 */
-	public static function put( $path, $body ) {
-		return self::request( 'PUT', $path, $body );
+	public function put( $path, $body ) {
+		return $this->request( 'PUT', $path, $body );
 	}
 
 	/**
@@ -468,8 +697,8 @@ class BadgrIndividualClient {
 	 * @param string $queries Queries array.
 	 * @return GuzzleHttp\Psr7\Response|null
 	 */
-	public static function get( $path, $queries = array() ) {
-		return self::request( 'GET', $path, $queries );
+	public function get( $path, $queries = array() ) {
+		return $this->request( 'GET', $path, $queries );
 	}
 
 	/**
@@ -478,7 +707,7 @@ class BadgrIndividualClient {
 	 * @param string $path Path.
 	 * @return GuzzleHttp\Psr7\Response|null
 	 */
-	public static function delete( $path, $body = array() ) {
-		return self::request( 'DELETE', $path, $body );
+	public function delete( $path, $body = array() ) {
+		return $this->request( 'DELETE', $path, $body );
 	}
 }
