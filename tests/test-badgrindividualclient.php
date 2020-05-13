@@ -227,4 +227,53 @@ class IndividualBadgrClientTest extends WP_UnitTestCase {
 			$this->assertTrue(true);
 		}
 	}
+
+		public function test_badgr_client_password_grant_connectivity_badgrio() {
+
+		// Setup a completely configured client and check that we can get the profile info
+
+		$clientParameters = [
+			'username' => getenv('BADGRIO_USERNAME'),
+			'as_admin' => false,
+			'badgr_server_public_url' => getenv('BADGRIO_URL'),
+			'badgr_server_flavor' => BadgrIndividualClient::FLAVOR_BADGRIO_01,
+			'badgr_password' => getenv('BADGRIO_PASSWORD'),
+		];
+
+		$client = null;
+
+		try {
+			$client = BadgrIndividualClient::makeInstance($clientParameters);
+		} catch ( BadMethodCallException $e ) {
+			$this->fail('Exception thrown on client creation: ' . $e->getMessage());
+		}
+
+		$this->assertNotNull($client);
+
+		// Attempt to get token
+		$client->getAccessTokenFromPasswordGrant();
+
+		// Check that we can retreive information on the authorized user
+		// Make GET request to /v2/users/self.
+		$response = $client->get( '/v2/users/self' );
+
+		// Check response isn't null.
+		$this->assertNotNull($response);
+
+		// Check response has status code 200.
+		$this->assertEquals( 200, $response->getStatusCode() );
+
+		$response_info = json_decode( $response->getBody() );
+
+		// Check that entity id exists
+		$this->assertTrue( isset( $response_info->result[0]->entityId ) );
+
+		// Check that entityId isn't empty
+		$this->assertNotEmpty( $response_info->result[0]->entityId );
+
+		// Check that the profile conatains the expected information
+		$this->assertEquals( getenv('BADGRIO_EXPECTED_LASTNAME'), $response_info->result[0]->lastName);
+
+	}
+
 }
