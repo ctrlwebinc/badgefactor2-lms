@@ -21,6 +21,13 @@
  */
 
 use BadgeFactor2\BadgrIndividualClient;
+use GuzzleHttp\Client;
+use GuzzleHttp\Handler\MockHandler;
+use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Psr7\Response;
+use GuzzleHttp\Psr7\Request;
+use GuzzleHttp\Exception\RequestException;
+
 
 /**
  * Badgr Client Test.
@@ -228,7 +235,7 @@ class IndividualBadgrClientTest extends WP_UnitTestCase {
 		}
 	}
 
-		public function test_badgr_client_password_grant_connectivity_badgrio() {
+	public function test_badgr_client_password_grant_connectivity_badgrio() {
 
 		// Setup a completely configured client and check that we can get the profile info
 
@@ -276,4 +283,49 @@ class IndividualBadgrClientTest extends WP_UnitTestCase {
 
 	}
 
+    /**
+     * @runInSeparateProcess
+     */
+    public function test_badgr_client_network_failure_generates_exception() {
+
+		// Setup mock Guzzle client
+		$mock = new MockHandler([
+			    new Response(202, ['Content-Length' => 0]),
+
+new RequestException('Error Communicating with Server', new Request('GET', 'test'))
+		]);
+		$handlerStack = HandlerStack::create($mock);
+		$guzzleClient = new Client(['handler' => $handlerStack]);
+
+		// Setup a badgr client instance
+		$clientParameters = [
+			'username' => 'dev@ctrlweb.ca',
+			'as_admin' => false,
+			'badgr_server_public_url' => getenv('BADGR_SERVER_PUBLIC_URL'),
+			'badgr_server_flavor' => BadgrIndividualClient::FLAVOR_LOCAL_R_JAMIROQUAI,
+			'badgr_server_internal_url'    => getenv('BADGR_SERVER_INTERNAL_URL'),
+			'client_id'     => getenv('BADGR_SERVER_PASSWORD_GRANT_CLIENT_ID'),
+			'badgr_password' => getenv('BADGR_SERVER_PASSWORD_GRANT_PASSWORD'),
+		];
+
+		$client = null;
+
+		try {
+			$client = BadgrIndividualClient::makeInstance($clientParameters);
+		} catch ( BadMethodCallException $e ) {
+			$this->fail('Unexpected exception at client creation.');
+		}
+
+		$this->assertNotNull($client);
+
+		//$response = $guzzleClient->request('GET','/');
+
+		// Setup our Guzzle client
+		$client::setGuzzleClient($guzzleClient);
+
+		// Start and auth code cycle
+
+		$client->getAccessTokenFromPasswordGrant();
+
+	}
 }

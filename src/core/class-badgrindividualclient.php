@@ -338,6 +338,8 @@ class BadgrIndividualClient {
 			$this->state = self::STATE_FAILED_GETTING_ACCESS_TOKEN;
 			$this->save();
 			throw new \BadMethodCallException('Connection exception ' . $e->getMessage());
+		} catch ( Exception $e ) {
+			throw new \BadMethodCallException('Connection exception ' . $e->getMessage());
 		}
 	}
 
