@@ -222,10 +222,10 @@ class BadgrIndividualClient {
 		// Fetch the authorization URL from the provider; this returns the
 		// urlAuthorize option, generates and applies any necessary parameters
 		// (e.g. state).
-		$authorization_url = $provider->getAuthorizationUrl();
+		$authorization_url = $authProvider->getAuthorizationUrl();
 
 		// Get the state generated for you and store it to the session.
-		$_SESSION['oauth2state'] = $provider->getState();
+		$_SESSION['oauth2state'] = $authProvider->getState();
 
 		// Set internal state
 		$this->state = self::STATE_EXPECTING_AUTHORIZATION_CODE;
