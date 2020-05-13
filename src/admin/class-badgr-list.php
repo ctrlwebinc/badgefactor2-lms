@@ -96,7 +96,7 @@ class Badgr_List extends \WP_List_Table {
 	 * @return mixed
 	 */
 	public function all( $per_page = 10, $page_number = 1 ) {
-		return $this->model::all();
+		return $this->model::all( $per_page, $page_number );
 	}
 
 	/**
@@ -156,6 +156,10 @@ class Badgr_List extends \WP_List_Table {
 						break;
 					case 'issuerOpenBadgeId':
 						$return .= '<a href="admin.php?page=' . $this->slug . '&action=edit&entity_id=' . $item->$column_name . '">' . $item->$column_name . '</a>';
+						break;
+					case 'createdAt':
+						$date = strtotime( $item->$column_name );
+						$return .= '<span style="font-size: 0.85em">' . gmdate( 'Y-m-d&\nb\s\p;H:i:s', $date ) . '</span>';
 						break;
 					default:
 						$return .= $item->$column_name;
