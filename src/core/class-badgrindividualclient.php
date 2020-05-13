@@ -217,6 +217,8 @@ class BadgrIndividualClient {
 			)
 		);
 
+		$authProvider->setHttpClient(self::getGuzzleClient());
+
 		// Fetch the authorization URL from the provider; this returns the
 		// urlAuthorize option, generates and applies any necessary parameters
 		// (e.g. state).
@@ -305,6 +307,8 @@ class BadgrIndividualClient {
 			)
 		);
 
+		$authProvider->setHttpClient(self::getGuzzleClient());
+
 		try {
 			$this->state = self::STATE_EXPECTING_ACCESS_TOKEN_FROM_CODE;
 			$this->save();
@@ -361,6 +365,8 @@ class BadgrIndividualClient {
 				'scopes'                  => $scopes
 			)
 		);
+
+		$authProvider->setHttpClient(self::getGuzzleClient());
 
 		try {
 			$this->state = self::STATE_EXPECTING_ACCESS_TOKEN_FROM_PASSWORD;
@@ -464,37 +470,6 @@ class BadgrIndividualClient {
 	}
 
 	/**
-	 * Check whether or not the Badgr service is active.
-	 *
-	 * @return boolean
-	 */
-/*	public static function is_active() {
-
-		if ( ! self::is_configured() ) {
-			$is_active = false;
-		} else {
-			$client = new Client();
-			try {
-				$response = $client->request( 'GET', self::get_internal_or_external_server_url() );
-				if ( ! self::is_initialized() ) {
-					$is_active = self::authenticate();
-				} else {
-					$is_active = self::refresh_token();
-				}
-			} catch ( ConnectException $e ) {
-
-				$is_active = false;
-
-			} catch ( GuzzleException $e ) {
-
-				$is_active = false;
-			}
-		}
-
-		return $is_active;
-	}*/
-
-	/**
 	 * Returns the Badgr service status.
 	 *
 	 * @return string
@@ -503,28 +478,7 @@ class BadgrIndividualClient {
 		return ( self::is_active() ? __( 'Active', 'badgefactor2' ) : __( 'Inactive', 'badgefactor2' ) );
 	}
 */
-	/**
-	 * Checks whether or not the Badgr server is properly configured.
-	 *
-	 * @return boolean
-	 */
-/*	private static function is_configured() {
-		return isset( self::badgr_settings()['badgr_server_client_id'] ) &&
-		isset( self::badgr_settings()['badgr_server_client_secret'] ) &&
-		isset( self::badgr_settings()['badgr_server_public_url'] );
-	}*/
 
-	/**
-	 * Checks whether or not the Badgr server is initialized.
-	 *
-	 * @return boolean
-	 */
-/*	private static function is_initialized() {
-		return isset( self::badgr_settings()['badgr_server_access_token'] ) &&
-		isset( self::badgr_settings()['badgr_server_refresh_token'] ) &&
-		isset( self::badgr_settings()['badgr_server_token_expiration'] ) &&
-		self::badgr_settings()['badgr_server_token_expiration'] >= time();
-	}*/
 
 	/**
 	 * Checks whether to use internal or public url.
@@ -539,109 +493,7 @@ class BadgrIndividualClient {
 		}
 	}
 
-	/**
-	 * Returns Badgr settings.
-	 *
-	 * @return array
-	 */
-/*	private static function badgr_settings() {
-		if ( ! self::$badgr_settings ) {
-			self::$badgr_settings = get_option( 'badgefactor2_badgr_settings' );
-		}
 
-		return self::$badgr_settings;
-	}*/
-
-	/**
-	 * Returns Badgr access token, or null if not configured.
-	 *
-	 * @return string|null
-	 */
-/*	private static function get_access_token() {
-		if ( self::is_active() ) {
-			return self::badgr_settings()['badgr_server_access_token'];
-		}
-
-		return null;
-	}
-*/
-	/**
-	 * Makes Badgr Server provider.
-	 *
-	 * @return GenericProvider
-	 */
-/*	private static function make_provider() {
-		return new GenericProvider(
-			array(
-				'clientId'                => self::badgr_settings()['badgr_server_client_id'],
-				'clientSecret'            => self::badgr_settings()['badgr_server_client_secret'],
-				'redirectUri'             => site_url( self::$authRedirectUri ),
-				'urlAuthorize'            => self::badgr_settings()['badgr_server_public_url'] . '/o/authorize',
-				'urlAccessToken'          => self::get_internal_or_external_server_url() . '/o/token',
-				'urlResourceOwnerDetails' => self::get_internal_or_external_server_url() . '/o/resource',
-				'scopes'                  => 'rw:profile rw:issuer rw:backpack rw:serverAdmin ',
-			)
-		);
-	}*/
-
-	/**
-	 * Authenticates BadgeFactor 2 to Badgr Server.
-	 *
-	 * @return boolean
-	 */
-/*	private static function authenticate() {
-
-		$provider = self::make_provider();
-
-		// If we don't have an authorization code then get one.
-		if ( ! isset( $_GET['code'] ) ) {
-
-			// Fetch the authorization URL from the provider; this returns the
-			// urlAuthorize option and generates and applies any necessary parameters
-			// (e.g. state).
-			$authorization_url = $provider->getAuthorizationUrl();
-
-			// Get the state generated for you and store it to the session.
-			$_SESSION['oauth2state'] = $provider->getState();
-			header( 'Location: ' . $authorization_url );
-			exit;
-
-			// Check given state against previously stored one to mitigate CSRF attack.
-		} elseif ( empty( $_GET['state'] ) ||
-			( isset( $_SESSION['oauth2state'] ) && $_GET['state'] !== $_SESSION['oauth2state'] ) ) {
-
-			if ( isset( $_SESSION['oauth2state'] ) ) {
-				unset( $_SESSION['oauth2state'] );
-			}
-
-			return false;
-
-		} else {
-
-			try {
-
-				// Try to get an access token using the authorization code grant.
-				$access_token = $provider->getAccessToken(
-					'authorization_code',
-					array(
-						'code' => $_GET['code'],
-					)
-				);
-
-				self::$badgr_settings['badgr_server_access_token']     = $access_token->getToken();
-				self::$badgr_settings['badgr_server_refresh_token']    = $access_token->getRefreshToken();
-				self::$badgr_settings['badgr_server_token_expiration'] = $access_token->getExpires();
-				update_option( 'badgefactor2_badgr_settings', self::$badgr_settings );
-
-			} catch ( IdentityProviderException $e ) {
-
-				return false;
-
-			}
-
-			return true;
-		}
-	}*/
 
 	/**
 	 * Refreshes Badgr Server token.
