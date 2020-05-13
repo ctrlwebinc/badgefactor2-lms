@@ -20,7 +20,7 @@
 					</div>
 					<div class="cmb-td">
 						<select name="issuer_slug" class="cmb2-select cmb2-select-medium" required>
-							<?php foreach ( BadgeFactor2\Issuer::all() as $issuer ) : ?>
+							<?php foreach ( BadgeFactor2\Models\Issuer::all() as $issuer ) : ?>
 							<option value="<?php echo $issuer->entityId; ?>"><?php echo $issuer->name; ?></option>
 							<?php endforeach; ?>
 						</select>

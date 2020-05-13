@@ -96,10 +96,8 @@ class BadgeClass implements Badgr_Entity {
 
 	public static function get_columns() {
 		return array(
-			'entityId'    => __( 'Slug', 'badgefactor2' ),
 			'name'        => __( 'Name', 'badgefactor2' ),
 			'issuer'      => __( 'Issuer', 'badgefactor2' ),
-			'description' => __( 'Description', 'badgefactor2' ),
 			'image'       => __( 'Image', 'badgefactor2' ),
 			'createdAt'   => __( 'Created on', 'badgefactor2' ),
 		);

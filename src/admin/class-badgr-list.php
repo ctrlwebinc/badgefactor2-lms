@@ -23,6 +23,7 @@
 namespace BadgeFactor2\Admin;
 
 use BadgeFactor2\BadgrClient;
+use BadgeFactor2\Models\Issuer;
 
 if ( ! class_exists( 'WP_List_Table' ) ) {
 	require_once( ABSPATH . 'wp-admin/includes/class-wp-list-table.php' );
@@ -149,13 +150,8 @@ class Badgr_List extends \WP_List_Table {
 						$return .= '<img style="width:50%" src="' . $item->$column_name . '">';
 						break;
 					case 'issuer':
-						$return .= $item->$column_name;
-						break;
-					case 'entityId':
-						$return .= '<a href="admin.php?page=' . $this->slug . '&action=edit&entity_id=' . $item->$column_name . '">' . $item->$column_name . '</a>';
-						break;
-					case 'issuerOpenBadgeId':
-						$return .= '<a href="admin.php?page=' . $this->slug . '&action=edit&entity_id=' . $item->$column_name . '">' . $item->$column_name . '</a>';
+						$issuer = Issuer::get($item->$column_name);
+						$return .= '<a href="admin.php?page=issuers&action=edit&entity_id=' . $item->$column_name . '">' . $issuer->name . '</a>';
 						break;
 					case 'createdAt':
 						$date = strtotime( $item->$column_name );
@@ -198,7 +194,7 @@ class Badgr_List extends \WP_List_Table {
 
 		$delete_nonce = wp_create_nonce( 'bf2_delete_' . $this->slug );
 
-		$title = $item->name;
+		$title = '<a href="admin.php?page=' . $this->slug . '&action=edit&entity_id=' . $item->entityId . '">' . $item->name . '</a>';
 
 		$actions = array(
 			'delete' => '', //sprintf( '<a href="?page=%s&action=%s&customer=%s&_wpnonce=%s">Delete</a>', esc_attr( $_REQUEST['page'] ), 'delete', absint( $item['ID'] ), $delete_nonce ),
