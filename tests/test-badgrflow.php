@@ -46,6 +46,7 @@ class BadgrFlowTest extends WP_UnitTestCase {
 	}
     /**
      * @backupStaticAttributes enabled
+	 * @runInSeparateProcess
      */
 	public function test_issuer_to_assertion_flow() {
 
