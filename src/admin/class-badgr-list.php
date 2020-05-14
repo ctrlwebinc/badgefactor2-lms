@@ -78,6 +78,8 @@ class Badgr_List extends \WP_List_Table {
 		$this->plural   = $plural;
 		$this->slug     = $slug;
 
+		add_action( 'admin_notices', array( $this, 'notice_created' ) );
+
 		parent::__construct(
 			array(
 				'singular' => $singular,
@@ -150,11 +152,11 @@ class Badgr_List extends \WP_List_Table {
 						$return .= '<img style="width:50%" src="' . $item->$column_name . '">';
 						break;
 					case 'issuer':
-						$issuer = Issuer::get($item->$column_name);
+						$issuer  = Issuer::get( $item->$column_name );
 						$return .= '<a href="admin.php?page=issuers&action=edit&entity_id=' . $item->$column_name . '">' . $issuer->name . '</a>';
 						break;
 					case 'createdAt':
-						$date = strtotime( $item->$column_name );
+						$date    = strtotime( $item->$column_name );
 						$return .= '<span style="font-size: 0.85em">' . gmdate( 'Y-m-d&\nb\s\p;H:i:s', $date ) . '</span>';
 						break;
 					default:
@@ -271,39 +273,57 @@ class Badgr_List extends \WP_List_Table {
 
 
 	public function display() {
+		global $wp;
 		if ( isset( $_GET['action'] ) ) {
-			switch ( $_GET['action'] ) {
-				case 'new':
-					if ( 'POST' === $_SERVER['REQUEST_METHOD'] ) {
-						$entity_id = $this->model::create( $_POST, $_FILES );
-						// TODO redirect to edit with save message.
-					}
-					include BF2_ABSPATH . 'templates/admin/tpl.edit-' . $this->slug . '.php';
-					break;
-				case 'edit':
-					if ( isset( $_GET['entity_id'] ) ) {
-						// Entity ID is set.
-
-						$entity = $this->model::get( $_GET['entity_id'] );
-						if ( false === $entity ) {
-							wp_die( __( 'You attempted to edit an item that doesn\'t exist. Perhaps it was deleted?', 'badgefactor2' ) );
-						}
-
-						if ( 'POST' === $_SERVER['REQUEST_METHOD'] ) {
-							$entity_id = $this->model::update( $_GET['entity_id'], $_POST );
-						}
-						include BF2_ABSPATH . 'templates/admin/tpl.edit-' . $this->slug . '.php';
-					} else {
-						//Entity ID is not set.
-						wp_die( __( 'You are missing an entity ID.', 'badgefactor2' ) );
-					}
-
-					break;
-			}
+			$this->manage_actions();
 		} else {
 			parent::display();
 		}
+	}
 
+	private function manage_actions() {
+		switch ( $_GET['action'] ) {
+			case 'new':
+				if ( 'POST' === $_SERVER['REQUEST_METHOD'] ) {
+					$entity_id    = $this->model::create( $_POST, $_FILES );
+					$redirect_url = str_replace( '&action=new', '&notice=created', $_SERVER['REQUEST_URI'] );
+					$this->redirect( $redirect_url );
+				}
+				include BF2_ABSPATH . 'templates/admin/tpl.edit-' . $this->slug . '.php';
+				break;
+			case 'edit':
+				if ( ! isset( $_GET['entity_id'] ) ) {
+					// Entity ID is not set.
+					wp_die( __( 'You are missing an entity ID.', 'badgefactor2' ) );
+				} else {
+					// Entity ID is set.
+					$entity = $this->model::get( $_GET['entity_id'] );
+					if ( false === $entity ) {
+						wp_die( __( 'You attempted to edit an item that doesn\'t exist. Perhaps it was deleted?', 'badgefactor2' ) );
+					}
+
+					if ( 'POST' === $_SERVER['REQUEST_METHOD'] ) {
+						$entity_id = $this->model::update( $_GET['entity_id'], $_POST );
+						$_GET['notice'] = 'updated';
+					}
+					include BF2_ABSPATH . 'templates/admin/tpl.edit-' . $this->slug . '.php';
+				}
+				break;
+		}
+	}
+
+	public function notice_created() {
+		global $pagenow;
+		if ( $pagenow == 'admin.php' && isset( $_GET['page'] ) && isset( $_GET['notice'] ) && 'created' === $_GET['notice'] ):
+		?>
+		<div class="updated settings-error notice is-dismissible"> 
+			<p><strong><?php echo __( 'Object created.', 'badgefactor2' ); ?></strong></p>
+			<button type="button" class="notice-dismiss">
+				<span class="screen-reader-text"><?php echo __( 'Dismiss this message.', 'badgefactor2' ); ?></span>
+			</button>
+		</div>
+		<?php
+		endif;
 	}
 
 	public function process_bulk_action() {
@@ -371,6 +391,15 @@ class Badgr_List extends \WP_List_Table {
 	public function validate() {
 		// Defaults to false. Must be implemented in child class.
 		return false;
+	}
+
+	private function redirect( $url ) {
+		$string  = '<script type="text/javascript">';
+		$string .= 'window.location = "' . $url . '"';
+		$string .= '</script>';
+
+		echo $string;
+		exit;
 	}
 
 }
