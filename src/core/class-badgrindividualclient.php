@@ -327,6 +327,7 @@ class BadgrIndividualClient {
 			$this->resource_owner_id = $access_token->getResourceOwnerId();
 
 			$this->state = self::STATE_HAVE_ACCESS_TOKEN;
+			$this->needsAuth = false;
 			$this->save();
 
 		} catch ( IdentityProviderException $e ) {
@@ -401,6 +402,7 @@ class BadgrIndividualClient {
 			$this->resource_owner_id = $access_token->getResourceOwnerId();
 
 			$this->state = self::STATE_HAVE_ACCESS_TOKEN;
+			$this->needsAuth = false;
 			$this->save();
 
 		} catch ( IdentityProviderException $e ) {
@@ -584,12 +586,15 @@ class BadgrIndividualClient {
 			return $response;
 
 		} catch ( ConnectException $e ) {
-
 			return null;
-
 		} catch ( GuzzleException $e ) {
-
-			return null; // 401
+			if ($e->getResponse()->getStatusCode() == 401)
+			{
+				$this->needsAuth = true;
+			} else {
+				throw $e;
+			}
+			return null;
 		}
 	}
 

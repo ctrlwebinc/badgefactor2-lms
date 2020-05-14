@@ -27,6 +27,8 @@ use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\Exception\GuzzleException;
+
 
 
 /**
@@ -286,13 +288,21 @@ class IndividualBadgrClientTest extends WP_UnitTestCase {
     /**
      * @runInSeparateProcess
      */
-    public function test_badgr_client_network_failure_generates_exception() {
+    public function test_badgr_client_catches_401_but_throws_other_exceptions() {
 
 		// Setup mock Guzzle client
 		$mock = new MockHandler([
-			    new Response(202, ['Content-Length' => 0]),
-
-new RequestException('Error Communicating with Server', new Request('GET', 'test'))
+			    new Response(401,[], '{
+    "status": {
+        "description": "no valid auth token found",
+        "success": false
+    },
+    "validationErrors": [],
+    "fieldErrors": {},
+    "result": []
+}'),
+    new Response(404,[], ''),
+    new Response(500,[], ''),
 		]);
 		$handlerStack = HandlerStack::create($mock);
 		$guzzleClient = new Client(['handler' => $handlerStack]);
@@ -318,14 +328,44 @@ new RequestException('Error Communicating with Server', new Request('GET', 'test
 
 		$this->assertNotNull($client);
 
-		//$response = $guzzleClient->request('GET','/');
-
 		// Setup our Guzzle client
 		$client::setGuzzleClient($guzzleClient);
 
-		// Start and auth code cycle
+		// Make an api call, get a 401
+		try {
+			$response = $client->get('/v2/user/self');
+		}
+		catch (\Exception $e) {
+			// Shouldn't have an exception
+			$this->fail('Unexpected exception.');
+		}
 
-		$client->getAccessTokenFromPasswordGrant();
+		// Make an api call, get a 404
+		try {
+			$response = $client->get('/v2/user/self');
+			// We shouldn't reach this far if an exception is thrown
+			$this->fail('Unexpected exception.');
+		}
+		catch ( GuzzleException $e) {
+			// Expect this specific exception
+			$this->assertTrue(true);
+		} catch ( Exception $e ) {
+			// We're not expecting any other type of exception
+			$this->fail('Unexpected exception.');
+		}
 
+		// Make an api call, get a 500
+		try {
+			$response = $client->get('/v2/user/self');
+			// We shouldn't reach this far if an exception is thrown
+			$this->fail('Unexpected exception.');
+		}
+		catch ( GuzzleException $e) {
+			// Expect this specific exception
+			$this->assertTrue(true);
+		} catch ( Exception $e ) {
+			// We're not expecting any other type of exception
+			$this->fail('Unexpected exception.');
+		}
 	}
 }
