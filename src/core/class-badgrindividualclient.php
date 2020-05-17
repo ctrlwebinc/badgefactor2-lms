@@ -59,7 +59,6 @@ class BadgrIndividualClient {
 	private $client_id = null; // Client used for admin access will be different than password grant client
 	private $client_secret = null;
 
-	//private $authorization_code = null;
 	private $access_token = null;
 	private $refresh_token = null;
 	private $token_expiration = null;
@@ -80,18 +79,15 @@ class BadgrIndividualClient {
 	const STATE_HAVE_ACCESS_TOKEN = 10;
 	const STATE_FAILED_GETTING_ACCESS_TOKEN = 11;
 	const STATE_EXPECTING_ACCESS_TOKEN_FROM_PASSWORD = 12;
+	const STATE_EXPECTING_ACCESS_TOKEN_FROM_REFRESH_TOKEN = 13;
 
-	private $state; // configuredAndActive, needsRefresh, needsToken, needsAuth, needsLogin, needsUserAction, needsAdminAction
+	private $state;
 	public $retryAuthBeforeFailing = true;
 
 	public $client_key = null;
 	public $client_hash = null;
 
 	private $lastMessageFromBadgrServer = null;
-
-
-	// temporary faillures: urls faillures, won't clear tokens
-	// identity faillures: clears tokens
 
 	public static function makeInstance(array $parameters)
 	{
@@ -426,37 +422,7 @@ class BadgrIndividualClient {
 
 	public function probeBadgrServer(){}
 
-	// getUserInfo: get user info from WP storage
-	// setUserInfo: set user info in WP storage
-	// getClient: given parameters, get an instance of client
-	// getBadgrServerInfo: get badgr server information from WP storage
-	// checkConnectivity: perform a neutral operation with client to check connectivity
 
-	// Try refresh first
-
-	// getClient(WPUser $user, $asAdmin, BadgrServer $badgrServer)
-
-	// Detect and respond appropriately to revoked token
-
-	/**
-	 * Whether or not the BadgrClient is initialized.
-	 *
-	 * @var boolean
-	 */
-	private static $initialized = false;
-
-	/**
-	 * Array of BadgrClient settings.
-	 *
-	 * @var array
-	 */
-	private static $badgr_settings;
-
-	/**
-	 * BadgrClient Init.
-	 *
-	 * @return void
-	 */
 	public static function init_hooks() {
 /*		if ( ! self::$initialized ) {
 			add_action( 'init', array( BadgrClient::class, 'init' ), 9966 );
@@ -502,42 +468,64 @@ class BadgrIndividualClient {
 	/**
 	 * Refreshes Badgr Server token.
 	 *
-	 * @return boolean
 	 */
-/*	private static function refresh_token() {
+	public function refresh_token() {
+		$redirectUri = site_url( self::$authRedirectUri ) . '&client_hash=' . $this->client_hash;
 
-		if ( isset( self::$badgr_settings ) && isset( self::$badgr_settings['badgr_server_access_token'] ) &&
-			( ! isset( self::$badgr_settings['badgr_server_token_expiration'] ) ||
-				self::$badgr_settings['badgr_server_token_expiration'] <= time() ) ) {
-
-			$provider = self::make_provider();
-
-			try {
-				$access_token = $provider->getAccessToken(
-					'refresh_token',
-					array(
-						'refresh_token' => self::$badgr_settings['badgr_server_refresh_token'],
-					)
-				);
-
-				self::$badgr_settings['badgr_server_access_token']     = $access_token->getToken();
-				self::$badgr_settings['badgr_server_refresh_token']    = $access_token->getRefreshToken();
-				self::$badgr_settings['badgr_server_token_expiration'] = $access_token->getExpires();
-				update_option( 'badgefactor2_badgr_settings', self::$badgr_settings );
-
-			} catch ( IdentityProviderException $e ) {
-
-				return self::authenticate();
-
-			} catch ( ConnectException $e ) {
-
-				return false;
-
-			}
+		// Build the scope list
+		$scope = 'rw:profile rw:issuer rw:backpack';
+		if ( $this->as_admin == true )
+		{
+			$scope .= ' rw:serverAdmin';
 		}
 
-		return true;
-	}*/
+		$authProvider = new GenericProvider(
+			array(
+				'clientId'                => $this->client_id,
+				'clientSecret'            => $this->client_secret,
+				'redirectUri'             => $redirectUri ,
+				'urlAuthorize'            => $this->badgr_server_public_url . '/o/authorize',
+				'urlAccessToken'          => $this->get_internal_or_external_server_url() . '/o/token',
+				'urlResourceOwnerDetails' => $this->get_internal_or_external_server_url() . '/o/resource',
+				'scopes'                  => $scopes
+			)
+		);
+
+		$authProvider->setHttpClient(self::getGuzzleClient());
+
+		try {
+			$this->state = self::STATE_EXPECTING_ACCESS_TOKEN_FROM_REFRESH_TOKEN;
+			$this->save();
+
+			// Try to get an access token using the refresh token.
+			$access_token = $provider->getAccessToken(
+				'refresh_token',
+				array(
+					'refresh_token' => $this->refresh_token,
+				)
+			);
+
+			$this->access_token = $access_token->getToken();
+			$this->refresh_token = $access_token->getRefreshToken();
+			$this->token_expiration = $access_token->getExpires();
+			$this->resource_owner_id = $access_token->getResourceOwnerId();
+
+			$this->state = self::STATE_HAVE_ACCESS_TOKEN;
+			$this->save();
+
+		} catch ( IdentityProviderException $e ) {
+			$this->state = self::STATE_FAILED_GETTING_ACCESS_TOKEN;
+			$this->save();
+			throw new \BadMethodCallException('Idendity provider raised exception ' . $e->getMessage());
+
+		} catch ( ConnectException $e ) {
+			$this->state = self::STATE_FAILED_GETTING_ACCESS_TOKEN;
+			$this->save();
+			throw new \BadMethodCallException('Connection exception ' . $e->getMessage());
+		} catch ( Exception $e ) {
+			throw new \BadMethodCallException('Connection exception ' . $e->getMessage());
+		}
+	}
 
 	/**
 	 * Make a request to Badgr Server.
