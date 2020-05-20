@@ -26,6 +26,7 @@ use BadgeFactor2\Admin\Lists\Assertions;
 use BadgeFactor2\Admin\Lists\Badges;
 use BadgeFactor2\Admin\Lists\Issuers;
 use BadgeFactor2\Admin\Lists\Issuers_List;
+use BadgeFactor2\BadgrIndividualClient;
 
 /**
  * Badge Factor 2 Admin Class.
@@ -282,6 +283,109 @@ class BadgeFactor2_Admin {
 
 		$badgr_settings = new_cmb2_box( $args );
 
+		// Badgr server quick select
+		$badgr_settings->add_field(
+			array(
+				'name'      => __( 'Badgr server', 'badgefactor2' ),
+				'desc'      => __( 'Choose the type of Badgr server you\'re using', 'badgefactor2' ),
+				'id'        => 'badgr_server_quick_select',
+				'type'      => 'radio',
+				'show_option_none' => false,
+				'default'   => 'local',
+				'options'          => array(
+					'local' => __( 'Local Badgr', 'badgefactor2' ),
+					'badgr_io'   => __( 'Badgr.io', 'badgefactor2' ),
+					'badge_factor_2_cloud'     => __( 'Badge Factor 2 Cloud', 'badgefactor2' ),
+					'custom'     => __( 'Custom', 'badgefactor2' ),
+				),
+
+			)
+		);
+
+		// Source of username
+		$badgr_settings->add_field(
+			array(
+				'name'      => __( 'Badgr Username', 'badgefactor2' ),
+				'desc'      => __( 'Choose the source of the Badgr username', 'badgefactor2' ),
+				'id'        => 'badgr_username_quick_select',
+				'type'      => 'radio',
+				'show_option_none' => false,
+				'default'   => 'wp_verified_user_email',
+				'options'          => array(
+					'wp_verified_user_email' => __( 'Use user email address', 'badgefactor2' ),
+					'custom'     => __( 'Use custom username', 'badgefactor2' ),
+				),
+
+			)
+		);
+
+		// Custom username
+		$badgr_settings->add_field(
+			array(
+				'name'      => __( 'Username', 'badgefactor2' ),
+				'desc'      => __( 'Username to use with Badgr, normally an email address', 'badgefactor2' ),
+				'id'        => 'badgr_username',
+				'type'      => 'text_email',
+			)
+		);
+
+		// As admin
+		$badgr_settings->add_field(
+			array(
+				'name'      => __( 'As admin', 'badgefactor2' ),
+				'desc'      => __( 'Check to connect as server admin', 'badgefactor2' ),
+				'id'        => 'badgr_as_admin',
+				'default'   => false,
+				'type' => 'checkbox',
+				)
+		);		
+
+		// Badgr server flavor
+		$badgr_settings->add_field(
+			array(
+				'name'      => __( 'Badgr server type', 'badgefactor2' ),
+				'desc'      => __( 'Choose the type of Badgr server you\'re using', 'badgefactor2' ),
+				'id'        => 'badgr_server_flavour',
+				'type'      => 'radio',
+				'show_option_none' => false,
+				'default'   => 2,
+				'options'          => array(
+					BadgrIndividualClient::FLAVOR_BADGRIO_01 => __( 'Badgr.io v1', 'badgefactor2' ),
+					BadgrIndividualClient::FLAVOR_LOCAL_R_JAMIROQUAI   => __( 'Local Release Jamiroquai', 'badgefactor2' ),
+					BadgrIndividualClient::FLAVOR_CLOUD_v1     => __( 'Badge Factor 2 Cloud v1', 'badgefactor2' ),
+				),
+			)
+		);
+
+		// Badgr password source
+		$badgr_settings->add_field(
+			array(
+				'name'      => __( 'Password source', 'badgefactor2' ),
+				'desc'      => __( 'Choose how we\'ll retrieve your password', 'badgefactor2' ),
+				'id'        => 'badgr_server_password_source_select',
+				'type'      => 'radio',
+				'show_option_none' => false,
+				'default'   => 1,
+				'options'          => array(
+					BadgrIndividualClient::PASSWORD_SOURCE_CUSTOM => __( 'From settings', 'badgefactor2' ),
+					BadgrIndividualClient::PASSWORD_SOURCE_USE_WP_PASSWORD => __( 'Use the same password as WordPress', 'badgefactor2' ),
+					BadgrIndividualClient::PASSWORD_SOURCE_ALWAYS_ASK => __( 'Always ask', 'badgefactor2' ),
+					BadgrIndividualClient::PASSWORD_SOURCE_ASK_AND_REMEMBER => __( 'Ask and remember', 'badgefactor2' ),
+				),
+			)
+		);
+
+		// Password to use with custom password source setting
+		$badgr_settings->add_field(
+			array(
+				'name'      => __( 'Password', 'badgefactor2' ),
+				'desc'      => __( 'Badgr server password', 'badgefactor2' ),
+				'id'        => 'badgr_server_password',
+				'type'      => 'text_small',
+			)
+		);
+		
+		// Public url to use with custom server setting
 		$badgr_settings->add_field(
 			array(
 				'name'      => __( 'Public URL', 'badgefactor2' ),

@@ -37,6 +37,13 @@ class BadgrIndividualClient {
 	const FLAVOR_LOCAL_R_JAMIROQUAI = 2;
 	const FLAVOR_CLOUD_v1 = 3;
 
+	// Password sources
+	const PASSWORD_SOURCE_CUSTOM = 1;
+	const PASSWORD_SOURCE_USE_WP_PASSWORD = 2;
+	const PASSWORD_SOURCE_ALWAYS_ASK = 3;
+	const PASSWORD_SOURCE_ASK_AND_REMEMBER = 4;
+
+
 	// Class properties
 	protected static $clients = [];
 	private static $guzzleClient = null;
