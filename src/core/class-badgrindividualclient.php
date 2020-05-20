@@ -52,7 +52,7 @@ class BadgrIndividualClient {
 	private $wp_user_id = null;
 	private $badgr_server_internal_url = null;
 
-	private $scope; // Scope applicable to token
+	private $scopes; // Scopes applicable to token
 
 	private $badgr_password = null;
 
@@ -121,7 +121,7 @@ class BadgrIndividualClient {
 		$optionnalParameters = [
 			'wp_user_id',
 			'badgr_server_internal_url',
-			'scope',
+			'scopes',
 			'badgr_password',
 			'client_id',
 			'client_secret',
@@ -138,6 +138,20 @@ class BadgrIndividualClient {
 			{
 				$client->{$optionnalParameter} = $parameters[$optionnalParameter];
 			}
+		}
+
+		// If scopes not already set, set to default value
+		if ( null === $client->scopes)
+		{
+			$scopes = 'rw:profile rw:backpack';
+			if ( $client->as_admin == true )
+			{
+				$scopes .= ' rw:issuers rw:serverAdmin';
+			} else {
+				$scopes .= ' r:issuers';
+			}
+
+			$client->scopes = $scopes;
 		}
 
 		// TODO: figureOutState
@@ -194,13 +208,6 @@ class BadgrIndividualClient {
 		// Build a callback url with the client's hash
 		$redirectUri = site_url( self::$authRedirectUri ) . '&client_hash=' . $this->client_hash;
 
-		// Build the scope list
-		$scopes = 'rw:profile rw:issuer rw:backpack';
-		if ( $this->as_admin == true )
-		{
-			$scopes .= ' rw:serverAdmin';
-		}
-
 		$authProvider = new GenericProvider(
 			array(
 				'clientId'                => $this->client_id,
@@ -209,7 +216,7 @@ class BadgrIndividualClient {
 				'urlAuthorize'            => $this->badgr_server_public_url . '/o/authorize',
 				'urlAccessToken'          => $this->get_internal_or_external_server_url() . '/o/token',
 				'urlResourceOwnerDetails' => $this->get_internal_or_external_server_url() . '/o/resource',
-				'scopes'                  => $scopes
+				'scopes'                  => $this->scopes
 			)
 		);
 
@@ -284,12 +291,6 @@ class BadgrIndividualClient {
 	{
 		$redirectUri = site_url( self::$authRedirectUri ) . '&client_hash=' . $this->client_hash;
 
-		// Build the scope list
-		$scope = 'rw:profile rw:issuer rw:backpack';
-		if ( $this->as_admin == true )
-		{
-			$scope .= ' rw:serverAdmin';
-		}
 
 		$authProvider = new GenericProvider(
 			array(
@@ -299,7 +300,7 @@ class BadgrIndividualClient {
 				'urlAuthorize'            => $this->badgr_server_public_url . '/o/authorize',
 				'urlAccessToken'          => $this->get_internal_or_external_server_url() . '/o/token',
 				'urlResourceOwnerDetails' => $this->get_internal_or_external_server_url() . '/o/resource',
-				'scopes'                  => $scopes
+				'scopes'                  => $this->scopes
 			)
 		);
 
@@ -346,13 +347,6 @@ class BadgrIndividualClient {
 
 		$redirectUri = site_url( self::$authRedirectUri ) . '&client_hash=' . $this->client_hash;
 
-		// Build the scope list
-		$scopes = 'rw:profile rw:issuer rw:backpack';
-		if ( $this->as_admin == true )
-		{
-			$scopes .= ' rw:serverAdmin';
-		}
-
 		$authProvider = new GenericProvider(
 			array(
 				'clientId'                => $this->client_id,
@@ -361,7 +355,7 @@ class BadgrIndividualClient {
 				'urlAuthorize'            => $this->badgr_server_public_url . '/o/authorize',
 				'urlAccessToken'          => $this->get_internal_or_external_server_url() . '/o/token',
 				'urlResourceOwnerDetails' => $this->get_internal_or_external_server_url() . '/o/resource',
-				'scopes'                  => $scopes
+				'scopes'                  => $this->scopes
 			)
 		);
 
@@ -472,13 +466,6 @@ class BadgrIndividualClient {
 	public function refresh_token() {
 		$redirectUri = site_url( self::$authRedirectUri ) . '&client_hash=' . $this->client_hash;
 
-		// Build the scope list
-		$scope = 'rw:profile rw:issuer rw:backpack';
-		if ( $this->as_admin == true )
-		{
-			$scope .= ' rw:serverAdmin';
-		}
-
 		$authProvider = new GenericProvider(
 			array(
 				'clientId'                => $this->client_id,
@@ -487,7 +474,7 @@ class BadgrIndividualClient {
 				'urlAuthorize'            => $this->badgr_server_public_url . '/o/authorize',
 				'urlAccessToken'          => $this->get_internal_or_external_server_url() . '/o/token',
 				'urlResourceOwnerDetails' => $this->get_internal_or_external_server_url() . '/o/resource',
-				'scopes'                  => $scopes
+				'scopes'                  => $this->scopes
 			)
 		);
 
