@@ -286,7 +286,6 @@ class BadgrProvider {
 		// Setup body.
 		$request_body = array(
 			'name'        => $issuer_name,
-			'image'       => null,
 			'email'       => $email,
 			'url'         => $url,
 		);

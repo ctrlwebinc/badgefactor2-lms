@@ -78,6 +78,7 @@ class BadgrClientTest extends WP_UnitTestCase {
 	}
 
     /**
+	 * @runInSeparateProcess
      * @backupStaticAttributes enabled
      */
 	public function test_badgr_client_connectivity() {

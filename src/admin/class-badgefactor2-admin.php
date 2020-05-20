@@ -235,7 +235,8 @@ class BadgeFactor2_Admin {
 	 * @return void
 	 */
 	public static function load_resources() {
-		wp_enqueue_style( 'cmb2-styles-css', BF2_BASEURL . '/lib/CMB2/css/cmb2.min.css', array(), '5.2.5', 'all' );
+		wp_enqueue_style( 'cmb2-styles-css', BF2_BASEURL . 'lib/CMB2/css/cmb2.min.css', array(), '5.2.5', 'all' );
+		wp_enqueue_script( 'badgefactor2-admin', BF2_BASEURL . 'assets/js/admin.js', array( 'jquery' ), '1.0.0', true );
 
 	}
 

@@ -32,7 +32,7 @@ interface Badgr_Entity {
 	 *
 	 * @return array|boolean Object instances array or false in case of error.
 	 */
-	public static function all();
+	public static function all( $per_page = 10, $page_number = 1 );
 
 	/**
 	 * Retrieve single entity from Badgr provider.

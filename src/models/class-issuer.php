@@ -78,7 +78,7 @@ class Issuer implements Badgr_Entity {
 	 *
 	 * @return array|boolean Issuers array or false in case of error.
 	 */
-	public static function all() {
+	public static function all( $per_page = 10, $page_number = 1 ) {
 		return BadgrProvider::get_all_issuers();
 	}
 
@@ -132,7 +132,6 @@ class Issuer implements Badgr_Entity {
 
 	public static function get_columns() {
 		return array(
-			'entityId'  => __( 'Slug', 'badgefactor2' ),
 			'name'      => __( 'Name', 'badgefactor2' ),
 			'email'     => __( 'Email', 'badgefactor2' ),
 			'createdAt' => __( 'Created on', 'badgefactor2' ),
