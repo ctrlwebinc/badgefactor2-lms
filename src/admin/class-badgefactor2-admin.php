@@ -384,7 +384,23 @@ class BadgeFactor2_Admin {
 				'type'      => 'text_small',
 			)
 		);
-		
+
+		// Badgr server quick select
+		$badgr_settings->add_field(
+			array(
+				'name'      => __( 'Authorization type', 'badgefactor2' ),
+				'desc'      => __( 'Choose how to exchange credentials with Badgr', 'badgefactor2' ),
+				'id'        => 'badgr_authentication_process_select',
+				'type'      => 'radio',
+				'show_option_none' => false,
+				'default'   => BadgrIndividualClient::GRANT_CODE,
+				'options'          => array(
+					BadgrIndividualClient::GRANT_PASSWORD => __( 'Use passwords', 'badgefactor2' ),
+					BadgrIndividualClient::GRANT_CODE => __( 'Redirect to server', 'badgefactor2' ),
+				),
+			)
+		);
+
 		// Public url to use with custom server setting
 		$badgr_settings->add_field(
 			array(

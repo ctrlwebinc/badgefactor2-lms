@@ -43,6 +43,9 @@ class BadgrIndividualClient {
 	const PASSWORD_SOURCE_ALWAYS_ASK = 3;
 	const PASSWORD_SOURCE_ASK_AND_REMEMBER = 4;
 
+	// Grant types
+	const GRANT_PASSWORD = 1;
+	const GRANT_CODE = 2;
 
 	// Class properties
 	protected static $clients = [];
