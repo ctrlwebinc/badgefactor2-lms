@@ -368,4 +368,77 @@ class IndividualBadgrClientTest extends WP_UnitTestCase {
 			$this->fail('Unexpected exception.');
 		}
 	}
+
+	public function test_can_store_client() {
+		// Setup a completely configured client and store
+		$clientParameters = [
+			'username' => 'dev@ctrlweb.ca',
+			'as_admin' => false,
+			'badgr_server_public_url' => getenv('BADGR_SERVER_PUBLIC_URL'),
+			'badgr_server_flavor' => BadgrIndividualClient::FLAVOR_LOCAL_R_JAMIROQUAI,
+			'badgr_server_internal_url'    => getenv('BADGR_SERVER_INTERNAL_URL'),
+			'client_id'     => getenv('BADGR_SERVER_PASSWORD_GRANT_CLIENT_ID'),
+			'badgr_password' => getenv('BADGR_SERVER_PASSWORD_GRANT_PASSWORD'),
+		];
+
+		$client = null;
+
+		try {
+			$client = BadgrIndividualClient::makeInstance($clientParameters);
+		} catch ( BadMethodCallException $e ) {
+			$this->fail('Exception thrown on client creation: ' . $e->getMessage());
+		}
+
+		$this->assertNotNull($client);
+
+		// Attempt to get token
+		$client->getAccessTokenFromPasswordGrant();
+
+		// Check that we can retreive information on the authorized user
+		// Make GET request to /v2/users/self.
+		$response = $client->get( '/v2/users/self' );
+
+		// Check response isn't null.
+		$this->assertNotNull($response);
+
+		// Check response has status code 200.
+		$this->assertEquals( 200, $response->getStatusCode() );
+
+		$response_info = json_decode( $response->getBody() );
+
+		// Check that entity id exists
+		$this->assertTrue( isset( $response_info->result[0]->entityId ) );
+
+		// Check that entityId isn't empty
+		$this->assertNotEmpty( $response_info->result[0]->entityId );
+
+		// Store entity id for comparison with stored client result
+		$entityId = $response_info->result[0]->entityId;
+
+		// Store and retreive the client
+		update_user_meta( 1, $client::$user_meta_key_for_client, $client);
+		$storedClient = get_user_meta( 1, BadgrIndividualClient::$user_meta_key_for_client, true );
+		
+		$this->assertNotNull($storedClient);
+
+		$response = $storedClient->get( '/v2/users/self' );
+
+		// Check response isn't null.
+		$this->assertNotNull($response);
+
+		// Check response has status code 200.
+		$this->assertEquals( 200, $response->getStatusCode() );
+
+		$response_info = json_decode( $response->getBody() );
+
+		// Check that entity id exists
+		$this->assertTrue( isset( $response_info->result[0]->entityId ) );
+
+		// Check that entityId isn't empty
+		$this->assertNotEmpty( $response_info->result[0]->entityId );
+
+		// Store entity id for comparison with stored client result
+		$this->assertEquals ( $entityId, $response_info->result[0]->entityId);
+
+	} 
 }

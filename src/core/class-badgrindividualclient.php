@@ -51,6 +51,7 @@ class BadgrIndividualClient {
 	protected static $clients = [];
 	private static $guzzleClient = null;
 	public static $authRedirectUri = '/wp-admin/admin.php?page=badgefactor2_badgr_settings';
+	public static $user_meta_key_for_client = 'badgr_client_instance';
 
 	// Minimal properties of instances
 	private $username = null;
@@ -195,6 +196,28 @@ class BadgrIndividualClient {
 
 	public static function getClientByUsername($userName, $asAdmin=false, BadgrServer $badgrServer=null){}
 	public static function getClient(WPUser $wp_user, $asAdmin=false, BadgrServer $badgrServer=null){}
+
+	public static function getOrMakeUserClient( WPUser $wp_user ) {
+
+		// Look in user metas for existing client
+		$client = get_user_meta( $wp_user->ID, self::user_meta_key_for_client, true );
+
+		if ( null!== $client && '' !== $client) {
+			return $client;
+		}
+
+		// No existing client, make a new one
+		$badgr_site_settings = get_option( 'badgefactor2_badgr_settings' );
+
+		// Check that basic parameters are present
+/*		$username = 'username',
+			'as_admin',
+			'badgr_server_public_url',
+			'badgr_server_flavor'
+		];*/
+	// Store client for later use
+
+	}
 
 	public function getClientByHash($hash)
 	{
