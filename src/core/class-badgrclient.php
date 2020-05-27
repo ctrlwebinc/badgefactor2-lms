@@ -66,7 +66,7 @@ class BadgrClient {
 	 * @return void
 	 */
 	public static function init() {
-		// TODO.
+		
 	}
 
 	/**
