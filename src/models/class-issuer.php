@@ -127,7 +127,7 @@ class Issuer implements Badgr_Entity {
 	 * @return boolean Whether or not deletion has succeeded.
 	 */
 	public static function delete( $entity_id ) {
-
+		return BadgrProvider::delete_issuer( $entity_id );
 	}
 
 	public static function get_columns() {
