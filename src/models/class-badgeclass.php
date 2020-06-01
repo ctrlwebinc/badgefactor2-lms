@@ -91,7 +91,7 @@ class BadgeClass implements Badgr_Entity {
 	 * @return boolean Whether or not deletion has succeeded.
 	 */
 	public static function delete( $entity_id ) {
-
+		return BadgrProvider::delete_badge_class( $entity_id );
 	}
 
 	public static function get_columns() {

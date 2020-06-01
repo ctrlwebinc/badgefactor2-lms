@@ -108,7 +108,7 @@ class Badgr_List extends \WP_List_Table {
 	 * @param int $id customer ID.
 	 */
 	public function delete( $id ) {
-		// TODO.
+		return $this->model::delete( $id );
 	}
 
 
@@ -179,7 +179,7 @@ class Badgr_List extends \WP_List_Table {
 	 */
 	function column_cb( $item ) {
 		return sprintf(
-			'<input type="checkbox" name="bulk-delete[]" value="%s" />',
+			'<input type="checkbox" name="entity_id[]" value="%s" />',
 			$item->entityId
 		);
 	}
@@ -199,7 +199,7 @@ class Badgr_List extends \WP_List_Table {
 		$title = '<a href="admin.php?page=' . $this->slug . '&action=edit&entity_id=' . $item->entityId . '">' . $item->name . '</a>';
 
 		$actions = array(
-			'delete' => '', //sprintf( '<a href="?page=%s&action=%s&customer=%s&_wpnonce=%s">Delete</a>', esc_attr( $_REQUEST['page'] ), 'delete', absint( $item['ID'] ), $delete_nonce ),
+			'delete' => sprintf( '<a onclick="if(!confirm( \'%s\' ) ) { event.preventDefault() }" href="?page=%s&action=%s&entity_id=%s&_wpnonce=%s">Delete</a>', __( 'Are you sure you want to delete this item?', 'badgefactor2' ), $this->slug, 'delete', $item->entityId, $delete_nonce ),
 		);
 
 		return $title . $this->row_actions( $actions );
@@ -240,7 +240,7 @@ class Badgr_List extends \WP_List_Table {
 	 */
 	public function get_bulk_actions() {
 		$actions = array(
-			'bulk-delete' => 'Delete',
+			'delete' => 'Delete',
 		);
 
 		return $actions;
@@ -277,7 +277,10 @@ class Badgr_List extends \WP_List_Table {
 		if ( isset( $_GET['action'] ) ) {
 			$this->manage_actions();
 		} else {
+			echo '<form id="events-filter" method="get">
+    		<input type="hidden" name="page" value="' . $_REQUEST['page'] . '" />';
 			parent::display();
+			echo '</form>';
 		}
 	}
 
@@ -303,7 +306,7 @@ class Badgr_List extends \WP_List_Table {
 					}
 
 					if ( 'POST' === $_SERVER['REQUEST_METHOD'] ) {
-						$entity_id = $this->model::update( $_GET['entity_id'], $_POST );
+						$entity_id      = $this->model::update( $_GET['entity_id'], $_POST );
 						$_GET['notice'] = 'updated';
 					}
 					include BF2_ABSPATH . 'templates/admin/tpl.edit-' . $this->slug . '.php';
@@ -314,57 +317,50 @@ class Badgr_List extends \WP_List_Table {
 
 	public function notice_created() {
 		global $pagenow;
-		if ( $pagenow == 'admin.php' && isset( $_GET['page'] ) && isset( $_GET['notice'] ) && 'created' === $_GET['notice'] ):
-		?>
+		if ( $pagenow == 'admin.php' && isset( $_GET['page'] ) && isset( $_GET['notice'] ) && 'created' === $_GET['notice'] ) :
+			?>
 		<div class="updated settings-error notice is-dismissible"> 
 			<p><strong><?php echo __( 'Object created.', 'badgefactor2' ); ?></strong></p>
 			<button type="button" class="notice-dismiss">
 				<span class="screen-reader-text"><?php echo __( 'Dismiss this message.', 'badgefactor2' ); ?></span>
 			</button>
 		</div>
-		<?php
+			<?php
 		endif;
 	}
 
 	public function process_bulk_action() {
 
-		//Detect when a bulk action is being triggered...
-		if ( 'delete' === $this->current_action() ) {
+		// Detect action triggered
+		if ( 'delete' === $this->current_action() ) {  
+			if ( ! is_array( $_GET['entity_id'] ) ) {
+				// Single delete
+				// In our file that handles the request, verify the nonce.
+				$nonce = esc_attr( $_REQUEST['_wpnonce'] );
 
-			// In our file that handles the request, verify the nonce.
-			$nonce = esc_attr( $_REQUEST['_wpnonce'] );
-
-			if ( ! wp_verify_nonce( $nonce, 'sp_delete_' . $this->slug ) ) {
-				die( 'Go get a life script kiddies' );
+				if ( ! wp_verify_nonce( $nonce, 'bf2_delete_' . $this->slug ) ) {
+					die( 'Go get a life script kiddies' );
+				} else {
+					$this->delete( $_GET['entity_id'] );
+					echo '<div class="notice notice-success is-dismissible"><p>' . __( 'Item deleted.', 'badgefactor2' ) . '</p></div>';
+				}
 			} else {
-				$this->delete( absint( $_GET[ $this->slug ] ) );
+				// Bulk delete
+				// In our file that handles the request, verify the nonce.
+				$nonce = esc_attr( $_REQUEST['_wpnonce'] );
 
-				// esc_url_raw() is used to prevent converting ampersand in url to "#038;"
-				// add_query_arg() return the current url.
-				wp_redirect( esc_url_raw( add_query_arg() ) );
-				exit;
+				if ( ! wp_verify_nonce( $nonce, 'bulk-' . $this->slug ) ) {
+					die( 'Go get a life script kiddies' );
+				} else {
+					foreach ( $_GET['entity_id'] as $id ) {
+						$this->delete( $id );
+					}
+					echo '<div class="notice notice-success is-dismissible"><p>' . __( 'Items deleted.', 'badgefactor2' ) . '</p></div>';
+				}
 			}
-		}
-
-		// If the delete bulk action is triggered.
-		if ( ( isset( $_POST['action'] ) && 'bulk-delete' === $_POST['action'] )
-			|| ( isset( $_POST['action2'] ) && 'bulk-delete' === $_POST['action2'] )
-		) {
-
-			$delete_ids = esc_sql( $_POST['bulk-delete'] );
-
-			// loop over the array of record IDs and delete them
-			foreach ( $delete_ids as $id ) {
-				$this->delete( $id );
-
-			}
-
-			// esc_url_raw() is used to prevent converting ampersand in url to "#038;"
-			// add_query_arg() return the current url.
-			wp_redirect( esc_url_raw( add_query_arg() ) );
-			exit;
 		}
 	}
+
 
 
 	/**
