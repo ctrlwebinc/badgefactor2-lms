@@ -376,7 +376,42 @@ class BadgrIndividualClient {
 
 	public function getAccessTokenFromPasswordGrant()
 	{
-		// TODO: check that we have all the required parameters
+		$client = self::getGuzzleClient();
+		$args = array(
+			'username' => $this->username,
+			'password' => $this->badgr_password,
+			'grant_type' => 'password',
+			'scope' => 'rw:profile rw:issuer rw:backpack rw:serverAdmin' //$this->scopes,
+		);
+		if ( $this->badgr_server_flavor != self::FLAVOR_BADGRIO_01)
+		{
+			$args['client_id'] = $this->client_id;
+		}
+		$args = array( 'query' => $args );
+//var_dump($args);
+//die();
+		try {
+			$response = $client->request( 'POST', $this->get_internal_or_external_server_url() . '/o/token', $args );
+			// Check for 200 response.
+			if ( null !== $response && $response->getStatusCode() == 200 ) {
+				$response_info = json_decode( $response->getBody() );
+				$this->access_token = $response_info->acess_token;
+				$this->refresh_token = $response_info->refresh_token;
+				$this->token_expiration = time() + $response_info->expires_in;
+
+				$this->save();
+			}
+
+		} catch ( ConnectException $e ) {
+		} catch ( GuzzleException $e ) {
+			if ($e->getResponse()->getStatusCode() == 401)
+			{
+				$this->needsAuth = true;
+			} else {
+				throw $e;
+			}
+		} /*		// TODO: check that we have all the required parameters
+		$client = self::getGuzzleClient();
 
 		$redirectUri = site_url( self::$authRedirectUri ) . '&client_hash=' . $this->client_hash;
 
@@ -388,7 +423,7 @@ class BadgrIndividualClient {
 				'urlAuthorize'            => $this->badgr_server_public_url . '/o/authorize',
 				'urlAccessToken'          => $this->get_internal_or_external_server_url() . '/o/token',
 				'urlResourceOwnerDetails' => $this->get_internal_or_external_server_url() . '/o/resource',
-				'scopes'                  => $this->scopes
+				'scopes'                  => 'rw:profile rw:issuer rw:serverAdmin' //$this->scopes
 			)
 		);
 
@@ -414,7 +449,8 @@ class BadgrIndividualClient {
 					array(
 						'username' => $this->username,
 						'password' => $this->badgr_password,
-						'client_id' => $this->client_id
+						'client_id' => $this->client_id,
+						//'scope' => 'rw:profile rw:issuer rw:serverAdmin'
 					)
 				);
 			}
@@ -437,7 +473,7 @@ class BadgrIndividualClient {
 			$this->state = self::STATE_FAILED_GETTING_ACCESS_TOKEN;
 			$this->save();
 			throw new \BadMethodCallException('Connection exception ' . $e->getMessage());
-		}
+		} */
 
 	}
 

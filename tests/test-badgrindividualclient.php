@@ -28,6 +28,8 @@ use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Exception\GuzzleException;
+use GuzzleHttp\Middleware;
+
 
 
 
@@ -160,13 +162,13 @@ class IndividualBadgrClientTest extends WP_UnitTestCase {
 		// Setup a completely configured client and check that we can get the profile info
 
 		$clientParameters = [
-			'username' => 'dev@ctrlweb.ca',
-			'as_admin' => false,
+			'username' => getenv('BADGR_ADMIN_USERNAME'),
+			'as_admin' => true,
 			'badgr_server_public_url' => getenv('BADGR_SERVER_PUBLIC_URL'),
 			'badgr_server_flavor' => BadgrIndividualClient::FLAVOR_LOCAL_R_JAMIROQUAI,
 			'badgr_server_internal_url'    => getenv('BADGR_SERVER_INTERNAL_URL'),
 			'client_id'     => getenv('BADGR_SERVER_PASSWORD_GRANT_CLIENT_ID'),
-			'badgr_password' => getenv('BADGR_SERVER_PASSWORD_GRANT_PASSWORD'),
+			'badgr_password' => getenv('BADGR_ADMIN_PASSWORD'),
 		];
 
 		$client = null;
@@ -534,5 +536,65 @@ die('Framk');
 		$this->assertEquals( $newUserSlug, $response_info->result[0]->entityId); */
 
 
+	}
+
+	public function test_password_client_has_proper_scopes () {
+
+		// Setup Guzzle client
+		$container = [];
+		$history = Middleware::history($container);
+		
+		$handlerStack = HandlerStack::create();
+		// or $handlerStack = HandlerStack::create($mock); if using the Mock handler.
+		
+		// Add the history middleware to the handler stack.
+		$handlerStack->push($history);
+		
+		$guzzleClient = new Client(['handler' => $handlerStack]);
+		BadgrIndividualClient::setGuzzleClient($guzzleClient);
+		
+		// Password grant admin client
+		$adminClientParameters = [
+			'username' => getenv('BADGR_ADMIN_USERNAME'),
+			'as_admin' => true,
+			'badgr_server_public_url' => getenv('BADGR_SERVER_PUBLIC_URL'),
+			'badgr_server_internal_url' => getenv('BADGR_SERVER_INTERNAL_URL'),
+			'badgr_server_flavor' => BadgrIndividualClient::FLAVOR_LOCAL_R_JAMIROQUAI,
+			'badgr_password' => getenv('BADGR_ADMIN_PASSWORD'),
+			'client_id'     => getenv('BADGR_SERVER_PASSWORD_GRANT_CLIENT_ID'),
+		];
+
+		$adminClient = null;
+
+		try {
+			$adminClient = BadgrIndividualClient::makeInstance($adminClientParameters);
+			$adminClient->getAccessTokenFromPasswordGrant();
+		} catch ( BadMethodCallException $e ) {
+			//$this->fail('Exception thrown on client creation: ' . $e->getMessage());
+		} catch (\Exception $e){
+
+		}
+
+		// Count the number of transactions
+		//echo count($container);
+		//> 2
+
+		// Iterate over the requests and responses
+		foreach ($container as $transaction) {
+			echo 'method ' . $transaction['request']->getMethod();
+			var_dump($transaction['request']->getHeaders());
+			echo ' transaction request body ' . $transaction['request']->getBody();
+			//> GET, HEAD
+			if ($transaction['response']) {
+				echo ' transaction status code ' . $transaction['response']->getStatusCode();
+				echo ' transaction body ' . $transaction['response']->getBody();
+				//> 200, 200
+			} elseif ($transaction['error']) {
+				echo ' transaction error ' . $transaction['error'];
+				//> exception
+			}
+			//var_dump($transaction['options']);
+			//> dumps the request options of the sent request.
+		}
 	}
 }
