@@ -161,8 +161,6 @@ class BadgrIndividualClient {
 				if ( $client->badgr_server_flavor == self::FLAVOR_LOCAL_R_JAMIROQUAI ) {
 					$scopes .= ' rw:serverAdmin';
 				}
-			} else {
-				$scopes .= ' r:issuer';
 			}
 
 			$client->scopes = $scopes;
@@ -416,70 +414,7 @@ class BadgrIndividualClient {
 				$this->save();
 				throw new \BadMethodCallException('Guzzle exception ' . $e->getMessage());
 			}
-		} /*		// TODO: check that we have all the required parameters
-		$client = self::getGuzzleClient();
-
-		$redirectUri = site_url( self::$authRedirectUri ) . '&client_hash=' . $this->client_hash;
-
-		$authProvider = new GenericProvider(
-			array(
-				'clientId'                => $this->client_id,
-				'clientSecret'            => $this->client_secret,
-				'redirectUri'             => $redirectUri ,
-				'urlAuthorize'            => $this->badgr_server_public_url . '/o/authorize',
-				'urlAccessToken'          => $this->get_internal_or_external_server_url() . '/o/token',
-				'urlResourceOwnerDetails' => $this->get_internal_or_external_server_url() . '/o/resource',
-				'scopes'                  => 'rw:profile rw:issuer rw:serverAdmin' //$this->scopes
-			)
-		);
-
-		$authProvider->setHttpClient(self::getGuzzleClient());
-
-		try {
-			$this->state = self::STATE_EXPECTING_ACCESS_TOKEN_FROM_PASSWORD;
-			$this->save();
-
-			if ( $this->badgr_server_flavor == self::FLAVOR_BADGRIO_01)
-			{
-				$access_token = $authProvider->getAccessToken(
-					'password',
-					array(
-						'username' => $this->username,
-						'password' => $this->badgr_password,
-					)
-				);
-			} else
-			{
-				$access_token = $authProvider->getAccessToken(
-					'password',
-					array(
-						'username' => $this->username,
-						'password' => $this->badgr_password,
-						'client_id' => $this->client_id,
-						//'scope' => 'rw:profile rw:issuer rw:serverAdmin'
-					)
-				);
-			}
-
-			$this->access_token = $access_token->getToken();
-			$this->refresh_token = $access_token->getRefreshToken();
-			$this->token_expiration = $access_token->getExpires();
-			$this->resource_owner_id = $access_token->getResourceOwnerId();
-
-			$this->state = self::STATE_HAVE_ACCESS_TOKEN;
-			$this->needsAuth = false;
-			$this->save();
-
-		} catch ( IdentityProviderException $e ) {
-			$this->state = self::STATE_FAILED_GETTING_ACCESS_TOKEN;
-			$this->save();
-			throw new \BadMethodCallException('Idendity provider raised exception ' . $e->getMessage());
-
-		} catch ( ConnectException $e ) {
-			$this->state = self::STATE_FAILED_GETTING_ACCESS_TOKEN;
-			$this->save();
-			throw new \BadMethodCallException('Connection exception ' . $e->getMessage());
-		} */
+		} 
 
 	}
 
@@ -636,7 +571,7 @@ class BadgrIndividualClient {
 			return $response;
 
 		} catch ( ConnectException $e ) {
-			return null;
+			throw $e;
 		} catch ( GuzzleException $e ) {
 			if ($e->getResponse()->getStatusCode() == 401)
 			{

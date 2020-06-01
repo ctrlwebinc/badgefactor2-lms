@@ -498,7 +498,7 @@ class IndividualBadgrClientTest extends WP_UnitTestCase {
 				$newUserSlug =  $response_info->slug;
 			}
 		}
-/*
+
 		// Password grant client for user
 		$userClientParameters = [
 			'username' => $email,
@@ -506,6 +506,7 @@ class IndividualBadgrClientTest extends WP_UnitTestCase {
 			'badgr_server_public_url' => getenv('BADGR_SERVER_PUBLIC_URL'),
 			'badgr_server_internal_url' => getenv('BADGR_SERVER_INTERNAL_URL'),
 			'badgr_server_flavor' => BadgrIndividualClient::FLAVOR_LOCAL_R_JAMIROQUAI,
+			'client_id'     => getenv('BADGR_SERVER_PASSWORD_GRANT_CLIENT_ID'),
 			'badgr_password' => $password,
 		];
 
@@ -513,6 +514,8 @@ class IndividualBadgrClientTest extends WP_UnitTestCase {
 
 		try {
 			$userClient = BadgrIndividualClient::makeInstance($userClientParameters);
+			$userClient->getAccessTokenFromPasswordGrant();
+
 		} catch ( BadMethodCallException $e ) {
 			$this->fail('Exception thrown on client creation: ' . $e->getMessage());
 		}
@@ -521,9 +524,9 @@ class IndividualBadgrClientTest extends WP_UnitTestCase {
 		try {
 			$response = $userClient->get( '/v2/users/self' );
 		} catch (\Exception $e ) {
-			die([ $e->getMessage(), $response]);
+			$this->fail('Exception on profile check ' . $e->getMessage());
 		}
-die('Framk');		
+
 		$response_info = json_decode( $response->getBody() );
 
 		// Check that entity id exists
@@ -533,7 +536,7 @@ die('Framk');
 		$this->assertNotEmpty( $response_info->result[0]->entityId );
 
 		// Check our slug matches
-		$this->assertEquals( $newUserSlug, $response_info->result[0]->entityId); */
+		$this->assertEquals( $newUserSlug, $response_info->result[0]->entityId); 
 
 
 	}
