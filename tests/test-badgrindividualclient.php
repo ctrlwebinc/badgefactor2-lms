@@ -540,7 +540,7 @@ die('Framk');
 
 	public function test_password_client_has_proper_scopes () {
 
-		// Setup Guzzle client
+/* 		// Setup Guzzle client
 		$container = [];
 		$history = Middleware::history($container);
 		
@@ -551,7 +551,7 @@ die('Framk');
 		$handlerStack->push($history);
 		
 		$guzzleClient = new Client(['handler' => $handlerStack]);
-		BadgrIndividualClient::setGuzzleClient($guzzleClient);
+		BadgrIndividualClient::setGuzzleClient($guzzleClient); */
 		
 		// Password grant admin client
 		$adminClientParameters = [
@@ -569,13 +569,14 @@ die('Framk');
 		try {
 			$adminClient = BadgrIndividualClient::makeInstance($adminClientParameters);
 			$adminClient->getAccessTokenFromPasswordGrant();
+			
+			// Assert success
+			$this->assertTrue(true);
 		} catch ( BadMethodCallException $e ) {
-			//$this->fail('Exception thrown on client creation: ' . $e->getMessage());
-		} catch (\Exception $e){
+			$this->fail('Exception thrown on client creation: ' . $e->getMessage());
+		} 
 
-		}
-
-		// Count the number of transactions
+/* 		// Count the number of transactions
 		//echo count($container);
 		//> 2
 
@@ -594,7 +595,7 @@ die('Framk');
 				//> exception
 			}
 			//var_dump($transaction['options']);
-			//> dumps the request options of the sent request.
-		}
+			//> dumps the request options of the sent request. 
+		} */
 	}
 }

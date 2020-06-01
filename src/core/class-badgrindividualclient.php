@@ -157,9 +157,12 @@ class BadgrIndividualClient {
 			$scopes = 'rw:profile rw:backpack';
 			if ( $client->as_admin == true )
 			{
-				$scopes .= ' rw:issuers rw:serverAdmin';
+				$scopes .= ' rw:issuer';
+				if ( $client->badgr_server_flavor == self::FLAVOR_LOCAL_R_JAMIROQUAI ) {
+					$scopes .= ' rw:serverAdmin';
+				}
 			} else {
-				$scopes .= ' r:issuers';
+				$scopes .= ' r:issuer';
 			}
 
 			$client->scopes = $scopes;
@@ -381,21 +384,20 @@ class BadgrIndividualClient {
 			'username' => $this->username,
 			'password' => $this->badgr_password,
 			'grant_type' => 'password',
-			'scope' => 'rw:profile rw:issuer rw:backpack rw:serverAdmin' //$this->scopes,
+			'scope' => $this->scopes,
 		);
 		if ( $this->badgr_server_flavor != self::FLAVOR_BADGRIO_01)
 		{
 			$args['client_id'] = $this->client_id;
 		}
 		$args = array( 'query' => $args );
-//var_dump($args);
-//die();
+
 		try {
 			$response = $client->request( 'POST', $this->get_internal_or_external_server_url() . '/o/token', $args );
 			// Check for 200 response.
 			if ( null !== $response && $response->getStatusCode() == 200 ) {
 				$response_info = json_decode( $response->getBody() );
-				$this->access_token = $response_info->acess_token;
+				$this->access_token = $response_info->access_token;
 				$this->refresh_token = $response_info->refresh_token;
 				$this->token_expiration = time() + $response_info->expires_in;
 
@@ -403,12 +405,16 @@ class BadgrIndividualClient {
 			}
 
 		} catch ( ConnectException $e ) {
+			$this->state = self::STATE_FAILED_GETTING_ACCESS_TOKEN;
+			$this->save();
+			throw new \BadMethodCallException('Connection exception ' . $e->getMessage());
 		} catch ( GuzzleException $e ) {
 			if ($e->getResponse()->getStatusCode() == 401)
 			{
 				$this->needsAuth = true;
 			} else {
-				throw $e;
+				$this->save();
+				throw new \BadMethodCallException('Guzzle exception ' . $e->getMessage());
 			}
 		} /*		// TODO: check that we have all the required parameters
 		$client = self::getGuzzleClient();
