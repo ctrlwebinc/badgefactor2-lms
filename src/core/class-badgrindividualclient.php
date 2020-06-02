@@ -37,6 +37,9 @@ class BadgrIndividualClient {
 	const FLAVOR_LOCAL_R_JAMIROQUAI = 2;
 	const FLAVOR_CLOUD_v1 = 3;
 
+	const BADGR_IO_URL = 'https://api.badgr.io';
+	const DEFAULT_LOCAL_BADGR_SERVER_PORT = 8000;
+
 	// Password sources
 	const PASSWORD_SOURCE_CUSTOM = 1;
 	const PASSWORD_SOURCE_USE_WP_PASSWORD = 2;
@@ -66,6 +69,8 @@ class BadgrIndividualClient {
 	private $scopes; // Scopes applicable to token
 
 	private $badgr_password = null;
+
+	private $auth_type = null;
 
 	private $client_id = null; // Client used for admin access will be different than password grant client
 	private $client_secret = null;
@@ -141,6 +146,7 @@ class BadgrIndividualClient {
 			'refresh_token',
 			'token_expiration',
 			'badgr_profile',
+			'auth_type',
 		];
 
 		foreach ( $optionnalParameters as $optionnalParameter)
@@ -164,6 +170,11 @@ class BadgrIndividualClient {
 			}
 
 			$client->scopes = $scopes;
+		}
+
+		// set user id if available
+		if ( isset( $parameters['wp_user_id'] ) ) {
+			$client->wp_user_id = $parameters['wp_user_id'];
 		}
 
 		// TODO: figureOutState
@@ -198,8 +209,15 @@ class BadgrIndividualClient {
 	public static function getClientByUsername($userName, $asAdmin=false, BadgrServer $badgrServer=null){}
 	public static function getClient(WPUser $wp_user, $asAdmin=false, BadgrServer $badgrServer=null){}
 
-	public static function getOrMakeUserClient( WPUser $wp_user ) {
+	public static function getOrMakeUserClient( WPUser $wp_user = null ) {
 
+		// If no user passed, use the current user
+		if ( null === $wp_user ) {
+			$wp_user = wp_get_current_user();
+			if ( $wp_user == 0) {
+				throw new \Exception('Can\'t determine user for client creation');
+			}
+		}
 		// Look in user metas for existing client
 		$client = get_user_meta( $wp_user->ID, self::user_meta_key_for_client, true );
 
@@ -210,13 +228,44 @@ class BadgrIndividualClient {
 		// No existing client, make a new one
 		$badgr_site_settings = get_option( 'badgefactor2_badgr_settings' );
 
-		// Check that basic parameters are present
-/*		$username = 'username',
-			'as_admin',
-			'badgr_server_public_url',
-			'badgr_server_flavor'
-		];*/
-	// Store client for later use
+		// Basic parameters
+		$basicParameters['username'] = $wp_user->user_email;
+		$basicParameters['as_admin'] = is_admin();
+		$basicParameters['badgr_server_flavor'] = $badgr_site_settings['badgr_server_flavour'];
+
+		// Set urls by convention or with custom settings depending on server flavour
+		if ( $badgr_site_settings['badgr_server_flavour'] == self::FLAVOR_BADGRIO_01 ) {
+			$basicParameters['badgr_server_public_url']  = self::BADGR_IO_URL;
+		} elseif ( $badgr_site_settings['badgr_server_flavour'] == self::FLAVOR_LOCAL_R_JAMIROQUAI ) {
+			$basicParameters['badgr_server_public_url']  = site_url() . ':' . self::DEFAULT_LOCAL_BADGR_SERVER_PORT;
+		} else {
+			// Custom
+			$basicParameters['badgr_server_public_url'] = $badgr_site_settings['badgr_server_public_url'];
+			if ( null !== $badgr_site_settings['badgr_server_internal_url'] ) {
+				$basicParameters['badgr_server_internal_url'] = $badgr_site_settings['badgr_server_internal_url'];
+			}
+		}
+
+		// If not badgr io, get client_id
+		if ( $badgr_site_settings['badgr_server_flavour'] != self::FLAVOR_BADGRIO_01 ) {
+			$basicParameters['client_id']  = $badgr_site_settings['client_id'];
+		}
+
+		// If not password grant, get client_secret
+		if ( $badgr_site_settings['badgr_authentication_process_select'] != self::GRANT_PASSWORD ) {
+			$basicParameters['badgr_server_client_secret']  = $badgr_site_settings['badgr_server_client_secret'];
+		}
+
+		// Set user
+		$basicParameters['wp_user_id'] = $wp_user->ID;
+
+		// Make client
+		$client = self::makeInstance( $basicParameters );
+
+		// Store client for later use
+		update_user_meta( $wp_user->ID, self::$user_meta_key_for_client, $client);
+
+		return $client;
 
 	}
 
