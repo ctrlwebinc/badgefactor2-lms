@@ -37,7 +37,7 @@ class BadgrProvider {
 		if ( null == self::$client ) {
 			// TODO use user client methods
 			// return BadgrClient::getOrMakeUserClient();
-			self::$client == BadgrClient::makeClientFromSavedOptions();
+			self::$client = BadgrClient::makeClientFromSavedOptions();
 		}
 
 		return self::$client;
