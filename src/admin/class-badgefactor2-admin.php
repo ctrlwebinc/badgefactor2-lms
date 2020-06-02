@@ -383,13 +383,6 @@ class BadgeFactor2_Admin {
 
 		$plugins = new_cmb2_box( $args );
 
-		$plugins->add_field(
-			array(
-				'name' => 'Test Text Area for Code',
-				'id'   => 'textarea_code',
-				'type' => 'textarea_code',
-			)
-		);
 	}
 
 }
