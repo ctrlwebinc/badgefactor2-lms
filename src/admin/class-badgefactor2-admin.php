@@ -26,7 +26,7 @@ use BadgeFactor2\Admin\Lists\Assertions;
 use BadgeFactor2\Admin\Lists\Badges;
 use BadgeFactor2\Admin\Lists\Issuers;
 use BadgeFactor2\Admin\Lists\Issuers_List;
-use BadgeFactor2\BadgrIndividualClient;
+use BadgeFactor2\BadgrClient;
 
 /**
  * Badge Factor 2 Admin Class.
@@ -311,10 +311,10 @@ class BadgeFactor2_Admin {
 				'id'        => 'badgr_authentication_process_select',
 				'type'      => 'radio',
 				'show_option_none' => false,
-				'default'   => BadgrIndividualClient::GRANT_CODE,
+				'default'   => BadgrClient::GRANT_CODE,
 				'options'          => array(
-					BadgrIndividualClient::GRANT_PASSWORD => __( 'Use passwords', 'badgefactor2' ),
-					BadgrIndividualClient::GRANT_CODE => __( 'Redirect to server', 'badgefactor2' ),
+					BadgrClient::GRANT_PASSWORD => __( 'Use passwords', 'badgefactor2' ),
+					BadgrClient::GRANT_CODE => __( 'Redirect to server', 'badgefactor2' ),
 				),
 			)
 		);

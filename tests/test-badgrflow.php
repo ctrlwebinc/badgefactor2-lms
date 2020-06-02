@@ -50,28 +50,27 @@ class BadgrFlowTest extends WP_UnitTestCase {
      */
 	public function test_issuer_to_assertion_flow() {
 
-		$options = get_option( 'badgefactor2_badgr_settings' );
+		// Setup a completely client and check that we can get the profile info
+		$clientParameters = [
+			'username' => getenv('BADGR_ADMIN_USERNAME'),
+			'as_admin' => true,
+			'badgr_server_public_url' => getenv('BADGR_SERVER_PUBLIC_URL'),
+			'badgr_server_flavor' => BadgrClient::FLAVOR_LOCAL_R_JAMIROQUAI,
+			'badgr_server_internal_url'    => getenv('BADGR_SERVER_INTERNAL_URL'),
+			'client_id'     => getenv('BADGR_SERVER_CLIENT_ID'),
+			'client_secret' => getenv('BADGR_SERVER_CLIENT_SECRET'),
+			'access_token' => getenv('BADGR_SERVER_ACCESS_TOKEN'),
+			'refresh_token' => getenv('BADGR_SERVER_REFRESH_TOKEN'),
+			'token_expiration' => getenv('BADGR_SERVER_TOKEN_EXPIRATION'),
+		];
 
-		// No options set: get_options will return false initially
-		$this->assertFalse( $options );
+		$client = BadgrClient::makeInstance( $clientParameters );
 
-		// Setup options as they should be after a proper auth sequence with badgr
-		update_option(
-			'badgefactor2_badgr_settings',
-			array(
-				'badgr_server_public_url'    => getenv('BADGR_SERVER_PUBLIC_URL'),
-				'badgr_server_internal_url'    => getenv('BADGR_SERVER_INTERNAL_URL'),
-				'badgr_server_client_id'     => getenv('BADGR_SERVER_CLIENT_ID'),
-				'badgr_server_client_secret' => getenv('BADGR_SERVER_CLIENT_SECRET'),
-				'badgr_server_access_token' => getenv('BADGR_SERVER_ACCESS_TOKEN'),
-				'badgr_server_refresh_token' => getenv('BADGR_SERVER_REFRESH_TOKEN'),
-				'badgr_server_token_expiration' => getenv('BADGR_SERVER_TOKEN_EXPIRATION'),
-			)
-		);
+		BadgrProvider::setClient( $client );
 
 		// Check that we can retreive information on the authorized user
 		// Make GET request to /v2/users/self.
-		$response = BadgrClient::get( '/v2/users/self' );
+		$response = $client->get( '/v2/users/self' );
 
 		// Check response isn't null.
 		$this->assertNotNull($response);
