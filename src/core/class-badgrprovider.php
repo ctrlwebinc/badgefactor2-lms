@@ -35,10 +35,12 @@ class BadgrProvider {
 
 	private static function getClient() {
 		if ( null == self::$client ) {
-			return BadgrClient::getOrMakeUserClient();
-		} else {
-			return self::$client;
+			// TODO use user client methods
+			// return BadgrClient::getOrMakeUserClient();
+			self::$client == BadgrClient::makeClientFromSavedOptions();
 		}
+
+		return self::$client;
 	} 
 
 	/**
