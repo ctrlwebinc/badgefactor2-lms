@@ -110,12 +110,11 @@ class Assertion implements Badgr_Entity {
 
 	public static function get_columns() {
 		return array(
+			'image'				=> __( 'Issued Badge', 'badgefactor2' ),
 			'issuer'            => __( 'Issuer', 'badgefactor2' ),
 			'badgeclass'		=> __( 'Badge', 'badgefactor2' ),
-			'image'				=> __( 'Issued Badge', 'badgefactor2' ),
 			'recipient'			=> __( 'Recipient', 'badgefactor2' ),
 			'createdAt'         => __( 'Created on', 'badgefactor2' ),
-		// TODO Add pertinent fields
 		);
 	}
 
