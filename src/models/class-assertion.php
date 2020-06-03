@@ -22,6 +22,8 @@
 
 namespace BadgeFactor2\Models;
 
+use BadgeFactor2\Admin\Lists\Badges;
+use BadgeFactor2\Admin\Lists\Issuers;
 use BadgeFactor2\Badgr_Entity;
 use BadgeFactor2\BadgrProvider;
 
@@ -43,7 +45,17 @@ class Assertion implements Badgr_Entity {
 	 * @return array|boolean Issuers array or false in case of error.
 	 */
 	public static function all( $per_page = 10, $page_number = 1 ) {
-		return BadgrProvider::get_all_badge_classes();
+		if ( isset( $_GET['filter_type'] ) && isset( $_GET['filter_value'] ) ) {
+			$filter_type  = stripslashes( $_GET['filter_type'] );
+			$filter_value = stripslashes( $_GET['filter_value'] );
+			if ( Issuers::class === $filter_type ) {
+				return BadgrProvider::get_all_assertions_by_issuer_slug( $filter_value );
+			} elseif ( Badges::class === $filter_type ) {
+				return BadgrProvider::get_all_assertions_by_badge_class_slug( $filter_value );
+			}
+		}
+
+		return array();
 	}
 
 	/**
@@ -96,17 +108,19 @@ class Assertion implements Badgr_Entity {
 
 	public static function get_columns() {
 		return array(
-			'entityId'          => __( 'Slug', 'badgefactor2' ),
-			'issuerOpenBadgeId' => __( 'Link', 'badgefactor2' ),
+			'issuer'            => __( 'Issuer', 'badgefactor2' ),
+			'badgeclass'		=> __( 'Badge', 'badgefactor2' ),
+			'image'				=> __( 'Issued Badge', 'badgefactor2' ),
+			'recipient'			=> __( 'Recipient', 'badgefactor2' ),
 			'createdAt'         => __( 'Created on', 'badgefactor2' ),
-			// TODO Add pertinent fields
+		// TODO Add pertinent fields
 		);
 	}
 
 	public static function get_sortable_columns() {
 		return array(
 			'entityId'          => array( 'entityId', true ),
-			'issuerOpenBadgeId' => array( 'issuerOpenBadgeId', false ),
+			'recipient'			=> array( 'recipient', true ),
 			'createdAt'         => array( 'createdAt', false ),
 		);
 	}

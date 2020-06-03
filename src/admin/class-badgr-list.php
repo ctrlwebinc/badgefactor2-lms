@@ -23,7 +23,9 @@
 namespace BadgeFactor2\Admin;
 
 use BadgeFactor2\BadgrClient;
+use BadgeFactor2\Models\BadgeClass;
 use BadgeFactor2\Models\Issuer;
+use BadgeFactor2\Singleton;
 
 if ( ! class_exists( 'WP_List_Table' ) ) {
 	require_once( ABSPATH . 'wp-admin/includes/class-wp-list-table.php' );
@@ -33,6 +35,8 @@ if ( ! class_exists( 'WP_List_Table' ) ) {
  * Undocumented class
  */
 class Badgr_List extends \WP_List_Table {
+
+	use Singleton;
 
 	/**
 	 * Model class to use.
@@ -62,6 +66,13 @@ class Badgr_List extends \WP_List_Table {
 	 */
 	protected $slug;
 
+	/**
+	 * Filter.
+	 *
+	 * @var filter
+	 */
+	protected $filter;
+
 
 	/**
 	 * Class constructor.
@@ -71,12 +82,13 @@ class Badgr_List extends \WP_List_Table {
 	 * @param string $plural Plural name.
 	 * @param string $slug Slug to use.
 	 */
-	public function __construct( $model, $singular, $plural, $slug ) {
+	public function __construct( $model, $singular, $plural, $slug, $filter = array() ) {
 
 		$this->model    = $model;
 		$this->singular = $singular;
 		$this->plural   = $plural;
 		$this->slug     = $slug;
+		$this->filter   = $filter;
 
 		add_action( 'admin_notices', array( $this, 'notice_created' ) );
 
@@ -95,11 +107,17 @@ class Badgr_List extends \WP_List_Table {
 	 *
 	 * @param int $per_page Number of records per page.
 	 * @param int $page_number Page number.
+	 * @param array $filters Filters.
 	 *
 	 * @return mixed
 	 */
-	public function all( $per_page = 10, $page_number = 1 ) {
-		return $this->model::all( $per_page, $page_number );
+	public function all( $per_page = 10, $page_number = 1, $filter = array() ) {
+		$list       = $this->model::all( $per_page, $page_number );
+		$list_class = get_class( $this );
+		foreach ( $list as $i => $item ) {
+			$list[ $i ]->listClass = $list_class;
+		}
+		return $list;
 	}
 
 	/**
@@ -158,6 +176,14 @@ class Badgr_List extends \WP_List_Table {
 					case 'createdAt':
 						$date    = strtotime( $item->$column_name );
 						$return .= '<span style="font-size: 0.85em">' . gmdate( 'Y-m-d&\nb\s\p;H:i:s', $date ) . '</span>';
+						break;
+					case 'badgeclass':
+						$badge  = BadgeClass::get( $item->$column_name );
+						$return .= '<a href="admin.php?page=badges&action=edit&entity_id=' . $item->$column_name . '">' . $badge->name . '</a>';
+						break;
+					case 'recipient':
+						$recipient = $item->recipient;
+						$return .= '<a href="users.php?action=-1&s=' . $recipient->plaintextIdentity . '">' . $recipient->plaintextIdentity . '</a>';
 						break;
 					default:
 						$return .= $item->$column_name;
@@ -277,7 +303,7 @@ class Badgr_List extends \WP_List_Table {
 		if ( isset( $_GET['action'] ) ) {
 			$this->manage_actions();
 		} else {
-			echo '<form id="events-filter" method="get">
+			echo '<form id="bf2-admin-filter" method="get">
     		<input type="hidden" name="page" value="' . $_REQUEST['page'] . '" />';
 			parent::display();
 			echo '</form>';
@@ -332,7 +358,7 @@ class Badgr_List extends \WP_List_Table {
 	public function process_bulk_action() {
 
 		// Detect action triggered
-		if ( 'delete' === $this->current_action() ) {  
+		if ( 'delete' === $this->current_action() ) {
 			if ( ! is_array( $_GET['entity_id'] ) ) {
 				// Single delete
 				// In our file that handles the request, verify the nonce.
@@ -372,7 +398,46 @@ class Badgr_List extends \WP_List_Table {
 	public function extra_tablenav( $which ) {
 		if ( 'top' === $which ) {
 			if ( BadgrClient::is_active() ) {
-				echo '<div class="alignleft actions"><a class="button action button-primary" href="admin.php?page=' . $this->slug . '&action=new">' . __( 'Add New', 'badgefactor2' ) . '</a></div>';
+				echo '<div class="alignleft actions">';
+				echo '<a class="button action button-primary" href="admin.php?page=' . $this->slug . '&action=new">' . __( 'Add New', 'badgefactor2' ) . '</a>';
+				if ( ! empty( $this->filter ) ) {
+					echo '<input type="hidden" name="filter_for" value="' . get_class($this) . '">';
+					echo '<select name="filter_type">';
+					echo '<option value="">' . __( 'Filter type', 'badgefactor2' ) . '</option>';
+					$disabled = 'disabled';
+					if ( isset( $_GET['filter_type'] ) ) {
+						$selected_filter = stripslashes( $_GET['filter_type'] );
+					}
+					foreach ( $this->filter as $filter ) {
+						$filter       = $filter::get_instance();
+						$filter_class = get_class( $filter );
+						$selected     = '';
+						if ( $filter_class === $selected_filter ) {
+								$selected = ' selected';
+								$disabled = '';
+						}
+						echo "<option value='{$filter_class}'{$selected}>{$filter->singular}</option>";
+					}
+					echo '</select>';
+					echo "<select name='filter_value' {$disabled}>";
+					echo '<option value="">' . __( 'Filter for', 'badgefactor2' ) . '</option>';
+					if ( ! $disabled ) {
+						$filter          = new $selected_filter();
+						$selected_filter = null;
+						if ( isset( $_GET['filter_value'] ) ) {
+							$selected_filter = stripslashes( $_GET['filter_value'] );
+						}
+						foreach ( $filter->all() as $filter ) {
+							$selected     = '';
+							if ( $filter->entityId === $selected_filter ) {
+								$selected = 'selected';
+							}
+							echo "<option value='{$filter->entityId}' {$selected}>{$filter->name}</option>";
+						}
+					}
+					echo '</select>';
+				}
+				echo '</div>';
 			} else {
 				echo __( 'Badgr connection inactive!', 'badgefactor2' );
 			}
@@ -387,6 +452,15 @@ class Badgr_List extends \WP_List_Table {
 	public function validate() {
 		// Defaults to false. Must be implemented in child class.
 		return false;
+	}
+
+	/**
+	 * Undocumented function.
+	 *
+	 * @return string Model class.
+	 */
+	public function get_model() {
+		return $this->model;
 	}
 
 	private function redirect( $url ) {

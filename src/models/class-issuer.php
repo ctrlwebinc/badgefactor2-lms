@@ -78,7 +78,7 @@ class Issuer implements Badgr_Entity {
 	 *
 	 * @return array|boolean Issuers array or false in case of error.
 	 */
-	public static function all( $per_page = 10, $page_number = 1 ) {
+	public static function all( $per_page = 10, $page_number = 1, $filter = array() ) {
 		return BadgrProvider::get_all_issuers();
 	}
 

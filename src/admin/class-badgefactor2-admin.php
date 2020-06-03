@@ -48,6 +48,8 @@ class BadgeFactor2_Admin {
 		add_action( 'admin_enqueue_scripts', array( BadgeFactor2_Admin::class, 'load_resources' ) );
 		add_action( 'init', array( BadgeFactor2_Admin::class, 'add_custom_roles_and_capabilities' ), 11 );
 		add_action( 'admin_menu', array( BadgeFactor2_Admin::class, 'admin_menus' ) );
+		add_action( 'wp_ajax_bf2_filter_type', array( BadgeFactor2_Admin::class, 'ajax_filter_type' ) );
+		add_action( 'wp_ajax_bf2_filter_value', array( BadgeFactor2_Admin::class, 'ajax_filter_value' ) );
 	}
 
 
@@ -263,7 +265,6 @@ class BadgeFactor2_Admin {
 		}
 		$badgefactor2_settings = new_cmb2_box( $args );
 
-
 		/**
 		 * Registers Badgr options page.
 		 */
@@ -287,17 +288,17 @@ class BadgeFactor2_Admin {
 		// Badgr server quick select
 		$badgr_settings->add_field(
 			array(
-				'name'      => __( 'Badgr server', 'badgefactor2' ),
-				'desc'      => __( 'Choose the type of Badgr server you\'re using', 'badgefactor2' ),
-				'id'        => 'badgr_server_quick_select',
-				'type'      => 'radio',
+				'name'             => __( 'Badgr server', 'badgefactor2' ),
+				'desc'             => __( 'Choose the type of Badgr server you\'re using', 'badgefactor2' ),
+				'id'               => 'badgr_server_quick_select',
+				'type'             => 'radio',
 				'show_option_none' => false,
-				'default'   => 'local',
+				'default'          => 'local',
 				'options'          => array(
-					'local' => __( 'Local Badgr', 'badgefactor2' ),
-					'badgr_io'   => __( 'Badgr.io', 'badgefactor2' ),
-					'badge_factor_2_cloud'     => __( 'Badge Factor 2 Cloud', 'badgefactor2' ),
-					'custom'     => __( 'Custom', 'badgefactor2' ),
+					'local'                => __( 'Local Badgr', 'badgefactor2' ),
+					'badgr_io'             => __( 'Badgr.io', 'badgefactor2' ),
+					'badge_factor_2_cloud' => __( 'Badge Factor 2 Cloud', 'badgefactor2' ),
+					'custom'               => __( 'Custom', 'badgefactor2' ),
 				),
 
 			)
@@ -306,15 +307,15 @@ class BadgeFactor2_Admin {
 		// Source of username
 		$badgr_settings->add_field(
 			array(
-				'name'      => __( 'Badgr Username', 'badgefactor2' ),
-				'desc'      => __( 'Choose the source of the Badgr username', 'badgefactor2' ),
-				'id'        => 'badgr_username_quick_select',
-				'type'      => 'radio',
+				'name'             => __( 'Badgr Username', 'badgefactor2' ),
+				'desc'             => __( 'Choose the source of the Badgr username', 'badgefactor2' ),
+				'id'               => 'badgr_username_quick_select',
+				'type'             => 'radio',
 				'show_option_none' => false,
-				'default'   => 'wp_verified_user_email',
+				'default'          => 'wp_verified_user_email',
 				'options'          => array(
 					'wp_verified_user_email' => __( 'Use user email address', 'badgefactor2' ),
-					'custom'     => __( 'Use custom username', 'badgefactor2' ),
+					'custom'                 => __( 'Use custom username', 'badgefactor2' ),
 				),
 
 			)
@@ -323,37 +324,37 @@ class BadgeFactor2_Admin {
 		// Custom username
 		$badgr_settings->add_field(
 			array(
-				'name'      => __( 'Username', 'badgefactor2' ),
-				'desc'      => __( 'Username to use with Badgr, normally an email address', 'badgefactor2' ),
-				'id'        => 'badgr_username',
-				'type'      => 'text_email',
+				'name' => __( 'Username', 'badgefactor2' ),
+				'desc' => __( 'Username to use with Badgr, normally an email address', 'badgefactor2' ),
+				'id'   => 'badgr_username',
+				'type' => 'text_email',
 			)
 		);
 
 		// As admin
 		$badgr_settings->add_field(
 			array(
-				'name'      => __( 'As admin', 'badgefactor2' ),
-				'desc'      => __( 'Check to connect as server admin', 'badgefactor2' ),
-				'id'        => 'badgr_as_admin',
-				'default'   => false,
-				'type' => 'checkbox',
-				)
-		);		
+				'name'    => __( 'As admin', 'badgefactor2' ),
+				'desc'    => __( 'Check to connect as server admin', 'badgefactor2' ),
+				'id'      => 'badgr_as_admin',
+				'default' => false,
+				'type'    => 'checkbox',
+			)
+		);
 
 		// Badgr server flavor
 		$badgr_settings->add_field(
 			array(
-				'name'      => __( 'Badgr server type', 'badgefactor2' ),
-				'desc'      => __( 'Choose the type of Badgr server you\'re using', 'badgefactor2' ),
-				'id'        => 'badgr_server_flavour',
-				'type'      => 'radio',
+				'name'             => __( 'Badgr server type', 'badgefactor2' ),
+				'desc'             => __( 'Choose the type of Badgr server you\'re using', 'badgefactor2' ),
+				'id'               => 'badgr_server_flavour',
+				'type'             => 'radio',
 				'show_option_none' => false,
-				'default'   => 2,
+				'default'          => 2,
 				'options'          => array(
 					BadgrIndividualClient::FLAVOR_BADGRIO_01 => __( 'Badgr.io v1', 'badgefactor2' ),
-					BadgrIndividualClient::FLAVOR_LOCAL_R_JAMIROQUAI   => __( 'Local Release Jamiroquai', 'badgefactor2' ),
-					BadgrIndividualClient::FLAVOR_CLOUD_v1     => __( 'Badge Factor 2 Cloud v1', 'badgefactor2' ),
+					BadgrIndividualClient::FLAVOR_LOCAL_R_JAMIROQUAI => __( 'Local Release Jamiroquai', 'badgefactor2' ),
+					BadgrIndividualClient::FLAVOR_CLOUD_v1 => __( 'Badge Factor 2 Cloud v1', 'badgefactor2' ),
 				),
 			)
 		);
@@ -361,12 +362,12 @@ class BadgeFactor2_Admin {
 		// Badgr password source
 		$badgr_settings->add_field(
 			array(
-				'name'      => __( 'Password source', 'badgefactor2' ),
-				'desc'      => __( 'Choose how we\'ll retrieve your password', 'badgefactor2' ),
-				'id'        => 'badgr_server_password_source_select',
-				'type'      => 'radio',
+				'name'             => __( 'Password source', 'badgefactor2' ),
+				'desc'             => __( 'Choose how we\'ll retrieve your password', 'badgefactor2' ),
+				'id'               => 'badgr_server_password_source_select',
+				'type'             => 'radio',
 				'show_option_none' => false,
-				'default'   => 1,
+				'default'          => 1,
 				'options'          => array(
 					BadgrIndividualClient::PASSWORD_SOURCE_CUSTOM => __( 'From settings', 'badgefactor2' ),
 					BadgrIndividualClient::PASSWORD_SOURCE_USE_WP_PASSWORD => __( 'Use the same password as WordPress', 'badgefactor2' ),
@@ -379,25 +380,25 @@ class BadgeFactor2_Admin {
 		// Password to use with custom password source setting
 		$badgr_settings->add_field(
 			array(
-				'name'      => __( 'Password', 'badgefactor2' ),
-				'desc'      => __( 'Badgr server password', 'badgefactor2' ),
-				'id'        => 'badgr_server_password',
-				'type'      => 'text_small',
+				'name' => __( 'Password', 'badgefactor2' ),
+				'desc' => __( 'Badgr server password', 'badgefactor2' ),
+				'id'   => 'badgr_server_password',
+				'type' => 'text_small',
 			)
 		);
 
 		// Badgr server quick select
 		$badgr_settings->add_field(
 			array(
-				'name'      => __( 'Authorization type', 'badgefactor2' ),
-				'desc'      => __( 'Choose how to exchange credentials with Badgr', 'badgefactor2' ),
-				'id'        => 'badgr_authentication_process_select',
-				'type'      => 'radio',
+				'name'             => __( 'Authorization type', 'badgefactor2' ),
+				'desc'             => __( 'Choose how to exchange credentials with Badgr', 'badgefactor2' ),
+				'id'               => 'badgr_authentication_process_select',
+				'type'             => 'radio',
 				'show_option_none' => false,
-				'default'   => BadgrIndividualClient::GRANT_CODE,
+				'default'          => BadgrIndividualClient::GRANT_CODE,
 				'options'          => array(
 					BadgrIndividualClient::GRANT_PASSWORD => __( 'Use passwords', 'badgefactor2' ),
-					BadgrIndividualClient::GRANT_CODE => __( 'Redirect to server', 'badgefactor2' ),
+					BadgrIndividualClient::GRANT_CODE     => __( 'Redirect to server', 'badgefactor2' ),
 				),
 			)
 		);
@@ -473,6 +474,68 @@ class BadgeFactor2_Admin {
 				'type' => 'textarea_code',
 			)
 		);
+	}
+
+	public static function ajax_filter_type() {
+		header( 'Content-Type: application/json' );
+		$filter_type = stripslashes( $_POST['filter_type'] );
+		if ( ! $filter_type ) {
+			$response = array(
+				'listClass' => null,
+				'options'   => array(
+					"<option value=''>" . __( 'Filter for' ) . '</option>',
+				),
+			);
+		} else {
+			$filter_values = $filter_type::get_instance()->all();
+			$response      = array(
+				'listClass' => array_values( $filter_values )[0]->listClass,
+				'options'   => array(
+					"<option value=''>" . __( 'Filter for' ) . '</option>',
+				),
+			);
+			foreach ( $filter_values as $filter ) {
+				$response['options'][] = "<option value='{$filter->entityId}'>{$filter->name}</option>";
+			}
+			$response['options'] = join( '', $response['options'] );
+		}
+
+		echo json_encode( $response );
+		wp_die();
+	}
+
+	public static function ajax_filter_value() {
+		header( 'Content-Type: application/json' );
+		$filter_for   = stripslashes( $_POST['filter_for'] );
+		$filter_type  = stripslashes( $_POST['filter_type'] );
+		$filter_value = stripslashes( $_POST['filter_value'] );
+		if ( ! $filter_for || ! $filter_type || ! $filter_value ) {
+			$response = array(
+				'listClass' => null,
+				'options'   => array(
+					"<option value=''>" . __( 'Filter for' ) . '</option>',
+				),
+			);
+		} else {
+			$instance = new $filter_for();
+			$model    = $instance->get_model();
+			switch ( $filter_type ) {
+				case 'BadgeFactor2\Admin\Lists\Badges':
+					$model->all();
+					break;
+				case 'BadgeFactor2\Admin\Lists\Issuers':
+					break;
+
+			}
+			$filter_values = $filter_type::get_instance();
+			foreach ( $filter_values as $filter ) {
+				$response['options'][] = "<option value='{$filter->entityId}'>{$filter->name}</option>";
+			}
+			$response['options'] = join( '', $response['options'] );
+		}
+
+		echo json_encode( $response );
+		wp_die();
 	}
 
 }
