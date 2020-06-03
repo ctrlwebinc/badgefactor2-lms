@@ -421,7 +421,7 @@ class Badgr_List extends \WP_List_Table {
 				if ( ! empty( $this->filter ) ) {
 					echo '<input type="hidden" name="filter_for" value="' . get_class( $this ) . '">';
 					echo '<select name="filter_type">';
-					echo '<option value="">' . __( 'Filter type', 'badgefactor2' ) . '</option>';
+					echo '<option value="">' . __( 'List type', 'badgefactor2' ) . '</option>';
 					$disabled = 'disabled';
 					if ( isset( $_GET['filter_type'] ) ) {
 						$selected_filter = $_GET['filter_type'];
@@ -438,7 +438,7 @@ class Badgr_List extends \WP_List_Table {
 					}
 					echo '</select>';
 					echo "<select name='filter_value' {$disabled}>";
-					echo '<option value="">' . __( 'Filter for', 'badgefactor2' ) . '</option>';
+					echo '<option value="">' . __( 'List for', 'badgefactor2' ) . '</option>';
 					if ( ! $disabled ) {
 						$selected_filter = 'BadgeFactor2\Admin\Lists\\' . $selected_filter;
 						$filter          = new $selected_filter();
