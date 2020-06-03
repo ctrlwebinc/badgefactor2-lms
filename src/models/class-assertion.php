@@ -46,11 +46,11 @@ class Assertion implements Badgr_Entity {
 	 */
 	public static function all( $per_page = 10, $page_number = 1 ) {
 		if ( isset( $_GET['filter_type'] ) && isset( $_GET['filter_value'] ) ) {
-			$filter_type  = stripslashes( $_GET['filter_type'] );
-			$filter_value = stripslashes( $_GET['filter_value'] );
-			if ( Issuers::class === $filter_type ) {
+			$filter_type  = $_GET['filter_type'];
+			$filter_value = $_GET['filter_value'];
+			if ( 'Issuers' === $filter_type ) {
 				return BadgrProvider::get_all_assertions_by_issuer_slug( $filter_value );
-			} elseif ( Badges::class === $filter_type ) {
+			} elseif ( 'Badges' === $filter_type ) {
 				return BadgrProvider::get_all_assertions_by_badge_class_slug( $filter_value );
 			}
 		}
@@ -76,8 +76,7 @@ class Assertion implements Badgr_Entity {
 	 */
 	public static function create( $values, $files = null ) {
 		if ( self::validate( $values, $files ) ) {
-			// FIXME.
-			// return BadgrProvider::add_badge_class( $values['name'], $values['issuer_slug'], $values['description'], $values['image'] );
+			return BadgrProvider::add_assertion( $values['issuer'],  $values['badge'],  $values['recipient'] );
 		}
 		return false;
 	}
@@ -105,7 +104,7 @@ class Assertion implements Badgr_Entity {
 	 * @return boolean Whether or not deletion has succeeded.
 	 */
 	public static function delete( $entity_id ) {
-
+		
 	}
 
 	public static function get_columns() {
@@ -115,6 +114,7 @@ class Assertion implements Badgr_Entity {
 			'badgeclass'		=> __( 'Badge', 'badgefactor2' ),
 			'recipient'			=> __( 'Recipient', 'badgefactor2' ),
 			'createdAt'         => __( 'Created on', 'badgefactor2' ),
+			'revoked'			=> __( 'Revoked', 'badgefactor2' ),
 		);
 	}
 
