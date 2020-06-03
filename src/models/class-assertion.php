@@ -65,7 +65,7 @@ class Assertion implements Badgr_Entity {
 	 * @return WP_Post Virtual WP_Post representation of the entity.
 	 */
 	public static function get( $entity_id ) {
-		return BadgrProvider::get_badge_class_by_badge_class_slug( $entity_id );
+		return BadgrProvider::get_assertion_by_assertion_slug( $entity_id );
 	}
 
 	/**
@@ -76,7 +76,8 @@ class Assertion implements Badgr_Entity {
 	 */
 	public static function create( $values, $files = null ) {
 		if ( self::validate( $values, $files ) ) {
-			return BadgrProvider::add_badge_class( $values['name'], $values['issuer_slug'], $values['description'], $values['image'] );
+			// FIXME.
+			// return BadgrProvider::add_badge_class( $values['name'], $values['issuer_slug'], $values['description'], $values['image'] );
 		}
 		return false;
 	}
@@ -90,7 +91,8 @@ class Assertion implements Badgr_Entity {
 	 */
 	public static function update( $entity_id, $values ) {
 		if ( self::validate( $values ) ) {
-			return BadgrProvider::update_badge_class( $entity_id, $values['name'], $values['description'], $values['image'] );
+			// FIXME.
+			// return BadgrProvider::update_badge_class( $entity_id, $values['name'], $values['description'], $values['image'] );
 		}
 		return false;
 
