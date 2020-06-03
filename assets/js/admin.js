@@ -1,4 +1,24 @@
 jQuery(document).ready(function($) {
+  function insertParam(key, value) {
+    key = encodeURI(key);
+    value = encodeURI(value);
+    var kvp = document.location.search.substr(1).split("&");
+    var i = kvp.length;
+    var x;
+    while (i--) {
+      x = kvp[i].split("=");
+
+      if (x[0] == key) {
+        x[1] = value;
+        kvp[i] = x.join("=");
+        break;
+      }
+    }
+    if (i < 0) {
+      kvp[kvp.length] = [key, value].join("=");
+    }
+    return kvp.join("&");
+  }
   function removeParam(key) {
     var sourceURL = window.location.href;
     var rtn = sourceURL.split("?")[0],
@@ -20,6 +40,22 @@ jQuery(document).ready(function($) {
   }
 
   $("body").on("click", "button.notice-dismiss", function() {
-    window.history.pushState({}, "", removeParam("notice"));
+    var url = new URL(window.location.href);
+    url.searchParams.delete("notice");
+    window.history.pushState({}, "", url);
   });
+  $(document).on(
+    "change",
+    "#bf2-admin-filter select[name='filter_type'], #bf2-admin-filter select[name='filter_value']",
+    function() {
+      var url = new URL(window.location.href),
+        name = $(this).attr("name"),
+        value = $(this).val();
+      url.searchParams.set(name, value);
+      if ("filter_type" === name) {
+        url.searchParams.delete("filter_value");
+      }
+      window.location.href = url;
+    }
+  );
 });

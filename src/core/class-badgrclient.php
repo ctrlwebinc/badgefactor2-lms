@@ -523,10 +523,11 @@ class BadgrClient {
 	 *
 	 * @return string
 	 */
-/*	public static function get_status() {
-		return ( self::is_active() ? __( 'Active', 'badgefactor2' ) : __( 'Inactive', 'badgefactor2' ) );
+	public static function get_status() {
+		// TODO return proper status
+		return 'Active';
 	}
-*/
+
 
 
 	/**

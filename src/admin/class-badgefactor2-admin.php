@@ -48,6 +48,8 @@ class BadgeFactor2_Admin {
 		add_action( 'admin_enqueue_scripts', array( BadgeFactor2_Admin::class, 'load_resources' ) );
 		add_action( 'init', array( BadgeFactor2_Admin::class, 'add_custom_roles_and_capabilities' ), 11 );
 		add_action( 'admin_menu', array( BadgeFactor2_Admin::class, 'admin_menus' ) );
+		add_action( 'wp_ajax_bf2_filter_type', array( BadgeFactor2_Admin::class, 'ajax_filter_type' ) );
+		add_action( 'wp_ajax_bf2_filter_value', array( BadgeFactor2_Admin::class, 'ajax_filter_value' ) );
 	}
 
 
@@ -263,7 +265,6 @@ class BadgeFactor2_Admin {
 		}
 		$badgefactor2_settings = new_cmb2_box( $args );
 
-
 		/**
 		 * Registers Badgr options page.
 		 */
@@ -287,29 +288,28 @@ class BadgeFactor2_Admin {
 		// Badgr server quick select
 		$badgr_settings->add_field(
 			array(
-				'name'      => __( 'Badgr server', 'badgefactor2' ),
-				'desc'      => __( 'Choose the type of Badgr server you\'re using', 'badgefactor2' ),
-				'id'        => 'badgr_server_quick_select',
-				'type'      => 'radio',
+				'name'             => __( 'Badgr server', 'badgefactor2' ),
+				'desc'             => __( 'Choose the type of Badgr server you\'re using', 'badgefactor2' ),
+				'id'               => 'badgr_server_quick_select',
+				'type'             => 'radio',
 				'show_option_none' => false,
-				'default'   => 'local',
+				'default'          => 'local',
 				'options'          => array(
-					'local' => __( 'Local Badgr', 'badgefactor2' ),
-					'badgr_io'   => __( 'Badgr.io', 'badgefactor2' ),
-					// 'badge_factor_2_cloud'     => __( 'Badge Factor 2 Cloud', 'badgefactor2' ),
-					'custom'     => __( 'Custom', 'badgefactor2' ),
+					'local'                => __( 'Local Badgr', 'badgefactor2' ),
+					'badgr_io'             => __( 'Badgr.io', 'badgefactor2' ),
+					'custom'               => __( 'Custom', 'badgefactor2' ),
 				),
 
 			)
-		);	
+		);
 
 		// Badgr server quick select
 		$badgr_settings->add_field(
 			array(
-				'name'      => __( 'Authorization type', 'badgefactor2' ),
-				'desc'      => __( 'Choose how to exchange credentials with Badgr', 'badgefactor2' ),
-				'id'        => 'badgr_authentication_process_select',
-				'type'      => 'radio',
+				'name'             => __( 'Authorization type', 'badgefactor2' ),
+				'desc'             => __( 'Choose how to exchange credentials with Badgr', 'badgefactor2' ),
+				'id'               => 'badgr_authentication_process_select',
+				'type'             => 'radio',
 				'show_option_none' => false,
 				'default'   => BadgrClient::GRANT_CODE,
 				'options'          => array(
@@ -383,6 +383,68 @@ class BadgeFactor2_Admin {
 
 		$plugins = new_cmb2_box( $args );
 
+	}
+
+	public static function ajax_filter_type() {
+		header( 'Content-Type: application/json' );
+		$filter_type = stripslashes( $_POST['filter_type'] );
+		if ( ! $filter_type ) {
+			$response = array(
+				'listClass' => null,
+				'options'   => array(
+					"<option value=''>" . __( 'Filter for' ) . '</option>',
+				),
+			);
+		} else {
+			$filter_values = $filter_type::get_instance()->all();
+			$response      = array(
+				'listClass' => array_values( $filter_values )[0]->listClass,
+				'options'   => array(
+					"<option value=''>" . __( 'Filter for' ) . '</option>',
+				),
+			);
+			foreach ( $filter_values as $filter ) {
+				$response['options'][] = "<option value='{$filter->entityId}'>{$filter->name}</option>";
+			}
+			$response['options'] = join( '', $response['options'] );
+		}
+
+		echo json_encode( $response );
+		wp_die();
+	}
+
+	public static function ajax_filter_value() {
+		header( 'Content-Type: application/json' );
+		$filter_for   = stripslashes( $_POST['filter_for'] );
+		$filter_type  = stripslashes( $_POST['filter_type'] );
+		$filter_value = stripslashes( $_POST['filter_value'] );
+		if ( ! $filter_for || ! $filter_type || ! $filter_value ) {
+			$response = array(
+				'listClass' => null,
+				'options'   => array(
+					"<option value=''>" . __( 'Filter for' ) . '</option>',
+				),
+			);
+		} else {
+			$instance = new $filter_for();
+			$model    = $instance->get_model();
+			switch ( $filter_type ) {
+				case 'BadgeFactor2\Admin\Lists\Badges':
+					$model->all();
+					break;
+				case 'BadgeFactor2\Admin\Lists\Issuers':
+					break;
+
+			}
+			$filter_values = $filter_type::get_instance();
+			foreach ( $filter_values as $filter ) {
+				$response['options'][] = "<option value='{$filter->entityId}'>{$filter->name}</option>";
+			}
+			$response['options'] = join( '', $response['options'] );
+		}
+
+		echo json_encode( $response );
+		wp_die();
 	}
 
 }
