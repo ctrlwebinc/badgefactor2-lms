@@ -1,33 +1,155 @@
 <div class="cmb2-options-page">
 	<?php if ( isset( $_GET['notice'] ) ) : ?>
-		<?php 
-			switch ( $_GET['notice'] ) {
-				case 'updated':
-					?>
+		<?php
+		switch ( $_GET['notice'] ) {
+			case 'updated':
+				?>
 					<div class="updated settings-error notice is-dismissible"> 
-						<p><strong><?php echo __('Assertion updated.', 'badgefactor2'); ?></strong></p>
+						<p><strong><?php echo __( 'Assertion updated.', 'badgefactor2' ); ?></strong></p>
 						<button type="button" class="notice-dismiss">
-							<span class="screen-reader-text"><?php echo __('Dismiss this message.', 'badgefactor2'); ?></span>
+							<span class="screen-reader-text"><?php echo __( 'Dismiss this message.', 'badgefactor2' ); ?></span>
 						</button>
 					</div>
 					<?php
-					break;
-			}
+				break;
+		}
 		?>
 	<?php endif; ?>
-	<form class="cmb-form" method="post" enctype="multipart/form-data">
+	<?php if ( isset( $entity ) ) : ?>
+		<?php // Revoke. ?>
+	<form class="cmb-form" method="post">
 		<div class="cmb2-wrapform-table">
 			<div class="cmb2-metabox cmb-field-list">
+				<div class="cmb-row cmb-type-file table-layout">
+					<div class="cmb-th">
+						<?php echo __( 'Image', 'badgefactor2' ); ?>
+					</div>
+					<div class="cmb-td">
+						<?php
+						if ( isset( $entity ) ) :
+							?>
+							<img style="max-width: 50px" src="<?php echo $entity->image; ?>">
+						<?php endif; ?>
+						<br/>
+					</div>
+				</div>
+				<div class="cmb-row table-layout">	
+					<div class="cmb-th">
+						<?php echo __( 'Issuer', 'badgefactor2' ); ?>
+					</div>
+					<div class="cmb-td">
+						<?php $issuer = \BadgeFactor2\Models\Issuer::get( $entity->issuer ); ?>
+						<?php echo $issuer->name; ?>
+					</div>
+				</div>
+				<div class="cmb-row table-layout">	
+					<div class="cmb-th">
+						<?php echo __( 'Badge', 'badgefactor2' ); ?>
+					</div>
+					<div class="cmb-td">
+						<?php $badge = \BadgeFactor2\Models\BadgeClass::get( $entity->badgeclass ); ?>
+						<?php echo $badge->name; ?>
+					</div>
+				</div>
+				<div class="cmb-row table-layout">	
+					<div class="cmb-th">
+						<?php echo __( 'Recipient', 'badgefactor2' ); ?>
+					</div>
+					<div class="cmb-td">
+						<?php echo $entity->recipient->plaintextIdentity; ?>
+					</div>
+				</div>
+				<div class="cmb-row table-layout">	
+					<div class="cmb-th">
+						<?php echo __( 'Issued On', 'badgefactor2' ); ?>
+					</div>
+					<div class="cmb-td">
+						<?php $date = strtotime( $entity->issuedOn ); ?>
+						<?php echo gmdate( 'Y-m-d&\nb\s\p;H:i:s', $date ); ?>
+					</div>
+				</div>
 			</div>
 		</div>
 		<p class="submit">
-			<input type="submit" class="button button-primary" value="
-			<?php if ( isset( $entity ) ) : ?>
-				<?php echo __( 'Edit Assertion', 'badgefactor2' ); ?>
-			<?php else : ?>
-				<?php echo __( 'Create Assertion', 'badgefactor2' ); ?>
-			<?php endif; ?>"
-				>
+			<input type="submit" class="button button-primary" value="<?php echo __( 'Revoke Assertion', 'badgefactor2' ); ?>">
 		</p>
 	</form>
+	<?php elseif ( isset( $_GET['filter_type'] ) 
+		&& isset( $_GET['filter_value'] ) 
+		&& !empty ( $_GET['filter_type'] )
+		&& !empty ( $_GET['filter_value'] ) ) : ?>
+	<?php
+		// Create.
+		$filter_type = $_GET['filter_type'];
+		$filter_value = $_GET['filter_value'];
+
+		$issuer = null;
+		$badge = null;
+
+		switch ($filter_type) {
+			case 'Issuers':
+				$issuer = \BadgeFactor2\Models\Issuer::get( $filter_value );
+				$badge  = \BadgeFactor2\Models\BadgeClass::all( -1, 1, array( 'issuer' => $filter_value ) );
+				break;
+			case 'Badges':
+				$badge = \BadgeFactor2\Models\BadgeClass::get( $filter_value );
+				$issuer = \BadgeFactor2\Models\Issuer::get( $badge->issuer );
+				break;
+		}
+	?>
+	<form class="cmb-form" method="post" enctype="multipart/form-data">
+		<div class="cmb2-wrapform-table">
+			<div class="cmb2-metabox cmb-field-list">
+				<div class="cmb-row table-layout">	
+					<div class="cmb-th">
+						<label for="issuer"><?php echo __( 'Issuer', 'badgefactor2' ); ?></label>
+					</div>
+					<div class="cmb-td">
+						<input type="hidden" name="issuer" value="<?php echo $issuer->entityId; ?>">
+						<input type="text" value="<?php echo $issuer->name; ?>" disabled>
+					</div>
+				</div>
+				
+				<?php if ( is_array( $badge ) ): ?>
+				<div class="cmb-row cmb-type-select table-layout">	
+					<div class="cmb-th">
+						<label for="badge"><?php echo __( 'Badge', 'badgefactor2' ); ?></label>
+					</div>
+					<div class="cmb-td">
+						<select name="badge" class="cmb2-select cmb2-select-medium" required>
+							<option value=""><?php echo __( 'Select a Badge', 'badgefactor2' ); ?></option>
+							<?php foreach ( $badge as $b ) : ?>
+							<option value="<?php echo $b->entityId; ?>"><?php echo $b->name; ?></option>
+							<?php endforeach; ?>
+						</select>
+					</div>
+				</div>
+				<?php else: ?>
+				<div class="cmb-row table-layout">	
+					<div class="cmb-th">
+						<?php echo __( 'Badge', 'badgefactor2' ); ?>
+					</div>
+					<div class="cmb-td">
+							<input type="hidden" name="badge" value="<?php echo $badge->entityId; ?>">
+							<input type="text" value="<?php echo $badge->name; ?>" disabled>
+					</div>
+				</div>
+				<?php endif; ?>
+				<div class="cmb-row cmb-type-text table-layout">
+					<div class="cmb-th">
+						<?php echo __( 'Recipient Email', 'badgefactor2' ); ?>
+					</div>
+					<div class="cmb-td">
+						<input type="text" name="recipient" class="cmb2-text cmb2-text-medium regular-text" required>
+					</div>
+				</div>
+			</div>
+		</div>
+		<p class="submit">
+			<input type="submit" class="button button-primary" value="<?php echo __( 'Create Assertion', 'badgefactor2' ); ?>">
+		</p>
+	</form>
+	<?php else: ?>
+		You shouldn't be here.
+	<?php endif; ?>
 </div>

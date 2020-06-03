@@ -166,13 +166,6 @@ class Badgr_List extends \WP_List_Table {
 		foreach ( $this->model::get_columns() as $column_slug => $column_title ) {
 			if ( $column_name === $column_slug ) {
 				switch ( $column_slug ) {
-					case 'image':
-						if ( 'Assertion' === $item->entityType ) {
-							$return .= '<a href="admin.php?page=assertions&action=edit&entity_id=' . $item->entityId . '"><img style="width:50%" src="' . $item->$column_name . '"></a>';
-						} else {
-							$return .= '<img style="width:50%" src="' . $item->$column_name . '">';
-						}
-						break;
 					case 'issuer':
 						$issuer  = Issuer::get( $item->$column_name );
 						$return .= '<a href="admin.php?page=issuers&action=edit&entity_id=' . $item->$column_name . '">' . $issuer->name . '</a>';
@@ -182,12 +175,12 @@ class Badgr_List extends \WP_List_Table {
 						$return .= '<span style="font-size: 0.85em">' . gmdate( 'Y-m-d&\nb\s\p;H:i:s', $date ) . '</span>';
 						break;
 					case 'badgeclass':
-						$badge  = BadgeClass::get( $item->$column_name );
+						$badge   = BadgeClass::get( $item->$column_name );
 						$return .= '<a href="admin.php?page=badges&action=edit&entity_id=' . $item->$column_name . '">' . $badge->name . '</a>';
 						break;
 					case 'recipient':
 						$recipient = $item->recipient;
-						$return .= '<a href="users.php?action=-1&s=' . $recipient->plaintextIdentity . '">' . $recipient->plaintextIdentity . '</a>';
+						$return   .= '<a href="users.php?action=-1&s=' . $recipient->plaintextIdentity . '">' . $recipient->plaintextIdentity . '</a>';
 						break;
 					default:
 						$return .= $item->$column_name;
@@ -229,10 +222,23 @@ class Badgr_List extends \WP_List_Table {
 		$title = '<a href="admin.php?page=' . $this->slug . '&action=edit&entity_id=' . $item->entityId . '">' . $item->name . '</a>';
 
 		$actions = array(
-			'delete' => sprintf( '<a onclick="if(!confirm( \'%s\' ) ) { event.preventDefault() }" href="?page=%s&action=%s&entity_id=%s&_wpnonce=%s">Delete</a>', __( 'Are you sure you want to delete this item?', 'badgefactor2' ), $this->slug, 'delete', $item->entityId, $delete_nonce ),
+			'delete' => sprintf( '<a onclick="if(!confirm( \'%s\' ) ) { event.preventDefault() }" href="?page=%s&action=%s&entity_id=%s&_wpnonce=%s">%s</a>', __( 'Are you sure you want to delete this item?', 'badgefactor2' ), $this->slug, 'delete', $item->entityId, $delete_nonce, __( 'Delete', 'badgefactor2' ) ),
 		);
 
 		return $title . $this->row_actions( $actions );
+	}
+
+	function column_image( $item ) {
+		if ( 'Assertion' === $item->entityType ) {
+			$revoke_nonce = wp_create_nonce( 'bf2_revoke_' . $this->slug );
+			$title        = '<a href="admin.php?page=assertions&action=edit&entity_id=' . $item->entityId . '"><img style="width:50%" src="' . $item->image . '"></a>';
+			$actions      = array(
+				'revoke' => sprintf( '<a href="?page=%s&action=%s&entity_id=%s">%s</a>', $this->slug, 'revoke', $item->entityId, __( 'Revoke', 'badgefactor2' ) ),
+			);
+			return $title . $this->row_actions( $actions );
+		} else {
+			return '<img style="width:50%" src="' . $item->image . '">';
+		}
 	}
 
 
@@ -403,18 +409,26 @@ class Badgr_List extends \WP_List_Table {
 		if ( 'top' === $which ) {
 			if ( BadgrClient::is_active() ) {
 				echo '<div class="alignleft actions">';
-				echo '<a class="button action button-primary" href="admin.php?page=' . $this->slug . '&action=new">' . __( 'Add New', 'badgefactor2' ) . '</a>';
+				if ( $_GET['page'] === 'assertions' ) {
+					if ( isset( $_GET['filter_type'] ) && isset( $_GET['filter_value'] ) ) {
+						$filter_type = stripslashes( $_GET['filter_type'] );
+						$filter_value = stripslashes( $_GET['filter_value'] );
+						echo '<a class="button action button-primary" href="admin.php?page=' . $this->slug . '&filter_type=' . $filter_type . '&filter_value=' . $filter_value . '&action=new">' . __( 'Add New', 'badgefactor2' ) . '</a>';
+					}
+				} else {
+					echo '<a class="button action button-primary" href="admin.php?page=' . $this->slug . '&action=new">' . __( 'Add New', 'badgefactor2' ) . '</a>';
+				}
 				if ( ! empty( $this->filter ) ) {
-					echo '<input type="hidden" name="filter_for" value="' . get_class($this) . '">';
+					echo '<input type="hidden" name="filter_for" value="' . get_class( $this ) . '">';
 					echo '<select name="filter_type">';
 					echo '<option value="">' . __( 'Filter type', 'badgefactor2' ) . '</option>';
 					$disabled = 'disabled';
 					if ( isset( $_GET['filter_type'] ) ) {
-						$selected_filter = stripslashes( $_GET['filter_type'] );
+						$selected_filter = $_GET['filter_type'];
 					}
 					foreach ( $this->filter as $filter ) {
 						$filter       = $filter::get_instance();
-						$filter_class = get_class( $filter );
+						$filter_class = (new \ReflectionClass(get_class( $filter )))->getShortName();
 						$selected     = '';
 						if ( $filter_class === $selected_filter ) {
 								$selected = ' selected';
@@ -426,13 +440,14 @@ class Badgr_List extends \WP_List_Table {
 					echo "<select name='filter_value' {$disabled}>";
 					echo '<option value="">' . __( 'Filter for', 'badgefactor2' ) . '</option>';
 					if ( ! $disabled ) {
+						$selected_filter = 'BadgeFactor2\Admin\Lists\\' . $selected_filter;
 						$filter          = new $selected_filter();
 						$selected_filter = null;
 						if ( isset( $_GET['filter_value'] ) ) {
 							$selected_filter = stripslashes( $_GET['filter_value'] );
 						}
 						foreach ( $filter->all() as $filter ) {
-							$selected     = '';
+							$selected = '';
 							if ( $filter->entityId === $selected_filter ) {
 								$selected = 'selected';
 							}
