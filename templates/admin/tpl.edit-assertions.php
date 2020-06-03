@@ -16,64 +16,64 @@
 		?>
 	<?php endif; ?>
 	<?php if ( isset( $entity ) ) : ?>
-		<?php // Revoke. ?>
-	<form class="cmb-form" method="post">
-		<div class="cmb2-wrapform-table">
-			<div class="cmb2-metabox cmb-field-list">
-				<div class="cmb-row cmb-type-file table-layout">
-					<div class="cmb-th">
-						<?php echo __( 'Image', 'badgefactor2' ); ?>
-					</div>
-					<div class="cmb-td">
-						<?php
-						if ( isset( $entity ) ) :
-							?>
-							<img style="max-width: 50px" src="<?php echo $entity->image; ?>">
-						<?php endif; ?>
-						<br/>
-					</div>
+	<?php 
+		// Revoke. 
+	?>
+	<div class="cmb2-wrapform-table">
+		<div class="cmb2-metabox cmb-field-list">
+			<div class="cmb-row cmb-type-file table-layout">
+				<div class="cmb-th">
+					<?php echo __( 'Image', 'badgefactor2' ); ?>
 				</div>
-				<div class="cmb-row table-layout">	
-					<div class="cmb-th">
-						<?php echo __( 'Issuer', 'badgefactor2' ); ?>
-					</div>
-					<div class="cmb-td">
-						<?php $issuer = \BadgeFactor2\Models\Issuer::get( $entity->issuer ); ?>
-						<?php echo $issuer->name; ?>
-					</div>
+				<div class="cmb-td">
+					<?php
+					if ( isset( $entity ) ) :
+						?>
+						<img style="max-width: 50px" src="<?php echo $entity->image; ?>">
+					<?php endif; ?>
+					<br/>
 				</div>
-				<div class="cmb-row table-layout">	
-					<div class="cmb-th">
-						<?php echo __( 'Badge', 'badgefactor2' ); ?>
-					</div>
-					<div class="cmb-td">
-						<?php $badge = \BadgeFactor2\Models\BadgeClass::get( $entity->badgeclass ); ?>
-						<?php echo $badge->name; ?>
-					</div>
+			</div>
+			<div class="cmb-row table-layout">	
+				<div class="cmb-th">
+					<?php echo __( 'Issuer', 'badgefactor2' ); ?>
 				</div>
-				<div class="cmb-row table-layout">	
-					<div class="cmb-th">
-						<?php echo __( 'Recipient', 'badgefactor2' ); ?>
-					</div>
-					<div class="cmb-td">
-						<?php echo $entity->recipient->plaintextIdentity; ?>
-					</div>
+				<div class="cmb-td">
+					<?php $issuer = \BadgeFactor2\Models\Issuer::get( $entity->issuer ); ?>
+					<?php echo $issuer->name; ?>
 				</div>
-				<div class="cmb-row table-layout">	
-					<div class="cmb-th">
-						<?php echo __( 'Issued On', 'badgefactor2' ); ?>
-					</div>
-					<div class="cmb-td">
-						<?php $date = strtotime( $entity->issuedOn ); ?>
-						<?php echo gmdate( 'Y-m-d&\nb\s\p;H:i:s', $date ); ?>
-					</div>
+			</div>
+			<div class="cmb-row table-layout">	
+				<div class="cmb-th">
+					<?php echo __( 'Badge', 'badgefactor2' ); ?>
+				</div>
+				<div class="cmb-td">
+					<?php $badge = \BadgeFactor2\Models\BadgeClass::get( $entity->badgeclass ); ?>
+					<?php echo $badge->name; ?>
+				</div>
+			</div>
+			<div class="cmb-row table-layout">	
+				<div class="cmb-th">
+					<?php echo __( 'Recipient', 'badgefactor2' ); ?>
+				</div>
+				<div class="cmb-td">
+					<?php echo $entity->recipient->plaintextIdentity; ?>
+				</div>
+			</div>
+			<div class="cmb-row table-layout">	
+				<div class="cmb-th">
+					<?php echo __( 'Issued On', 'badgefactor2' ); ?>
+				</div>
+				<div class="cmb-td">
+					<?php $date = strtotime( $entity->issuedOn ); ?>
+					<?php echo gmdate( 'Y-m-d&\nb\s\p;H:i:s', $date ); ?>
 				</div>
 			</div>
 		</div>
-		<p class="submit">
-			<input type="submit" class="button button-primary" value="<?php echo __( 'Revoke Assertion', 'badgefactor2' ); ?>">
-		</p>
-	</form>
+	</div>
+	<p class="submit">
+		<a class="button button-primary" href="<?php echo "?page=assertions&action=revoke&entity_id={$entity->entityId}"; ?>"><?php echo __( 'Revoke Assertion', 'badgefactor2' ); ?></a>
+	</p>
 	<?php elseif ( isset( $_GET['filter_type'] ) 
 		&& isset( $_GET['filter_value'] ) 
 		&& !empty ( $_GET['filter_type'] )
