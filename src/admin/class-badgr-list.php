@@ -167,7 +167,11 @@ class Badgr_List extends \WP_List_Table {
 			if ( $column_name === $column_slug ) {
 				switch ( $column_slug ) {
 					case 'image':
-						$return .= '<img style="width:50%" src="' . $item->$column_name . '">';
+						if ( 'Assertion' === $item->entityType ) {
+							$return .= '<a href="admin.php?page=assertions&action=edit&entity_id=' . $item->entityId . '"><img style="width:50%" src="' . $item->$column_name . '"></a>';
+						} else {
+							$return .= '<img style="width:50%" src="' . $item->$column_name . '">';
+						}
 						break;
 					case 'issuer':
 						$issuer  = Issuer::get( $item->$column_name );
