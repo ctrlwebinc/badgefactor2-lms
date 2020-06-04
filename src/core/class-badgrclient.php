@@ -499,8 +499,18 @@ class BadgrClient {
 
 	public static function init_hooks(){
 		add_rewrite_rule(
-			'bf2/(emailConfirm|restorePassword)/(\S+)/?',
+			'bf2/(emailConfirm)/(\S+)/?',
 			'index.php?bf2=$matches[1]&user=$matches[2]',
+			'top'
+		);
+		add_rewrite_rule(
+			'bf2/(forgotPassword)(\S+)/?',
+			'index.php?bf2=$matches[1]&token=$matches[2]',
+			'top'
+		);
+		add_rewrite_rule(
+			'bf2/(loginRedirect|signupSuccess|signupFailure|signup|uiConnectSuccess)(\S+)/?',
+			'index.php?bf2=$matches[1]',
 			'top'
 		); 
 	}
