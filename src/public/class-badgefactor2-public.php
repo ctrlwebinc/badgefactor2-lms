@@ -42,16 +42,19 @@ class BadgeFactor2_Public {
 	}
 
 	public static function add_rewrite_tags( ) {
+		add_rewrite_tag( '%issuer%', '([^&]+)' );
 		add_rewrite_tag( '%badge%', '([^&]+)' );
 		add_rewrite_tag( '%assertion%', '([^&]+)' );
 	}
 
 	public static function add_rewrite_rules() {
+		add_rewrite_rule( '^issuers/([^/]*)/?', 'index.php?issuer=$matches[1]', 'top' );
 		add_rewrite_rule( '^badges/([^/]*)/?', 'index.php?badge=$matches[1]', 'top' );
 		add_rewrite_rule( '^assertions/([^/]*)/?', 'index.php?assertion=$matches[1]', 'top' );
 	}
 
 	public static function add_custom_query_vars( $vars ) {
+		$vars[] = 'issuer';
 		$vars[] = 'badge';
 		$vars[] = 'assertion';
 		return $vars;

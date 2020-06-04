@@ -20,12 +20,25 @@
  * @package Badge_Factor_2
  */
 
+/*
+ * You can override this template by copying it in your theme, in a
+ * badgefactor2/ subdirectory, and modifying it there.
+ */
+
+get_header();
+
+$issuer = BadgeFactor2\Models\Issuer::get( $issuer );
 ?>
-<div class="cmb-row table-layout">
-	<div class="cmb-th">
-		<label for="badgr_server_status">Server Status</label>
-	</div>
-	<div class="cmb-td">
-		<?php echo \BadgeFactor2\BadgrClient::get_status(); ?>
-	</div>
-</div>
+<section id="primary" class="content-area">
+	<main id="main" class="site-main">
+	<article id="badge-" <?php post_class(); ?>>
+		<div class="entry-content">
+			<div class="content">
+
+			</div><!-- .content -->
+		</div><!-- .entry-content --> 
+	</article>
+	</main><!-- #main -->
+</section><!-- #primary -->
+<?php
+get_footer();
