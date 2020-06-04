@@ -3,7 +3,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "Project-Id-Version: Badge Factor 2\n"
 "POT-Creation-Date: 2020-06-04 11:45-0400\n"
-"PO-Revision-Date: 2020-06-04 11:55-0400\n"
+"PO-Revision-Date: 2020-06-04 12:42-0400\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -871,14 +871,14 @@ msgstr ""
 
 #: src/admin/class-badgefactor2-admin.php:76
 msgid "Approver"
-msgstr ""
+msgstr "Approbateur"
 
 #: src/admin/class-badgefactor2-admin.php:95
 #: src/admin/class-badgefactor2-admin.php:131
 #: src/admin/class-badgefactor2-admin.php:197
 #: src/admin/lists/class-issuers.php:42
 msgid "Issuers"
-msgstr ""
+msgstr "Émetteurs"
 
 #: src/admin/class-badgefactor2-admin.php:100
 #: src/admin/class-badgefactor2-admin.php:153
@@ -892,7 +892,7 @@ msgstr ""
 #: src/admin/class-badgefactor2-admin.php:223
 #: src/admin/lists/class-assertions.php:44
 msgid "Assertions"
-msgstr ""
+msgstr "Badges émis"
 
 #: src/admin/class-badgefactor2-admin.php:260
 msgid "Settings"
@@ -981,110 +981,112 @@ msgstr ""
 
 #: src/admin/class-badgefactor2-admin.php:374
 msgid "From settings"
-msgstr ""
+msgstr "À partir des configurations"
 
 #: src/admin/class-badgefactor2-admin.php:375
 msgid "Use the same password as WordPress"
-msgstr ""
+msgstr "Utiliser le même mot-de-passe que WordPress"
 
 #: src/admin/class-badgefactor2-admin.php:376
 msgid "Always ask"
-msgstr ""
+msgstr "Toujours demander"
 
 #: src/admin/class-badgefactor2-admin.php:377
 msgid "Ask and remember"
-msgstr ""
+msgstr "Demander et retenir"
 
 #: src/admin/class-badgefactor2-admin.php:385
 msgid "Password"
-msgstr ""
+msgstr "Mot-de-passe"
 
 #: src/admin/class-badgefactor2-admin.php:386
 msgid "Badgr server password"
-msgstr ""
+msgstr "Mot-de-passe serveur Badgr"
 
 #: src/admin/class-badgefactor2-admin.php:395
 msgid "Authorization type"
-msgstr ""
+msgstr "Type d'autorisation"
 
 #: src/admin/class-badgefactor2-admin.php:396
 msgid "Choose how to exchange credentials with Badgr"
-msgstr ""
+msgstr "Choisir comment échanger les identifiants avec Badge"
 
 #: src/admin/class-badgefactor2-admin.php:402
 msgid "Use passwords"
-msgstr ""
+msgstr "Utiliser les mots-de-passe"
 
 #: src/admin/class-badgefactor2-admin.php:403
 msgid "Redirect to server"
-msgstr ""
+msgstr "Rediriger au serveur"
 
 #: src/admin/class-badgefactor2-admin.php:411
 msgid "Public URL"
-msgstr ""
+msgstr "URL public"
 
 #: src/admin/class-badgefactor2-admin.php:412
 #: src/admin/class-badgefactor2-admin.php:424
 msgid "Format: scheme://URL:port"
-msgstr ""
+msgstr "Format: schéma://URL:port"
 
 #: src/admin/class-badgefactor2-admin.php:423
 msgid "Internal URL"
-msgstr ""
+msgstr "URL interne"
 
 #: src/admin/class-badgefactor2-admin.php:435
 msgid "Client ID"
-msgstr ""
+msgstr "ID Client"
 
 #: src/admin/class-badgefactor2-admin.php:443
 msgid "Client Secret"
-msgstr ""
+msgstr "Secret Client"
 
 #: src/admin/class-badgefactor2-admin.php:462
 msgid "Plugins"
-msgstr ""
+msgstr "Modules"
 
 #: src/admin/class-badgefactor2-admin.php:481
 #: src/admin/class-badgefactor2-admin.php:489
 #: src/admin/class-badgefactor2-admin.php:511
 msgid "Filter for"
-msgstr ""
+msgstr "Filtrer pour"
 
 #: src/admin/class-badgr-list.php:155
 #, php-format
 msgid "No %s avaliable."
-msgstr ""
+msgstr "Aucun %s disponible."
 
 #: src/admin/class-badgr-list.php:228
 msgid "Are you sure you want to delete this item?"
-msgstr ""
+msgstr "Êtes-vous certain de vouloir supprimer cet item ?"
 
 #: src/admin/class-badgr-list.php:228
 msgid "Delete"
-msgstr ""
+msgstr "Supprimer"
 
 #: src/admin/class-badgr-list.php:239
 #: templates/admin/tpl.edit-assertions.php:58
 msgid "REVOKED!"
-msgstr ""
+msgstr "RÉVOQUÉ!"
 
 #: src/admin/class-badgr-list.php:244
 msgid "Revoke"
-msgstr ""
+msgstr "Révoquer"
 
 #: src/admin/class-badgr-list.php:346 src/admin/class-badgr-list.php:364
 msgid "You are missing an entity ID."
-msgstr ""
+msgstr "Il vous manque un entity ID."
 
 #: src/admin/class-badgr-list.php:351 src/admin/class-badgr-list.php:369
 #: src/admin/class-badgr-list.php:376
 msgid ""
 "You attempted to edit an item that doesn't exist. Perhaps it was deleted?"
 msgstr ""
+"Vous tentez d’éditer un item qui n’existe pas. Peut-être a-t-il été "
+"supprimé ?"
 
 #: src/admin/class-badgr-list.php:393
 msgid "Object created."
-msgstr ""
+msgstr "Objet créé."
 
 #: src/admin/class-badgr-list.php:395
 #: templates/admin/tpl.edit-assertions.php:33
@@ -1092,35 +1094,35 @@ msgstr ""
 #: templates/admin/tpl.edit-issuers.php:33
 #: templates/admin/tpl.revoke-assertions.php:33
 msgid "Dismiss this message."
-msgstr ""
+msgstr "Fermer ce message."
 
 #: src/admin/class-badgr-list.php:415
 msgid "Item deleted."
-msgstr ""
+msgstr "Item supprimé."
 
 #: src/admin/class-badgr-list.php:428
 msgid "Items deleted."
-msgstr ""
+msgstr "Items supprimés."
 
 #: src/admin/class-badgr-list.php:450 src/admin/class-badgr-list.php:453
 msgid "Add New"
-msgstr ""
+msgstr "Nouveau"
 
 #: src/admin/class-badgr-list.php:458
 msgid "List type"
-msgstr ""
+msgstr "Type de liste"
 
 #: src/admin/class-badgr-list.php:475
 msgid "List for"
-msgstr ""
+msgstr "Liste pour"
 
 #: src/admin/class-badgr-list.php:495
 msgid "Badgr connection inactive!"
-msgstr ""
+msgstr "Connexion Badgr inactive !"
 
 #: src/admin/lists/class-assertions.php:43
 msgid "Assertion"
-msgstr ""
+msgstr "Badge émis"
 
 #: src/admin/lists/class-badges.php:41 src/models/class-assertion.php:114
 #: templates/admin/tpl.edit-assertions.php:75
@@ -1137,40 +1139,40 @@ msgstr ""
 #: templates/admin/tpl.edit-badges.php:58
 #: templates/admin/tpl.revoke-assertions.php:63
 msgid "Issuer"
-msgstr ""
+msgstr "Émetteur"
 
 #: src/client/shortcodes/class-issuers.php:43
 msgid "No issuer for the moment."
-msgstr ""
+msgstr "Aucun émetteur pour le moment."
 
 #: src/core/class-badgrclient.php:109
 msgid "Active"
-msgstr ""
+msgstr "Actif"
 
 #: src/core/class-badgrclient.php:109
 msgid "Inactive"
-msgstr ""
+msgstr "Inactif"
 
 #: src/models/class-assertion.php:112
 msgid "Issued Badge"
-msgstr ""
+msgstr "Badge émis"
 
 #: src/models/class-assertion.php:115
 #: templates/admin/tpl.edit-assertions.php:84
 #: templates/admin/tpl.revoke-assertions.php:81
 msgid "Recipient"
-msgstr ""
+msgstr "Destinataire"
 
 #: src/models/class-assertion.php:116 src/models/class-badgeclass.php:117
 #: src/models/class-issuer.php:137
 msgid "Created on"
-msgstr ""
+msgstr "Créé le"
 
 #: src/models/class-badgeclass.php:114 src/models/class-issuer.php:135
 #: templates/admin/tpl.edit-badges.php:46
 #: templates/admin/tpl.edit-issuers.php:46
 msgid "Name"
-msgstr ""
+msgstr "Nom"
 
 #: src/models/class-badgeclass.php:116
 #: templates/admin/tpl.edit-assertions.php:49
@@ -1181,17 +1183,17 @@ msgstr ""
 
 #: src/models/class-issuer.php:136 templates/admin/tpl.edit-issuers.php:58
 msgid "Email"
-msgstr ""
+msgstr "Courriel"
 
 #: templates/admin/tpl.edit-assertions.php:31
 #: templates/admin/tpl.revoke-assertions.php:31
 msgid "Assertion updated."
-msgstr ""
+msgstr "Badge émis mis à jour."
 
 #: templates/admin/tpl.edit-assertions.php:92
 #: templates/admin/tpl.revoke-assertions.php:89
 msgid "Issued On"
-msgstr ""
+msgstr "Émis le"
 
 #: templates/admin/tpl.edit-assertions.php:102
 msgid "Revocation reason"
@@ -1200,43 +1202,43 @@ msgstr "Raison de la révocation"
 #: templates/admin/tpl.edit-assertions.php:113
 #: templates/admin/tpl.revoke-assertions.php:108
 msgid "Revoke Assertion"
-msgstr ""
+msgstr "Révoquez le badge émis"
 
 #: templates/admin/tpl.edit-assertions.php:160
 msgid "Select a Badge"
-msgstr ""
+msgstr "Choisissez un badge"
 
 #: templates/admin/tpl.edit-assertions.php:180
 msgid "Recipient Email"
-msgstr ""
+msgstr "Courriel du destinataire"
 
 #: templates/admin/tpl.edit-assertions.php:189
 msgid "Create Assertion"
-msgstr ""
+msgstr "Émettre un badge."
 
 #: templates/admin/tpl.edit-badges.php:31
 msgid "Badge updated."
-msgstr ""
+msgstr "Badge mis à jour."
 
 #: templates/admin/tpl.edit-badges.php:103
 msgid "Edit Badge"
-msgstr ""
+msgstr "Éditer un badge"
 
 #: templates/admin/tpl.edit-badges.php:105
 msgid "Create Badge"
-msgstr ""
+msgstr "Créer un badge"
 
 #: templates/admin/tpl.edit-issuers.php:31
 msgid "Issuer updated."
-msgstr ""
+msgstr "Émetteur mis à jour."
 
 #: templates/admin/tpl.edit-issuers.php:70
 msgid "URL"
-msgstr ""
+msgstr "URL"
 
 #: templates/admin/tpl.edit-issuers.php:97
 msgid "Edit Issuer"
-msgstr ""
+msgstr "Éditer l’émetteur"
 
 #: templates/admin/tpl.edit-issuers.php:99
 msgid "Create Issuer"
