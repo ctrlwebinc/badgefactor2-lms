@@ -44,10 +44,10 @@ class BadgeClass implements Badgr_Entity {
 	 */
 	public static function all( $per_page = 10, $page_number = 1, $filter = array() ) {
 		$badges = BadgrProvider::get_all_badge_classes();
-		if (isset($filter['issuer'])) {
-			foreach($badges as $i => $badge) {
+		if ( isset( $filter['issuer'] ) ) {
+			foreach ( $badges as $i => $badge ) {
 				if ( $badge->issuer !== $filter['issuer'] ) {
-					unset($badges[$i]);
+					unset( $badges[ $i ] );
 				}
 			}
 		}
@@ -85,7 +85,14 @@ class BadgeClass implements Badgr_Entity {
 	 * @return boolean Whether or not update has succeeded.
 	 */
 	public static function update( $entity_id, $values ) {
-		if ( self::validate( $values ) ) {
+
+		$badge = BadgeClass::get( $entity_id );
+
+		if ( $badge && self::validate( $values ) ) {
+			if ( ! isset( $values['image'] ) ) {
+				$values['image'] = null;
+			}
+
 			return BadgrProvider::update_badge_class( $entity_id, $values['name'], $values['description'], $values['image'] );
 		}
 		return false;
@@ -104,10 +111,10 @@ class BadgeClass implements Badgr_Entity {
 
 	public static function get_columns() {
 		return array(
-			'name'        => __( 'Name', 'badgefactor2' ),
-			'issuer'      => __( 'Issuer', 'badgefactor2' ),
-			'image'       => __( 'Image', 'badgefactor2' ),
-			'createdAt'   => __( 'Created on', 'badgefactor2' ),
+			'name'      => __( 'Name', 'badgefactor2' ),
+			'issuer'    => __( 'Issuer', 'badgefactor2' ),
+			'image'     => __( 'Image', 'badgefactor2' ),
+			'createdAt' => __( 'Created on', 'badgefactor2' ),
 		);
 	}
 

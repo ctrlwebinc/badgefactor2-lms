@@ -63,7 +63,7 @@ class BadgeFactor2_Admin {
 	 * @return void
 	 */
 	public static function admin_init() {
-		load_plugin_textdomain( 'badgefactor2' );
+		load_plugin_textdomain( 'badgefactor2', false, basename( dirname( __FILE__, 3 ) ) . '/languages/' );
 		self::register_settings_metabox();
 	}
 
@@ -238,7 +238,9 @@ class BadgeFactor2_Admin {
 	 */
 	public static function load_resources() {
 		wp_enqueue_style( 'cmb2-styles-css', BF2_BASEURL . 'lib/CMB2/css/cmb2.min.css', array(), '5.2.5', 'all' );
-		wp_enqueue_script( 'badgefactor2-admin', BF2_BASEURL . 'assets/js/admin.js', array( 'jquery' ), '1.0.0', true );
+		wp_enqueue_style( 'badgefactor2-admin', BF2_BASEURL . 'assets/css/admin.css', array(), '1.0.0', 'all' );
+		wp_enqueue_script( 'badgefactor2-tinymce', 'https://cdnjs.cloudflare.com/ajax/libs/tinymce/5.3.1/tinymce.min.js', array(), '5.3.1', true );
+		wp_enqueue_script( 'badgefactor2-admin', BF2_BASEURL . 'assets/js/admin.js', array( 'jquery', 'badgefactor2-tinymce' ), '1.0.0', true );
 
 	}
 

@@ -1,0 +1,1287 @@
+#, fuzzy
+msgid ""
+msgstr ""
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+"Project-Id-Version: Badge Factor 2\n"
+"POT-Creation-Date: 2020-06-04 11:45-0400\n"
+"PO-Revision-Date: 2020-06-04 11:40-0400\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 2.3.1\n"
+"X-Poedit-Basepath: ..\n"
+"X-Poedit-Flags-xgettext: --add-comments=translators:\n"
+"X-Poedit-WPHeader: badgefactor2.php\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-KeywordsList: __;_e;_n:1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;esc_attr__;"
+"esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c;_n_noop:1,2;"
+"_nx_noop:3c,1,2;__ngettext_noop:1,2\n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SearchPathExcluded-0: *.min.js\n"
+"X-Poedit-SearchPathExcluded-1: vendor\n"
+
+#: lib/CMB2/cmb2/example-functions.php:117 lib/CMB2/example-functions.php:115
+#: lib/CMB2/tests/test-cmb-field.php:263
+msgid "Test Metabox"
+msgstr ""
+
+#: lib/CMB2/cmb2/example-functions.php:150
+#: lib/CMB2/cmb2/example-functions.php:490 lib/CMB2/example-functions.php:148
+#: lib/CMB2/example-functions.php:492
+msgid "Test Text"
+msgstr ""
+
+#: lib/CMB2/cmb2/example-functions.php:151
+#: lib/CMB2/cmb2/example-functions.php:164
+#: lib/CMB2/cmb2/example-functions.php:177
+#: lib/CMB2/cmb2/example-functions.php:184
+#: lib/CMB2/cmb2/example-functions.php:197
+#: lib/CMB2/cmb2/example-functions.php:205
+#: lib/CMB2/cmb2/example-functions.php:214
+#: lib/CMB2/cmb2/example-functions.php:222
+#: lib/CMB2/cmb2/example-functions.php:237
+#: lib/CMB2/cmb2/example-functions.php:245
+#: lib/CMB2/cmb2/example-functions.php:253
+#: lib/CMB2/cmb2/example-functions.php:270
+#: lib/CMB2/cmb2/example-functions.php:279
+#: lib/CMB2/cmb2/example-functions.php:295
+#: lib/CMB2/cmb2/example-functions.php:302
+#: lib/CMB2/cmb2/example-functions.php:309
+#: lib/CMB2/cmb2/example-functions.php:334
+#: lib/CMB2/cmb2/example-functions.php:347
+#: lib/CMB2/cmb2/example-functions.php:360
+#: lib/CMB2/cmb2/example-functions.php:372
+#: lib/CMB2/cmb2/example-functions.php:381
+#: lib/CMB2/cmb2/example-functions.php:389
+#: lib/CMB2/cmb2/example-functions.php:398
+#: lib/CMB2/cmb2/example-functions.php:405
+#: lib/CMB2/cmb2/example-functions.php:419
+#: lib/CMB2/cmb2/example-functions.php:491
+#: lib/CMB2/cmb2/example-functions.php:583
+#: lib/CMB2/cmb2/example-functions.php:591
+#: lib/CMB2/cmb2/example-functions.php:598
+#: lib/CMB2/cmb2/example-functions.php:605
+#: lib/CMB2/cmb2/example-functions.php:612
+#: lib/CMB2/cmb2/example-functions.php:619
+#: lib/CMB2/cmb2/example-functions.php:626
+#: lib/CMB2/cmb2/example-functions.php:653
+#: lib/CMB2/cmb2/example-functions.php:661
+#: lib/CMB2/cmb2/example-functions.php:668
+#: lib/CMB2/cmb2/example-functions.php:717 lib/CMB2/example-functions.php:149
+#: lib/CMB2/example-functions.php:162 lib/CMB2/example-functions.php:175
+#: lib/CMB2/example-functions.php:182 lib/CMB2/example-functions.php:195
+#: lib/CMB2/example-functions.php:203 lib/CMB2/example-functions.php:212
+#: lib/CMB2/example-functions.php:220 lib/CMB2/example-functions.php:235
+#: lib/CMB2/example-functions.php:243 lib/CMB2/example-functions.php:251
+#: lib/CMB2/example-functions.php:268 lib/CMB2/example-functions.php:277
+#: lib/CMB2/example-functions.php:293 lib/CMB2/example-functions.php:300
+#: lib/CMB2/example-functions.php:307 lib/CMB2/example-functions.php:332
+#: lib/CMB2/example-functions.php:345 lib/CMB2/example-functions.php:358
+#: lib/CMB2/example-functions.php:370 lib/CMB2/example-functions.php:384
+#: lib/CMB2/example-functions.php:392 lib/CMB2/example-functions.php:401
+#: lib/CMB2/example-functions.php:408 lib/CMB2/example-functions.php:422
+#: lib/CMB2/example-functions.php:493 lib/CMB2/example-functions.php:583
+#: lib/CMB2/example-functions.php:591 lib/CMB2/example-functions.php:598
+#: lib/CMB2/example-functions.php:605 lib/CMB2/example-functions.php:612
+#: lib/CMB2/example-functions.php:619 lib/CMB2/example-functions.php:626
+#: lib/CMB2/example-functions.php:652 lib/CMB2/example-functions.php:660
+#: lib/CMB2/example-functions.php:667 lib/CMB2/example-functions.php:716
+#: lib/CMB2/tests/test-cmb-field.php:275
+msgid "field description (optional)"
+msgstr ""
+
+#: lib/CMB2/cmb2/example-functions.php:163 lib/CMB2/example-functions.php:161
+msgid "Test Text Small"
+msgstr ""
+
+#: lib/CMB2/cmb2/example-functions.php:176 lib/CMB2/example-functions.php:174
+msgid "Test Text Medium"
+msgstr ""
+
+#: lib/CMB2/cmb2/example-functions.php:183 lib/CMB2/example-functions.php:181
+msgid "Read-only Disabled Field"
+msgstr ""
+
+#: lib/CMB2/cmb2/example-functions.php:187 lib/CMB2/example-functions.php:185
+msgid "Hey there, I'm a read-only field"
+msgstr ""
+
+#: lib/CMB2/cmb2/example-functions.php:196 lib/CMB2/example-functions.php:194
+msgid "Custom Rendered Field"
+msgstr ""
+
+#: lib/CMB2/cmb2/example-functions.php:204 lib/CMB2/example-functions.php:202
+msgid "Website URL"
+msgstr ""
+
+#: lib/CMB2/cmb2/example-functions.php:213 lib/CMB2/example-functions.php:211
+msgid "Test Text Email"
+msgstr ""
+
+#: lib/CMB2/cmb2/example-functions.php:221 lib/CMB2/example-functions.php:219
+msgid "Test Time"
+msgstr ""
+
+#: lib/CMB2/cmb2/example-functions.php:229
+#: lib/CMB2/cmb2/example-functions.php:230 lib/CMB2/example-functions.php:227
+#: lib/CMB2/example-functions.php:228
+msgid "Time zone"
+msgstr ""
+
+#: lib/CMB2/cmb2/example-functions.php:236 lib/CMB2/example-functions.php:234
+msgid "Test Date Picker"
+msgstr ""
+
+#: lib/CMB2/cmb2/example-functions.php:244 lib/CMB2/example-functions.php:242
+msgid "Test Date Picker (UNIX timestamp)"
+msgstr ""
+
+#: lib/CMB2/cmb2/example-functions.php:252 lib/CMB2/example-functions.php:250
+msgid "Test Date/Time Picker Combo (UNIX timestamp)"
+msgstr ""
+
+#: lib/CMB2/cmb2/example-functions.php:269 lib/CMB2/example-functions.php:267
+msgid "Test Money"
+msgstr ""
+
+#: lib/CMB2/cmb2/example-functions.php:278 lib/CMB2/example-functions.php:276
+msgid "Test Color Picker"
+msgstr ""
+
+#: lib/CMB2/cmb2/example-functions.php:294 lib/CMB2/example-functions.php:292
+msgid "Test Text Area"
+msgstr ""
+
+#: lib/CMB2/cmb2/example-functions.php:301 lib/CMB2/example-functions.php:299
+msgid "Test Text Area Small"
+msgstr ""
+
+#: lib/CMB2/cmb2/example-functions.php:308 lib/CMB2/example-functions.php:306
+msgid "Test Text Area for Code"
+msgstr ""
+
+#: lib/CMB2/cmb2/example-functions.php:326 lib/CMB2/example-functions.php:324
+msgid "Test Title Weeeee"
+msgstr ""
+
+#: lib/CMB2/cmb2/example-functions.php:327 lib/CMB2/example-functions.php:325
+msgid "This is a title description"
+msgstr ""
+
+#: lib/CMB2/cmb2/example-functions.php:333 lib/CMB2/example-functions.php:331
+msgid "Test Select"
+msgstr ""
+
+#: lib/CMB2/cmb2/example-functions.php:339
+#: lib/CMB2/cmb2/example-functions.php:352
+#: lib/CMB2/cmb2/example-functions.php:364 lib/CMB2/example-functions.php:337
+#: lib/CMB2/example-functions.php:350 lib/CMB2/example-functions.php:362
+msgid "Option One"
+msgstr ""
+
+#: lib/CMB2/cmb2/example-functions.php:340
+#: lib/CMB2/cmb2/example-functions.php:353
+#: lib/CMB2/cmb2/example-functions.php:365 lib/CMB2/example-functions.php:338
+#: lib/CMB2/example-functions.php:351 lib/CMB2/example-functions.php:363
+msgid "Option Two"
+msgstr ""
+
+#: lib/CMB2/cmb2/example-functions.php:341
+#: lib/CMB2/cmb2/example-functions.php:354
+#: lib/CMB2/cmb2/example-functions.php:366 lib/CMB2/example-functions.php:339
+#: lib/CMB2/example-functions.php:352 lib/CMB2/example-functions.php:364
+msgid "Option Three"
+msgstr ""
+
+#: lib/CMB2/cmb2/example-functions.php:346 lib/CMB2/example-functions.php:344
+msgid "Test Radio inline"
+msgstr ""
+
+#: lib/CMB2/cmb2/example-functions.php:359 lib/CMB2/example-functions.php:357
+msgid "Test Radio"
+msgstr ""
+
+#: lib/CMB2/cmb2/example-functions.php:371 lib/CMB2/example-functions.php:369
+msgid "Test Taxonomy Radio"
+msgstr ""
+
+#: lib/CMB2/cmb2/example-functions.php:380 lib/CMB2/example-functions.php:383
+msgid "Test Taxonomy Select"
+msgstr ""
+
+#: lib/CMB2/cmb2/example-functions.php:388 lib/CMB2/example-functions.php:391
+msgid "Test Taxonomy Multi Checkbox"
+msgstr ""
+
+#: lib/CMB2/cmb2/example-functions.php:397 lib/CMB2/example-functions.php:400
+msgid "Test Checkbox"
+msgstr ""
+
+#: lib/CMB2/cmb2/example-functions.php:404 lib/CMB2/example-functions.php:407
+#: lib/CMB2/tests/test-cmb-field.php:274
+msgid "Test Multi Checkbox"
+msgstr ""
+
+#: lib/CMB2/cmb2/example-functions.php:410 lib/CMB2/example-functions.php:413
+#: lib/CMB2/tests/test-cmb-field.php:280
+msgid "Check One"
+msgstr ""
+
+#: lib/CMB2/cmb2/example-functions.php:411 lib/CMB2/example-functions.php:414
+#: lib/CMB2/tests/test-cmb-field.php:281
+msgid "Check Two"
+msgstr ""
+
+#: lib/CMB2/cmb2/example-functions.php:412 lib/CMB2/example-functions.php:415
+#: lib/CMB2/tests/test-cmb-field.php:282
+msgid "Check Three"
+msgstr ""
+
+#: lib/CMB2/cmb2/example-functions.php:418 lib/CMB2/example-functions.php:421
+msgid "Test wysiwyg"
+msgstr ""
+
+#: lib/CMB2/cmb2/example-functions.php:428 lib/CMB2/example-functions.php:431
+msgid "Test Image"
+msgstr ""
+
+#: lib/CMB2/cmb2/example-functions.php:429 lib/CMB2/example-functions.php:432
+msgid "Upload an image or enter a URL."
+msgstr ""
+
+#: lib/CMB2/cmb2/example-functions.php:435 lib/CMB2/example-functions.php:438
+msgid "Multiple Files"
+msgstr ""
+
+#: lib/CMB2/cmb2/example-functions.php:436 lib/CMB2/example-functions.php:439
+msgid "Upload or add multiple images/attachments."
+msgstr ""
+
+#: lib/CMB2/cmb2/example-functions.php:443 lib/CMB2/example-functions.php:446
+msgid "oEmbed"
+msgstr ""
+
+#. translators: %s: link to codex.wordpress.org/Embeds
+#: lib/CMB2/cmb2/example-functions.php:446 lib/CMB2/example-functions.php:449
+#, php-format
+msgid ""
+"Enter a youtube, twitter, or instagram URL. Supports services listed at %s."
+msgstr ""
+
+#: lib/CMB2/cmb2/example-functions.php:479 lib/CMB2/example-functions.php:481
+msgid "About Page Metabox"
+msgstr ""
+
+#: lib/CMB2/cmb2/example-functions.php:510 lib/CMB2/example-functions.php:511
+msgid "Repeating Field Group"
+msgstr ""
+
+#: lib/CMB2/cmb2/example-functions.php:518 lib/CMB2/example-functions.php:519
+msgid "Generates reusable form entries"
+msgstr ""
+
+#: lib/CMB2/cmb2/example-functions.php:520 lib/CMB2/example-functions.php:521
+msgid "Entry {#}"
+msgstr ""
+
+#: lib/CMB2/cmb2/example-functions.php:521 lib/CMB2/example-functions.php:522
+msgid "Add Another Entry"
+msgstr ""
+
+#: lib/CMB2/cmb2/example-functions.php:522 lib/CMB2/example-functions.php:523
+msgid "Remove Entry"
+msgstr ""
+
+#: lib/CMB2/cmb2/example-functions.php:536 lib/CMB2/example-functions.php:537
+msgid "Entry Title"
+msgstr ""
+
+#: lib/CMB2/cmb2/example-functions.php:543 lib/CMB2/example-functions.php:544
+#: templates/admin/tpl.edit-badges.php:70
+#: templates/admin/tpl.edit-issuers.php:82
+msgid "Description"
+msgstr ""
+
+#: lib/CMB2/cmb2/example-functions.php:544 lib/CMB2/example-functions.php:545
+msgid "Write a short description for this entry"
+msgstr ""
+
+#: lib/CMB2/cmb2/example-functions.php:550 lib/CMB2/example-functions.php:551
+msgid "Entry Image"
+msgstr ""
+
+#: lib/CMB2/cmb2/example-functions.php:556 lib/CMB2/example-functions.php:557
+msgid "Image Caption"
+msgstr ""
+
+#: lib/CMB2/cmb2/example-functions.php:575 lib/CMB2/example-functions.php:575
+msgid "User Profile Metabox"
+msgstr ""
+
+#: lib/CMB2/cmb2/example-functions.php:582
+#: lib/CMB2/cmb2/example-functions.php:652 lib/CMB2/example-functions.php:582
+#: lib/CMB2/example-functions.php:651
+msgid "Extra Info"
+msgstr ""
+
+#: lib/CMB2/cmb2/example-functions.php:590 lib/CMB2/example-functions.php:590
+msgid "Avatar"
+msgstr ""
+
+#: lib/CMB2/cmb2/example-functions.php:597 lib/CMB2/example-functions.php:597
+msgid "Facebook URL"
+msgstr ""
+
+#: lib/CMB2/cmb2/example-functions.php:604 lib/CMB2/example-functions.php:604
+msgid "Twitter URL"
+msgstr ""
+
+#: lib/CMB2/cmb2/example-functions.php:611 lib/CMB2/example-functions.php:611
+msgid "Google+ URL"
+msgstr ""
+
+#: lib/CMB2/cmb2/example-functions.php:618 lib/CMB2/example-functions.php:618
+msgid "Linkedin URL"
+msgstr ""
+
+#: lib/CMB2/cmb2/example-functions.php:625 lib/CMB2/example-functions.php:625
+msgid "User Field"
+msgstr ""
+
+#: lib/CMB2/cmb2/example-functions.php:645 lib/CMB2/example-functions.php:644
+msgid "Category Metabox"
+msgstr ""
+
+#: lib/CMB2/cmb2/example-functions.php:660 lib/CMB2/example-functions.php:659
+msgid "Term Image"
+msgstr ""
+
+#: lib/CMB2/cmb2/example-functions.php:667 lib/CMB2/example-functions.php:666
+msgid "Arbitrary Term Field"
+msgstr ""
+
+#: lib/CMB2/cmb2/example-functions.php:686 lib/CMB2/example-functions.php:685
+msgid "Theme Options"
+msgstr ""
+
+#: lib/CMB2/cmb2/example-functions.php:716 lib/CMB2/example-functions.php:715
+msgid "Site Background Color"
+msgstr ""
+
+#: lib/CMB2/cmb2/example-functions.php:753 lib/CMB2/example-functions.php:752
+#, php-format
+msgid "%s &mdash; Updated!"
+msgstr ""
+
+#: lib/CMB2/cmb2/example-functions.php:787 lib/CMB2/example-functions.php:784
+msgid "REST Test Box"
+msgstr ""
+
+#: lib/CMB2/cmb2/example-functions.php:796 lib/CMB2/example-functions.php:793
+msgid "REST Test Text"
+msgstr ""
+
+#: lib/CMB2/cmb2/example-functions.php:797 lib/CMB2/example-functions.php:794
+msgid "Will show in the REST API for this box and for pages."
+msgstr ""
+
+#: lib/CMB2/cmb2/example-functions.php:803 lib/CMB2/example-functions.php:800
+msgid "REST Editable Test Text"
+msgstr ""
+
+#: lib/CMB2/cmb2/example-functions.php:804 lib/CMB2/example-functions.php:801
+msgid "Will show in REST API \"editable\" contexts only (`POST` requests)."
+msgstr ""
+
+#: lib/CMB2/cmb2/includes/CMB2.php:199 lib/CMB2/includes/CMB2.php:199
+msgid "Metabox configuration is required to have an ID parameter."
+msgstr ""
+
+#: lib/CMB2/cmb2/includes/CMB2.php:603 lib/CMB2/includes/CMB2.php:603
+msgid "Click to toggle"
+msgstr ""
+
+#: lib/CMB2/cmb2/includes/CMB2_Ajax.php:75 lib/CMB2/includes/CMB2_Ajax.php:75
+msgid "Please Try Again"
+msgstr ""
+
+#: lib/CMB2/cmb2/includes/CMB2_Ajax.php:181 lib/CMB2/includes/CMB2_Ajax.php:181
+#: lib/CMB2/tests/cmb-tests-base.php:50
+msgid "Remove Embed"
+msgstr ""
+
+#. translators: 1: results for. 2: link to codex.wordpress.org/Embeds
+#: lib/CMB2/cmb2/includes/CMB2_Ajax.php:189
+#: lib/CMB2/cmb2/includes/helper-functions.php:107
+#: lib/CMB2/includes/CMB2_Ajax.php:189
+#: lib/CMB2/includes/helper-functions.php:107
+#: lib/CMB2/tests/cmb-tests-base.php:68
+#: lib/CMB2/tests/test-cmb-types-display.php:208
+#, php-format
+msgid "No oEmbed Results Found for %1$s. View more info at %2$s."
+msgstr ""
+
+#: lib/CMB2/cmb2/includes/CMB2_Base.php:422 lib/CMB2/includes/CMB2_Base.php:422
+#, php-format
+msgid ""
+"The \"%1$s\" field parameter has been deprecated in favor of the \"%2$s\" "
+"parameter."
+msgstr ""
+
+#: lib/CMB2/cmb2/includes/CMB2_Base.php:426 lib/CMB2/includes/CMB2_Base.php:426
+#, php-format
+msgid ""
+"Using the \"%1$s\" field parameter as a callback has been deprecated in "
+"favor of the \"%2$s\" parameter."
+msgstr ""
+
+#: lib/CMB2/cmb2/includes/CMB2_Base.php:456 lib/CMB2/includes/CMB2_Base.php:456
+#, php-format
+msgid ""
+"%1$s was called with a parameter that is <strong>deprecated</strong> since "
+"version %2$s! %3$s"
+msgstr ""
+
+#: lib/CMB2/cmb2/includes/CMB2_Base.php:458 lib/CMB2/includes/CMB2_Base.php:458
+#, php-format
+msgid ""
+"%1$s was called with a parameter that is <strong>deprecated</strong> since "
+"version %2$s with no alternative available."
+msgstr ""
+
+#: lib/CMB2/cmb2/includes/CMB2_Base.php:491
+#: lib/CMB2/cmb2/includes/CMB2_Hookup_Base.php:102
+#: lib/CMB2/cmb2/includes/CMB2_Options.php:247
+#: lib/CMB2/cmb2/includes/CMB2_Options_Hookup.php:357
+#: lib/CMB2/cmb2/includes/types/CMB2_Type_Base.php:173
+#: lib/CMB2/includes/CMB2_Base.php:491
+#: lib/CMB2/includes/CMB2_Hookup_Base.php:102
+#: lib/CMB2/includes/CMB2_Options.php:247
+#: lib/CMB2/includes/CMB2_Options_Hookup.php:357
+#: lib/CMB2/includes/types/CMB2_Type_Base.php:173
+#, php-format
+msgid "Invalid %1$s property: %2$s"
+msgstr ""
+
+#: lib/CMB2/cmb2/includes/CMB2_Base.php:509
+#: lib/CMB2/cmb2/includes/types/CMB2_Type_Base.php:157
+#: lib/CMB2/includes/CMB2_Base.php:509
+#: lib/CMB2/includes/types/CMB2_Type_Base.php:157
+#, php-format
+msgid "Invalid %1$s method: %2$s"
+msgstr ""
+
+#: lib/CMB2/cmb2/includes/CMB2_Field.php:1415
+#: lib/CMB2/includes/CMB2_Field.php:1418
+msgid "Add Group"
+msgstr ""
+
+#: lib/CMB2/cmb2/includes/CMB2_Field.php:1416
+#: lib/CMB2/includes/CMB2_Field.php:1419
+msgid "Remove Group"
+msgstr ""
+
+#: lib/CMB2/cmb2/includes/CMB2_Field.php:1448
+#: lib/CMB2/cmb2/includes/CMB2_Field.php:1452
+#: lib/CMB2/includes/CMB2_Field.php:1451 lib/CMB2/includes/CMB2_Field.php:1455
+#: lib/CMB2/tests/test-cmb-field.php:237
+msgid "None"
+msgstr ""
+
+#: lib/CMB2/cmb2/includes/CMB2_Field.php:1563
+#: lib/CMB2/includes/CMB2_Field.php:1566
+msgid "Sorry, this field does not have a cmb_id specified."
+msgstr ""
+
+#: lib/CMB2/cmb2/includes/CMB2_Field_Display.php:432
+#: lib/CMB2/cmb2/includes/CMB2_JS.php:230
+#: lib/CMB2/cmb2/includes/types/CMB2_Type_File_Base.php:79
+#: lib/CMB2/includes/CMB2_Field_Display.php:432
+#: lib/CMB2/includes/CMB2_JS.php:230
+#: lib/CMB2/includes/types/CMB2_Type_File_Base.php:79
+#: lib/CMB2/tests/test-cmb-types-base.php:149
+#: lib/CMB2/tests/test-cmb-types.php:958
+msgid "File:"
+msgstr ""
+
+#: lib/CMB2/cmb2/includes/CMB2_Hookup_Base.php:44
+#: lib/CMB2/includes/CMB2_Hookup_Base.php:44
+#, php-format
+msgid "%1$s should be implemented by the extended class."
+msgstr ""
+
+#: lib/CMB2/cmb2/includes/CMB2_JS.php:165
+#: lib/CMB2/cmb2/includes/CMB2_JS.php:210 lib/CMB2/includes/CMB2_JS.php:165
+#: lib/CMB2/includes/CMB2_JS.php:210
+msgid "Clear"
+msgstr ""
+
+#: lib/CMB2/cmb2/includes/CMB2_JS.php:166 lib/CMB2/includes/CMB2_JS.php:166
+msgid "Default"
+msgstr ""
+
+#: lib/CMB2/cmb2/includes/CMB2_JS.php:167 lib/CMB2/includes/CMB2_JS.php:167
+msgid "Select Color"
+msgstr ""
+
+#: lib/CMB2/cmb2/includes/CMB2_JS.php:168 lib/CMB2/includes/CMB2_JS.php:168
+msgid "Current Color"
+msgstr ""
+
+#: lib/CMB2/cmb2/includes/CMB2_JS.php:200 lib/CMB2/includes/CMB2_JS.php:200
+msgctxt "Valid formatDate string for jquery-ui datepicker"
+msgid "mm/dd/yy"
+msgstr ""
+
+#: lib/CMB2/cmb2/includes/CMB2_JS.php:201 lib/CMB2/includes/CMB2_JS.php:201
+msgid "Sunday, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday"
+msgstr ""
+
+#: lib/CMB2/cmb2/includes/CMB2_JS.php:202 lib/CMB2/includes/CMB2_JS.php:202
+msgid "Su, Mo, Tu, We, Th, Fr, Sa"
+msgstr ""
+
+#: lib/CMB2/cmb2/includes/CMB2_JS.php:203 lib/CMB2/includes/CMB2_JS.php:203
+msgid "Sun, Mon, Tue, Wed, Thu, Fri, Sat"
+msgstr ""
+
+#: lib/CMB2/cmb2/includes/CMB2_JS.php:204 lib/CMB2/includes/CMB2_JS.php:204
+msgid ""
+"January, February, March, April, May, June, July, August, September, "
+"October, November, December"
+msgstr ""
+
+#: lib/CMB2/cmb2/includes/CMB2_JS.php:205 lib/CMB2/includes/CMB2_JS.php:205
+msgid "Jan, Feb, Mar, Apr, May, Jun, Jul, Aug, Sep, Oct, Nov, Dec"
+msgstr ""
+
+#: lib/CMB2/cmb2/includes/CMB2_JS.php:206 lib/CMB2/includes/CMB2_JS.php:206
+msgid "Next"
+msgstr ""
+
+#: lib/CMB2/cmb2/includes/CMB2_JS.php:207 lib/CMB2/includes/CMB2_JS.php:207
+msgid "Prev"
+msgstr ""
+
+#: lib/CMB2/cmb2/includes/CMB2_JS.php:208 lib/CMB2/includes/CMB2_JS.php:208
+msgid "Today"
+msgstr ""
+
+#: lib/CMB2/cmb2/includes/CMB2_JS.php:209
+#: lib/CMB2/cmb2/includes/CMB2_JS.php:219 lib/CMB2/includes/CMB2_JS.php:209
+#: lib/CMB2/includes/CMB2_JS.php:219
+msgid "Done"
+msgstr ""
+
+#: lib/CMB2/cmb2/includes/CMB2_JS.php:213 lib/CMB2/includes/CMB2_JS.php:213
+msgid "Choose Time"
+msgstr ""
+
+#: lib/CMB2/cmb2/includes/CMB2_JS.php:214 lib/CMB2/includes/CMB2_JS.php:214
+msgid "Time"
+msgstr ""
+
+#: lib/CMB2/cmb2/includes/CMB2_JS.php:215 lib/CMB2/includes/CMB2_JS.php:215
+msgid "Hour"
+msgstr ""
+
+#: lib/CMB2/cmb2/includes/CMB2_JS.php:216 lib/CMB2/includes/CMB2_JS.php:216
+msgid "Minute"
+msgstr ""
+
+#: lib/CMB2/cmb2/includes/CMB2_JS.php:217 lib/CMB2/includes/CMB2_JS.php:217
+msgid "Second"
+msgstr ""
+
+#: lib/CMB2/cmb2/includes/CMB2_JS.php:218 lib/CMB2/includes/CMB2_JS.php:218
+msgid "Now"
+msgstr ""
+
+#: lib/CMB2/cmb2/includes/CMB2_JS.php:220 lib/CMB2/includes/CMB2_JS.php:220
+msgctxt ""
+"Valid formatting string, as per http://trentrichardson.com/examples/"
+"timepicker/"
+msgid "hh:mm TT"
+msgstr ""
+
+#: lib/CMB2/cmb2/includes/CMB2_JS.php:226 lib/CMB2/includes/CMB2_JS.php:226
+msgid "Use this file"
+msgstr ""
+
+#: lib/CMB2/cmb2/includes/CMB2_JS.php:227 lib/CMB2/includes/CMB2_JS.php:227
+msgid "Use these files"
+msgstr ""
+
+#: lib/CMB2/cmb2/includes/CMB2_JS.php:228
+#: lib/CMB2/cmb2/includes/types/CMB2_Type_File_Base.php:64
+#: lib/CMB2/includes/CMB2_JS.php:228
+#: lib/CMB2/includes/types/CMB2_Type_File_Base.php:64
+msgid "Remove Image"
+msgstr ""
+
+#: lib/CMB2/cmb2/includes/CMB2_JS.php:229
+#: lib/CMB2/cmb2/includes/CMB2_Types.php:406
+#: lib/CMB2/cmb2/includes/types/CMB2_Type_File_Base.php:84
+#: lib/CMB2/includes/CMB2_JS.php:229 lib/CMB2/includes/CMB2_Types.php:406
+#: lib/CMB2/includes/types/CMB2_Type_File_Base.php:84
+#: lib/CMB2/tests/test-cmb-types-base.php:149
+#: lib/CMB2/tests/test-cmb-types.php:47 lib/CMB2/tests/test-cmb-types.php:55
+#: lib/CMB2/tests/test-cmb-types.php:958
+msgid "Remove"
+msgstr ""
+
+#: lib/CMB2/cmb2/includes/CMB2_JS.php:231
+#: lib/CMB2/cmb2/includes/types/CMB2_Type_File_Base.php:82
+#: lib/CMB2/includes/CMB2_JS.php:231
+#: lib/CMB2/includes/types/CMB2_Type_File_Base.php:82
+#: lib/CMB2/tests/test-cmb-types-base.php:149
+#: lib/CMB2/tests/test-cmb-types.php:958
+msgid "Download"
+msgstr ""
+
+#: lib/CMB2/cmb2/includes/CMB2_JS.php:232 lib/CMB2/includes/CMB2_JS.php:232
+msgid "Select / Deselect All"
+msgstr ""
+
+#: lib/CMB2/cmb2/includes/CMB2_Options_Hookup.php:139
+#: lib/CMB2/includes/CMB2_Options_Hookup.php:139
+msgid "Nothing to update."
+msgstr ""
+
+#: lib/CMB2/cmb2/includes/CMB2_Options_Hookup.php:143
+#: lib/CMB2/includes/CMB2_Options_Hookup.php:143
+msgid "Settings updated."
+msgstr ""
+
+#: lib/CMB2/cmb2/includes/CMB2_Types.php:226
+#: lib/CMB2/includes/CMB2_Types.php:226
+msgid "Custom CMB2 field type classes must extend CMB2_Type_Base."
+msgstr ""
+
+#: lib/CMB2/cmb2/includes/CMB2_Types.php:344
+#: lib/CMB2/includes/CMB2_Types.php:344
+msgid "Add Row"
+msgstr ""
+
+#: lib/CMB2/cmb2/includes/CMB2_Types.php:406
+#: lib/CMB2/includes/CMB2_Types.php:406 lib/CMB2/tests/test-cmb-types.php:47
+#: lib/CMB2/tests/test-cmb-types.php:55
+msgid "Remove Row"
+msgstr ""
+
+#: lib/CMB2/cmb2/includes/CMB2_hookup.php:182
+#: lib/CMB2/includes/CMB2_hookup.php:182
+msgid ""
+"Term Metadata is a WordPress 4.4+ feature. Please upgrade your WordPress "
+"install."
+msgstr ""
+
+#: lib/CMB2/cmb2/includes/CMB2_hookup.php:186
+#: lib/CMB2/includes/CMB2_hookup.php:186
+msgid "Term metaboxes configuration requires a \"taxonomies\" parameter."
+msgstr ""
+
+#: lib/CMB2/cmb2/includes/CMB2_hookup.php:466
+#: lib/CMB2/includes/CMB2_hookup.php:466
+#, php-format
+msgid "Toggle panel: %s"
+msgstr ""
+
+#: lib/CMB2/cmb2/includes/helper-functions.php:307
+#: lib/CMB2/includes/helper-functions.php:307
+msgid "Save"
+msgstr ""
+
+#: lib/CMB2/cmb2/includes/rest-api/CMB2_REST_Controller.php:257
+#: lib/CMB2/includes/rest-api/CMB2_REST_Controller.php:257
+msgid "This box does not have read permissions."
+msgstr ""
+
+#: lib/CMB2/cmb2/includes/rest-api/CMB2_REST_Controller.php:277
+#: lib/CMB2/includes/rest-api/CMB2_REST_Controller.php:277
+msgid "This box does not have write permissions."
+msgstr ""
+
+#: lib/CMB2/cmb2/includes/rest-api/CMB2_REST_Controller.php:300
+#: lib/CMB2/includes/rest-api/CMB2_REST_Controller.php:300
+msgid ""
+"No box found by that id. A box needs to be registered with the \"show_in_rest"
+"\" parameter configured."
+msgstr ""
+
+#: lib/CMB2/cmb2/includes/rest-api/CMB2_REST_Controller.php:378
+#: lib/CMB2/includes/rest-api/CMB2_REST_Controller.php:378
+msgid "A human-readable description of the object."
+msgstr ""
+
+#: lib/CMB2/cmb2/includes/rest-api/CMB2_REST_Controller.php:385
+#: lib/CMB2/includes/rest-api/CMB2_REST_Controller.php:385
+msgid "The id for the object."
+msgstr ""
+
+#: lib/CMB2/cmb2/includes/rest-api/CMB2_REST_Controller.php:392
+#: lib/CMB2/includes/rest-api/CMB2_REST_Controller.php:392
+msgid "The title for the object."
+msgstr ""
+
+#: lib/CMB2/cmb2/includes/rest-api/CMB2_REST_Controller_Boxes.php:51
+#: lib/CMB2/includes/rest-api/CMB2_REST_Controller_Boxes.php:51
+msgid "Includes the registered fields for the box in the response."
+msgstr ""
+
+#: lib/CMB2/cmb2/includes/rest-api/CMB2_REST_Controller_Boxes.php:72
+#: lib/CMB2/includes/rest-api/CMB2_REST_Controller_Boxes.php:72
+msgid ""
+"Includes the fully rendered attributes, 'form_open', 'form_close', as well "
+"as the enqueued 'js_dependencies' script handles, and 'css_dependencies' "
+"stylesheet handles."
+msgstr ""
+
+#: lib/CMB2/cmb2/includes/rest-api/CMB2_REST_Controller_Boxes.php:122
+#: lib/CMB2/includes/rest-api/CMB2_REST_Controller_Boxes.php:122
+msgid "No boxes found."
+msgstr ""
+
+#: lib/CMB2/cmb2/includes/rest-api/CMB2_REST_Controller_Fields.php:27
+#: lib/CMB2/includes/rest-api/CMB2_REST_Controller_Fields.php:27
+msgid ""
+"Includes the box object which the fields are registered to in the response."
+msgstr ""
+
+#: lib/CMB2/cmb2/includes/rest-api/CMB2_REST_Controller_Fields.php:30
+#: lib/CMB2/includes/rest-api/CMB2_REST_Controller_Fields.php:30
+msgid ""
+"When the '_rendered' argument is passed, the renderable field attributes "
+"will be returned fully rendered. By default, the names of the callback "
+"handers for the renderable attributes will be returned."
+msgstr ""
+
+#: lib/CMB2/cmb2/includes/rest-api/CMB2_REST_Controller_Fields.php:33
+#: lib/CMB2/cmb2/includes/rest-api/CMB2_REST_Controller_Fields.php:36
+#: lib/CMB2/includes/rest-api/CMB2_REST_Controller_Fields.php:33
+#: lib/CMB2/includes/rest-api/CMB2_REST_Controller_Fields.php:36
+msgid ""
+"To view or modify the field's value, the 'object_id' and 'object_type' "
+"arguments are required."
+msgstr ""
+
+#: lib/CMB2/cmb2/includes/rest-api/CMB2_REST_Controller_Fields.php:236
+#: lib/CMB2/includes/rest-api/CMB2_REST_Controller_Fields.php:236
+#: lib/CMB2/tests/test-cmb-rest-controllers.php:247
+msgid ""
+"CMB2 Field value cannot be updated without the value parameter specified."
+msgstr ""
+
+#: lib/CMB2/cmb2/includes/rest-api/CMB2_REST_Controller_Fields.php:297
+#: lib/CMB2/includes/rest-api/CMB2_REST_Controller_Fields.php:297
+#: lib/CMB2/tests/test-cmb-rest-controllers.php:258
+#: lib/CMB2/tests/test-cmb-rest-controllers.php:269
+msgid ""
+"CMB2 Field value cannot be modified without the object_id and object_type "
+"parameters specified."
+msgstr ""
+
+#: lib/CMB2/cmb2/includes/rest-api/CMB2_REST_Controller_Fields.php:312
+#: lib/CMB2/cmb2/includes/rest-api/CMB2_REST_Controller_Fields.php:341
+#: lib/CMB2/includes/rest-api/CMB2_REST_Controller_Fields.php:312
+#: lib/CMB2/includes/rest-api/CMB2_REST_Controller_Fields.php:341
+msgid "No field found by that id."
+msgstr ""
+
+#: lib/CMB2/cmb2/includes/rest-api/CMB2_REST_Controller_Fields.php:415
+#: lib/CMB2/includes/rest-api/CMB2_REST_Controller_Fields.php:415
+#, php-format
+msgid "Value Error for %s"
+msgstr ""
+
+#. translators: %s: register_routes()
+#: lib/CMB2/cmb2/includes/shim/WP_REST_Controller.php:25
+#: lib/CMB2/includes/shim/WP_REST_Controller.php:25
+#, php-format
+msgid "Method '%s' must be overridden."
+msgstr ""
+
+#: lib/CMB2/cmb2/includes/shim/WP_REST_Controller.php:35
+#: lib/CMB2/cmb2/includes/shim/WP_REST_Controller.php:47
+#: lib/CMB2/cmb2/includes/shim/WP_REST_Controller.php:59
+#: lib/CMB2/cmb2/includes/shim/WP_REST_Controller.php:71
+#: lib/CMB2/cmb2/includes/shim/WP_REST_Controller.php:83
+#: lib/CMB2/cmb2/includes/shim/WP_REST_Controller.php:95
+#: lib/CMB2/cmb2/includes/shim/WP_REST_Controller.php:107
+#: lib/CMB2/cmb2/includes/shim/WP_REST_Controller.php:119
+#: lib/CMB2/cmb2/includes/shim/WP_REST_Controller.php:131
+#: lib/CMB2/cmb2/includes/shim/WP_REST_Controller.php:143
+#: lib/CMB2/cmb2/includes/shim/WP_REST_Controller.php:155
+#: lib/CMB2/cmb2/includes/shim/WP_REST_Controller.php:168
+#: lib/CMB2/includes/shim/WP_REST_Controller.php:35
+#: lib/CMB2/includes/shim/WP_REST_Controller.php:47
+#: lib/CMB2/includes/shim/WP_REST_Controller.php:59
+#: lib/CMB2/includes/shim/WP_REST_Controller.php:71
+#: lib/CMB2/includes/shim/WP_REST_Controller.php:83
+#: lib/CMB2/includes/shim/WP_REST_Controller.php:95
+#: lib/CMB2/includes/shim/WP_REST_Controller.php:107
+#: lib/CMB2/includes/shim/WP_REST_Controller.php:119
+#: lib/CMB2/includes/shim/WP_REST_Controller.php:131
+#: lib/CMB2/includes/shim/WP_REST_Controller.php:143
+#: lib/CMB2/includes/shim/WP_REST_Controller.php:155
+#: lib/CMB2/includes/shim/WP_REST_Controller.php:168
+#, php-format
+msgid "Method '%s' not implemented. Must be overridden in subclass."
+msgstr ""
+
+#: lib/CMB2/cmb2/includes/shim/WP_REST_Controller.php:273
+#: lib/CMB2/includes/shim/WP_REST_Controller.php:273
+msgid "Current page of the collection."
+msgstr ""
+
+#: lib/CMB2/cmb2/includes/shim/WP_REST_Controller.php:281
+#: lib/CMB2/includes/shim/WP_REST_Controller.php:281
+msgid "Maximum number of items to be returned in result set."
+msgstr ""
+
+#: lib/CMB2/cmb2/includes/shim/WP_REST_Controller.php:290
+#: lib/CMB2/includes/shim/WP_REST_Controller.php:290
+msgid "Limit results to those matching a string."
+msgstr ""
+
+#: lib/CMB2/cmb2/includes/shim/WP_REST_Controller.php:308
+#: lib/CMB2/includes/shim/WP_REST_Controller.php:308
+msgid ""
+"Scope under which the request is made; determines fields present in response."
+msgstr ""
+
+#: lib/CMB2/cmb2/includes/types/CMB2_Type_File.php:76
+#: lib/CMB2/includes/types/CMB2_Type_File.php:76
+#: lib/CMB2/tests/test-cmb-types.php:934 lib/CMB2/tests/test-cmb-types.php:958
+msgid "Add or Upload File"
+msgstr ""
+
+#: lib/CMB2/cmb2/includes/types/CMB2_Type_File_List.php:41
+#: lib/CMB2/includes/types/CMB2_Type_File_List.php:41
+#: lib/CMB2/tests/test-cmb-types.php:881 lib/CMB2/tests/test-cmb-types.php:914
+msgid "Add or Upload Files"
+msgstr ""
+
+#: lib/CMB2/cmb2/includes/types/CMB2_Type_Taxonomy_Base.php:115
+#: lib/CMB2/includes/types/CMB2_Type_Taxonomy_Base.php:115
+msgid "No terms"
+msgstr ""
+
+#: src/admin/class-badgefactor2-admin.php:76
+msgid "Approver"
+msgstr ""
+
+#: src/admin/class-badgefactor2-admin.php:95
+#: src/admin/class-badgefactor2-admin.php:131
+#: src/admin/class-badgefactor2-admin.php:197
+#: src/admin/lists/class-issuers.php:42
+msgid "Issuers"
+msgstr ""
+
+#: src/admin/class-badgefactor2-admin.php:100
+#: src/admin/class-badgefactor2-admin.php:153
+#: src/admin/class-badgefactor2-admin.php:210
+#: src/admin/lists/class-badges.php:42
+msgid "Badges"
+msgstr ""
+
+#: src/admin/class-badgefactor2-admin.php:105
+#: src/admin/class-badgefactor2-admin.php:175
+#: src/admin/class-badgefactor2-admin.php:223
+#: src/admin/lists/class-assertions.php:44
+msgid "Assertions"
+msgstr ""
+
+#: src/admin/class-badgefactor2-admin.php:260
+msgid "Settings"
+msgstr ""
+
+#: src/admin/class-badgefactor2-admin.php:293
+msgid "Badgr server"
+msgstr ""
+
+#: src/admin/class-badgefactor2-admin.php:294
+#: src/admin/class-badgefactor2-admin.php:351
+msgid "Choose the type of Badgr server you're using"
+msgstr ""
+
+#: src/admin/class-badgefactor2-admin.php:300
+msgid "Local Badgr"
+msgstr ""
+
+#: src/admin/class-badgefactor2-admin.php:301
+msgid "Badgr.io"
+msgstr ""
+
+#: src/admin/class-badgefactor2-admin.php:302
+msgid "Badge Factor 2 Cloud"
+msgstr ""
+
+#: src/admin/class-badgefactor2-admin.php:303
+msgid "Custom"
+msgstr ""
+
+#: src/admin/class-badgefactor2-admin.php:312
+msgid "Badgr Username"
+msgstr ""
+
+#: src/admin/class-badgefactor2-admin.php:313
+msgid "Choose the source of the Badgr username"
+msgstr ""
+
+#: src/admin/class-badgefactor2-admin.php:319
+msgid "Use user email address"
+msgstr ""
+
+#: src/admin/class-badgefactor2-admin.php:320
+msgid "Use custom username"
+msgstr ""
+
+#: src/admin/class-badgefactor2-admin.php:329
+msgid "Username"
+msgstr ""
+
+#: src/admin/class-badgefactor2-admin.php:330
+msgid "Username to use with Badgr, normally an email address"
+msgstr ""
+
+#: src/admin/class-badgefactor2-admin.php:339
+msgid "As admin"
+msgstr ""
+
+#: src/admin/class-badgefactor2-admin.php:340
+msgid "Check to connect as server admin"
+msgstr ""
+
+#: src/admin/class-badgefactor2-admin.php:350
+msgid "Badgr server type"
+msgstr ""
+
+#: src/admin/class-badgefactor2-admin.php:357
+msgid "Badgr.io v1"
+msgstr ""
+
+#: src/admin/class-badgefactor2-admin.php:358
+msgid "Local Release Jamiroquai"
+msgstr ""
+
+#: src/admin/class-badgefactor2-admin.php:359
+msgid "Badge Factor 2 Cloud v1"
+msgstr ""
+
+#: src/admin/class-badgefactor2-admin.php:367
+msgid "Password source"
+msgstr ""
+
+#: src/admin/class-badgefactor2-admin.php:368
+msgid "Choose how we'll retrieve your password"
+msgstr ""
+
+#: src/admin/class-badgefactor2-admin.php:374
+msgid "From settings"
+msgstr ""
+
+#: src/admin/class-badgefactor2-admin.php:375
+msgid "Use the same password as WordPress"
+msgstr ""
+
+#: src/admin/class-badgefactor2-admin.php:376
+msgid "Always ask"
+msgstr ""
+
+#: src/admin/class-badgefactor2-admin.php:377
+msgid "Ask and remember"
+msgstr ""
+
+#: src/admin/class-badgefactor2-admin.php:385
+msgid "Password"
+msgstr ""
+
+#: src/admin/class-badgefactor2-admin.php:386
+msgid "Badgr server password"
+msgstr ""
+
+#: src/admin/class-badgefactor2-admin.php:395
+msgid "Authorization type"
+msgstr ""
+
+#: src/admin/class-badgefactor2-admin.php:396
+msgid "Choose how to exchange credentials with Badgr"
+msgstr ""
+
+#: src/admin/class-badgefactor2-admin.php:402
+msgid "Use passwords"
+msgstr ""
+
+#: src/admin/class-badgefactor2-admin.php:403
+msgid "Redirect to server"
+msgstr ""
+
+#: src/admin/class-badgefactor2-admin.php:411
+msgid "Public URL"
+msgstr ""
+
+#: src/admin/class-badgefactor2-admin.php:412
+#: src/admin/class-badgefactor2-admin.php:424
+msgid "Format: scheme://URL:port"
+msgstr ""
+
+#: src/admin/class-badgefactor2-admin.php:423
+msgid "Internal URL"
+msgstr ""
+
+#: src/admin/class-badgefactor2-admin.php:435
+msgid "Client ID"
+msgstr ""
+
+#: src/admin/class-badgefactor2-admin.php:443
+msgid "Client Secret"
+msgstr ""
+
+#: src/admin/class-badgefactor2-admin.php:462
+msgid "Plugins"
+msgstr ""
+
+#: src/admin/class-badgefactor2-admin.php:481
+#: src/admin/class-badgefactor2-admin.php:489
+#: src/admin/class-badgefactor2-admin.php:511
+msgid "Filter for"
+msgstr ""
+
+#: src/admin/class-badgr-list.php:155
+#, php-format
+msgid "No %s avaliable."
+msgstr ""
+
+#: src/admin/class-badgr-list.php:228
+msgid "Are you sure you want to delete this item?"
+msgstr ""
+
+#: src/admin/class-badgr-list.php:228
+msgid "Delete"
+msgstr ""
+
+#: src/admin/class-badgr-list.php:239
+#: templates/admin/tpl.edit-assertions.php:58
+msgid "REVOKED!"
+msgstr ""
+
+#: src/admin/class-badgr-list.php:244
+msgid "Revoke"
+msgstr ""
+
+#: src/admin/class-badgr-list.php:346 src/admin/class-badgr-list.php:364
+msgid "You are missing an entity ID."
+msgstr ""
+
+#: src/admin/class-badgr-list.php:351 src/admin/class-badgr-list.php:369
+#: src/admin/class-badgr-list.php:376
+msgid ""
+"You attempted to edit an item that doesn't exist. Perhaps it was deleted?"
+msgstr ""
+
+#: src/admin/class-badgr-list.php:393
+msgid "Object created."
+msgstr ""
+
+#: src/admin/class-badgr-list.php:395
+#: templates/admin/tpl.edit-assertions.php:33
+#: templates/admin/tpl.edit-badges.php:33
+#: templates/admin/tpl.edit-issuers.php:33
+#: templates/admin/tpl.revoke-assertions.php:33
+msgid "Dismiss this message."
+msgstr ""
+
+#: src/admin/class-badgr-list.php:415
+msgid "Item deleted."
+msgstr ""
+
+#: src/admin/class-badgr-list.php:428
+msgid "Items deleted."
+msgstr ""
+
+#: src/admin/class-badgr-list.php:450 src/admin/class-badgr-list.php:453
+msgid "Add New"
+msgstr ""
+
+#: src/admin/class-badgr-list.php:458
+msgid "List type"
+msgstr ""
+
+#: src/admin/class-badgr-list.php:475
+msgid "List for"
+msgstr ""
+
+#: src/admin/class-badgr-list.php:495
+msgid "Badgr connection inactive!"
+msgstr ""
+
+#: src/admin/lists/class-assertions.php:43
+msgid "Assertion"
+msgstr ""
+
+#: src/admin/lists/class-badges.php:41 src/models/class-assertion.php:114
+#: templates/admin/tpl.edit-assertions.php:75
+#: templates/admin/tpl.edit-assertions.php:156
+#: templates/admin/tpl.edit-assertions.php:170
+#: templates/admin/tpl.revoke-assertions.php:72
+msgid "Badge"
+msgstr ""
+
+#: src/admin/lists/class-issuers.php:41 src/models/class-assertion.php:113
+#: src/models/class-badgeclass.php:115
+#: templates/admin/tpl.edit-assertions.php:66
+#: templates/admin/tpl.edit-assertions.php:146
+#: templates/admin/tpl.edit-badges.php:58
+#: templates/admin/tpl.revoke-assertions.php:63
+msgid "Issuer"
+msgstr ""
+
+#: src/client/shortcodes/class-issuers.php:43
+msgid "No issuer for the moment."
+msgstr ""
+
+#: src/core/class-badgrclient.php:109
+msgid "Active"
+msgstr ""
+
+#: src/core/class-badgrclient.php:109
+msgid "Inactive"
+msgstr ""
+
+#: src/models/class-assertion.php:112
+msgid "Issued Badge"
+msgstr ""
+
+#: src/models/class-assertion.php:115
+#: templates/admin/tpl.edit-assertions.php:84
+#: templates/admin/tpl.revoke-assertions.php:81
+msgid "Recipient"
+msgstr ""
+
+#: src/models/class-assertion.php:116 src/models/class-badgeclass.php:117
+#: src/models/class-issuer.php:137
+msgid "Created on"
+msgstr ""
+
+#: src/models/class-badgeclass.php:114 src/models/class-issuer.php:135
+#: templates/admin/tpl.edit-badges.php:46
+#: templates/admin/tpl.edit-issuers.php:46
+msgid "Name"
+msgstr ""
+
+#: src/models/class-badgeclass.php:116
+#: templates/admin/tpl.edit-assertions.php:49
+#: templates/admin/tpl.edit-badges.php:82
+#: templates/admin/tpl.revoke-assertions.php:50
+msgid "Image"
+msgstr ""
+
+#: src/models/class-issuer.php:136 templates/admin/tpl.edit-issuers.php:58
+msgid "Email"
+msgstr ""
+
+#: templates/admin/tpl.edit-assertions.php:31
+#: templates/admin/tpl.revoke-assertions.php:31
+msgid "Assertion updated."
+msgstr ""
+
+#: templates/admin/tpl.edit-assertions.php:92
+#: templates/admin/tpl.revoke-assertions.php:89
+msgid "Issued On"
+msgstr ""
+
+#: templates/admin/tpl.edit-assertions.php:102
+msgid "Revocation reason"
+msgstr ""
+
+#: templates/admin/tpl.edit-assertions.php:113
+#: templates/admin/tpl.revoke-assertions.php:108
+msgid "Revoke Assertion"
+msgstr ""
+
+#: templates/admin/tpl.edit-assertions.php:160
+msgid "Select a Badge"
+msgstr ""
+
+#: templates/admin/tpl.edit-assertions.php:180
+msgid "Recipient Email"
+msgstr ""
+
+#: templates/admin/tpl.edit-assertions.php:189
+msgid "Create Assertion"
+msgstr ""
+
+#: templates/admin/tpl.edit-badges.php:31
+msgid "Badge updated."
+msgstr ""
+
+#: templates/admin/tpl.edit-badges.php:103
+msgid "Edit Badge"
+msgstr ""
+
+#: templates/admin/tpl.edit-badges.php:105
+msgid "Create Badge"
+msgstr ""
+
+#: templates/admin/tpl.edit-issuers.php:31
+msgid "Issuer updated."
+msgstr ""
+
+#: templates/admin/tpl.edit-issuers.php:70
+msgid "URL"
+msgstr ""
+
+#: templates/admin/tpl.edit-issuers.php:97
+msgid "Edit Issuer"
+msgstr ""
+
+#: templates/admin/tpl.edit-issuers.php:99
+msgid "Create Issuer"
+msgstr ""
+
+#: templates/admin/tpl.revoke-assertions.php:99
+msgid "Reason to revoke"
+msgstr ""
+
+#: templates/admin/tpl.revoke-assertions.php:108
+msgid "Are you sure you want to revoke this item?"
+msgstr ""
+
+#: templates/tpl.assertion.php:43
+msgid "badge issued to"
+msgstr ""
+
+#: templates/tpl.assertion.php:46
+msgid "Issued to"
+msgstr ""
+
+#: templates/tpl.assertion.php:52
+msgid "Issue date:"
+msgstr ""
+
+#: templates/tpl.assertion.php:57 templates/tpl.badge.php:45
+msgid "Issued by"
+msgstr ""
+
+#. Plugin Name of the plugin/theme
+msgid "Badge Factor 2"
+msgstr ""
+
+#. Plugin URI of the plugin/theme
+msgid "https://github.com/ctrlwebinc/badgefactor2"
+msgstr ""
+
+#. Description of the plugin/theme
+msgid "Issues and manages Open Badges with Badgr server"
+msgstr ""
+
+#. Author of the plugin/theme
+msgid "ctrlweb"
+msgstr ""
+
+#. Author URI of the plugin/theme
+msgid "https://badgefactor2.com/"
+msgstr ""

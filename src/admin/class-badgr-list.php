@@ -23,6 +23,7 @@
 namespace BadgeFactor2\Admin;
 
 use BadgeFactor2\BadgrClient;
+use BadgeFactor2\BadgrProvider;
 use BadgeFactor2\Models\BadgeClass;
 use BadgeFactor2\Models\Issuer;
 use BadgeFactor2\Singleton;
@@ -112,10 +113,12 @@ class Badgr_List extends \WP_List_Table {
 	 * @return mixed
 	 */
 	public function all( $per_page = 10, $page_number = 1, $filter = array() ) {
-		$list       = $this->model::all( $per_page, $page_number );
-		$list_class = get_class( $this );
-		foreach ( $list as $i => $item ) {
-			$list[ $i ]->listClass = $list_class;
+		$list = $this->model::all( $per_page, $page_number );
+		if ( $list ) {
+			$list_class = get_class( $this );
+			foreach ( $list as $i => $item ) {
+				$list[ $i ]->listClass = $list_class;
+			}
 		}
 		return $list;
 	}
@@ -231,10 +234,17 @@ class Badgr_List extends \WP_List_Table {
 	function column_image( $item ) {
 		if ( 'Assertion' === $item->entityType ) {
 			$revoke_nonce = wp_create_nonce( 'bf2_revoke_' . $this->slug );
-			$title        = '<a href="admin.php?page=assertions&action=edit&entity_id=' . $item->entityId . '"><img style="width:50%" src="' . $item->image . '"></a>';
-			$actions      = array(
-				'revoke' => sprintf( '<a href="?page=%s&action=%s&entity_id=%s">%s</a>', $this->slug, 'revoke', $item->entityId, __( 'Revoke', 'badgefactor2' ) ),
-			);
+			$badge   = BadgeClass::get( $item->badgeclass );
+			if ( $item->revoked ) {
+				$title   = '<a href="admin.php?page=assertions&action=edit&entity_id=' . $item->entityId . '">' . $badge->name . '</a><br/>'. __( 'REVOKED!', 'badgefactor2' );
+				$actions = array();
+			} else {
+				$title   = '<a href="admin.php?page=assertions&action=edit&entity_id=' . $item->entityId . '">' . $badge->name . '</a>';
+				$actions = array(
+					'revoke' => sprintf( '<a href="?page=%s&action=%s&entity_id=%s">%s</a>', $this->slug, 'revoke', $item->entityId, __( 'Revoke', 'badgefactor2' ) ),
+				);
+			}
+
 			return $title . $this->row_actions( $actions );
 		} else {
 			return '<img style="width:50%" src="' . $item->image . '">';
@@ -348,6 +358,30 @@ class Badgr_List extends \WP_List_Table {
 					include BF2_ABSPATH . 'templates/admin/tpl.edit-' . $this->slug . '.php';
 				}
 				break;
+			case 'revoke':
+				if ( ! isset( $_GET['entity_id'] ) ) {
+					// Entity ID is not set.
+					wp_die( __( 'You are missing an entity ID.', 'badgefactor2' ) );
+				} else {
+					// Entity ID is set.
+					$entity = $this->model::get( $_GET['entity_id'] );
+					if ( false === $entity ) {
+						wp_die( __( 'You attempted to edit an item that doesn\'t exist. Perhaps it was deleted?', 'badgefactor2' ) );
+					}
+
+					if ( 'POST' === $_SERVER['REQUEST_METHOD'] ) {
+						// Revoke.
+
+						if ( $_GET['entity_id'] !== $_POST['assertion'] ) {
+							wp_die( __( 'You attempted to edit an item that doesn\'t exist. Perhaps it was deleted?', 'badgefactor2' ) );
+						} else {
+							BadgrProvider::revoke_assertion( $_POST['assertion'], $_POST['reason'] );
+							$_GET['notice'] = 'revoked';
+						}
+					}
+					include BF2_ABSPATH . 'templates/admin/tpl.revoke-' . $this->slug . '.php';
+				}
+				break;
 		}
 	}
 
@@ -411,7 +445,7 @@ class Badgr_List extends \WP_List_Table {
 				echo '<div class="alignleft actions">';
 				if ( $_GET['page'] === 'assertions' ) {
 					if ( isset( $_GET['filter_type'] ) && isset( $_GET['filter_value'] ) ) {
-						$filter_type = stripslashes( $_GET['filter_type'] );
+						$filter_type  = stripslashes( $_GET['filter_type'] );
 						$filter_value = stripslashes( $_GET['filter_value'] );
 						echo '<a class="button action button-primary" href="admin.php?page=' . $this->slug . '&filter_type=' . $filter_type . '&filter_value=' . $filter_value . '&action=new">' . __( 'Add New', 'badgefactor2' ) . '</a>';
 					}
@@ -428,7 +462,7 @@ class Badgr_List extends \WP_List_Table {
 					}
 					foreach ( $this->filter as $filter ) {
 						$filter       = $filter::get_instance();
-						$filter_class = (new \ReflectionClass(get_class( $filter )))->getShortName();
+						$filter_class = ( new \ReflectionClass( get_class( $filter ) ) )->getShortName();
 						$selected     = '';
 						if ( $filter_class === $selected_filter ) {
 								$selected = ' selected';
