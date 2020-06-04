@@ -114,7 +114,6 @@ class Assertion implements Badgr_Entity {
 			'badgeclass'		=> __( 'Badge', 'badgefactor2' ),
 			'recipient'			=> __( 'Recipient', 'badgefactor2' ),
 			'createdAt'         => __( 'Created on', 'badgefactor2' ),
-			'revoked'			=> __( 'Revoked', 'badgefactor2' ),
 		);
 	}
 

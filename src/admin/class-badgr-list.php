@@ -234,10 +234,16 @@ class Badgr_List extends \WP_List_Table {
 	function column_image( $item ) {
 		if ( 'Assertion' === $item->entityType ) {
 			$revoke_nonce = wp_create_nonce( 'bf2_revoke_' . $this->slug );
-			$title        = '<a href="admin.php?page=assertions&action=edit&entity_id=' . $item->entityId . '"><img style="width:50%" src="' . $item->image . '"></a>';
-			$actions      = array(
-				'revoke' => sprintf( '<a href="?page=%s&action=%s&entity_id=%s">%s</a>', $this->slug, 'revoke', $item->entityId, __( 'Revoke', 'badgefactor2' ) ),
-			);
+			if ( $item->revoked ) {
+				$title = '<a href="admin.php?page=assertions&action=edit&entity_id=' . $item->entityId . '">' . __( 'REVOKED!', 'badgefactor2' ) . '</a>';
+				$actions = array();
+			} else {
+				$title = '<a href="admin.php?page=assertions&action=edit&entity_id=' . $item->entityId . '"><img style="width:50%" src="' . $item->image . '"></a>';
+				$actions = array(
+					'revoke' => sprintf( '<a href="?page=%s&action=%s&entity_id=%s">%s</a>', $this->slug, 'revoke', $item->entityId, __( 'Revoke', 'badgefactor2' ) ),
+				);
+			}
+			
 			return $title . $this->row_actions( $actions );
 		} else {
 			return '<img style="width:50%" src="' . $item->image . '">';
