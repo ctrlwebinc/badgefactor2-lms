@@ -63,7 +63,7 @@ class BadgeFactor2_Admin {
 	 * @return void
 	 */
 	public static function admin_init() {
-		load_plugin_textdomain( 'badgefactor2' );
+		load_plugin_textdomain( 'badgefactor2', false, basename( dirname( __FILE__, 3 ) ) . '/languages/' );
 		self::register_settings_metabox();
 	}
 

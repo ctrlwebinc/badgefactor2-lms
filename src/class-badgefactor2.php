@@ -124,7 +124,7 @@ class BadgeFactor2 {
 			require_once BF2_ABSPATH . 'src/admin/lists/class-issuers.php';
 			require_once BF2_ABSPATH . 'src/admin/lists/class-badges.php';
 			require_once BF2_ABSPATH . 'src/admin/lists/class-assertions.php';
-			add_action( 'init', array( BadgeFactor2_Admin::class, 'init_hooks' ) );
+			BadgeFactor2_Admin::init_hooks();
 			add_action( 'init', array( BadgrClient::class, 'init_hooks' ) );
 		}
 

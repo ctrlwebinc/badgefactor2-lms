@@ -52,7 +52,11 @@
 					<?php
 					if ( isset( $entity ) ) :
 						?>
-						<img style="max-width: 50px" src="<?php echo $entity->image; ?>">
+						<?php if ( ! $entity->revoked ) : ?>
+						<img style="max-width: 150px" src="<?php echo $entity->image; ?>">
+						<?php else : ?>
+							<?php echo __( 'REVOKED!', 'Badgefactor2' ); ?>
+						<?php endif; ?>
 					<?php endif; ?>
 					<br/>
 				</div>
