@@ -553,7 +553,9 @@ class BadgrProvider {
 	 */
 	public static function get_all_assertions_by_issuer_slug( $issuer_slug ) {
 		// Make GET request to /v2/issuers/{entity_id}/assertions.
-		$response = BadgrClient::get( '/v2/issuers/' . $issuer_slug . '/assertions' );
+		$response = BadgrClient::get( '/v2/issuers/' . $issuer_slug . '/assertions', array(
+			'include_revoked' => true
+		)  );
 
 		// Check for 200 response.
 		if ( null !== $response && 200 === $response->getStatusCode() ) {
