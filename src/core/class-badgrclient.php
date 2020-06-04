@@ -497,12 +497,34 @@ class BadgrClient {
 	public function probeBadgrServer(){}
 
 
-	public static function init_hooks() {
-/*		if ( ! self::$initialized ) {
-			add_action( 'init', array( BadgrClient::class, 'init' ), 9966 );
-			self::$initialized = self::is_active();
-		}*/
+	public static function init_hooks(){
+		add_rewrite_rule(
+			'bf2/(emailConfirm|restorePassword)/(\S+)/?',
+			'index.php?bf2=$matches[1]&user=$matches[2]',
+			'top'
+		); 
 	}
+	
+	public static function pre_init_hooks() {
+ 		add_filter( 'query_vars', array ( self::class, 'hook_query_vars'));
+		add_action( 'template_redirect', array ( self::class, 'hook_template_redirect' ));
+	}
+	
+	public static function hook_query_vars ( $vars ) {
+		$vars[] = 'bf2';
+		return $vars;
+	}
+
+	public static function hook_template_redirect () {
+		if( $bf2 = get_query_var( 'bf2' ) )
+		{
+			header('Content-Type: text/plain');
+			echo 'Badgr callback: ' . $bf2;
+			echo ' Full uri: ' . $_SERVER['REQUEST_URI'];
+			exit();
+		}
+	}
+
 
 	/**
 	 * Init hook.
@@ -510,7 +532,7 @@ class BadgrClient {
 	 * @return void
 	 */
 	public static function init() {
-		// TODO.
+
 	}
 
 	public static function is_active() {
