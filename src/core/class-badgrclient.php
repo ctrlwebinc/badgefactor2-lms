@@ -508,6 +508,11 @@ class BadgrClient {
 			'index.php?bf2=$matches[1]&token=$matches[2]',
 			'top'
 		);
+ 		add_rewrite_rule(
+			'bf2/(auth)/?',
+			'index.php?bf2=$matches[1]',
+			'top'
+		); 
 		add_rewrite_rule(
 			'bf2/(loginRedirect|signupSuccess|signupFailure|signup|uiConnectSuccess)(\S+)/?',
 			'index.php?bf2=$matches[1]',
