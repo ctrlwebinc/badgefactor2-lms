@@ -121,4 +121,9 @@ class BadgrUser {
 		return false;
 	}
 
+	// Get the user's specific client
+	public function get_client () {
+		throw new \Exception( 'Not yet implemented.');
+	}
+
 }

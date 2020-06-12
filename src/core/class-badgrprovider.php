@@ -22,6 +22,8 @@
 
 namespace BadgeFactor2;
 
+use BadgeFactor2\BadgrUser;
+
 /**
  * BadgrProvider Class.
  */
@@ -630,6 +632,40 @@ class BadgrProvider {
 		if ( null !== $response && $response->getStatusCode() == 200 ) {
 
 			return true;
+		}
+
+		return false;
+	}
+
+	// Given a BadgrUser, get all assertions from that user's backpack
+	public static function get_all_assertions_from_user_backpack ( BadgrUser $badgr_user ) {
+		$reponse = $badgr_user->get_client()->get('/v2/backpack/assertions');
+
+		// Check for 200 response.
+		if ( null !== $response && 200 === $response->getStatusCode() ) {
+			$response_info = json_decode( $response->getBody() );
+			if ( isset( $response_info->status->success ) &&
+				$response_info->status->success == true &&
+				isset( $response_info->result ) && is_array( $response_info->result ) ) {
+				return $response_info->result;
+			}
+		}
+
+		return false;
+	}
+
+	// Given a BadgrUser, get details of an assertion
+	public static function get_assertion_details_from_user_backpack (BadgrUser $badgr_user, $slug ) {
+		$reponse = $badgr_user->get_client()->get('/v2/backpack/assertions/' . $slug );
+
+		// Check for 200 response.
+		if ( null !== $response && $response->getStatusCode() == 200 ) {
+			$response_info = json_decode( $response->getBody() );
+			if ( isset( $response_info->status->success ) &&
+				$response_info->status->success == true &&
+				isset( $response_info->result[0] ) ) {
+				return $response_info->result[0];
+			}
 		}
 
 		return false;
