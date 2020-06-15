@@ -39,7 +39,7 @@ class BadgeFactor2_CLI extends WP_CLI_Command {
 			WP_CLI::error( 'Usage: list_issuers' );
 		}
 
-		$issuers = Issuer::all();
+		$issuers = Issuer::all( -1 );
 		if ( false == $issuers ) {
 			WP_CLI::error( 'Error retrieving issuers' );
 		}

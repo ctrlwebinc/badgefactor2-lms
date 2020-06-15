@@ -139,7 +139,7 @@ class Badgr_List extends \WP_List_Table {
 	 * @return null|string
 	 */
 	public function record_count() {
-		$objects = $this->model::all();
+		$objects = $this->model::all( -1 );
 		if ( $objects ) {
 			return count( $objects );
 		}
@@ -303,8 +303,8 @@ class Badgr_List extends \WP_List_Table {
 		/** Process bulk action */
 		$this->process_bulk_action();
 
-		$per_page     = $this->get_items_per_page( $this->slug . '_per_page', 5 );
-		$current_page = $this->get_pagenum();
+		$per_page     = $_GET['posts_per_page'] ?? 10;
+		$current_page = $_GET['paged'] ?? 1;
 		$total_items  = $this->record_count();
 
 		$this->set_pagination_args(

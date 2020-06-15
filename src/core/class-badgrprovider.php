@@ -27,6 +27,8 @@ namespace BadgeFactor2;
  */
 class BadgrProvider {
 
+	use Paginatable;
+
 	/**
 	 * BadgrProvider Init.
 	 *
@@ -173,9 +175,14 @@ class BadgrProvider {
 	/**
 	 * Get all issuers from Badgr Server.
 	 *
+	 * @param array $params Parameters.
+	 *
 	 * @return array|boolean Issuers array or false on error.
 	 */
-	public static function get_all_issuers() {
+	public static function get_all_issuers( $params = array(
+		'paged'             => 1,
+		'elements_per_page' => -1,
+	) ) {
 		// Make GET request to /v2/issuers.
 		$response = BadgrClient::get( '/v2/issuers' );
 
@@ -185,6 +192,9 @@ class BadgrProvider {
 			if ( isset( $response_info->status->success ) &&
 				$response_info->status->success == true &&
 				isset( $response_info->result ) && is_array( $response_info->result ) ) {
+				if ( $params['elements_per_page'] > 0 ) {
+					return self::paginate( $response_info->result, $params['paged'], $params['elements_per_page'] );
+				}
 				return $response_info->result;
 			}
 		}
@@ -281,16 +291,16 @@ class BadgrProvider {
 	 * @param string $description Issuer Description.
 	 * @return string|boolean Issuer Entity ID or false on error.
 	 */
-	public static function update_issuer( $issuer_slug, $issuer_name, $email, $url, $description=null ) {
+	public static function update_issuer( $issuer_slug, $issuer_name, $email, $url, $description = null ) {
 
 		// Setup body.
 		$request_body = array(
-			'name'        => $issuer_name,
-			'email'       => $email,
-			'url'         => $url,
+			'name'  => $issuer_name,
+			'email' => $email,
+			'url'   => $url,
 		);
 
-		if ( null !== $description) {
+		if ( null !== $description ) {
 			$request_body['description'] = $description;
 		}
 
@@ -357,9 +367,13 @@ class BadgrProvider {
 	 * Retrieve all badges by issuer slug from Badgr.
 	 *
 	 * @param string $issuer_slug Issuer Entity ID / Slug.
+	 * @param array $params Parameters.
 	 * @return void TODO.
 	 */
-	public static function get_all_badge_classes_by_issuer_slug( $issuer_slug ) {
+	public static function get_all_badge_classes_by_issuer_slug( $issuer_slug, $params = array(
+		'paged'             => 1,
+		'elements_per_page' => 10,
+	) ) {
 		// Make GET request to /v2/issuers/{entity_id}/badgeclasses.
 		$response = BadgrClient::get( '/v2/issuers/' . $issuer_slug . '/badgeclasses' );
 
@@ -369,6 +383,9 @@ class BadgrProvider {
 			if ( isset( $response_info->status->success ) &&
 				$response_info->status->success == true &&
 				isset( $response_info->result ) && is_array( $response_info->result ) ) {
+				if ( $params['elements_per_page'] > 0 ) {
+					return self::paginate( $response_info->result, $params['paged'], $params['elements_per_page'] );
+				}
 				return $response_info->result;
 			}
 		}
@@ -379,9 +396,13 @@ class BadgrProvider {
 	/**
 	 * Retrieve all badges from Badgr.
 	 *
-	 * @return void TODO.
+	 * @param array $params Parameters.
+	 * @return array|bool TODO.
 	 */
-	public static function get_all_badge_classes( ) {
+	public static function get_all_badge_classes( $params = array(
+		'paged'             => 1,
+		'elements_per_page' => 10,
+	) ) {
 		// Make GET request to /v2/badgeclasses.
 		$response = BadgrClient::get( '/v2/badgeclasses' );
 
@@ -391,6 +412,9 @@ class BadgrProvider {
 			if ( isset( $response_info->status->success ) &&
 				$response_info->status->success == true &&
 				isset( $response_info->result ) && is_array( $response_info->result ) ) {
+				if ( $params['elements_per_page'] > 0 ) {
+					return self::paginate( $response_info->result, $params['paged'], $params['elements_per_page'] );
+				}
 				return $response_info->result;
 			}
 		}
@@ -402,6 +426,7 @@ class BadgrProvider {
 	 * TODO.
 	 *
 	 * @param string $badge_class_slug Badge Entity ID / Slug.
+	 * @param array $params Parameters.
 	 * @return void TODO.
 	 */
 	public static function get_badge_class_by_badge_class_slug( $badge_class_slug ) {
@@ -434,7 +459,7 @@ class BadgrProvider {
 
 		$image_data = null;
 
-		if ( null !== $image) {
+		if ( null !== $image ) {
 			try {
 				$image_raw_data = file_get_contents( $image );
 				$mime_type      = mime_content_type( $image );
@@ -455,7 +480,7 @@ class BadgrProvider {
 			'description' => $description,
 		);
 
-		if ( null !== $image_data) {
+		if ( null !== $image_data ) {
 			$request_body['image'] = $image_data;
 		}
 
@@ -526,9 +551,13 @@ class BadgrProvider {
 	 * TODO.
 	 *
 	 * @param string $badge_class_slug BadgeClass slug.
+	 * @param array  $params Parameters.
 	 * @return void TODO.
 	 */
-	public static function get_all_assertions_by_badge_class_slug( $badge_class_slug ) {
+	public static function get_all_assertions_by_badge_class_slug( $badge_class_slug, $params = array(
+		'paged'             => 1,
+		'elements_per_page' => 10,
+	) ) {
 		// Make GET request to /v2/badgeclasses/{entity_id}/assertions.
 		$response = BadgrClient::get( '/v2/badgeclasses/' . $badge_class_slug . '/assertions' );
 
@@ -538,6 +567,9 @@ class BadgrProvider {
 			if ( isset( $response_info->status->success ) &&
 				$response_info->status->success == true &&
 				isset( $response_info->result ) && is_array( $response_info->result ) ) {
+				if ( $params['elements_per_page'] > 0 ) {
+					return self::paginate( $response_info->result, $params['paged'], $params['elements_per_page'] );
+				}
 				return $response_info->result;
 			}
 		}
@@ -549,13 +581,20 @@ class BadgrProvider {
 	 * TODO.
 	 *
 	 * @param string $issuer_slug Issuer slug.
+	 * @param array $params Parameters.
 	 * @return void TODO.
 	 */
-	public static function get_all_assertions_by_issuer_slug( $issuer_slug ) {
+	public static function get_all_assertions_by_issuer_slug( $issuer_slug, $params = array(
+		'paged'             => 1,
+		'elements_per_page' => 10,
+	) ) {
 		// Make GET request to /v2/issuers/{entity_id}/assertions.
-		$response = BadgrClient::get( '/v2/issuers/' . $issuer_slug . '/assertions', array(
-			'include_revoked' => true
-		)  );
+		$response = BadgrClient::get(
+			'/v2/issuers/' . $issuer_slug . '/assertions',
+			array(
+				'include_revoked' => true,
+			)
+		);
 
 		// Check for 200 response.
 		if ( null !== $response && 200 === $response->getStatusCode() ) {
@@ -563,6 +602,9 @@ class BadgrProvider {
 			if ( isset( $response_info->status->success ) &&
 				$response_info->status->success == true &&
 				isset( $response_info->result ) && is_array( $response_info->result ) ) {
+				if ( $params['elements_per_page'] > 0 ) {
+					return self::paginate( $response_info->result, $params['paged'], $params['elements_per_page'] );
+				}
 				return $response_info->result;
 			}
 		}
@@ -597,6 +639,7 @@ class BadgrProvider {
 	 * Delete / Revoke Badge / Assertion by entity ID / slug.
 	 *
 	 * @param string $slug Entity ID / slug.
+	 * @param string $reason Reason.
 	 * @return void
 	 */
 	public static function revoke_assertion( $slug, $reason ) {

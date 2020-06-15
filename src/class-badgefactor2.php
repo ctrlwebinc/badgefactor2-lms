@@ -103,6 +103,7 @@ class BadgeFactor2 {
 		require_once BF2_ABSPATH . 'lib/CMB2/init.php';
 		require_once 'phar://' . BF2_ABSPATH . 'lib/league-oauth2-client.phar/vendor/autoload.php';
 		require_once BF2_ABSPATH . 'src/core/trait-singleton.php';
+		require_once BF2_ABSPATH . 'src/core/trait-paginatable.php';
 		require_once BF2_ABSPATH . 'src/core/interface-badgr-entity.php';
 		require_once BF2_ABSPATH . 'src/core/class-badgrclient.php';
 		require_once BF2_ABSPATH . 'src/core/class-badgrprovider.php';

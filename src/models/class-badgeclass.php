@@ -42,8 +42,19 @@ class BadgeClass implements Badgr_Entity {
 	 *
 	 * @return array|boolean Badges array or false in case of error.
 	 */
-	public static function all( $per_page = 10, $page_number = 1, $filter = array() ) {
-		$badges = BadgrProvider::get_all_badge_classes();
+	public static function all( $elements_per_page = null, $paged = null, $filter = array() ) {
+		if ( empty( $elements_per_page ) ) {
+			$elements_per_page = $_GET['posts_per_page'] ?? 10;
+		}
+		if ( empty( $paged ) ) {
+			$paged = $_GET['paged'] ?? 1;
+		}
+		$badges = BadgrProvider::get_all_badge_classes(
+			array(
+				'elements_per_page' => $elements_per_page,
+				'paged'             => $paged,
+			)
+		);
 		if ( isset( $filter['issuer'] ) ) {
 			foreach ( $badges as $i => $badge ) {
 				if ( $badge->issuer !== $filter['issuer'] ) {
