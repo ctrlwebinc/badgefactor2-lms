@@ -29,6 +29,22 @@ class BadgrProvider {
 
 	use Paginatable;
 
+	private static $client = null;
+
+	public static function setClient( BadgrClient $client ) {
+		self::$client = $client;
+	}
+
+	private static function getClient() {
+		if ( null == self::$client ) {
+			// TODO use user client methods
+			// return BadgrClient::getOrMakeUserClient();
+			self::$client = BadgrClient::makeClientFromSavedOptions();
+		}
+
+		return self::$client;
+	}
+
 	/**
 	 * BadgrProvider Init.
 	 *
@@ -83,7 +99,7 @@ class BadgrProvider {
 		);
 
 		// Make POST request to /v1/user/profile.
-		$response = BadgrClient::post( '/v1/user/profile', $request_body );
+		$response = self::getClient()->post( '/v1/user/profile', $request_body );
 
 		// Check for 201 response.
 		if ( null !== $response && $response->getStatusCode() == 201 ) {
@@ -106,7 +122,7 @@ class BadgrProvider {
 	public static function check_user_verified( $user_entity_id ) {
 
 		// Make GET request to /v2/users/{slug-entity_id}.
-		$response = BadgrClient::get( '/v2/users/' . $user_entity_id );
+		$response = self::getClient()->get( '/v2/users/' . $user_entity_id );
 
 		// Check for 200 response.
 		if ( null !== $response && $response->getStatusCode() == 200 ) {
@@ -146,7 +162,7 @@ class BadgrProvider {
 		);
 
 		// Make POST request to /v2/users/{slug}.
-		$response = BadgrClient::put( '/v2/users/' . $slug, $request_body );
+		$response = self::getClient()->put( '/v2/users/' . $slug, $request_body );
 
 		// Check for 200 response.
 		if ( null !== $response && $response->getStatusCode() == 200 ) {
@@ -184,7 +200,7 @@ class BadgrProvider {
 		'elements_per_page' => -1,
 	) ) {
 		// Make GET request to /v2/issuers.
-		$response = BadgrClient::get( '/v2/issuers' );
+		$response = self::getClient()->get( '/v2/issuers' );
 
 		// Check for 200 response.
 		if ( null !== $response && 200 === $response->getStatusCode() ) {
@@ -210,7 +226,7 @@ class BadgrProvider {
 	 */
 	public static function get_issuer_by_slug( $slug ) {
 		// Make GET request to /v2/issuers/{entity_id}.
-		$response = BadgrClient::get( '/v2/issuers/' . $slug );
+		$response = self::getClient()->get( '/v2/issuers/' . $slug );
 
 		// Check for 200 response.
 		if ( null !== $response && $response->getStatusCode() == 200 ) {
@@ -233,7 +249,7 @@ class BadgrProvider {
 	 */
 	public static function delete_issuer( $slug ) {
 		// Make DELETE request to /v2/issuers/{entity_id}.
-		$response = BadgrClient::delete( '/v2/issuers/' . $slug );
+		$response = self::getClient()->delete( '/v2/issuers/' . $slug );
 
 		// Check for 204 or 404 response.
 		if ( null !== $response && ( $response->getStatusCode() == 204 || $response->getStatusCode() == 404 ) ) {
@@ -265,7 +281,7 @@ class BadgrProvider {
 		);
 
 		// Make POST request to /v2/issuers.
-		$response = BadgrClient::post( '/v2/issuers', $request_body );
+		$response = self::getClient()->post( '/v2/issuers', $request_body );
 
 		// Check for 201 response.
 		if ( null !== $response && $response->getStatusCode() == 201 ) {
@@ -305,7 +321,7 @@ class BadgrProvider {
 		}
 
 		// Make PUT request to /v2/issuers/{entity_id}.
-		$response = BadgrClient::put( '/v2/issuers/' . $issuer_slug, $request_body );
+		$response = self::getClient()->put( '/v2/issuers/' . $issuer_slug, $request_body );
 
 		// Check for 200 response.
 		if ( null !== $response && $response->getStatusCode() == 200 ) {
@@ -347,7 +363,7 @@ class BadgrProvider {
 		);
 
 		// Make POST request to /v2/badgeclasses.
-		$response = BadgrClient::post( '/v2/badgeclasses', $request_body );
+		$response = self::getClient()->post( '/v2/badgeclasses', $request_body );
 
 		// Check for 201 response.
 		if ( null !== $response && 201 === $response->getStatusCode() ) {
@@ -375,7 +391,7 @@ class BadgrProvider {
 		'elements_per_page' => 10,
 	) ) {
 		// Make GET request to /v2/issuers/{entity_id}/badgeclasses.
-		$response = BadgrClient::get( '/v2/issuers/' . $issuer_slug . '/badgeclasses' );
+		$response = self::getClient()->get( '/v2/issuers/' . $issuer_slug . '/badgeclasses' );
 
 		// Check for 200 response.
 		if ( null !== $response && 200 === $response->getStatusCode() ) {
@@ -404,7 +420,7 @@ class BadgrProvider {
 		'elements_per_page' => 10,
 	) ) {
 		// Make GET request to /v2/badgeclasses.
-		$response = BadgrClient::get( '/v2/badgeclasses' );
+		$response = self::getClient()->get( '/v2/badgeclasses' );
 
 		// Check for 200 response.
 		if ( null !== $response && 200 === $response->getStatusCode() ) {
@@ -431,7 +447,7 @@ class BadgrProvider {
 	 */
 	public static function get_badge_class_by_badge_class_slug( $badge_class_slug ) {
 		// Make GET request to /v2/badgeclasses/{entity_id}.
-		$response = BadgrClient::get( '/v2/badgeclasses/' . $badge_class_slug );
+		$response = self::getClient()->get( '/v2/badgeclasses/' . $badge_class_slug );
 
 		// Check for 200 response.
 		if ( null !== $response && $response->getStatusCode() == 200 ) {
@@ -485,7 +501,7 @@ class BadgrProvider {
 		}
 
 		// Make PUT request to /v2/badgeclasses/{entity_id}.
-		$response = BadgrClient::put( '/v2/badgeclasses/' . $badge_class_slug, $request_body );
+		$response = self::getClient()->put( '/v2/badgeclasses/' . $badge_class_slug, $request_body );
 
 		// Check for 200 response.
 		if ( null !== $response && $response->getStatusCode() == 200 ) {
@@ -503,7 +519,7 @@ class BadgrProvider {
 	 */
 	public static function delete_badge_class( $slug ) {
 		// Make DELETE request to /v2/badgeclasses/{entity_id}.
-		$response = BadgrClient::delete( '/v2/badgeclasses/' . $slug );
+		$response = self::getClient()->delete( '/v2/badgeclasses/' . $slug );
 
 		// Check for 204 or 404 response.
 		if ( null !== $response && ( $response->getStatusCode() == 204 || $response->getStatusCode() == 404 ) ) {
@@ -533,7 +549,7 @@ class BadgrProvider {
 		);
 
 		// Make POST request to /v1/issuer/issuers/{issuerSlug}/badges/{slug}/assertions.
-		$response = BadgrClient::post( '/v1/issuer/issuers/' . $issuer_slug . '/badges/' . $badge_class_slug . '/assertions', $request_body );
+		$response = self::getClient()->post( '/v1/issuer/issuers/' . $issuer_slug . '/badges/' . $badge_class_slug . '/assertions', $request_body );
 
 		// Check for 201 response.
 		if ( null !== $response && $response->getStatusCode() == 201 ) {
@@ -559,7 +575,7 @@ class BadgrProvider {
 		'elements_per_page' => 10,
 	) ) {
 		// Make GET request to /v2/badgeclasses/{entity_id}/assertions.
-		$response = BadgrClient::get( '/v2/badgeclasses/' . $badge_class_slug . '/assertions' );
+		$response = self::getClient()->get( '/v2/badgeclasses/' . $badge_class_slug . '/assertions' );
 
 		// Check for 200 response.
 		if ( null !== $response && 200 === $response->getStatusCode() ) {
@@ -589,7 +605,8 @@ class BadgrProvider {
 		'elements_per_page' => 10,
 	) ) {
 		// Make GET request to /v2/issuers/{entity_id}/assertions.
-		$response = BadgrClient::get(
+
+		$response = self::getClient()->get(
 			'/v2/issuers/' . $issuer_slug . '/assertions',
 			array(
 				'include_revoked' => true,
@@ -620,7 +637,7 @@ class BadgrProvider {
 	 */
 	public static function get_assertion_by_assertion_slug( $assertion_slug ) {
 		// Make GET request to /v2/assertions/{entity_id}.
-		$response = BadgrClient::get( '/v2/assertions/' . $assertion_slug );
+		$response = self::getClient()->get( '/v2/assertions/' . $assertion_slug );
 
 		// Check for 200 response.
 		if ( null !== $response && $response->getStatusCode() == 200 ) {
@@ -649,7 +666,7 @@ class BadgrProvider {
 		);
 
 		// Make DELETE request to /v2/assertions/{entity_id}.
-		$response = BadgrClient::delete( '/v2/assertions/' . $slug, $request_body );
+		$response = self::getClient()->delete( '/v2/assertions/' . $slug, $request_body );
 
 		// Check for 200 response.
 		if ( null !== $response && $response->getStatusCode() == 200 ) {
