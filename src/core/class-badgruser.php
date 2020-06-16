@@ -22,10 +22,110 @@
 
 namespace BadgeFactor2;
 
+use BadgeFactor2\BadgrClient;
+
 /**
  * BadgrUser Class.
  */
 class BadgrUser {
+
+	protected static $user_meta_key_for_client = 'badgr_client_instance';
+	
+	protected $wp_user = null;
+	protected $user_client = null;
+
+	function __construct ( WP_USER $wp_user) {
+		$this->$wp_user = $wp_user;
+		$this->get_client_from_user_meta();
+
+		// TODO considering making if no client in user meta
+	}
+
+	public static function make_from_user_id ( int $wp_user_id) {
+		return $this->wp_user_id = new WP_User( $wp_user_id );
+	}
+
+	protected function get_client_from_user_meta () {
+		$this->user_client = get_user_meta( $wp_user->ID, self::user_meta_key_for_client, true );
+	}
+	
+	public function save_client () {
+		if ( null !== $this->user_client ) {
+			update_user_meta( $this->wp_user->ID, self::$user_meta_key_for_client, $this->user_client);
+		}
+	}
+
+	public function set_client( BadgrClient $badgr_client) {
+		$badgr_client->badgr_user = $this;
+		$this->user_client = $badgr_client;
+		$this->save_client();
+	}
+
+	public function get_client () {
+		return $this->user_client;
+	}
+
+	public static function getOrMakeUserClient( WPUser $wp_user = null ) {
+
+		// If no user passed, use the current user
+		if ( null === $wp_user ) {
+			$wp_user = wp_get_current_user();
+			if ( $wp_user == 0) {
+				throw new \Exception('Can\'t determine user for client creation');
+			}
+		}
+		// Look in user metas for existing client
+		// TODO Transfer responsibility of user client fetching to BadgrUser
+		$client = get_user_meta( $wp_user->ID, self::user_meta_key_for_client, true );
+
+		if ( null!== $client && '' !== $client) {
+			return $client;
+		}
+
+		// No existing client, make a new one
+		$badgr_site_settings = get_option( 'badgefactor2_badgr_settings' );
+
+		// Basic parameters
+		$basicParameters['username'] = $wp_user->user_email;
+		$basicParameters['as_admin'] = is_admin();
+		$basicParameters['badgr_server_flavor'] = $badgr_site_settings['badgr_server_flavour'];
+
+		// Set urls by convention or with custom settings depending on server flavour
+		if ( $badgr_site_settings['badgr_server_flavour'] == self::FLAVOR_BADGRIO_01 ) {
+			$basicParameters['badgr_server_public_url']  = self::BADGR_IO_URL;
+		} elseif ( $badgr_site_settings['badgr_server_flavour'] == self::FLAVOR_LOCAL_R_JAMIROQUAI ) {
+			$basicParameters['badgr_server_public_url']  = site_url() . ':' . self::DEFAULT_LOCAL_BADGR_SERVER_PORT;
+		} else {
+			// Custom
+			$basicParameters['badgr_server_public_url'] = $badgr_site_settings['badgr_server_public_url'];
+			if ( null !== $badgr_site_settings['badgr_server_internal_url'] ) {
+				$basicParameters['badgr_server_internal_url'] = $badgr_site_settings['badgr_server_internal_url'];
+			}
+		}
+
+		// If not badgr io, get client_id
+		if ( $badgr_site_settings['badgr_server_flavour'] != self::FLAVOR_BADGRIO_01 ) {
+			$basicParameters['client_id']  = $badgr_site_settings['client_id'];
+		}
+
+		// If not password grant, get client_secret
+		if ( $badgr_site_settings['badgr_authentication_process_select'] != self::GRANT_PASSWORD ) {
+			$basicParameters['badgr_server_client_secret']  = $badgr_site_settings['badgr_server_client_secret'];
+		}
+
+		// Set user
+		$basicParameters['wp_user_id'] = $wp_user->ID;
+
+		// Make client
+		$client = self::makeInstance( $basicParameters );
+
+		// Store client for later use
+		// TODO Move responsibility for saving to BadgrUser
+		update_user_meta( $wp_user->ID, self::$user_meta_key_for_client, $client);
+
+		return $client;
+
+	}
 
 	/**
 	 * BadgrUser Init.
@@ -120,10 +220,4 @@ class BadgrUser {
 
 		return false;
 	}
-
-	// Get the user's specific client
-	public function get_client () {
-		throw new \Exception( 'Not yet implemented.');
-	}
-
 }

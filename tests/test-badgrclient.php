@@ -371,7 +371,7 @@ class BadgrClientTest extends WP_UnitTestCase {
 		}
 	}
 
-	public function test_can_store_client() {
+/* 	public function test_can_store_client() {
 		// Setup a completely configured client and store
 		$clientParameters = [
 			'username' => 'dev@ctrlweb.ca',
@@ -443,8 +443,8 @@ class BadgrClientTest extends WP_UnitTestCase {
 		$this->assertEquals ( $entityId, $response_info->result[0]->entityId);
 
 	}
-
-	public function test_admin_creates_user_then_user_checks_backpack () {
+ */
+	public function test_admin_reads_own_backpack () {
 		// Password grant admin client
 		$adminClientParameters = [
 			'username' => getenv('BADGR_ADMIN_USERNAME'),
@@ -465,79 +465,22 @@ class BadgrClientTest extends WP_UnitTestCase {
 			$this->fail('Exception thrown on client creation: ' . $e->getMessage());
 		}
 
-		// New user creation
-		$firstname = 'Zeus';
-		$lastname = 'God';
-		$email = 'zeus.god@example.net';
-		$password = 'pass456PASS';
+		// Check backpack
+		$response = $adminClient->get('/v2/backpack/assertions');
 
-		$request_body = array(
-			'first_name'           => $firstname,
-			'last_name'            => $lastname,
-			'email'                => $email,
-			'url'                  => '',
-			'telephone'            => '',
-			'slug'                 => '',
-			'agreed_terms_version' => 1,
-			'marketing_opt_in'     => false,
-			'has_password_set'     => false,
-			'source'               => 'bf2',
-			'password'             => $password,
-		);
+		$success = false;
 
-		// Make POST request to /v1/user/profile.
-		$response = $adminClient->post( '/v1/user/profile', $request_body );
-
-		$newUserSlug = null;
-
-		// Check for 201 response.
-		if ( null !== $response && $response->getStatusCode() == 201 ) {
-			// Return slug-entity_id or false if unsucessful.
+		// Check for 200 response.
+		if ( null !== $response && 200 === $response->getStatusCode() ) {
 			$response_info = json_decode( $response->getBody() );
-			if ( isset( $response_info->slug ) && strlen( $response_info->slug ) > 0 ) {
-				$newUserSlug =  $response_info->slug;
+			if ( isset( $response_info->status->success ) &&
+				$response_info->status->success == true &&
+				isset( $response_info->result ) && is_array( $response_info->result ) ) {
+				$success = true;
 			}
 		}
 
-		// Password grant client for user
-		$userClientParameters = [
-			'username' => $email,
-			'as_admin' => false,
-			'badgr_server_public_url' => getenv('BADGR_SERVER_PUBLIC_URL'),
-			'badgr_server_internal_url' => getenv('BADGR_SERVER_INTERNAL_URL'),
-			'badgr_server_flavor' => BadgrClient::FLAVOR_LOCAL_R_JAMIROQUAI,
-			'client_id'     => getenv('BADGR_SERVER_PASSWORD_GRANT_CLIENT_ID'),
-			'badgr_password' => $password,
-		];
-
-		$userClient = null;
-
-		try {
-			$userClient = BadgrClient::makeInstance($userClientParameters);
-			$userClient->getAccessTokenFromPasswordGrant();
-
-		} catch ( BadMethodCallException $e ) {
-			$this->fail('Exception thrown on client creation: ' . $e->getMessage());
-		}
-
-		// User checks profile
-		try {
-			$response = $userClient->get( '/v2/users/self' );
-		} catch (\Exception $e ) {
-			$this->fail('Exception on profile check ' . $e->getMessage());
-		}
-
-		$response_info = json_decode( $response->getBody() );
-
-		// Check that entity id exists
-		$this->assertTrue( isset( $response_info->result[0]->entityId ) );
-
-		// Check that entityId isn't empty
-		$this->assertNotEmpty( $response_info->result[0]->entityId );
-
-		// Check our slug matches
-		$this->assertEquals( $newUserSlug, $response_info->result[0]->entityId); 
-
+		$this->assertTrue( $success );
 
 	}
 

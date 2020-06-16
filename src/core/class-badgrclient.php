@@ -23,6 +23,7 @@
 namespace BadgeFactor2;
 
 use GuzzleHttp\Client;
+use BadgeFactor2\BadgrUser;
 use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Exception\GuzzleException;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
@@ -51,10 +52,12 @@ class BadgrClient {
 	const GRANT_CODE = 2;
 
 	// Class properties
-	protected static $clients = [];
+	//protected static $clients = [];
 	private static $guzzleClient = null;
 	public static $authRedirectUri = '/wp-admin/admin.php?page=badgefactor2_badgr_settings';
-	public static $user_meta_key_for_client = 'badgr_client_instance';
+	//public static $user_meta_key_for_client = 'badgr_client_instance';
+
+	public $badgr_user = null;
 
 	// Minimal properties of instances
 	private $username = null;
@@ -63,7 +66,7 @@ class BadgrClient {
 	private $badgr_server_flavor = null;
 
 	// Additional instance properties
-	private $wp_user_id = null;
+	//private $wp_user_id = null;
 	private $badgr_server_internal_url = null;
 
 	private $scopes; // Scopes applicable to token
@@ -135,7 +138,6 @@ class BadgrClient {
 
 		// TODO: save optionnal parameters in new instance
 		$optionnalParameters = [
-			'wp_user_id',
 			'badgr_server_internal_url',
 			'scopes',
 			'badgr_password',
@@ -172,19 +174,12 @@ class BadgrClient {
 			$client->scopes = $scopes;
 		}
 
-		// set user id if available
-		if ( isset( $parameters['wp_user_id'] ) ) {
-			$client->wp_user_id = $parameters['wp_user_id'];
-		}
-
 		// TODO: figureOutState
 
-		// Generate key and hash
-		$client->client_key = $parameters['username'] . '|' . $parameters['as_admin'] ? 'admin' : 'not_admin' . '|' . $parameters['badgr_server_public_url'];
-		$client->client_hash = hash('md5', $client->client_key);
-
-		// Add client to class list
-		self::$clients[$client->client_hash] = $client;
+		// set BadgrUser if available (also saves instance)
+		if ( isset( $parameters['badgr_user'] ) && null !== $parameters['badgr_user'] ) {
+			$parameters['badgr_user']->set_client( $client );
+		}
 
 		return ($client);
 
@@ -227,83 +222,8 @@ class BadgrClient {
 		return self::$guzzleClient;
 	}
 
-	public static function getClientByUsername($userName, $asAdmin=false, BadgrServer $badgrServer=null){}
-	public static function getClient(WPUser $wp_user, $asAdmin=false, BadgrServer $badgrServer=null){}
-
-	public static function getOrMakeUserClient( WPUser $wp_user = null ) {
-
-		// If no user passed, use the current user
-		if ( null === $wp_user ) {
-			$wp_user = wp_get_current_user();
-			if ( $wp_user == 0) {
-				throw new \Exception('Can\'t determine user for client creation');
-			}
-		}
-		// Look in user metas for existing client
-		$client = get_user_meta( $wp_user->ID, self::user_meta_key_for_client, true );
-
-		if ( null!== $client && '' !== $client) {
-			return $client;
-		}
-
-		// No existing client, make a new one
-		$badgr_site_settings = get_option( 'badgefactor2_badgr_settings' );
-
-		// Basic parameters
-		$basicParameters['username'] = $wp_user->user_email;
-		$basicParameters['as_admin'] = is_admin();
-		$basicParameters['badgr_server_flavor'] = $badgr_site_settings['badgr_server_flavour'];
-
-		// Set urls by convention or with custom settings depending on server flavour
-		if ( $badgr_site_settings['badgr_server_flavour'] == self::FLAVOR_BADGRIO_01 ) {
-			$basicParameters['badgr_server_public_url']  = self::BADGR_IO_URL;
-		} elseif ( $badgr_site_settings['badgr_server_flavour'] == self::FLAVOR_LOCAL_R_JAMIROQUAI ) {
-			$basicParameters['badgr_server_public_url']  = site_url() . ':' . self::DEFAULT_LOCAL_BADGR_SERVER_PORT;
-		} else {
-			// Custom
-			$basicParameters['badgr_server_public_url'] = $badgr_site_settings['badgr_server_public_url'];
-			if ( null !== $badgr_site_settings['badgr_server_internal_url'] ) {
-				$basicParameters['badgr_server_internal_url'] = $badgr_site_settings['badgr_server_internal_url'];
-			}
-		}
-
-		// If not badgr io, get client_id
-		if ( $badgr_site_settings['badgr_server_flavour'] != self::FLAVOR_BADGRIO_01 ) {
-			$basicParameters['client_id']  = $badgr_site_settings['client_id'];
-		}
-
-		// If not password grant, get client_secret
-		if ( $badgr_site_settings['badgr_authentication_process_select'] != self::GRANT_PASSWORD ) {
-			$basicParameters['badgr_server_client_secret']  = $badgr_site_settings['badgr_server_client_secret'];
-		}
-
-		// Set user
-		$basicParameters['wp_user_id'] = $wp_user->ID;
-
-		// Make client
-		$client = self::makeInstance( $basicParameters );
-
-		// Store client for later use
-		update_user_meta( $wp_user->ID, self::$user_meta_key_for_client, $client);
-
-		return $client;
-
-	}
-
-	public function getClientByHash($hash)
-	{
-		if ( isset( self::$clients[$hash] ) )
-		{
-			return self::$clients[$hash];
-		} else
-		{
-			return null;
-		}
-	}
-
-	protected function getDefaultBadgrServer(){}
-
-	public static function list_clients(){} // BadgrServer,WPUserId,Email
+	//public static function getClientByUsername($userName, $asAdmin=false, BadgrServer $badgrServer=null){}
+	// public static function getClient(WPUser $wp_user, $asAdmin=false, BadgrServer $badgrServer=null){}
 
 	public function initiateCodeAuthorization()
 	{
@@ -488,14 +408,12 @@ class BadgrClient {
 
 	}
 
-	public function save()
+	private function save()
 	{
-		// Placeholder for saving client to storage
-		// TODO: implement
+		if ( null !== $this->badgr_user) {
+			$this->badgr_user->save_client();
+		}
 	}
-
-	public function probeBadgrServer(){}
-
 
 	public static function init_hooks(){
 		add_rewrite_rule(
@@ -533,6 +451,13 @@ class BadgrClient {
 	public static function hook_template_redirect () {
 		if( $bf2 = get_query_var( 'bf2' ) )
 		{
+			if ( 'auth' == $bf2) {
+				// Check for code and hash, retrieve client and complete code auth
+				header('Content-Type: text/plain');
+				echo 'Badgr auth callback.';
+				echo ' Full uri: ' . $_SERVER['REQUEST_URI'];
+				exit();
+			}
 			header('Content-Type: text/plain');
 			echo 'Badgr callback: ' . $bf2;
 			echo ' Full uri: ' . $_SERVER['REQUEST_URI'];
