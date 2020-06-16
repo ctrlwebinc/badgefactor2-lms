@@ -670,4 +670,20 @@ class BadgrProvider {
 
 		return false;
 	}
+
+	public static function get_profile_associated_to_client_in_use () {
+		$response = self::getClient()->get( '/v2/users/self');
+
+		// Check for 200 response.
+		if ( null !== $response && $response->getStatusCode() == 200 ) {
+			$response_info = json_decode( $response->getBody() );
+			if ( isset( $response_info->status->success ) &&
+				$response_info->status->success == true &&
+				isset( $response_info->result[0] ) ) {
+				return $response_info->result[0];
+			}
+		}
+
+		return false;
+	}
 }

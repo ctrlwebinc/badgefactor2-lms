@@ -21,16 +21,31 @@
  */
 
 use \BadgeFactor2\BadgrClient;
-use \BadgeFactor2\BadgrProvider;
+use \BadgeFactor2\BadgrUser;
 
-/**
- * Badgr Client Test.
- */
-class BadgrUsersTest extends WP_UnitTestCase {
+class BadgrProviderTest extends WP_UnitTestCase {
 
+	private function callPrivateStaticMethod( $class, $method, ...$args ) {
+		$reflector = new ReflectionClass( $class );
+		$method    = $reflector->getMethod( $method );
+		$method->setAccessible( true );
+		return $method->invoke( null, ...$args );
+	}
+
+	private function generateRandomString($length = 10) {
+	    $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+	    $charactersLength = strlen($characters);
+	    $randomString = 'l';
+	    for ($i = 0; $i < $length; $i++) {
+	        $randomString .= $characters[rand(0, $charactersLength - 1)];
+	    }
+	    return $randomString;
+	}
     /**
+     * @backupStaticAttributes enabled
+	 * @runInSeparateProcess
      */
-	public function test_issuer_to_assertion_flow() {
+	public function test_provider_can_fetch_a_client_from_old_style_options() {
 
 		// Setup a completely client and check that we can get the profile info
 		$clientParameters = [
@@ -91,7 +106,7 @@ class BadgrUsersTest extends WP_UnitTestCase {
      * @backupStaticAttributes enabled
 	 * @runInSeparateProcess
      */
-	public function test_issuer_to_new_user_assertion_flow() {
+	/* public function test_issuer_to_new_user_assertion_flow() {
 
 		// Setup a completely client and check that we can get the profile info
 		$clientParameters = [
@@ -181,5 +196,6 @@ class BadgrUsersTest extends WP_UnitTestCase {
 		$this->assertTrue( false !== $assertion_slug );
 		$this->assertNotEmpty( $assertion_slug);
 
-	}
+    } */
+    
 }

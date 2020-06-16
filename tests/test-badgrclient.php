@@ -544,4 +544,38 @@ class BadgrClientTest extends WP_UnitTestCase {
 			//> dumps the request options of the sent request. 
 		} */
 	}
+
+	public function test_make_client_from_old_style_options() {
+		// Set valid options
+		$options['badgr_server_public_url'] = getenv('BADGR_SERVER_PUBLIC_URL');
+		$options['badgr_server_internal_url'] = getenv('BADGR_SERVER_INTERNAL_URL');
+		$options['badgr_server_client_id'] = getenv('BADGR_SERVER_CLIENT_ID');
+		$options['badgr_server_client_secret'] = getenv('BADGR_SERVER_CLIENT_SECRET');
+		$options['badgr_server_access_token'] = getenv('BADGR_SERVER_ACCESS_TOKEN');
+		$options['badgr_server_refresh_token'] = getenv('BADGR_SERVER_REFRESH_TOKEN');
+		$options['badgr_server_token_expiration'] = getenv('BADGR_SERVER_TOKEN_EXPIRATION');
+
+		update_option( 'badgefactor2_badgr_settings', $options );
+
+		// Fetch and use client
+		$client = BadgrClient::makeClientFromSavedOptions();
+
+		// Make GET request to /v2/users/self.
+		$response = $client->get( '/v2/users/self' );
+
+		// Check response isn't null.
+		$this->assertNotNull($response);
+
+		// Check response has status code 200.
+		$this->assertEquals( 200, $response->getStatusCode() );
+
+		$response_info = json_decode( $response->getBody() );
+
+		// Check that entity id exists
+		$this->assertTrue( isset( $response_info->result[0]->entityId ) );
+
+		// Check that entityId isn't empty
+		$this->assertNotEmpty( $response_info->result[0]->entityId );
+		
+	}
 }

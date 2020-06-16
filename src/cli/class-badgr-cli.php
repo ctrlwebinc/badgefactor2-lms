@@ -416,4 +416,43 @@ class Badgr_CLI extends WP_CLI_Command {
 		}
 	}
 
+	public function force_auth( $args, $assoc_args ) {
+		if ( count( $args ) != 3 ) {
+			WP_CLI::error( 'Usage: force_auth access_token refresh_token token_expiration' );
+		}
+
+		if ( strlen( $args[0] ) < 1 ) {
+			WP_CLI::error( 'Please provide an access token as the 1st argument' );
+		}
+
+		if ( strlen( $args[1] ) < 1 ) {
+			WP_CLI::error( 'Please provide a refresh token as the 2nd argument' );
+		}
+
+		if ( strlen( $args[2] ) < 1 || ! filter_var( $args[2], FILTER_VALIDATE_INT ) || intval($args[2]) <= time() ) {
+			WP_CLI::error( 'Please provide a timestamp date later than current time as the 3rd argument' );
+		}
+
+		$options = get_option( 'badgefactor2_badgr_settings' );
+		$options['badgr_server_access_token'] = $args[0];
+		$options['badgr_server_refresh_token'] = $args[1];
+		$options['badgr_server_token_expiration'] = $args[2];
+		update_option( 'badgefactor2_badgr_settings', $options );
+
+		WP_CLI::success( 'Default auth values updated.');
+	}
+
+	public function view_current_default_client_profile ($args, $assoc_args) {
+		if ( count( $args ) != 0 ) {
+			WP_CLI::error( 'Usage: view_current_default_client_profile' );
+		}
+
+		$client_profile = BadgrProvider::get_profile_associated_to_client_in_use();
+
+		if ( $client_profile ) {
+			WP_CLI::success( 'Current profile: ' . json_encode( $client_profile ) );
+		} else {
+			WP_CLI::error( 'Failed getting current profile' );
+		}
+	}
 }
