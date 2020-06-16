@@ -78,8 +78,20 @@ class Issuer implements Badgr_Entity {
 	 *
 	 * @return array|boolean Issuers array or false in case of error.
 	 */
-	public static function all( $per_page = 10, $page_number = 1, $filter = array() ) {
-		return BadgrProvider::get_all_issuers();
+	public static function all( $elements_per_page = null, $paged = null, $filter = array() ) {
+		if ( empty( $elements_per_page ) ) {
+			$elements_per_page = $_GET['posts_per_page'] ?? 10;
+		}
+		if ( empty( $paged ) ) {
+			$paged = $_GET['paged'] ?? 1;
+		}
+
+		return BadgrProvider::get_all_issuers(
+			array(
+				'elements_per_page' => $elements_per_page,
+				'paged'             => $paged,
+			)
+		);
 	}
 
 	/**

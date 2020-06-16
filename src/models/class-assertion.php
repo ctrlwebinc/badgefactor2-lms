@@ -44,14 +44,32 @@ class Assertion implements Badgr_Entity {
 	 *
 	 * @return array|boolean Issuers array or false in case of error.
 	 */
-	public static function all( $per_page = 10, $page_number = 1 ) {
+	public static function all( $elements_per_page = null, $paged = null, $filter = array() ) {
+		if ( empty( $elements_per_page ) ) {
+			$elements_per_page = $_GET['posts_per_page'] ?? 10;
+		}
+		if ( empty( $paged ) ) {
+			$paged = $_GET['paged'] ?? 1;
+		}
 		if ( isset( $_GET['filter_type'] ) && isset( $_GET['filter_value'] ) ) {
 			$filter_type  = $_GET['filter_type'];
 			$filter_value = $_GET['filter_value'];
 			if ( 'Issuers' === $filter_type ) {
-				return BadgrProvider::get_all_assertions_by_issuer_slug( $filter_value );
+				return BadgrProvider::get_all_assertions_by_issuer_slug(
+					$filter_value,
+					array(
+						'elements_per_page' => $elements_per_page,
+						'paged'             => $paged,
+					)
+				);
 			} elseif ( 'Badges' === $filter_type ) {
-				return BadgrProvider::get_all_assertions_by_badge_class_slug( $filter_value );
+				return BadgrProvider::get_all_assertions_by_badge_class_slug(
+					$filter_value,
+					array(
+						'elements_per_page' => $elements_per_page,
+						'paged'             => $paged,
+					)
+				);
 			}
 		}
 
@@ -76,7 +94,7 @@ class Assertion implements Badgr_Entity {
 	 */
 	public static function create( $values, $files = null ) {
 		if ( self::validate( $values, $files ) ) {
-			return BadgrProvider::add_assertion( $values['issuer'],  $values['badge'],  $values['recipient'] );
+			return BadgrProvider::add_assertion( $values['issuer'], $values['badge'], $values['recipient'] );
 		}
 		return false;
 	}
@@ -104,24 +122,24 @@ class Assertion implements Badgr_Entity {
 	 * @return boolean Whether or not deletion has succeeded.
 	 */
 	public static function delete( $entity_id ) {
-		
+
 	}
 
 	public static function get_columns() {
 		return array(
-			'image'				=> __( 'Issued Badge', 'badgefactor2' ),
-			'issuer'            => __( 'Issuer', 'badgefactor2' ),
-			'badgeclass'		=> __( 'Badge', 'badgefactor2' ),
-			'recipient'			=> __( 'Recipient', 'badgefactor2' ),
-			'createdAt'         => __( 'Created on', 'badgefactor2' ),
+			'image'      => __( 'Issued Badge', 'badgefactor2' ),
+			'issuer'     => __( 'Issuer', 'badgefactor2' ),
+			'badgeclass' => __( 'Badge', 'badgefactor2' ),
+			'recipient'  => __( 'Recipient', 'badgefactor2' ),
+			'createdAt'  => __( 'Created on', 'badgefactor2' ),
 		);
 	}
 
 	public static function get_sortable_columns() {
 		return array(
-			'entityId'          => array( 'entityId', true ),
-			'recipient'			=> array( 'recipient', true ),
-			'createdAt'         => array( 'createdAt', false ),
+			'entityId'  => array( 'entityId', true ),
+			'recipient' => array( 'recipient', true ),
+			'createdAt' => array( 'createdAt', false ),
 		);
 	}
 

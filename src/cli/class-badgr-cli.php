@@ -197,7 +197,11 @@ class Badgr_CLI extends WP_CLI_Command {
 			WP_CLI::error( 'Usage: list_badge_classes' );
 		}
 
-		$badge_classes = BadgrProvider::get_all_badge_classes();
+		$badge_classes = BadgrProvider::get_all_badge_classes(
+			$params    = array(
+				'elements_per_page' => -1,
+			)
+		);
 		if ( false == $badge_classes ) {
 			WP_CLI::error( 'Error retrieving badge classes' );
 		}
@@ -214,7 +218,7 @@ class Badgr_CLI extends WP_CLI_Command {
 			WP_CLI::error( 'Please provide an issuer slug the 1st argument' );
 		}
 
-		$badge_classes = BadgrProvider::get_all_badge_classes_by_issuer_slug( $args[0] );
+		$badge_classes = BadgrProvider::get_all_badge_classes_by_issuer_slug( $args[0], array( 'elements_per_page' => -1, ) );
 		if ( false == $badge_classes ) {
 			WP_CLI::error( 'Error retrieving badge classes' );
 		}
@@ -351,7 +355,7 @@ class Badgr_CLI extends WP_CLI_Command {
 			WP_CLI::error( 'Please provide an issuer slug the 1st argument' );
 		}
 
-		$badge_classes = BadgrProvider::get_all_assertions_by_issuer_slug( $args[0] );
+		$badge_classes = BadgrProvider::get_all_assertions_by_issuer_slug( $args[0], array( 'elements_per_page' => -1, ) );
 		if ( false == $badge_classes ) {
 			WP_CLI::error( 'Error retrieving assertions' );
 		}
@@ -368,7 +372,7 @@ class Badgr_CLI extends WP_CLI_Command {
 			WP_CLI::error( 'Please provide a badge class slug the 1st argument' );
 		}
 
-		$badge_classes = BadgrProvider::get_all_assertions_by_badge_class_slug( $args[0] );
+		$badge_classes = BadgrProvider::get_all_assertions_by_badge_class_slug( $args[0], array( 'elements_per_page' => -1, ) );
 		if ( false == $badge_classes ) {
 			WP_CLI::error( 'Error retrieving assertion' );
 		}

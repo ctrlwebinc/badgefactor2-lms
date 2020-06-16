@@ -20,29 +20,40 @@
  * @package Badge_Factor_2
  */
 
-namespace BadgeFactor2\Shortcodes;
-
-use BadgeFactor2\Issuer;
+namespace BadgeFactor2;
 
 /**
- * Shortcodes Class.
+ * Paginatable Trait.
  */
-class Issuers {
+trait Paginatable {
 
-	public function __construct() {
-		add_shortcode( 'bf2-issuers', array( $this, 'list' ) );
-	}
+	/**
+	 * Protected class constructor to prevent direct object creation.
+	 */
+	protected function __construct() { }
 
-	public function list( $atts ) {
-		$issuers = Issuer::all( -1 );
-		if ( $issuers ) {
-			foreach ( Issuer::all() as $issuer ) {
-				echo $issuer->name;
-			}
-		} else {
-			echo __( 'No issuer for the moment.', 'badgefactor2' );
+	/**
+	 * Prevent object cloning
+	 */
+	final protected function __clone() { }
+
+	/**
+	 * Undocumented function.
+	 *
+	 * @param array   $array Array.
+	 * @param integer $page Page number.
+	 * @param integer $limit Number per page.
+	 * @return array Paginated array.
+	 */
+	final public static function paginate( $array, $page = 1, $limit = 10 ) {
+		$total = count( $array );
+		$total_pages = ceil( $total / $limit );
+		$page = min( $page, $total_pages );
+		$offset = ( $page - 1 ) * $limit;
+		if ( $offset < 0 ) {
+			$offset = 0;
 		}
+		return array_slice( $array, $offset, $limit );
 	}
-}
 
-new Issuers();
+}

@@ -34,36 +34,34 @@ use League\OAuth2\Client\Provider\GenericProvider;
  */
 class BadgrClient {
 
-	const FLAVOR_BADGRIO_01 = 1;
+	const FLAVOR_BADGRIO_01         = 1;
 	const FLAVOR_LOCAL_R_JAMIROQUAI = 2;
-	const FLAVOR_CLOUD_v1 = 3;
+	const FLAVOR_CLOUD_v1           = 3;
 
-	const BADGR_IO_URL = 'https://api.badgr.io';
+	const BADGR_IO_URL                    = 'https://api.badgr.io';
 	const DEFAULT_LOCAL_BADGR_SERVER_PORT = 8000;
 
 	// Password sources
-	const PASSWORD_SOURCE_CUSTOM = 1;
-	const PASSWORD_SOURCE_USE_WP_PASSWORD = 2;
-	const PASSWORD_SOURCE_ALWAYS_ASK = 3;
+	const PASSWORD_SOURCE_CUSTOM           = 1;
+	const PASSWORD_SOURCE_USE_WP_PASSWORD  = 2;
+	const PASSWORD_SOURCE_ALWAYS_ASK       = 3;
 	const PASSWORD_SOURCE_ASK_AND_REMEMBER = 4;
 
 	// Grant types
 	const GRANT_PASSWORD = 1;
-	const GRANT_CODE = 2;
+	const GRANT_CODE     = 2;
 
 	// Class properties
-	//protected static $clients = [];
-	private static $guzzleClient = null;
-	public static $authRedirectUri = '/wp-admin/admin.php?page=badgefactor2_badgr_settings';
-	//public static $user_meta_key_for_client = 'badgr_client_instance';
-
-	public $badgr_user = null;
+	protected static $clients               = array();
+	private static $guzzleClient            = null;
+	public static $authRedirectUri          = '/wp-admin/admin.php?page=badgefactor2_badgr_settings';
+	public static $user_meta_key_for_client = 'badgr_client_instance';
 
 	// Minimal properties of instances
-	private $username = null;
-	private $as_admin = false;
+	private $username                = null;
+	private $as_admin                = false;
 	private $badgr_server_public_url = null;
-	private $badgr_server_flavor = null;
+	private $badgr_server_flavor     = null;
 
 	// Additional instance properties
 	//private $wp_user_id = null;
@@ -75,69 +73,67 @@ class BadgrClient {
 
 	private $auth_type = null;
 
-	private $client_id = null; // Client used for admin access will be different than password grant client
+	private $client_id     = null; // Client used for admin access will be different than password grant client
 	private $client_secret = null;
 
-	private $access_token = null;
-	private $refresh_token = null;
-	private $token_expiration = null;
+	private $access_token      = null;
+	private $refresh_token     = null;
+	private $token_expiration  = null;
 	private $resource_owner_id = null;
 
 	private $needsConfiguration = true;
-	private $needsAuth = true; // Needs auth is true whenever token is expired or if we get a 401 status during a call 
+	private $needsAuth          = true; // Needs auth is true whenever token is expired or if we get a 401 status during a call
 
-	const STATE_CONFIGURED_AND_ACTIVE = 1;
-	const STATE_NEEDS_REFRESH = 2;
-	const STATE_NEEDS_TOKEN = 3;
-	const STATE_NEEDS_AUTH = 4;
-	const STATE_NEEDS_LOGIN = 5;
-	const STATE_NEEDS_USER_ACTION = 6;
-	const STATE_NEEDS_ADMIN_ACTION = 7;
-	const STATE_EXPECTING_AUTHORIZATION_CODE = 8;
-	const STATE_EXPECTING_ACCESS_TOKEN_FROM_CODE = 9;
-	const STATE_HAVE_ACCESS_TOKEN = 10;
-	const STATE_FAILED_GETTING_ACCESS_TOKEN = 11;
-	const STATE_EXPECTING_ACCESS_TOKEN_FROM_PASSWORD = 12;
+	const STATE_CONFIGURED_AND_ACTIVE                     = 1;
+	const STATE_NEEDS_REFRESH                             = 2;
+	const STATE_NEEDS_TOKEN                               = 3;
+	const STATE_NEEDS_AUTH                                = 4;
+	const STATE_NEEDS_LOGIN                               = 5;
+	const STATE_NEEDS_USER_ACTION                         = 6;
+	const STATE_NEEDS_ADMIN_ACTION                        = 7;
+	const STATE_EXPECTING_AUTHORIZATION_CODE              = 8;
+	const STATE_EXPECTING_ACCESS_TOKEN_FROM_CODE          = 9;
+	const STATE_HAVE_ACCESS_TOKEN                         = 10;
+	const STATE_FAILED_GETTING_ACCESS_TOKEN               = 11;
+	const STATE_EXPECTING_ACCESS_TOKEN_FROM_PASSWORD      = 12;
 	const STATE_EXPECTING_ACCESS_TOKEN_FROM_REFRESH_TOKEN = 13;
 
 	private $state;
 	public $retryAuthBeforeFailing = true;
 
-	public $client_key = null;
+	public $client_key  = null;
 	public $client_hash = null;
 
 	private $lastMessageFromBadgrServer = null;
 
-	public static function makeInstance(array $parameters)
-	{
+	public static function makeInstance( array $parameters ) {
 		// Check that basic parameters are present
-		$key_parameters = [
+		$key_parameters = array(
 			'username',
 			'as_admin',
 			'badgr_server_public_url',
-			'badgr_server_flavor'
-		];
+			'badgr_server_flavor',
+		);
 
-		foreach( $key_parameters as $key_parameter)
-		{
-			if ( !array_key_exists($key_parameter, $parameters))
-			{
-				throw new \BadMethodCallException('Missing ' . $key_parameter . ' parameter.');
+		foreach ( $key_parameters as $key_parameter ) {
+			if ( ! array_key_exists( $key_parameter, $parameters ) ) {
+				throw new \BadMethodCallException( 'Missing ' . $key_parameter . ' parameter.' );
 			}
 		}
 
 		// TODO: perform checks on types and values of key parameters
 
-		$client = new self();
-		$client->username = $parameters['username'];
-		$client->as_admin = $parameters['as_admin'];
+		$client                          = new self();
+		$client->username                = $parameters['username'];
+		$client->as_admin                = $parameters['as_admin'];
 		$client->badgr_server_public_url = $parameters['badgr_server_public_url'];
-		$client->badgr_server_flavor = $parameters['badgr_server_flavor'];
+		$client->badgr_server_flavor     = $parameters['badgr_server_flavor'];
 
 		// TODO: check validity of optionnal parameters
 
 		// TODO: save optionnal parameters in new instance
-		$optionnalParameters = [
+
+		$optionnalParameters = array(
 			'badgr_server_internal_url',
 			'scopes',
 			'badgr_password',
@@ -149,22 +145,18 @@ class BadgrClient {
 			'token_expiration',
 			'badgr_profile',
 			'auth_type',
-		];
+		);
 
-		foreach ( $optionnalParameters as $optionnalParameter)
-		{
-			if ( isset($parameters[$optionnalParameter]))
-			{
-				$client->{$optionnalParameter} = $parameters[$optionnalParameter];
+		foreach ( $optionnalParameters as $optionnalParameter ) {
+			if ( isset( $parameters[ $optionnalParameter ] ) ) {
+				$client->{$optionnalParameter} = $parameters[ $optionnalParameter ];
 			}
 		}
 
 		// If scopes not already set, set to default value
-		if ( null === $client->scopes)
-		{
+		if ( null === $client->scopes ) {
 			$scopes = 'rw:profile rw:backpack';
-			if ( $client->as_admin == true )
-			{
+			if ( $client->as_admin == true ) {
 				$scopes .= ' rw:issuer';
 				if ( $client->badgr_server_flavor == self::FLAVOR_LOCAL_R_JAMIROQUAI ) {
 					$scopes .= ' rw:serverAdmin';
@@ -181,7 +173,7 @@ class BadgrClient {
 			$parameters['badgr_user']->set_client( $client );
 		}
 
-		return ($client);
+		return ( $client );
 
 	}
 
@@ -190,32 +182,29 @@ class BadgrClient {
 
 		$options = get_option( 'badgefactor2_badgr_settings' );
 
-		$clientParameters = [
-			'username' => getenv('BADGR_ADMIN_USERNAME'),
-			'as_admin' => true,
-			'badgr_server_public_url' => $options['badgr_server_public_url'],
-			'badgr_server_flavor' => BadgrClient::FLAVOR_LOCAL_R_JAMIROQUAI,
-			'badgr_server_internal_url'    => $options['badgr_server_internal_url'],
-			'client_id'     => $options['badgr_server_client_id'],
-			'client_secret' => $options['badgr_server_client_secret'],
-			'access_token' => $options['badgr_server_access_token'],
-			'refresh_token' => $options['badgr_server_refresh_token'],
-			'token_expiration' => $options['badgr_server_token_expiration'],
-		];
+		$clientParameters = array(
+			'username'                  => getenv( 'BADGR_ADMIN_USERNAME' ),
+			'as_admin'                  => true,
+			'badgr_server_public_url'   => $options['badgr_server_public_url'],
+			'badgr_server_flavor'       => BadgrClient::FLAVOR_LOCAL_R_JAMIROQUAI,
+			'badgr_server_internal_url' => $options['badgr_server_internal_url'],
+			'client_id'                 => $options['badgr_server_client_id'],
+			'client_secret'             => $options['badgr_server_client_secret'],
+			'access_token'              => $options['badgr_server_access_token'],
+			'refresh_token'             => $options['badgr_server_refresh_token'],
+			'token_expiration'          => $options['badgr_server_token_expiration'],
+		);
 
-		return self::makeInstance($clientParameters);
+		return self::makeInstance( $clientParameters );
 	}
 
 
-	public static function setGuzzleClient(Client $client)
-	{
+	public static function setGuzzleClient( Client $client ) {
 		self::$guzzleClient = $client;
 	}
 
-	private static function getGuzzleClient()
-	{
-		if ( null === self::$guzzleClient)
-		{
+	private static function getGuzzleClient() {
+		if ( null === self::$guzzleClient ) {
 			self::$guzzleClient = new Client();
 		}
 
@@ -225,8 +214,7 @@ class BadgrClient {
 	//public static function getClientByUsername($userName, $asAdmin=false, BadgrServer $badgrServer=null){}
 	// public static function getClient(WPUser $wp_user, $asAdmin=false, BadgrServer $badgrServer=null){}
 
-	public function initiateCodeAuthorization()
-	{
+	public function initiateCodeAuthorization() {
 		// TODO: Check that we have the required parameters
 
 		// Build a callback url with the client's hash
@@ -236,15 +224,15 @@ class BadgrClient {
 			array(
 				'clientId'                => $this->client_id,
 				'clientSecret'            => $this->client_secret,
-				'redirectUri'             => $redirectUri ,
+				'redirectUri'             => $redirectUri,
 				'urlAuthorize'            => $this->badgr_server_public_url . '/o/authorize',
 				'urlAccessToken'          => $this->get_internal_or_external_server_url() . '/o/token',
 				'urlResourceOwnerDetails' => $this->get_internal_or_external_server_url() . '/o/resource',
-				'scopes'                  => $this->scopes
+				'scopes'                  => $this->scopes,
 			)
 		);
 
-		$authProvider->setHttpClient(self::getGuzzleClient());
+		$authProvider->setHttpClient( self::getGuzzleClient() );
 
 		// Fetch the authorization URL from the provider; this returns the
 		// urlAuthorize option, generates and applies any necessary parameters
@@ -264,28 +252,24 @@ class BadgrClient {
 
 	}
 
-	public static function handleAuthReturn()
-	{
-		// Called when an auth callback url is invoked
+	public static function handleAuthReturn() {
+		 // Called when an auth callback url is invoked
 
 		// Valid auth callbacks have a client_hash parameter
-		if ( ! isset( $_GET['client_hash'] ))
-		{
+		if ( ! isset( $_GET['client_hash'] ) ) {
 			// No client_hash parameter
-			throw new \BadMethodCallException('Missing client hash on auth callback.');
+			throw new \BadMethodCallException( 'Missing client hash on auth callback.' );
 		}
 
 		// Find the badgr client instance
-		$client = self::getClientByHash($_GET['client_hash']);
-		if ( null === $client)
-		{
-			throw new \BadMethodCallException('Unknown client hash on auth callback.');
+		$client = self::getClientByHash( $_GET['client_hash'] );
+		if ( null === $client ) {
+			throw new \BadMethodCallException( 'Unknown client hash on auth callback.' );
 		}
 
 		// Check that we're expecting an authorization code
-		if ( $client->state != self::STATE_EXPECTING_AUTHORIZATION_CODE)
-		{
-			throw new \BadMethodCallException('Not expecting code for client ' . $client->client_hash );
+		if ( $client->state != self::STATE_EXPECTING_AUTHORIZATION_CODE ) {
+			throw new \BadMethodCallException( 'Not expecting code for client ' . $client->client_hash );
 		}
 
 		// CSRF check
@@ -296,7 +280,7 @@ class BadgrClient {
 				unset( $_SESSION['oauth2state'] );
 			}
 
-			throw new \BadMethodCallException('CSRF check failed.');
+			throw new \BadMethodCallException( 'CSRF check failed.' );
 
 		}
 
@@ -304,31 +288,29 @@ class BadgrClient {
 
 		// Check that we have an actual code
 		if ( ! isset( $_GET['code'] ) ) {
-			throw new \BadMethodCallException('No authorization code present.');
+			throw new \BadMethodCallException( 'No authorization code present.' );
 		}
 
 		// Attempt to get an access token
-		$client->getAccessTokenFromAuthorizationCode($_GET['code']);
+		$client->getAccessTokenFromAuthorizationCode( $_GET['code'] );
 	}
 
-	public function getAccessTokenFromAuthorizationCode($code)
-	{
+	public function getAccessTokenFromAuthorizationCode( $code ) {
 		$redirectUri = site_url( self::$authRedirectUri ) . '&client_hash=' . $this->client_hash;
-
 
 		$authProvider = new GenericProvider(
 			array(
 				'clientId'                => $this->client_id,
 				'clientSecret'            => $this->client_secret,
-				'redirectUri'             => $redirectUri ,
+				'redirectUri'             => $redirectUri,
 				'urlAuthorize'            => $this->badgr_server_public_url . '/o/authorize',
 				'urlAccessToken'          => $this->get_internal_or_external_server_url() . '/o/token',
 				'urlResourceOwnerDetails' => $this->get_internal_or_external_server_url() . '/o/resource',
-				'scopes'                  => $this->scopes
+				'scopes'                  => $this->scopes,
 			)
 		);
 
-		$authProvider->setHttpClient(self::getGuzzleClient());
+		$authProvider->setHttpClient( self::getGuzzleClient() );
 
 		try {
 			$this->state = self::STATE_EXPECTING_ACCESS_TOKEN_FROM_CODE;
@@ -342,40 +324,38 @@ class BadgrClient {
 				)
 			);
 
-			$this->access_token = $access_token->getToken();
-			$this->refresh_token = $access_token->getRefreshToken();
-			$this->token_expiration = $access_token->getExpires();
+			$this->access_token      = $access_token->getToken();
+			$this->refresh_token     = $access_token->getRefreshToken();
+			$this->token_expiration  = $access_token->getExpires();
 			$this->resource_owner_id = $access_token->getResourceOwnerId();
 
-			$this->state = self::STATE_HAVE_ACCESS_TOKEN;
+			$this->state     = self::STATE_HAVE_ACCESS_TOKEN;
 			$this->needsAuth = false;
 			$this->save();
 
 		} catch ( IdentityProviderException $e ) {
 			$this->state = self::STATE_FAILED_GETTING_ACCESS_TOKEN;
 			$this->save();
-			throw new \BadMethodCallException('Idendity provider raised exception ' . $e->getMessage());
+			throw new \BadMethodCallException( 'Idendity provider raised exception ' . $e->getMessage() );
 
 		} catch ( ConnectException $e ) {
 			$this->state = self::STATE_FAILED_GETTING_ACCESS_TOKEN;
 			$this->save();
-			throw new \BadMethodCallException('Connection exception ' . $e->getMessage());
+			throw new \BadMethodCallException( 'Connection exception ' . $e->getMessage() );
 		} catch ( Exception $e ) {
-			throw new \BadMethodCallException('Connection exception ' . $e->getMessage());
+			throw new \BadMethodCallException( 'Connection exception ' . $e->getMessage() );
 		}
 	}
 
-	public function getAccessTokenFromPasswordGrant()
-	{
-		$client = self::getGuzzleClient();
-		$args = array(
-			'username' => $this->username,
-			'password' => $this->badgr_password,
+	public function getAccessTokenFromPasswordGrant() {
+		 $client = self::getGuzzleClient();
+		$args    = array(
+			'username'   => $this->username,
+			'password'   => $this->badgr_password,
 			'grant_type' => 'password',
-			'scope' => $this->scopes,
+			'scope'      => $this->scopes,
 		);
-		if ( $this->badgr_server_flavor != self::FLAVOR_BADGRIO_01)
-		{
+		if ( $this->badgr_server_flavor != self::FLAVOR_BADGRIO_01 ) {
 			$args['client_id'] = $this->client_id;
 		}
 		$args = array( 'query' => $args );
@@ -384,27 +364,25 @@ class BadgrClient {
 			$response = $client->request( 'POST', $this->get_internal_or_external_server_url() . '/o/token', $args );
 			// Check for 200 response.
 			if ( null !== $response && $response->getStatusCode() == 200 ) {
-				$response_info = json_decode( $response->getBody() );
-				$this->access_token = $response_info->access_token;
-				$this->refresh_token = $response_info->refresh_token;
+				$response_info          = json_decode( $response->getBody() );
+				$this->access_token     = $response_info->access_token;
+				$this->refresh_token    = $response_info->refresh_token;
 				$this->token_expiration = time() + $response_info->expires_in;
 
 				$this->save();
 			}
-
 		} catch ( ConnectException $e ) {
 			$this->state = self::STATE_FAILED_GETTING_ACCESS_TOKEN;
 			$this->save();
-			throw new \BadMethodCallException('Connection exception ' . $e->getMessage());
+			throw new \BadMethodCallException( 'Connection exception ' . $e->getMessage() );
 		} catch ( GuzzleException $e ) {
-			if ($e->getResponse()->getStatusCode() == 401)
-			{
+			if ( $e->getResponse()->getStatusCode() == 401 ) {
 				$this->needsAuth = true;
 			} else {
 				$this->save();
-				throw new \BadMethodCallException('Guzzle exception ' . $e->getMessage());
+				throw new \BadMethodCallException( 'Guzzle exception ' . $e->getMessage() );
 			}
-		} 
+		}
 
 	}
 
@@ -416,6 +394,7 @@ class BadgrClient {
 	}
 
 	public static function init_hooks(){
+
 		add_rewrite_rule(
 			'bf2/(emailConfirm)/(\S+)/?',
 			'index.php?bf2=$matches[1]&user=$matches[2]',
@@ -426,24 +405,24 @@ class BadgrClient {
 			'index.php?bf2=$matches[1]&token=$matches[2]',
 			'top'
 		);
- 		add_rewrite_rule(
+		add_rewrite_rule(
 			'bf2/(auth)/?',
 			'index.php?bf2=$matches[1]',
 			'top'
-		); 
+		);
 		add_rewrite_rule(
 			'bf2/(loginRedirect|signupSuccess|signupFailure|signup|uiConnectSuccess)(\S+)/?',
 			'index.php?bf2=$matches[1]',
 			'top'
-		); 
+		);
 	}
-	
+
 	public static function pre_init_hooks() {
- 		add_filter( 'query_vars', array ( self::class, 'hook_query_vars'));
-		add_action( 'template_redirect', array ( self::class, 'hook_template_redirect' ));
+		add_filter( 'query_vars', array( self::class, 'hook_query_vars' ) );
+		add_action( 'template_redirect', array( self::class, 'hook_template_redirect' ) );
 	}
-	
-	public static function hook_query_vars ( $vars ) {
+
+	public static function hook_query_vars( $vars ) {
 		$vars[] = 'bf2';
 		return $vars;
 	}
@@ -518,15 +497,15 @@ class BadgrClient {
 			array(
 				'clientId'                => $this->client_id,
 				'clientSecret'            => $this->client_secret,
-				'redirectUri'             => $redirectUri ,
+				'redirectUri'             => $redirectUri,
 				'urlAuthorize'            => $this->badgr_server_public_url . '/o/authorize',
 				'urlAccessToken'          => $this->get_internal_or_external_server_url() . '/o/token',
 				'urlResourceOwnerDetails' => $this->get_internal_or_external_server_url() . '/o/resource',
-				'scopes'                  => $this->scopes
+				'scopes'                  => $this->scopes,
 			)
 		);
 
-		$authProvider->setHttpClient(self::getGuzzleClient());
+		$authProvider->setHttpClient( self::getGuzzleClient() );
 
 		try {
 			$this->state = self::STATE_EXPECTING_ACCESS_TOKEN_FROM_REFRESH_TOKEN;
@@ -540,9 +519,9 @@ class BadgrClient {
 				)
 			);
 
-			$this->access_token = $access_token->getToken();
-			$this->refresh_token = $access_token->getRefreshToken();
-			$this->token_expiration = $access_token->getExpires();
+			$this->access_token      = $access_token->getToken();
+			$this->refresh_token     = $access_token->getRefreshToken();
+			$this->token_expiration  = $access_token->getExpires();
 			$this->resource_owner_id = $access_token->getResourceOwnerId();
 
 			$this->state = self::STATE_HAVE_ACCESS_TOKEN;
@@ -551,14 +530,14 @@ class BadgrClient {
 		} catch ( IdentityProviderException $e ) {
 			$this->state = self::STATE_FAILED_GETTING_ACCESS_TOKEN;
 			$this->save();
-			throw new \BadMethodCallException('Idendity provider raised exception ' . $e->getMessage());
+			throw new \BadMethodCallException( 'Idendity provider raised exception ' . $e->getMessage() );
 
 		} catch ( ConnectException $e ) {
 			$this->state = self::STATE_FAILED_GETTING_ACCESS_TOKEN;
 			$this->save();
-			throw new \BadMethodCallException('Connection exception ' . $e->getMessage());
+			throw new \BadMethodCallException( 'Connection exception ' . $e->getMessage() );
 		} catch ( Exception $e ) {
-			throw new \BadMethodCallException('Connection exception ' . $e->getMessage());
+			throw new \BadMethodCallException( 'Connection exception ' . $e->getMessage() );
 		}
 	}
 
@@ -611,8 +590,7 @@ class BadgrClient {
 		} catch ( ConnectException $e ) {
 			throw $e;
 		} catch ( GuzzleException $e ) {
-			if ($e->getResponse()->getStatusCode() == 401)
-			{
+			if ( $e->getResponse()->getStatusCode() == 401 ) {
 				$this->needsAuth = true;
 			} else {
 				throw $e;

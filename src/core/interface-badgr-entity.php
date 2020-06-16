@@ -30,9 +30,12 @@ interface Badgr_Entity {
 	/**
 	 * Retrieve all entities from Badgr provider.
 	 *
+	 * @param int   $elements_per_page Elements per page.
+	 * @param int   $paged Page number.
+	 * @param array $filter Filter.
 	 * @return array|boolean Object instances array or false in case of error.
 	 */
-	public static function all( $per_page = 10, $page_number = 1 );
+	public static function all( $elements_per_page = null, $paged = null, $filter = array() );
 
 	/**
 	 * Retrieve single entity from Badgr provider.
