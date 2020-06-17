@@ -211,7 +211,7 @@ class BadgrClient {
 		return self::$guzzleClient;
 	}
 
-	//public static function getClientByUsername($userName, $asAdmin=false, BadgrServer $badgrServer=null){}
+	// public static function getClientByUsername($userName, $asAdmin=false, BadgrServer $badgrServer=null){}
 	// public static function getClient(WPUser $wp_user, $asAdmin=false, BadgrServer $badgrServer=null){}
 
 	public function initiateCodeAuthorization() {
@@ -386,14 +386,13 @@ class BadgrClient {
 
 	}
 
-	private function save()
-	{
-		if ( null !== $this->badgr_user) {
+	private function save() {
+		if ( null !== $this->badgr_user ) {
 			$this->badgr_user->save_client();
 		}
 	}
 
-	public static function init_hooks(){
+	public static function init_hooks() {
 
 		add_rewrite_rule(
 			'bf2/(emailConfirm)/(\S+)/?',
@@ -427,17 +426,16 @@ class BadgrClient {
 		return $vars;
 	}
 
-	public static function hook_template_redirect () {
-		if( $bf2 = get_query_var( 'bf2' ) )
-		{
-			if ( 'auth' == $bf2) {
+	public static function hook_template_redirect() {
+		if ( $bf2 = get_query_var( 'bf2' ) ) {
+			if ( 'auth' == $bf2 ) {
 				// Check for code and hash, retrieve client and complete code auth
-				header('Content-Type: text/plain');
+				header( 'Content-Type: text/plain' );
 				echo 'Badgr auth callback.';
 				echo ' Full uri: ' . $_SERVER['REQUEST_URI'];
 				exit();
 			}
-			header('Content-Type: text/plain');
+			header( 'Content-Type: text/plain' );
 			echo 'Badgr callback: ' . $bf2;
 			echo ' Full uri: ' . $_SERVER['REQUEST_URI'];
 			exit();

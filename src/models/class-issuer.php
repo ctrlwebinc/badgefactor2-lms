@@ -73,8 +73,13 @@ class Issuer implements Badgr_Entity {
 	 */
 	public $description;
 
+
 	/**
 	 * Retrieve all issuers from Badgr provider.
+	 *
+	 * @param int   $elements_per_page Elements per page.
+	 * @param int   $paged Page number.
+	 * @param array $filter Filter to use.
 	 *
 	 * @return array|boolean Issuers array or false in case of error.
 	 */
@@ -94,20 +99,25 @@ class Issuer implements Badgr_Entity {
 		);
 	}
 
+
 	/**
 	 * Retrieve issuer from Badgr provider.
 	 *
 	 * @param string $entity_id Issuer ID.
+	 *
 	 * @return WP_Post Virtual WP_Post representation of the entity.
 	 */
 	public static function get( $entity_id ) {
 		return BadgrProvider::get_issuer_by_slug( $entity_id );
 	}
 
+
 	/**
 	 * Create Issuer through Badgr provider.
 	 *
 	 * @param array $values Associated array of values of issuer to create.
+	 * @param array $files Files.
+	 *
 	 * @return string|boolean Id of created issuer, or false on error.
 	 */
 	public static function create( $values, $files = null ) {
@@ -117,11 +127,13 @@ class Issuer implements Badgr_Entity {
 		return false;
 	}
 
+
 	/**
 	 * Update issuer through Badgr provider.
 	 *
 	 * @param string $entity_id Issuer ID.
 	 * @param array  $values Associative array of values to change.
+	 *
 	 * @return boolean Whether or not update has succeeded.
 	 */
 	public static function update( $entity_id, $values ) {
@@ -132,16 +144,24 @@ class Issuer implements Badgr_Entity {
 
 	}
 
+
 	/**
 	 * Delete an Issuer through Badgr provider.
 	 *
 	 * @param string $entity_id Slug / Entity ID.
+	 *
 	 * @return boolean Whether or not deletion has succeeded.
 	 */
 	public static function delete( $entity_id ) {
 		return BadgrProvider::delete_issuer( $entity_id );
 	}
 
+
+	/**
+	 * Undocumented function.
+	 *
+	 * @return array
+	 */
 	public static function get_columns() {
 		return array(
 			'name'      => __( 'Name', 'badgefactor2' ),
@@ -150,6 +170,12 @@ class Issuer implements Badgr_Entity {
 		);
 	}
 
+
+	/**
+	 * Undocumented function.
+	 *
+	 * @return array
+	 */
 	public static function get_sortable_columns() {
 		return array(
 			'name'      => array( 'name', true ),
@@ -158,7 +184,42 @@ class Issuer implements Badgr_Entity {
 		);
 	}
 
+
+	/**
+	 * Undocumented function.
+	 *
+	 * @param array $values Values.
+	 * @param array $files Files.
+	 *
+	 * @return bool
+	 */
 	public static function validate( $values, $files = null ) {
+
+		// Not empty.
+		if ( ! isset( $values['name'] ) || ! isset( $values['email'] ) || ! isset( $values['url'] ) || ! isset( $values['description'] ) ) {
+			return false;
+		}
+		// Right type.
+		if ( ! is_string( $values['name'] ) || ! is_string( $values['email'] ) || ! is_string( $values['url'] ) || ! is_string( $values['description'] ) ) {
+			return false;
+		}
+		// Not too big.
+		if ( strlen( $values['name'] ) > 1024 || strlen( $values['email'] ) > 254 || strlen( $values['url'] ) > 254 ) {
+			return false;
+		}
+		// Not too small.
+		if ( strlen( $values['name'] ) < 1 || strlen( $values['email'] ) < 3 || strlen( $values['url'] ) < 8 ) {
+			return false;
+		}
+		// Email format is ok.
+		if ( ! filter_var( $values['email'], FILTER_VALIDATE_EMAIL ) ) {
+			return false;
+		}
+		// URL format is ok.
+		if ( ! preg_match( "/\b(?:(?:https?):\/\/|www\.)[-a-z0-9+&@#\/%?=~_|!:,.;]*[-a-z0-9+&@#\/%=~_|]/i", $values['url'] ) ) {
+			return false;
+		}
+
 		return true;
 	}
 }

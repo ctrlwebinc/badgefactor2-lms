@@ -27,6 +27,7 @@ use BadgeFactor2\BadgrProvider;
 use BadgeFactor2\Models\BadgeClass;
 use BadgeFactor2\Models\Issuer;
 use BadgeFactor2\Singleton;
+use stdClass;
 
 if ( ! class_exists( 'WP_List_Table' ) ) {
 	require_once( ABSPATH . 'wp-admin/includes/class-wp-list-table.php' );
@@ -82,6 +83,7 @@ class Badgr_List extends \WP_List_Table {
 	 * @param string $singular Singular name.
 	 * @param string $plural Plural name.
 	 * @param string $slug Slug to use.
+	 * @param array  $filter Filter to use.
 	 */
 	public function __construct( $model, $singular, $plural, $slug, $filter = array() ) {
 
@@ -106,9 +108,9 @@ class Badgr_List extends \WP_List_Table {
 	/**
 	 * Retrieve all records from Badgr provider.
 	 *
-	 * @param int $per_page Number of records per page.
-	 * @param int $page_number Page number.
-	 * @param array $filters Filters.
+	 * @param int   $per_page Number of records per page.
+	 * @param int   $page_number Page number.
+	 * @param array $filter Filter to use.
 	 *
 	 * @return mixed
 	 */
@@ -159,8 +161,8 @@ class Badgr_List extends \WP_List_Table {
 	/**
 	 * Render a column when no column specific method exist.
 	 *
-	 * @param array $item
-	 * @param string $column_name
+	 * @param array  $item Item.
+	 * @param string $column_name Column name.
 	 *
 	 * @return mixed
 	 */
@@ -199,7 +201,7 @@ class Badgr_List extends \WP_List_Table {
 	/**
 	 * Render the bulk edit checkbox
 	 *
-	 * @param array $item
+	 * @param array $item Item.
 	 *
 	 * @return string
 	 */
@@ -214,7 +216,7 @@ class Badgr_List extends \WP_List_Table {
 	/**
 	 * Method for name column
 	 *
-	 * @param array $item an array of DB data
+	 * @param array $item an array of DB data.
 	 *
 	 * @return string
 	 */
@@ -231,12 +233,19 @@ class Badgr_List extends \WP_List_Table {
 		return $title . $this->row_actions( $actions );
 	}
 
+
+	/**
+	 * Undocumented function.
+	 *
+	 * @param [type] $item Item.
+	 * @return string
+	 */
 	function column_image( $item ) {
 		if ( 'Assertion' === $item->entityType ) {
 			$revoke_nonce = wp_create_nonce( 'bf2_revoke_' . $this->slug );
-			$badge   = BadgeClass::get( $item->badgeclass );
+			$badge        = BadgeClass::get( $item->badgeclass );
 			if ( $item->revoked ) {
-				$title   = '<a href="admin.php?page=assertions&action=edit&entity_id=' . $item->entityId . '">' . $badge->name . '</a><br/>'. __( 'REVOKED!', 'badgefactor2' );
+				$title   = '<a href="admin.php?page=assertions&action=edit&entity_id=' . $item->entityId . '">' . $badge->name . '</a><br/>' . __( 'REVOKED!', 'badgefactor2' );
 				$actions = array();
 			} else {
 				$title   = '<a href="admin.php?page=assertions&action=edit&entity_id=' . $item->entityId . '">' . $badge->name . '</a>';
@@ -318,6 +327,11 @@ class Badgr_List extends \WP_List_Table {
 	}
 
 
+	/**
+	 * Undocumented function.
+	 *
+	 * @return void
+	 */
 	public function display() {
 		global $wp;
 		if ( isset( $_GET['action'] ) ) {
@@ -330,13 +344,26 @@ class Badgr_List extends \WP_List_Table {
 		}
 	}
 
+
+	/**
+	 * Undocumented function.
+	 *
+	 * @return void
+	 */
 	private function manage_actions() {
 		switch ( $_GET['action'] ) {
 			case 'new':
 				if ( 'POST' === $_SERVER['REQUEST_METHOD'] ) {
-					$entity_id    = $this->model::create( $_POST, $_FILES );
-					$redirect_url = str_replace( '&action=new', '&notice=created', $_SERVER['REQUEST_URI'] );
-					$this->redirect( $redirect_url );
+					$entity_id = $this->model::create( $_POST, $_FILES );
+					if ( $entity_id ) {
+						$redirect_url = str_replace( '&action=new', '&notice=created', $_SERVER['REQUEST_URI'] );
+						$this->redirect( $redirect_url );
+					} else {
+						$entity = new stdClass;
+						foreach ( $_POST as $key => $value ) {
+							$entity->{$key} = $value;
+						}
+					}
 				}
 				include BF2_ABSPATH . 'templates/admin/tpl.edit-' . $this->slug . '.php';
 				break;
@@ -385,9 +412,15 @@ class Badgr_List extends \WP_List_Table {
 		}
 	}
 
+
+	/**
+	 * Undocumented function.
+	 *
+	 * @return void
+	 */
 	public function notice_created() {
 		global $pagenow;
-		if ( $pagenow == 'admin.php' && isset( $_GET['page'] ) && isset( $_GET['notice'] ) && 'created' === $_GET['notice'] ) :
+		if ( 'admin.php' === $pagenow && isset( $_GET['page'] ) && isset( $_GET['notice'] ) && 'created' === $_GET['notice'] ) :
 			?>
 		<div class="updated settings-error notice is-dismissible"> 
 			<p><strong><?php echo __( 'Object created.', 'badgefactor2' ); ?></strong></p>
@@ -399,12 +432,18 @@ class Badgr_List extends \WP_List_Table {
 		endif;
 	}
 
+
+	/**
+	 * Undocumented function.
+	 *
+	 * @return void
+	 */
 	public function process_bulk_action() {
 
-		// Detect action triggered
+		// Detect action triggered.
 		if ( 'delete' === $this->current_action() ) {
 			if ( ! is_array( $_GET['entity_id'] ) ) {
-				// Single delete
+				// Single delete.
 				// In our file that handles the request, verify the nonce.
 				$nonce = esc_attr( $_REQUEST['_wpnonce'] );
 
@@ -415,7 +454,7 @@ class Badgr_List extends \WP_List_Table {
 					echo '<div class="notice notice-success is-dismissible"><p>' . __( 'Item deleted.', 'badgefactor2' ) . '</p></div>';
 				}
 			} else {
-				// Bulk delete
+				// Bulk delete.
 				// In our file that handles the request, verify the nonce.
 				$nonce = esc_attr( $_REQUEST['_wpnonce'] );
 
@@ -432,18 +471,17 @@ class Badgr_List extends \WP_List_Table {
 	}
 
 
-
 	/**
 	 * Undocumented function
 	 *
-	 * @param string $which
+	 * @param string $which Which.
 	 * @return void
 	 */
 	public function extra_tablenav( $which ) {
 		if ( 'top' === $which ) {
 			if ( BadgrClient::is_active() ) {
 				echo '<div class="alignleft actions">';
-				if ( $_GET['page'] === 'assertions' ) {
+				if ( 'assertions' === $_GET['page'] ) {
 					if ( isset( $_GET['filter_type'] ) && isset( $_GET['filter_value'] ) ) {
 						$filter_type  = stripslashes( $_GET['filter_type'] );
 						$filter_value = stripslashes( $_GET['filter_value'] );
@@ -516,6 +554,13 @@ class Badgr_List extends \WP_List_Table {
 		return $this->model;
 	}
 
+
+	/**
+	 * Redirects page with javascript.
+	 *
+	 * @param string $url URL to which to redirect.
+	 * @return void
+	 */
 	private function redirect( $url ) {
 		$string  = '<script type="text/javascript">';
 		$string .= 'window.location = "' . $url . '"';

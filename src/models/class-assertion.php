@@ -39,8 +39,13 @@ class Assertion implements Badgr_Entity {
 	 */
 	public $entity_id;
 
+
 	/**
 	 * Retrieve all issuers from Badgr provider.
+	 *
+	 * @param int   $elements_per_page Elements per page.
+	 * @param int   $paged Page number.
+	 * @param array $filter Filter to use.
 	 *
 	 * @return array|boolean Issuers array or false in case of error.
 	 */
@@ -76,20 +81,25 @@ class Assertion implements Badgr_Entity {
 		return array();
 	}
 
+
 	/**
 	 * Retrieve issuer from Badgr provider.
 	 *
 	 * @param string $entity_id Issuer ID.
+	 *
 	 * @return WP_Post Virtual WP_Post representation of the entity.
 	 */
 	public static function get( $entity_id ) {
 		return BadgrProvider::get_assertion_by_assertion_slug( $entity_id );
 	}
 
+
 	/**
 	 * Create Issuer through Badgr provider.
 	 *
 	 * @param array $values Associated array of values of issuer to create.
+	 * @param array $files Files.
+	 *
 	 * @return string|boolean Id of created issuer, or false on error.
 	 */
 	public static function create( $values, $files = null ) {
@@ -99,32 +109,39 @@ class Assertion implements Badgr_Entity {
 		return false;
 	}
 
+
 	/**
 	 * Update issuer through Badgr provider.
 	 *
 	 * @param string $entity_id Issuer ID.
 	 * @param array  $values Associative array of values to change.
+	 *
 	 * @return boolean Whether or not update has succeeded.
 	 */
 	public static function update( $entity_id, $values ) {
-		if ( self::validate( $values ) ) {
-			// FIXME.
-			// return BadgrProvider::update_badge_class( $entity_id, $values['name'], $values['description'], $values['image'] );
-		}
+		// Assertion updating is unauthorized.
 		return false;
-
 	}
+
 
 	/**
 	 * Delete an Issuer through Badgr provider.
 	 *
 	 * @param string $entity_id Slug / Entity ID.
-	 * @return boolean Whether or not deletion has succeeded.
+	 *
+	 * @return bool Whether or not deletion has succeeded.
 	 */
 	public static function delete( $entity_id ) {
-
+		// Assertion deletion is unauthorized.
+		return false;
 	}
 
+
+	/**
+	 * Undocumented function.
+	 *
+	 * @return array
+	 */
 	public static function get_columns() {
 		return array(
 			'image'      => __( 'Issued Badge', 'badgefactor2' ),
@@ -135,6 +152,12 @@ class Assertion implements Badgr_Entity {
 		);
 	}
 
+
+	/**
+	 * Undocumented function.
+	 *
+	 * @return array
+	 */
 	public static function get_sortable_columns() {
 		return array(
 			'entityId'  => array( 'entityId', true ),
@@ -143,7 +166,37 @@ class Assertion implements Badgr_Entity {
 		);
 	}
 
-	public static function validate( $values ) {
+
+	/**
+	 * Undocumented function.
+	 *
+	 * @param array $values Values.
+	 * @param array $files Files.
+	 *
+	 * @return bool
+	 */
+	public static function validate( $values, $files = null ) {
+		// Not empty.
+		if ( ! isset( $values['issuer'] ) || ! isset( $values['badge'] ) || ! isset( $values['recipient'] ) ) {
+			return false;
+		}
+		// Right type.
+		if ( ! is_string( $values['issuer'] ) || ! is_string( $values['badge'] ) || ! is_string( $values['recipient'] ) ) {
+			return false;
+		}
+		// Not too big.
+		if ( strlen( $values['issuer'] ) > 254 || strlen( $values['badge'] ) > 254 || strlen( $values['recipient'] ) > 768 ) {
+			return false;
+		}
+		// Not too small.
+		if ( strlen( $values['issuer'] ) < 16 || strlen( $values['badge'] ) < 16 || strlen( $values['recipient'] ) < 3 ) {
+			return false;
+		}
+		// Email format is ok.
+		if ( ! filter_var( $values['recipient'], FILTER_VALIDATE_EMAIL ) ) {
+			return false;
+		}
+
 		return true;
 	}
 }
