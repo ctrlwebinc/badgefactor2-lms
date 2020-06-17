@@ -44,9 +44,4 @@ class Issuers extends Badgr_List {
 		);
 	}
 
-	public function validate() {
-		// TODO
-		return true;
-	}
-
 }
