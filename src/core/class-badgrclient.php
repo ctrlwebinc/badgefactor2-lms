@@ -187,13 +187,15 @@ class BadgrClient {
 			'as_admin'                  => true,
 			'badgr_server_public_url'   => $options['badgr_server_public_url'],
 			'badgr_server_flavor'       => BadgrClient::FLAVOR_LOCAL_R_JAMIROQUAI,
-			'badgr_server_internal_url' => $options['badgr_server_internal_url'],
 			'client_id'                 => $options['badgr_server_client_id'],
 			'client_secret'             => $options['badgr_server_client_secret'],
 			'access_token'              => $options['badgr_server_access_token'],
 			'refresh_token'             => $options['badgr_server_refresh_token'],
 			'token_expiration'          => $options['badgr_server_token_expiration'],
 		);
+
+		if (isset($options['badgr_server_internal_url']))
+		$clientParameters['badgr_server_internal_url'] = $options['badgr_server_internal_url'];
 
 		return self::makeInstance( $clientParameters );
 	}
