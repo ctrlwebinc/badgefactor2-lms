@@ -1,3 +1,7 @@
 .tox-tinymce-aux {
   z-index: 9999 !important;
 }
+
+.cmb2-options-page .cmb2-metabox > .cmb-row {
+  padding-bottom: 3em !important;
+}
