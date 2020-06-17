@@ -164,3 +164,17 @@ class BadgeFactor2 {
 	}
 
 }
+
+// Fix New User Email Notification.
+$badgefactor2_options = get_option( 'badgefactor2' );
+if ( ! function_exists( 'wp_new_user_notification' ) && ( ! isset( $badgefactor2_options['bf2_block_wp_registration_emails'] ) || 'on' === $badgefactor2_options['bf2_block_wp_registration_emails'] ) ) {
+
+	/**
+	 * Overriding new user notifications.
+	 *
+	 * @param int    $user_id User ID.
+	 * @param string $notify Notify.
+	 * @return void
+	 */
+	function wp_new_user_notification( $user_id, $notify = '' ) { }
+}
