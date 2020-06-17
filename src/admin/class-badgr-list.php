@@ -27,6 +27,7 @@ use BadgeFactor2\BadgrProvider;
 use BadgeFactor2\Models\BadgeClass;
 use BadgeFactor2\Models\Issuer;
 use BadgeFactor2\Singleton;
+use GuzzleHttp\Exception\ClientException;
 use stdClass;
 
 if ( ! class_exists( 'WP_List_Table' ) ) {
@@ -373,16 +374,28 @@ class Badgr_List extends \WP_List_Table {
 					wp_die( __( 'You are missing an entity ID.', 'badgefactor2' ) );
 				} else {
 					// Entity ID is set.
-					$entity = $this->model::get( $_GET['entity_id'] );
-					if ( false === $entity ) {
-						wp_die( __( 'You attempted to edit an item that doesn\'t exist. Perhaps it was deleted?', 'badgefactor2' ) );
-					}
+					try {
+						$entity = $this->model::get( $_GET['entity_id'] );
+						if ( false === $entity ) {
+							wp_die( __( 'You attempted to edit an item that doesn\'t exist. Perhaps it was deleted?', 'badgefactor2' ) );
+						}
 
-					if ( 'POST' === $_SERVER['REQUEST_METHOD'] ) {
-						$entity_id      = $this->model::update( $_GET['entity_id'], $_POST );
-						$_GET['notice'] = 'updated';
+						if ( 'POST' === $_SERVER['REQUEST_METHOD'] ) {
+							$entity_id      = $this->model::update( $_GET['entity_id'], $_POST );
+							$_GET['notice'] = 'updated';
+						}
+
+						include BF2_ABSPATH . 'templates/admin/tpl.edit-' . $this->slug . '.php';
+
+					} catch ( ClientException $e ) {
+						if ( 404 === $e->getResponse()->getStatusCode() ) {
+							echo '<div class="notice notice-error is-dismissible"><p>' . __( 'Item does not exist.', 'badgefactor2' ) . '</p></div>';
+						} elseif ( 400 === $e->getResponse()->getStatusCode() ) {
+							echo '<div class="notice notice-error is-dismissible"><p>' . __( 'Item cannot be edited.', 'badgefactor2' ) . '</p></div>';
+						} else {
+							echo $e->getMessage();
+						}
 					}
-					include BF2_ABSPATH . 'templates/admin/tpl.edit-' . $this->slug . '.php';
 				}
 				break;
 			case 'revoke':
@@ -450,8 +463,16 @@ class Badgr_List extends \WP_List_Table {
 				if ( ! wp_verify_nonce( $nonce, 'bf2_delete_' . $this->slug ) ) {
 					die( 'Go get a life script kiddies' );
 				} else {
-					$this->delete( $_GET['entity_id'] );
-					echo '<div class="notice notice-success is-dismissible"><p>' . __( 'Item deleted.', 'badgefactor2' ) . '</p></div>';
+					try {
+						$this->delete( $_GET['entity_id'] );
+						echo '<div class="notice notice-success is-dismissible"><p>' . __( 'Item deleted.', 'badgefactor2' ) . '</p></div>';
+					} catch ( ClientException $e ) {
+						if ( 404 === $e->getResponse()->getStatusCode() ) {
+							echo '<div class="notice notice-error is-dismissible"><p>' . __( 'Item does not exist.', 'badgefactor2' ) . '</p></div>';
+						} elseif ( 400 === $e->getResponse()->getStatusCode() ) {
+							echo '<div class="notice notice-error is-dismissible"><p>' . __( 'Item cannot be deleted.', 'badgefactor2' ) . '</p></div>';
+						}
+					}
 				}
 			} else {
 				// Bulk delete.
