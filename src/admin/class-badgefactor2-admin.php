@@ -33,9 +33,27 @@ use BadgeFactor2\BadgrClient;
  */
 class BadgeFactor2_Admin {
 
+	/**
+	 * Issuers.
+	 *
+	 * @var BadgeFactor2\Admin\Lists\Issuers
+	 */
 	public static $issuers;
+
+	/**
+	 * Badges.
+	 *
+	 * @var BadgeFactor2\Admin\Lists\Badges
+	 */
 	public static $badges;
+
+	/**
+	 * Assertions.
+	 *
+	 * @var BadgeFactor2\Admin\Lists\Assertions
+	 */
 	public static $assertions;
+
 
 	/**
 	 * Init Hooks.
@@ -53,9 +71,19 @@ class BadgeFactor2_Admin {
 	}
 
 
+	/**
+	 * Undocumented function.
+	 *
+	 * @param bool   $status Status.
+	 * @param string $option Option.
+	 * @param int    $value Value.
+	 *
+	 * @return int|bool
+	 */
 	public static function set_screen( $status, $option, $value ) {
 		return $value;
 	}
+
 
 	/**
 	 * CMB2 Admin Init hook.
@@ -67,8 +95,11 @@ class BadgeFactor2_Admin {
 		self::register_settings_metabox();
 	}
 
+
 	/**
 	 * Adds custom roles and capabilities requires by Badge Factor 2.
+	 *
+	 * @return void
 	 */
 	public static function add_custom_roles_and_capabilities() {
 		$approver = add_role(
@@ -85,9 +116,14 @@ class BadgeFactor2_Admin {
 		if ( null !== $approver ) {
 			$approver->add_cap( 'badgefactor2_approve_badge_requests' );
 		}
-
 	}
 
+
+	/**
+	 * Admin menus.
+	 *
+	 * @return void
+	 */
 	public static function admin_menus() {
 
 		$menus = array(
@@ -125,6 +161,12 @@ class BadgeFactor2_Admin {
 
 	}
 
+
+	/**
+	 * Issuers Page.
+	 *
+	 * @return void
+	 */
 	public static function issuers_page() {
 		?>
 		<div class="wrap">
@@ -147,6 +189,12 @@ class BadgeFactor2_Admin {
 		<?php
 	}
 
+
+	/**
+	 * Badges Page.
+	 *
+	 * @return void
+	 */
 	public static function badges_page() {
 		?>
 		<div class="wrap">
@@ -169,6 +217,12 @@ class BadgeFactor2_Admin {
 		<?php
 	}
 
+
+	/**
+	 * Assertions Page.
+	 *
+	 * @return void
+	 */
 	public static function assertions_page() {
 		?>
 		<div class="wrap">
@@ -191,6 +245,12 @@ class BadgeFactor2_Admin {
 		<?php
 	}
 
+
+	/**
+	 * Issuers Options.
+	 *
+	 * @return void
+	 */
 	public static function issuers_options() {
 		$option = 'per_page';
 		$args   = array(
@@ -204,6 +264,12 @@ class BadgeFactor2_Admin {
 		self::$issuers = new Issuers();
 	}
 
+
+	/**
+	 * Badges Options.
+	 *
+	 * @return void
+	 */
 	public static function badges_options() {
 		$option = 'per_page';
 		$args   = array(
@@ -217,6 +283,12 @@ class BadgeFactor2_Admin {
 		self::$badges = new Badges();
 	}
 
+
+	/**
+	 * Assertions Options.
+	 *
+	 * @return void
+	 */
 	public static function assertions_options() {
 		$option = 'per_page';
 		$args   = array(
@@ -241,8 +313,8 @@ class BadgeFactor2_Admin {
 		wp_enqueue_style( 'badgefactor2-admin', BF2_BASEURL . 'assets/css/admin.css', array(), '1.0.0', 'all' );
 		wp_enqueue_script( 'badgefactor2-tinymce', 'https://cdnjs.cloudflare.com/ajax/libs/tinymce/5.3.1/tinymce.min.js', array(), '5.3.1', true );
 		wp_enqueue_script( 'badgefactor2-admin', BF2_BASEURL . 'assets/js/admin.js', array( 'jquery', 'badgefactor2-tinymce' ), '1.0.0', true );
-
 	}
+
 
 	/**
 	 * Registers Settings Metabox.
@@ -265,7 +337,18 @@ class BadgeFactor2_Admin {
 		if ( version_compare( CMB2_VERSION, '2.4.0' ) ) {
 			$args['display_cb'] = 'badgefactor2_options_display_with_tabs';
 		}
+
 		$badgefactor2_settings = new_cmb2_box( $args );
+
+		$badgefactor2_settings->add_field(
+			array(
+				'name'    => __( 'Block WordPress registration emails?', 'badgefactor2' ),
+				'desc'    => __( 'Registration emails are managed by Badgr. If you disable this, users will receive two registration validations emails.', 'badgefactor2' ),
+				'id'      => 'bf2_block_wp_registration_emails',
+				'type'    => 'checkbox',
+				'default' => true,
+			)
+		);
 
 		/**
 		 * Registers Badgr options page.
@@ -287,7 +370,7 @@ class BadgeFactor2_Admin {
 
 		$badgr_settings = new_cmb2_box( $args );
 
-		// Badgr server quick select
+		// Badgr server quick select.
 		$badgr_settings->add_field(
 			array(
 				'name'             => __( 'Badgr server', 'badgefactor2' ),
@@ -297,15 +380,15 @@ class BadgeFactor2_Admin {
 				'show_option_none' => false,
 				'default'          => 'local',
 				'options'          => array(
-					'local'                => __( 'Local Badgr', 'badgefactor2' ),
-					'badgr_io'             => __( 'Badgr.io', 'badgefactor2' ),
-					'custom'               => __( 'Custom', 'badgefactor2' ),
+					'local'    => __( 'Local Badgr', 'badgefactor2' ),
+					'badgr_io' => __( 'Badgr.io', 'badgefactor2' ),
+					'custom'   => __( 'Custom', 'badgefactor2' ),
 				),
 
 			)
 		);
 
-		// Badgr server quick select
+		// Badgr server quick select.
 		$badgr_settings->add_field(
 			array(
 				'name'             => __( 'Authorization type', 'badgefactor2' ),
@@ -313,15 +396,15 @@ class BadgeFactor2_Admin {
 				'id'               => 'badgr_authentication_process_select',
 				'type'             => 'radio',
 				'show_option_none' => false,
-				'default'   => BadgrClient::GRANT_CODE,
+				'default'          => BadgrClient::GRANT_CODE,
 				'options'          => array(
 					BadgrClient::GRANT_PASSWORD => __( 'Use passwords', 'badgefactor2' ),
-					BadgrClient::GRANT_CODE => __( 'Redirect to server', 'badgefactor2' ),
+					BadgrClient::GRANT_CODE     => __( 'Redirect to server', 'badgefactor2' ),
 				),
 			)
 		);
 
-		// Public url to use with custom server setting
+		// Public url to use with custom server setting.
 		$badgr_settings->add_field(
 			array(
 				'name'      => __( 'Public URL', 'badgefactor2' ),
@@ -387,6 +470,12 @@ class BadgeFactor2_Admin {
 
 	}
 
+
+	/**
+	 * Undocumented function.
+	 *
+	 * @return void
+	 */
 	public static function ajax_filter_type() {
 		header( 'Content-Type: application/json' );
 		$filter_type = stripslashes( $_POST['filter_type'] );
@@ -415,6 +504,12 @@ class BadgeFactor2_Admin {
 		wp_die();
 	}
 
+
+	/**
+	 * Undocumented function.
+	 *
+	 * @return void
+	 */
 	public static function ajax_filter_value() {
 		header( 'Content-Type: application/json' );
 		$filter_for   = stripslashes( $_POST['filter_for'] );
