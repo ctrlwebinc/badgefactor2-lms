@@ -741,7 +741,7 @@ class BadgrProvider {
 			$response_info = json_decode( $response->getBody() );
 			if ( isset( $response_info->status->success ) &&
 				$response_info->status->success == true &&
-				isset( $response_info->result[0] ) && $response_info->result[0] == 'Accepted') {
+				isset( $response_info->result[0] ) && $response_info->result[0]->acceptance == 'Accepted') {
 				return true;
 			}
 		}
@@ -749,7 +749,9 @@ class BadgrProvider {
 		return false;
 	}
 
-	public static function reject_assertion_in_user_backpack( BadgrUser $badgr_user, $slug ) {
+	// Badgr doesn't allow rejection in the backpack at the moment
+	// Comment in Badgr code: Only updating acceptance status (to 'Accepted') is permitted for now.
+/* 	public static function reject_assertion_in_user_backpack( BadgrUser $badgr_user, $slug ) {
 		$response = $badgr_user->get_client()->put('/v2/backpack/assertions/' . $slug, ['acceptance' => 'Rejected'] );
 
 		// Check for 200 response.
@@ -757,13 +759,13 @@ class BadgrProvider {
 			$response_info = json_decode( $response->getBody() );
 			if ( isset( $response_info->status->success ) &&
 				$response_info->status->success == true &&
-				isset( $response_info->result[0] ) && $response_info->result[0] == 'Rejected') {
+				isset( $response_info->result[0] ) && $response_info->result[0]->acceptance == 'Rejected') {
 				return true;
 			}
 		}
 
 		return false;
-	}
+	} */
 
 	public static function get_profile_associated_to_client_in_use () {
 		$response = self::getClient()->get( '/v2/users/self');
