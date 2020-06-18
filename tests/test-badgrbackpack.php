@@ -284,4 +284,71 @@ class BadgrBackpackTest extends WP_UnitTestCase {
 
 		$this->assertTrue($assertion_present_in_updated);
 	}
+
+	public function test_user_can_accept_and_reject_new_assertions() {
+		$badgr_user = BadgrUser::make_from_user_id(1);
+		$badgr_recipient = getenv('BADGR_ADMIN_USERNAME');
+
+	   // Password grant admin client
+	   $adminClientParameters = [
+		   'username' => $badgr_recipient,
+		   'as_admin' => true,
+		   'badgr_server_public_url' => getenv('BADGR_SERVER_PUBLIC_URL'),
+		   'badgr_server_internal_url' => getenv('BADGR_SERVER_INTERNAL_URL'),
+		   'badgr_server_flavor' => BadgrClient::FLAVOR_LOCAL_R_JAMIROQUAI,
+		   'badgr_password' => getenv('BADGR_ADMIN_PASSWORD'),
+		   'client_id'     => getenv('BADGR_SERVER_PASSWORD_GRANT_CLIENT_ID'),
+		   'badgr_user' => $badgr_user,
+	   ];
+
+	   $adminClient = null;
+
+	   try {
+		   $adminClient = BadgrClient::makeInstance($adminClientParameters);
+		   $adminClient->getAccessTokenFromPasswordGrant();
+	   } catch ( BadMethodCallException $e ) {
+		   $this->fail('Exception thrown on client creation: ' . $e->getMessage());
+	   }
+
+	   // Now award 3 new badges
+	   BadgrProvider::setClient( $adminClient);
+
+	   $random = $this->generateRandomString(5);
+
+	   // Create issuer
+	   $issuer_slug = BadgrProvider::add_issuer( 'TestIssuer' . $random, 'issuer' . $random . '@example.net' , 'http://' . $random . 'example.net', 'A Description for ' . $random );
+
+	   $this->assertTrue( false !== $issuer_slug );
+	   $this->assertNotEmpty( $issuer_slug);
+
+	   $assertion_slugs = array( );
+
+	   for ( $i=0;$i<3;$i++ ) {
+		   // Setup a random string to avoid data collisions
+		   $random = $this->generateRandomString(5);
+
+		   // Add a badge class
+		   $badge_class_slug = BadgrProvider::add_badge_class( 'BadgeClass' . $random, $issuer_slug, 'Description for ' . $random, dirname(__FILE__).'/resources/test_badge_image.svg' );
+
+		   $this->assertTrue( false !== $badge_class_slug );
+		   $this->assertNotEmpty( $badge_class_slug);
+
+		   // Issue a badge
+		   $assertion_slug = BadgrProvider::add_assertion( $issuer_slug, $badge_class_slug, $badgr_recipient);
+
+		   $this->assertTrue( false !== $assertion_slug );
+		   $this->assertNotEmpty( $assertion_slug);
+
+		   $assertion_slugs[] = $assertion_slug;
+	   }
+
+	   // Fetch each new assertion and confirm Unaccepted status
+
+	   foreach ( $assertion_slugs as $slug) {
+		   $fetched_assertion = BadgrProvider::get_assertion_details_from_user_backpack( $badgr_user, $slug);
+		   $this->assertTrue( false !== $fetched_assertion );
+		   $this->assertEquals('Unaccepted', $fetched_assertion->acceptance);
+	   }
+
+	}
 }

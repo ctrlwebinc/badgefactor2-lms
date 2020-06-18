@@ -733,6 +733,38 @@ class BadgrProvider {
 		return false;
 	}
 
+	public static function accept_assertion_in_user_backpack( BadgrUser $badgr_user, $slug ) {
+		$response = $badgr_user->get_client()->put('/v2/backpack/assertions/' . $slug, ['acceptance' => 'Accepted'] );
+
+		// Check for 200 response.
+		if ( null !== $response && $response->getStatusCode() == 200 ) {
+			$response_info = json_decode( $response->getBody() );
+			if ( isset( $response_info->status->success ) &&
+				$response_info->status->success == true &&
+				isset( $response_info->result[0] ) && $response_info->result[0] == 'Accepted') {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	public static function reject_assertion_in_user_backpack( BadgrUser $badgr_user, $slug ) {
+		$response = $badgr_user->get_client()->put('/v2/backpack/assertions/' . $slug, ['acceptance' => 'Rejected'] );
+
+		// Check for 200 response.
+		if ( null !== $response && $response->getStatusCode() == 200 ) {
+			$response_info = json_decode( $response->getBody() );
+			if ( isset( $response_info->status->success ) &&
+				$response_info->status->success == true &&
+				isset( $response_info->result[0] ) && $response_info->result[0] == 'Rejected') {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
 	public static function get_profile_associated_to_client_in_use () {
 		$response = self::getClient()->get( '/v2/users/self');
 
