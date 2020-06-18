@@ -384,9 +384,10 @@ class BadgrBackpackTest extends WP_UnitTestCase {
 		   $this->fail('Exception thrown on client creation: ' . $e->getMessage());
 	   }
 
-	   // Now award 3 new badges
+	   // Now award a new badge: it will be by default Unaccepted
 	   BadgrProvider::setClient( $adminClient);
 
+	   // Setup a random string to avoid data collisions
 	   $random = $this->generateRandomString(5);
 
 	   // Create issuer
@@ -395,34 +396,73 @@ class BadgrBackpackTest extends WP_UnitTestCase {
 	   $this->assertTrue( false !== $issuer_slug );
 	   $this->assertNotEmpty( $issuer_slug);
 
-	   $assertion_slugs = array( );
+	   // Add a badge class
+	   $badge_class_slug = BadgrProvider::add_badge_class( 'BadgeClass' . $random, $issuer_slug, 'Description for ' . $random, dirname(__FILE__).'/resources/test_badge_image.svg' );
 
-	   for ( $i=0;$i<3;$i++ ) {
-		   // Setup a random string to avoid data collisions
-		   $random = $this->generateRandomString(5);
+	   $this->assertTrue( false !== $badge_class_slug );
+	   $this->assertNotEmpty( $badge_class_slug);
 
-		   // Add a badge class
-		   $badge_class_slug = BadgrProvider::add_badge_class( 'BadgeClass' . $random, $issuer_slug, 'Description for ' . $random, dirname(__FILE__).'/resources/test_badge_image.svg' );
+	   // Issue a badge
+	   $assertion_slug = BadgrProvider::add_assertion( $issuer_slug, $badge_class_slug, $badgr_recipient);
 
-		   $this->assertTrue( false !== $badge_class_slug );
-		   $this->assertNotEmpty( $badge_class_slug);
+	   $this->assertTrue( false !== $assertion_slug );
+	   $this->assertNotEmpty( $assertion_slug);
 
-		   // Issue a badge
-		   $assertion_slug = BadgrProvider::add_assertion( $issuer_slug, $badge_class_slug, $badgr_recipient);
+	   // Fetch backpack without filtering and confirm new assertion is present
+	   $updated_backpack = BadgrProvider::get_all_assertions_from_user_backpack( $badgr_user );
 
-		   $this->assertTrue( false !== $assertion_slug );
-		   $this->assertNotEmpty( $assertion_slug);
+	   $assertion_present = false;
 
-		   $assertion_slugs[] = $assertion_slug;
+	   foreach ( $updated_backpack as $assertion) {
+		   if ( $assertion->entityId == $assertion_slug ) {
+			   $assertion_present = true;
+			   break;
+		   }
 	   }
 
-	   // Fetch each new assertion and confirm Unaccepted status
+	   $this->assertTrue($assertion_present);
 
-	   foreach ( $assertion_slugs as $slug) {
-		   $fetched_assertion = BadgrProvider::get_assertion_details_from_user_backpack( $badgr_user, $slug);
-		   $this->assertTrue( false !== $fetched_assertion );
-		   $this->assertEquals('Unaccepted', $fetched_assertion->acceptance);
+	   // Fetch backpack with filtering and confirm unaccepted assertion is absent
+	   $filtered_backpack = BadgrProvider::get_all_assertions_from_user_backpack( $badgr_user , true);
+
+	   $assertion_absent = true;
+
+	   foreach ( $filtered_backpack as $assertion) {
+		   if ( $assertion->entityId == $assertion_slug ) {
+			   $assertion_absent = false;
+			   break;
+		   }
 	   }
+
+	   $this->assertTrue($assertion_absent);
+
+	   // Accept the assertion and confirm now present in filtered list
+	   $this->assertTrue( BadgrProvider::accept_assertion_in_user_backpack( $badgr_user, $assertion_slug));
+	   $filtered_backpack = BadgrProvider::get_all_assertions_from_user_backpack( $badgr_user , true);
+
+	   $assertion_present = false;
+
+	   foreach ( $filtered_backpack as $assertion) {
+		   if ( $assertion->entityId == $assertion_slug ) {
+			   $assertion_present = true;
+			   break;
+		   }
+	   }
+
+	   $this->assertTrue($assertion_present);
+
+	   // Make sure all assertions in filtered list are 'Accepted'
+	   // Since we can't reject an assertion, its the only way to catch 'Rejected' assertion from going into the filtered list
+	   // The presence of 'Rejected' assertions in the backpack is not guaranteed
+	   $no_unaccepted_assertions = true;
+
+	   foreach ( $filtered_backpack as $assertion) {
+		   if ( $assertion->acceptance != 'Accepted' ) {
+			   $no_unaccepted_assertions = false;
+			   break;
+		   }
+	   }
+
+	   $this->assertTrue($no_unaccepted_assertions);
 	}
-
 }

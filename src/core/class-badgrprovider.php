@@ -681,8 +681,8 @@ class BadgrProvider {
 
 	// Given a BadgrUser, get all assertions from that user's backpack
 	// By default, return assertions regradless of status
-	// To omit 'Rejected' and 'Unaccepted' assertions set $exclude_not_approved parameter to true
-	public static function get_all_assertions_from_user_backpack ( BadgrUser $badgr_user,  $exclude_not_approved = false , $params = array(
+	// To omit 'Rejected' and 'Unaccepted' assertions set $exclude_not_accepted parameter to true
+	public static function get_all_assertions_from_user_backpack ( BadgrUser $badgr_user,  $exclude_not_accepted = false , $params = array(
 		'paged'             => 1,
 		'elements_per_page' => -1,
 	) ) {
@@ -695,7 +695,7 @@ class BadgrProvider {
 				$response_info->status->success == true &&
 				isset( $response_info->result ) && is_array( $response_info->result ) ) {
 					// Filter for acceptance status
-					if ( $exclude_not_approved ) {
+					if ( $exclude_not_accepted ) {
 						$result = array( );
 						foreach ( $response_info->result as $assertion ) {
 							if ( $assertion->acceptance == 'Accepted') {
