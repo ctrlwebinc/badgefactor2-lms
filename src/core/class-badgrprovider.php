@@ -390,7 +390,7 @@ class BadgrProvider {
 	 */
 	public static function get_all_badge_classes_by_issuer_slug( $issuer_slug, $params = array(
 		'paged'             => 1,
-		'elements_per_page' => 10,
+		'elements_per_page' => -1,
 	) ) {
 		// Make GET request to /v2/issuers/{entity_id}/badgeclasses.
 		$response = self::getClient()->get( '/v2/issuers/' . $issuer_slug . '/badgeclasses' );
@@ -419,7 +419,7 @@ class BadgrProvider {
 	 */
 	public static function get_all_badge_classes( $params = array(
 		'paged'             => 1,
-		'elements_per_page' => 10,
+		'elements_per_page' => -1,
 	) ) {
 		// Make GET request to /v2/badgeclasses.
 		$response = self::getClient()->get( '/v2/badgeclasses' );
@@ -574,7 +574,7 @@ class BadgrProvider {
 	 */
 	public static function get_all_assertions_by_badge_class_slug( $badge_class_slug, $params = array(
 		'paged'             => 1,
-		'elements_per_page' => 10,
+		'elements_per_page' => -1,
 	) ) {
 		// Make GET request to /v2/badgeclasses/{entity_id}/assertions.
 		$response = self::getClient()->get( '/v2/badgeclasses/' . $badge_class_slug . '/assertions' );
@@ -604,7 +604,7 @@ class BadgrProvider {
 	 */
 	public static function get_all_assertions_by_issuer_slug( $issuer_slug, $params = array(
 		'paged'             => 1,
-		'elements_per_page' => 10,
+		'elements_per_page' => -1,
 	) ) {
 		// Make GET request to /v2/issuers/{entity_id}/assertions.
 
@@ -683,8 +683,9 @@ class BadgrProvider {
 	// By default, return assertions regradless of status
 	// To omit 'Rejected' and 'Unaccepted' assertions set $exclude_not_approved parameter to true
 	public static function get_all_assertions_from_user_backpack ( BadgrUser $badgr_user,  $exclude_not_approved = false , $params = array(
-		'paged'             => -1,
-) ) {
+		'paged'             => 1,
+		'elements_per_page' => -1,
+	) ) {
 		$response = $badgr_user->get_client()->get('/v2/backpack/assertions');
 
 		// Check for 200 response.
@@ -704,7 +705,7 @@ class BadgrProvider {
 					} else {
 						$result = $response_info->result;
 					}
-					if ( $params['paged'] == 1 && $params['elements_per_page'] > 0 ) {
+					if ( $params['elements_per_page'] > 0 ) {
 						return self::paginate( $result, $params['paged'], $params['elements_per_page'] );
 					} else {
 						return $result;
