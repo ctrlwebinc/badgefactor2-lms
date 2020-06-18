@@ -23,6 +23,7 @@
 namespace BadgeFactor2;
 
 use BadgeFactor2\BadgrClient;
+use \WP_User;
 
 /**
  * BadgrUser Class.
@@ -34,19 +35,19 @@ class BadgrUser {
 	protected $wp_user = null;
 	protected $user_client = null;
 
-	function __construct ( WP_USER $wp_user) {
-		$this->$wp_user = $wp_user;
+	function __construct ( WP_User $wp_user) {
+		$this->wp_user = $wp_user;
 		$this->get_client_from_user_meta();
 
 		// TODO considering making if no client in user meta
 	}
 
 	public static function make_from_user_id ( int $wp_user_id) {
-		return $this->wp_user_id = new WP_User( $wp_user_id );
+		return new self( new WP_User( $wp_user_id ) );
 	}
 
 	protected function get_client_from_user_meta () {
-		$this->user_client = get_user_meta( $wp_user->ID, self::user_meta_key_for_client, true );
+		$this->user_client = get_user_meta( $this->wp_user->ID, self::$user_meta_key_for_client, true );
 	}
 	
 	public function save_client () {

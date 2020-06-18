@@ -680,8 +680,12 @@ class BadgrProvider {
 	}
 
 	// Given a BadgrUser, get all assertions from that user's backpack
-	public static function get_all_assertions_from_user_backpack ( BadgrUser $badgr_user ) {
-		$reponse = $badgr_user->get_client()->get('/v2/backpack/assertions');
+	// By default, return assertions regradless of status
+	// To omit 'Rejected' and 'Unaccepted' assertions set $exclude_not_approved parameter to true
+	public static function get_all_assertions_from_user_backpack ( BadgrUser $badgr_user,  $exclude_not_approved = false , $params = array(
+		'paged'             => -1,
+) ) {
+		$response = $badgr_user->get_client()->get('/v2/backpack/assertions');
 
 		// Check for 200 response.
 		if ( null !== $response && 200 === $response->getStatusCode() ) {
@@ -689,7 +693,22 @@ class BadgrProvider {
 			if ( isset( $response_info->status->success ) &&
 				$response_info->status->success == true &&
 				isset( $response_info->result ) && is_array( $response_info->result ) ) {
-				return $response_info->result;
+					// Filter for acceptance status
+					if ( $exclude_not_approved ) {
+						$result = array( );
+						foreach ( $response_info->result as $assertion ) {
+							if ( $assertion->acceptance == 'Accepted') {
+								$result[] = $assertion;
+							}
+						} 
+					} else {
+						$result = $response_info->result;
+					}
+					if ( $params['paged'] == 1 && $params['elements_per_page'] > 0 ) {
+						return self::paginate( $result, $params['paged'], $params['elements_per_page'] );
+					} else {
+						return $result;
+					}
 			}
 		}
 
@@ -698,7 +717,7 @@ class BadgrProvider {
 
 	// Given a BadgrUser, get details of an assertion
 	public static function get_assertion_details_from_user_backpack (BadgrUser $badgr_user, $slug ) {
-		$reponse = $badgr_user->get_client()->get('/v2/backpack/assertions/' . $slug );
+		$response = $badgr_user->get_client()->get('/v2/backpack/assertions/' . $slug );
 
 		// Check for 200 response.
 		if ( null !== $response && $response->getStatusCode() == 200 ) {
