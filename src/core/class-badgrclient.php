@@ -588,15 +588,10 @@ class BadgrClient {
 			return $response;
 
 		} catch ( ConnectException $e ) {
-			//throw $e;
-			throw new \Exception( 'Chained exception. Original message: ' . $e->getMessage());
+			// TODO: potentially change client state
+			return null;
 		} catch ( GuzzleException $e ) {
-			if ( $e->getResponse()->getStatusCode() == 401 ) {
-				$this->needsAuth = true;
-			} else {
-				//throw $e;
-				throw new \Exception( 'Chained exception. Original message: ' . $e->getMessage());
-			}
+			// TODO: potentially change client state
 			return null;
 		}
 	}
