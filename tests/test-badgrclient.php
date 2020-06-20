@@ -110,7 +110,7 @@ class BadgrClientTest extends WP_UnitTestCase {
 		$this->assertNotNull($client);
 	}
 
-/* 	public function test_badgr_client_auth_code_connectivity() {
+ 	public function test_badgr_client_auth_code_connectivity() {
 
 		// Setup a completely configured client and check that we can get the profile info
 
@@ -155,7 +155,7 @@ class BadgrClientTest extends WP_UnitTestCase {
 		// Check that entityId isn't empty
 		$this->assertNotEmpty( $response_info->result[0]->entityId );
 
-	} */
+	}
 
 	public function test_badgr_client_password_grant_connectivity() {
 
