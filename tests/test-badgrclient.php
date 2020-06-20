@@ -110,7 +110,7 @@ class BadgrClientTest extends WP_UnitTestCase {
 		$this->assertNotNull($client);
 	}
 
-	public function test_badgr_client_auth_code_connectivity() {
+ 	public function test_badgr_client_auth_code_connectivity() {
 
 		// Setup a completely configured client and check that we can get the profile info
 
@@ -290,7 +290,7 @@ class BadgrClientTest extends WP_UnitTestCase {
     /**
      * @runInSeparateProcess
      */
-    public function test_badgr_client_catches_401_but_throws_other_exceptions() {
+/*     public function test_badgr_client_catches_401_but_throws_other_exceptions() {
 
 		// Setup mock Guzzle client
 		$mock = new MockHandler([
@@ -369,7 +369,7 @@ class BadgrClientTest extends WP_UnitTestCase {
 			// We're not expecting any other type of exception
 			$this->fail('Unexpected exception.');
 		}
-	}
+	} */
 
 /* 	public function test_can_store_client() {
 		// Setup a completely configured client and store
@@ -545,7 +545,7 @@ class BadgrClientTest extends WP_UnitTestCase {
 		} */
 	}
 
-	public function test_make_client_from_old_style_options() {
+/* 	public function test_make_client_from_old_style_options() {
 		// Set valid options
 		$options['badgr_server_public_url'] = getenv('BADGR_SERVER_PUBLIC_URL');
 		$options['badgr_server_internal_url'] = getenv('BADGR_SERVER_INTERNAL_URL');
@@ -577,5 +577,5 @@ class BadgrClientTest extends WP_UnitTestCase {
 		// Check that entityId isn't empty
 		$this->assertNotEmpty( $response_info->result[0]->entityId );
 		
-	}
+	} */
 }

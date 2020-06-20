@@ -52,10 +52,11 @@ class BadgrClient {
 	const GRANT_CODE     = 2;
 
 	// Class properties
-	protected static $clients               = array();
 	private static $guzzleClient            = null;
-	public static $authRedirectUri          = '/wp-admin/admin.php?page=badgefactor2_badgr_settings';
+	public static $authRedirectUri          = '/bf2/auth';
 	public static $user_meta_key_for_client = 'badgr_client_instance';
+
+	public $badgr_user = null;
 
 	// Minimal properties of instances
 	private $username                = null;
@@ -64,7 +65,6 @@ class BadgrClient {
 	private $badgr_server_flavor     = null;
 
 	// Additional instance properties
-	//private $wp_user_id = null;
 	private $badgr_server_internal_url = null;
 
 	private $scopes; // Scopes applicable to token
@@ -101,8 +101,8 @@ class BadgrClient {
 	private $state;
 	public $retryAuthBeforeFailing = true;
 
-	public $client_key  = null;
-	public $client_hash = null;
+	//public $client_key  = null;
+	//public $client_hash = null;
 
 	private $lastMessageFromBadgrServer = null;
 
@@ -220,7 +220,7 @@ class BadgrClient {
 		// TODO: Check that we have the required parameters
 
 		// Build a callback url with the client's hash
-		$redirectUri = site_url( self::$authRedirectUri ) . '&client_hash=' . $this->client_hash;
+		$redirectUri = site_url( self::$authRedirectUri );
 
 		$authProvider = new GenericProvider(
 			array(
@@ -257,22 +257,22 @@ class BadgrClient {
 	public static function handleAuthReturn() {
 		 // Called when an auth callback url is invoked
 
-		// Valid auth callbacks have a client_hash parameter
+/* 		// Valid auth callbacks have a client_hash parameter
 		if ( ! isset( $_GET['client_hash'] ) ) {
 			// No client_hash parameter
 			throw new \BadMethodCallException( 'Missing client hash on auth callback.' );
-		}
+		} */
 
-		// Find the badgr client instance
+/* 		// Find the badgr client instance
 		$client = self::getClientByHash( $_GET['client_hash'] );
 		if ( null === $client ) {
 			throw new \BadMethodCallException( 'Unknown client hash on auth callback.' );
 		}
-
-		// Check that we're expecting an authorization code
+ */
+/* 		// Check that we're expecting an authorization code
 		if ( $client->state != self::STATE_EXPECTING_AUTHORIZATION_CODE ) {
 			throw new \BadMethodCallException( 'Not expecting code for client ' . $client->client_hash );
-		}
+		} */
 
 		// CSRF check
 		if ( empty( $_GET['state'] ) ||
@@ -298,7 +298,7 @@ class BadgrClient {
 	}
 
 	public function getAccessTokenFromAuthorizationCode( $code ) {
-		$redirectUri = site_url( self::$authRedirectUri ) . '&client_hash=' . $this->client_hash;
+		$redirectUri = site_url( self::$authRedirectUri );
 
 		$authProvider = new GenericProvider(
 			array(
@@ -350,7 +350,7 @@ class BadgrClient {
 	}
 
 	public function getAccessTokenFromPasswordGrant() {
-		 $client = self::getGuzzleClient();
+		$client = self::getGuzzleClient();
 		$args    = array(
 			'username'   => $this->username,
 			'password'   => $this->badgr_password,
@@ -491,7 +491,7 @@ class BadgrClient {
 	 *
 	 */
 	public function refresh_token() {
-		$redirectUri = site_url( self::$authRedirectUri ) . '&client_hash=' . $this->client_hash;
+		$redirectUri = site_url( self::$authRedirectUri );
 
 		$authProvider = new GenericProvider(
 			array(
@@ -588,13 +588,10 @@ class BadgrClient {
 			return $response;
 
 		} catch ( ConnectException $e ) {
-			throw $e;
+			// TODO: potentially change client state
+			return null;
 		} catch ( GuzzleException $e ) {
-			if ( $e->getResponse()->getStatusCode() == 401 ) {
-				$this->needsAuth = true;
-			} else {
-				throw $e;
-			}
+			// TODO: potentially change client state
 			return null;
 		}
 	}

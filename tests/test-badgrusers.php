@@ -30,7 +30,7 @@ class BadgrUsersTest extends WP_UnitTestCase {
 
     /**
      */
-	public function test_issuer_to_assertion_flow() {
+/* 	public function test_issuer_to_assertion_flow() {
 
 		// Setup a completely client and check that we can get the profile info
 		$clientParameters = [
@@ -86,12 +86,12 @@ class BadgrUsersTest extends WP_UnitTestCase {
 		$this->assertTrue( false !== $assertion_slug );
 		$this->assertNotEmpty( $assertion_slug);
 
-	}
+	} */
     /**
      * @backupStaticAttributes enabled
 	 * @runInSeparateProcess
      */
-	public function test_issuer_to_new_user_assertion_flow() {
+/* 	public function test_issuer_to_new_user_assertion_flow() {
 
 		// Setup a completely client and check that we can get the profile info
 		$clientParameters = [
@@ -181,5 +181,5 @@ class BadgrUsersTest extends WP_UnitTestCase {
 		$this->assertTrue( false !== $assertion_slug );
 		$this->assertNotEmpty( $assertion_slug);
 
-	}
+	} */
 }

@@ -12,12 +12,21 @@
 		</testsuite>
 	</testsuites>
 	<php>
-	    <env name="BADGR_SERVER_PUBLIC_URL" value="http://127.0.0.1:8000"/>
-	    <env name="BADGR_SERVER_INTERNAL_URL" value="http://host.docker.internal:8000"/>
-	    <env name="BADGR_SERVER_CLIENT_ID" value="YuQzXh4QJwRbzkTpfcXDJx6upDzVag6SgKn9KoDV"/>
-	    <env name="BADGR_SERVER_CLIENT_SECRET" value="Mw0oyRrFEgRjhAZtFmAoDTnBJidnroSoymDf46cEGXi7SOMDz9ZmzuDdpy014tvqhh51VRlnwpgC0NeqAlmbObvowUrrqW5Fgs2m8pn91vW9MfVXNHTUPzEk8tNUWLss"/>
-	    <env name="BADGR_SERVER_ACCESS_TOKEN" value="0Dz5Ss0yr7s4QADo4palMYxZEXbHjZ"/>
-	    <env name="BADGR_SERVER_REFRESH_TOKEN" value="9M48fwBYNTlTZ9Wql0CExhyN9XtAOR"/>
-	    <env name="BADGR_SERVER_TOKEN_EXPIRATION" value="1586284176"/>
+	    <env name="BADGR_SERVER_PUBLIC_URL" value="http://badge-factor-2.test:8000"/>
+	    <env name="BADGR_SERVER_INTERNAL_URL" value="http://badgr:8000"/>
+	    <env name="BADGR_SERVER_CLIENT_ID" value="QqumN23Zmk4LzxqP0Wlhr6cB69TxXINhEmNsn1TX"/>
+	    <env name="BADGR_SERVER_CLIENT_SECRET" value="hKxkkrJkUPmmzBpgg1oRuEwP8QvAFrwAbpVH2XWgtDWS9S9ouVbAtL8dbWndLCpfOa1id6R1U7rcYXUxiqlNMnh9ohZkaH3boGgBvwgZAhPvNnqxi0NeTmM9wqrVr3sv"/>
+	    <env name="BADGR_SERVER_ACCESS_TOKEN" value="LWOpgurZwmko5g9pfMaR6dwsrXLVv3"/>
+	    <env name="BADGR_SERVER_REFRESH_TOKEN" value="FudZ3wOTT4lVWQyLjhRKFUIJrRJnHm"/>
+	    <env name="BADGR_SERVER_TOKEN_EXPIRATION" value="1592936203"/>
+	    <env name="BADGR_SERVER_PASSWORD_GRANT_CLIENT_ID" value="FSnimigOO92F0R7uQfXiDcRSSwL9wZvIiH5csziX"/>
+	    <env name="BADGR_SERVER_PASSWORD_GRANT_USERNAME" value="dev@ctrlweb.ca"/>
+	    <env name="BADGR_SERVER_PASSWORD_GRANT_PASSWORD" value="NewPassword1234"/>
+	    <env name="BADGRIO_URL" value="https://api.badgr.io"/>
+	    <env name="BADGRIO_USERNAME" value=""/>
+	    <env name="BADGRIO_PASSWORD" value=""/>
+	    <env name="BADGRIO_EXPECTED_LASTNAME" value=""/>
+	    <env name="BADGR_ADMIN_USERNAME" value="admin@example.net"/>
+	    <env name="BADGR_ADMIN_PASSWORD" value="admin_admin"/>
 	</php>
 </phpunit>

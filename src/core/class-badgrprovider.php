@@ -390,7 +390,7 @@ class BadgrProvider {
 	 */
 	public static function get_all_badge_classes_by_issuer_slug( $issuer_slug, $params = array(
 		'paged'             => 1,
-		'elements_per_page' => 10,
+		'elements_per_page' => -1,
 	) ) {
 		// Make GET request to /v2/issuers/{entity_id}/badgeclasses.
 		$response = self::getClient()->get( '/v2/issuers/' . $issuer_slug . '/badgeclasses' );
@@ -419,7 +419,7 @@ class BadgrProvider {
 	 */
 	public static function get_all_badge_classes( $params = array(
 		'paged'             => 1,
-		'elements_per_page' => 10,
+		'elements_per_page' => -1,
 	) ) {
 		// Make GET request to /v2/badgeclasses.
 		$response = self::getClient()->get( '/v2/badgeclasses' );
@@ -574,7 +574,7 @@ class BadgrProvider {
 	 */
 	public static function get_all_assertions_by_badge_class_slug( $badge_class_slug, $params = array(
 		'paged'             => 1,
-		'elements_per_page' => 10,
+		'elements_per_page' => -1,
 	) ) {
 		// Make GET request to /v2/badgeclasses/{entity_id}/assertions.
 		$response = self::getClient()->get( '/v2/badgeclasses/' . $badge_class_slug . '/assertions' );
@@ -604,7 +604,7 @@ class BadgrProvider {
 	 */
 	public static function get_all_assertions_by_issuer_slug( $issuer_slug, $params = array(
 		'paged'             => 1,
-		'elements_per_page' => 10,
+		'elements_per_page' => -1,
 	) ) {
 		// Make GET request to /v2/issuers/{entity_id}/assertions.
 
@@ -680,8 +680,13 @@ class BadgrProvider {
 	}
 
 	// Given a BadgrUser, get all assertions from that user's backpack
-	public static function get_all_assertions_from_user_backpack ( BadgrUser $badgr_user ) {
-		$reponse = $badgr_user->get_client()->get('/v2/backpack/assertions');
+	// By default, return assertions regradless of status
+	// To omit 'Rejected' and 'Unaccepted' assertions set $exclude_not_accepted parameter to true
+	public static function get_all_assertions_from_user_backpack ( BadgrUser $badgr_user,  $exclude_not_accepted = false , $params = array(
+		'paged'             => 1,
+		'elements_per_page' => -1,
+	) ) {
+		$response = $badgr_user->get_client()->get('/v2/backpack/assertions');
 
 		// Check for 200 response.
 		if ( null !== $response && 200 === $response->getStatusCode() ) {
@@ -689,7 +694,22 @@ class BadgrProvider {
 			if ( isset( $response_info->status->success ) &&
 				$response_info->status->success == true &&
 				isset( $response_info->result ) && is_array( $response_info->result ) ) {
-				return $response_info->result;
+					// Filter for acceptance status
+					if ( $exclude_not_accepted ) {
+						$result = array( );
+						foreach ( $response_info->result as $assertion ) {
+							if ( $assertion->acceptance == 'Accepted') {
+								$result[] = $assertion;
+							}
+						} 
+					} else {
+						$result = $response_info->result;
+					}
+					if ( $params['elements_per_page'] > 0 ) {
+						return self::paginate( $result, $params['paged'], $params['elements_per_page'] );
+					} else {
+						return $result;
+					}
 			}
 		}
 
@@ -698,7 +718,7 @@ class BadgrProvider {
 
 	// Given a BadgrUser, get details of an assertion
 	public static function get_assertion_details_from_user_backpack (BadgrUser $badgr_user, $slug ) {
-		$reponse = $badgr_user->get_client()->get('/v2/backpack/assertions/' . $slug );
+		$response = $badgr_user->get_client()->get('/v2/backpack/assertions/' . $slug );
 
 		// Check for 200 response.
 		if ( null !== $response && $response->getStatusCode() == 200 ) {
@@ -712,6 +732,40 @@ class BadgrProvider {
 
 		return false;
 	}
+
+	public static function accept_assertion_in_user_backpack( BadgrUser $badgr_user, $slug ) {
+		$response = $badgr_user->get_client()->put('/v2/backpack/assertions/' . $slug, ['acceptance' => 'Accepted'] );
+
+		// Check for 200 response.
+		if ( null !== $response && $response->getStatusCode() == 200 ) {
+			$response_info = json_decode( $response->getBody() );
+			if ( isset( $response_info->status->success ) &&
+				$response_info->status->success == true &&
+				isset( $response_info->result[0] ) && $response_info->result[0]->acceptance == 'Accepted') {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	// Badgr doesn't allow rejection in the backpack at the moment
+	// Comment in Badgr code: Only updating acceptance status (to 'Accepted') is permitted for now.
+/* 	public static function reject_assertion_in_user_backpack( BadgrUser $badgr_user, $slug ) {
+		$response = $badgr_user->get_client()->put('/v2/backpack/assertions/' . $slug, ['acceptance' => 'Rejected'] );
+
+		// Check for 200 response.
+		if ( null !== $response && $response->getStatusCode() == 200 ) {
+			$response_info = json_decode( $response->getBody() );
+			if ( isset( $response_info->status->success ) &&
+				$response_info->status->success == true &&
+				isset( $response_info->result[0] ) && $response_info->result[0]->acceptance == 'Rejected') {
+				return true;
+			}
+		}
+
+		return false;
+	} */
 
 	public static function get_profile_associated_to_client_in_use () {
 		$response = self::getClient()->get( '/v2/users/self');
