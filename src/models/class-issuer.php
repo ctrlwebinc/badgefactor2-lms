@@ -222,4 +222,24 @@ class Issuer implements Badgr_Entity {
 
 		return true;
 	}
+
+
+	/**
+	 * Undocumented function.
+	 *
+	 * @param array $query_args Query arguments.
+	 * @return array
+	 */
+	public static function cmb2_get_options() {
+		$issuers = Issuer::all( -1 );
+
+		$post_options = array();
+		if ( $issuers ) {
+			foreach ( $issuers as $issuer ) {
+				$post_options[ $issuer->entityId ] = $issuer->name;
+			}
+		}
+
+		return $post_options;
+	}
 }

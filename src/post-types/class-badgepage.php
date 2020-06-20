@@ -22,6 +22,9 @@
 
 namespace BadgeFactor2\Post_Types;
 
+use BadgeFactor2\BadgeFactor2;
+use BadgeFactor2\Models\Issuer;
+
 /**
  * Undocumented class.
  */
@@ -36,6 +39,7 @@ class BadgePage {
 	public static function init_hooks() {
 		add_action( 'init', array( BadgePage::class, 'init' ), 10 );
 		add_filter( 'post_updated_messages', array( BadgePage::class, 'updated_messages' ), 10 );
+		add_action( 'cmb2_admin_init', array( BadgePage::class, 'custom_meta_boxes' ), 10 );
 	}
 
 	/**
@@ -128,4 +132,108 @@ class BadgePage {
 		return $messages;
 	}
 
+	public static function custom_meta_boxes() {
+		$cmb = new_cmb2_box(
+			array(
+				'id'           => 'badge',
+				'title'        => __( 'Badge', 'bagefactor2' ),
+				'object_types' => array( 'badge-page' ),
+				'context'      => 'normal',
+				'priority'     => 'high',
+				'show_names'   => true,
+			)
+		);
+
+		$cmb->add_field(
+			array(
+				'name' => 'Name',
+				'desc' => 'Badge name used in Badgr',
+				'id'   => 'badge_name',
+				'type' => 'text_medium',
+			)
+		);
+
+		$cmb->add_field(
+			array(
+				'name'       => 'Issuer',
+				'desc'       => 'Badge issuer',
+				'id'         => 'badge_issuer',
+				'type'       => 'select',
+				'options_cb' => array( Issuer::class, 'cmb2_get_options' ),
+			)
+		);
+
+		$cmb->add_field(
+			array(
+				'name' => 'Description',
+				'desc' => 'Description which will be used in Badgr',
+				'id'   => 'badge_description',
+				'type' => 'textarea',
+			)
+		);
+
+		$cmb->add_field(
+			array(
+				'name' => 'Image',
+				'desc' => '',
+				'id'   => 'badge_image',
+				'type' => 'file_list',
+			)
+		);
+
+		$cmb = new_cmb2_box(
+			array(
+				'id'           => 'badge_request',
+				'title'        => __( 'Badge Request', 'bagefactor2' ),
+				'object_types' => array( 'badge-page' ),
+				'context'      => 'normal',
+				'priority'     => 'high',
+				'show_names'   => true,
+			)
+		);
+
+		$cmb->add_field(
+			array(
+				'name'    => __( 'Form type', 'badgefactor2' ),
+				'id'      => 'badge_request_form_type',
+				'type'    => 'select',
+				'options' => array( BadgePage::class, 'get_cmb2_form_type_options' ),
+			)
+		);
+
+		$cmb->add_field(
+			array(
+				'name'    => __( 'Form', 'badgefactor2' ),
+				'id'      => 'badge_request_form_id',
+				'type'    => 'select',
+				'options' => array( BadgePage::class, 'get_cmb2_gf_form_options' ),	
+				'attributes'    => array(
+					'data-conditional-id'     => 'badge_request_form_type',
+					'data-conditional-value'  => 'gravityforms',
+				),
+			)
+		);
+	}
+
+	public static function get_cmb2_form_type_options() {
+		$options = array(
+			'basic' => __( 'Basic form', 'badgefactor2' ),
+		);
+		if ( is_plugin_active( 'gravityforms/gravityforms.php' ) ) {
+			$options = array( 'gravityforms' => __( 'Gravity Forms', 'badgefactor2' ) ) + $options;
+		}
+		return $options;
+	}
+
+	public static function get_cmb2_gf_form_options() {
+		$options = array();
+		if ( is_plugin_active( 'gravityforms/gravityforms.php' ) ) {
+
+			$forms = \GFAPI::get_forms();
+			foreach ( $forms as $form ) {
+				$options[ $form['id'] ] = $form['title'];
+			}
+		}
+		return $options;
+	}
 }
