@@ -578,4 +578,12 @@ class BadgrClientTest extends WP_UnitTestCase {
 		$this->assertNotEmpty( $response_info->result[0]->entityId );
 		
 	} */
+
+	public function test_unconfigured_client_returns_null_response() {
+		$client = new BadgrClient();
+
+		$response = $client->get('anyurl');
+
+		$this->assertNull( $response );
+	}
 }
