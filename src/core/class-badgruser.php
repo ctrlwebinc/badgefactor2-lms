@@ -121,7 +121,6 @@ class BadgrUser {
 		$client = self::makeInstance( $basicParameters );
 
 		// Store client for later use
-		// TODO Move responsibility for saving to BadgrUser
 		update_user_meta( $wp_user->ID, self::$user_meta_key_for_client, $client);
 
 		return $client;
