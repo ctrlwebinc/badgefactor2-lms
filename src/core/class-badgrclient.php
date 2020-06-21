@@ -259,6 +259,15 @@ class BadgrClient {
 	}
 
 	public static function handleAuthReturn() {
+		if ( false !== strpos($_SERVER['REQUEST_URI'], 'init' ) ) {
+			$client = self::makeClientFromSavedOptions();
+			$client->initiateCodeAuthorization();
+		}
+		// Check for code and hash, retrieve client and complete code auth
+		header( 'Content-Type: text/plain' );
+		echo 'Badgr auth callback.';
+		echo ' Full uri: ' . $_SERVER['REQUEST_URI'];
+		exit();
 		 // Called when an auth callback url is invoked
 
 /* 		// Valid auth callbacks have a client_hash parameter
@@ -435,11 +444,7 @@ class BadgrClient {
 	public static function hook_template_redirect() {
 		if ( $bf2 = get_query_var( 'bf2' ) ) {
 			if ( 'auth' == $bf2 ) {
-				// Check for code and hash, retrieve client and complete code auth
-				header( 'Content-Type: text/plain' );
-				echo 'Badgr auth callback.';
-				echo ' Full uri: ' . $_SERVER['REQUEST_URI'];
-				exit();
+				self::handleAuthReturn();
 			}
 			header( 'Content-Type: text/plain' );
 			echo 'Badgr callback: ' . $bf2;
