@@ -187,7 +187,7 @@ class BadgrClient {
 		$options = get_option( 'badgefactor2_badgr_settings' );
 
 		$clientParameters = array(
-			'username'                  => getenv( 'BADGR_ADMIN_USERNAME' ),
+			'username'                  => '', //getenv( 'BADGR_ADMIN_USERNAME' ),
 			'as_admin'                  => true,
 			'badgr_server_public_url'   => $options['badgr_server_public_url'],
 			'badgr_server_flavor'       => BadgrClient::FLAVOR_LOCAL_R_JAMIROQUAI,
@@ -260,14 +260,19 @@ class BadgrClient {
 
 	public static function handleAuthReturn() {
 		if ( false !== strpos($_SERVER['REQUEST_URI'], 'init' ) ) {
-			$client = self::makeClientFromSavedOptions();
+			$client = BadgrUser::getOrMakeUserClient();
 			$client->initiateCodeAuthorization();
 		}
+
+		if ( ! isset( $_GET['code'] )) {
+			exit();
+		}
+
 		// Check for code and hash, retrieve client and complete code auth
-		header( 'Content-Type: text/plain' );
-		echo 'Badgr auth callback.';
-		echo ' Full uri: ' . $_SERVER['REQUEST_URI'];
-		exit();
+		//header( 'Content-Type: text/plain' );
+		//echo 'Badgr auth callback.';
+		//echo ' Full uri: ' . $_SERVER['REQUEST_URI'];
+		//exit();
 		 // Called when an auth callback url is invoked
 
 /* 		// Valid auth callbacks have a client_hash parameter
@@ -306,6 +311,8 @@ class BadgrClient {
 			throw new \BadMethodCallException( 'No authorization code present.' );
 		}
 
+		$client = BadgrUser::getOrMakeUserClient();
+		
 		// Attempt to get an access token
 		$client->getAccessTokenFromAuthorizationCode( $_GET['code'] );
 	}
