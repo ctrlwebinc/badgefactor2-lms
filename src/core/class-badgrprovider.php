@@ -39,16 +39,19 @@ class BadgrProvider {
 
 	private static function getClient() {
 		if ( null == self::$client ) {
-			// TODO use user client methods
+			// Get the logged in user client
 			try {
 				self::$client = BadgrUser::getOrMakeUserClient();
 				return self::$client;
 			}
 			catch ( \Exception $e) {
 			}
+			// Try to get the user 1 client (if we're in background, we'll need the admin client anyway)
 			try {
-				self::$client = BadgrClient::makeClientFromSavedOptions();
-				return self::$client;
+				self::$client = (BadgrUser::make_from_user_id(1))->get_client();
+				if ( null !== self::$client ) {
+					return self::$client;
+				}
 			}
 			catch ( \Exception $e) {
 			}
