@@ -40,8 +40,20 @@ class BadgrProvider {
 	private static function getClient() {
 		if ( null == self::$client ) {
 			// TODO use user client methods
-			// return BadgrClient::getOrMakeUserClient();
-			self::$client = BadgrClient::makeClientFromSavedOptions();
+			try {
+				self::$client = BadgrUser::getOrMakeUserClient();
+				return self::$client;
+			}
+			catch ( \Exception $e) {
+			}
+			try {
+				self::$client = BadgrClient::makeClientFromSavedOptions();
+				return self::$client;
+			}
+			catch ( \Exception $e) {
+			}
+			self::$client = new BadgrClient();
+			return self::$client;
 		}
 
 		return self::$client;
