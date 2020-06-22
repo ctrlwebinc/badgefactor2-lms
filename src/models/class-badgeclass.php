@@ -24,11 +24,14 @@ namespace BadgeFactor2\Models;
 
 use BadgeFactor2\Badgr_Entity;
 use BadgeFactor2\BadgrProvider;
+use BadgeFactor2\WP_Sortable;
 
 /**
  * Badge Class.
  */
 class BadgeClass implements Badgr_Entity {
+
+	use WP_Sortable;
 
 	/**
 	 * Badge Badgr Entity ID / Slug.
@@ -67,6 +70,9 @@ class BadgeClass implements Badgr_Entity {
 				}
 			}
 		}
+
+		WP_Sortable::sort( $badges );
+
 		return $badges;
 	}
 
@@ -158,7 +164,7 @@ class BadgeClass implements Badgr_Entity {
 	public static function get_sortable_columns() {
 		return array(
 			'name'      => array( 'name', true ),
-			'issuer'    => array( 'email', false ),
+			'issuer'    => array( 'issuer', false ),
 			'createdAt' => array( 'createdAt', false ),
 		);
 	}
