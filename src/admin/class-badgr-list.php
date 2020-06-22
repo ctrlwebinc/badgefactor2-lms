@@ -296,7 +296,7 @@ class Badgr_List extends \WP_List_Table {
 	 */
 	public function get_bulk_actions() {
 		$actions = array(
-			'delete' => 'Delete',
+			'delete' => __( 'Delete', 'badgefactor2' ),
 		);
 
 		return $actions;
@@ -478,8 +478,7 @@ class Badgr_List extends \WP_List_Table {
 				// Bulk delete.
 				// In our file that handles the request, verify the nonce.
 				$nonce = esc_attr( $_REQUEST['_wpnonce'] );
-
-				if ( ! wp_verify_nonce( $nonce, 'bulk-' . $this->slug ) ) {
+				if ( ! wp_verify_nonce( $nonce, 'bulk-' . $this->_args['plural'] ) ) {
 					die( 'Go get a life script kiddies' );
 				} else {
 					foreach ( $_GET['entity_id'] as $id ) {
