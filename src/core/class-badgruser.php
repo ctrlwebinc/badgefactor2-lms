@@ -148,9 +148,18 @@ class BadgrUser {
 
 	public static function keep_passwords_synched( $username ) {
 		//header( 'Content-Type: text/plain' );
+		//echo null == $username ;
+		//echo 'wp_authenticate hook: ' . $username ;
 		//echo 'wp_authenticate hook: ' . $username . ' ' . $_POST['pwd'];
 		//var_dump( serialize(wp_authenticate( $username, $_POST['pwd'])));
 		//exit();
+
+		// This hook seems to also be called during logout. Username is then null
+
+		if ( null == $username ) {
+			// It is a logout operation, nothing needs doing for us
+			return;
+		}
 
 		$password_from_login = $_POST['pwd'];
 
