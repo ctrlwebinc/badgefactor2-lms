@@ -143,6 +143,41 @@ class BadgrUser {
 	public static function init() {
 		add_action( 'user_register', array( BadgrUser::class, 'new_user_registers' ), 9966 );
 		add_action( 'profile_update', array( BadgrUser::class, 'update_user' ), 9966 );
+		add_action( 'wp_authenticate', array( BadgrUser::class, 'keep_passwords_synched' ), 9966 );
+	}
+
+	public static function keep_passwords_synched( $username ) {
+		//header( 'Content-Type: text/plain' );
+		//echo 'wp_authenticate hook: ' . $username . ' ' . $_POST['pwd'];
+		//var_dump( serialize(wp_authenticate( $username, $_POST['pwd'])));
+		//exit();
+
+		$password_from_login = $_POST['pwd'];
+
+		// check if password is valid: if not return
+		$auth_result = wp_authenticate( $username, $password_from_login);
+		if ( is_wp_error( $auth_result )) {
+			return;
+		}
+
+		// Password is valid
+
+		// Check if password coresponds to current password
+		$current_password = get_user_meta( $auth_result->ID, 'badgr_password', true );
+		if ( $current_password === $auth_result) {
+			// It does, return
+			return;
+		}
+		// It doesn't, so change password
+		$user_slug = get_user_meta( $auth_result->ID, 'badgr_user_slug', true );
+
+		// Perform password change using old and new
+		if ( false !== BadgrProvider::change_user_password( $user_slug, $current_password, $password_from_login)) {
+			// Record the new one as the old one
+			update_user_meta( $auth_result->ID, 'badgr_password', $password_from_login);
+
+		}
+
 	}
 
 	/**
@@ -166,12 +201,14 @@ class BadgrUser {
 
 		// Add user to badgr.
 		$user_data = get_userdata( $user_id );
-		$slug      = BadgrProvider::add_user( $user_data->first_name, $user_data->last_name, $user_data->user_email );
+		$temporary_password = self::generate_random_password();
+		$slug      = BadgrProvider::add_user( $user_data->first_name, $user_data->last_name, $user_data->user_email, $temporary_password );
 
-		// If successful set badgr user state to 'created' and save slug.
+		// If successful set badgr user state to 'created' and save slug and save previous password.
 		if ( false !== $slug ) {
 			update_user_meta( $user_id, 'badgr_user_slug', $slug );
 			update_user_meta( $user_id, 'badgr_user_state', 'created' );
+			update_user_meta( $user_id, 'badgr_password', $temporary_password);
 		}
 	}
 
@@ -217,5 +254,21 @@ class BadgrUser {
 		}
 
 		return false;
+	}
+
+	/**
+	 * Generates a random password.
+	 *
+	 * @return string Randomly generated password.
+	 */
+	protected static function generate_random_password() {
+		$alphabet        = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
+		$pass            = array( 'p' ); // Start with a letter.
+		$alpha_max_index = strlen( $alphabet ) - 1;
+		for ( $i = 0; $i < 11; $i++ ) {
+			$n      = rand( 0, $alpha_max_index );
+			$pass[] = $alphabet[ $n ];
+		}
+		return implode( $pass );
 	}
 }

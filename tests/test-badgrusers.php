@@ -28,6 +28,68 @@ use \BadgeFactor2\BadgrProvider;
  */
 class BadgrUsersTest extends WP_UnitTestCase {
 
+	public function test_user_create_and_change_password() {
+
+		// Setup a completely client and check that we can get the profile info
+		$clientParameters = [
+			'username' => getenv('BADGR_ADMIN_USERNAME'),
+			'as_admin' => true,
+			'badgr_server_public_url' => getenv('BADGR_SERVER_PUBLIC_URL'),
+			'badgr_server_flavor' => BadgrClient::FLAVOR_LOCAL_R_JAMIROQUAI,
+			'badgr_server_internal_url'    => getenv('BADGR_SERVER_INTERNAL_URL'),
+			'client_id'     => getenv('BADGR_SERVER_CLIENT_ID'),
+			'client_secret' => getenv('BADGR_SERVER_CLIENT_SECRET'),
+			'access_token' => getenv('BADGR_SERVER_ACCESS_TOKEN'),
+			'refresh_token' => getenv('BADGR_SERVER_REFRESH_TOKEN'),
+			'token_expiration' => getenv('BADGR_SERVER_TOKEN_EXPIRATION'),
+		];
+
+		$client = BadgrClient::makeInstance( $clientParameters );
+
+		BadgrProvider::setClient( $client );
+
+		// Check that we can retreive information on the authorized user
+		// Make GET request to /v2/users/self.
+		$response = $client->get( '/v2/users/self' );
+
+		// Check response isn't null.
+		$this->assertNotNull($response);
+
+		// Check response has status code 200.
+		$this->assertEquals( 200, $response->getStatusCode() );
+
+		$response_info = json_decode( $response->getBody() );
+
+		// Check that entity id exists
+		$this->assertTrue( isset( $response_info->result[0]->entityId ) );
+
+		// Setup a random string to avoid data collisions
+		$random = $this->generateRandomString(5);
+
+		// Create a user
+		$firstname = 'Zeus' . $random;
+		$lastname = 'God';
+		$email = 'zeus.god.' . $random . '@example.net';
+		$password = 'pass456PASS';
+
+		// Make user
+		$newUserSlug = BadgrProvider::add_user( $firstname, $lastname, $email, $password);
+
+		$this->assertTrue( false !== $newUserSlug );
+
+		$this->assertTrue( BadgrProvider::change_user_password( $newUserSlug, $password, 'new456PASS' ));
+	}
+
+	private function generateRandomString($length = 10) {
+	    $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+	    $charactersLength = strlen($characters);
+	    $randomString = 'l';
+	    for ($i = 0; $i < $length; $i++) {
+	        $randomString .= $characters[rand(0, $charactersLength - 1)];
+	    }
+	    return $randomString;
+	}
+
     /**
      */
 /* 	public function test_issuer_to_assertion_flow() {
