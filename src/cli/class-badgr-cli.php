@@ -36,15 +36,19 @@ class Badgr_CLI extends WP_CLI_Command {
 
 	public function add_user( $args, $assoc_args ) {
 
-		if ( count( $args ) != 3 ) {
-			WP_CLI::error( 'Usage: add_user firstname lastname email' );
+		if ( count( $args ) != 4 ) {
+			WP_CLI::error( 'Usage: add_user firstname lastname email password' );
 		}
 
 		if ( ! filter_var( $args[2], FILTER_VALIDATE_EMAIL ) ) {
 			WP_CLI::error( 'Please provide a valid email as the 3rd argument' );
 		}
 
-		$slug = BadgrProvider::add_user( $args[0], $args[1], $args[2] );
+		if ( strlen( $args[3] ) < 8 ) {
+			WP_CLI::error( 'Please provide a password of at least 8 characters as the 4th argument' );
+		}
+
+		$slug = BadgrProvider::add_user( $args[0], $args[1], $args[2], $args[3] );
 
 		if ( $slug ) {
 			WP_CLI::success( 'User added with slug ' . $slug );
