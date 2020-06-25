@@ -56,6 +56,8 @@ class BadgrClient {
 	public static $authRedirectUri          = '/bf2/auth';
 	public static $user_meta_key_for_client = 'badgr_client_instance';
 
+	// BagrUser
+	// Badgr user associated with client instance
 	public $badgr_user = null;
 
 	// Minimal properties of instances
@@ -84,21 +86,23 @@ class BadgrClient {
 	private $needsConfiguration = true;
 	private $needsAuth          = true; // Needs auth is true whenever token is expired or if we get a 401 status during a call
 
-	const STATE_CONFIGURED_AND_ACTIVE                     = 1;
-	const STATE_NEEDS_REFRESH                             = 2;
-	const STATE_NEEDS_TOKEN                               = 3;
-	const STATE_NEEDS_AUTH                                = 4;
-	const STATE_NEEDS_LOGIN                               = 5;
-	const STATE_NEEDS_USER_ACTION                         = 6;
-	const STATE_NEEDS_ADMIN_ACTION                        = 7;
-	const STATE_EXPECTING_AUTHORIZATION_CODE              = 8;
-	const STATE_EXPECTING_ACCESS_TOKEN_FROM_CODE          = 9;
-	const STATE_HAVE_ACCESS_TOKEN                         = 10;
-	const STATE_FAILED_GETTING_ACCESS_TOKEN               = 11;
-	const STATE_EXPECTING_ACCESS_TOKEN_FROM_PASSWORD      = 12;
-	const STATE_EXPECTING_ACCESS_TOKEN_FROM_REFRESH_TOKEN = 13;
+	const STATE_NEW_AND_UNCONFIGURED                      = 1;
+	const STATE_CONFIGURED                                = 2;
+	const STATE_CONFIGURED_AND_ACTIVE                     = 3;
+	const STATE_NEEDS_REFRESH                             = 4;
+	const STATE_NEEDS_TOKEN                               = 5;
+	const STATE_NEEDS_AUTH                                = 6;
+	const STATE_NEEDS_LOGIN                               = 7;
+	const STATE_NEEDS_USER_ACTION                         = 8;
+	const STATE_NEEDS_ADMIN_ACTION                        = 9;
+	const STATE_EXPECTING_AUTHORIZATION_CODE              = 10;
+	const STATE_EXPECTING_ACCESS_TOKEN_FROM_CODE          = 11;
+	const STATE_HAVE_ACCESS_TOKEN                         = 12;
+	const STATE_FAILED_GETTING_ACCESS_TOKEN               = 13;
+	const STATE_EXPECTING_ACCESS_TOKEN_FROM_PASSWORD      = 14;
+	const STATE_EXPECTING_ACCESS_TOKEN_FROM_REFRESH_TOKEN = 15;
 
-	private $state;
+	private $state = self::STATE_NEW_AND_UNCONFIGURED;
 	public $retryAuthBeforeFailing = true;
 
 	//public $client_key  = null;
@@ -166,7 +170,7 @@ class BadgrClient {
 			$client->scopes = $scopes;
 		}
 
-		// TODO: figureOutState
+		$client->state = self::STATE_CONFIGURED;
 
 		// set BadgrUser if available (also saves instance)
 		if ( isset( $parameters['badgr_user'] ) && null !== $parameters['badgr_user'] ) {
@@ -183,7 +187,7 @@ class BadgrClient {
 		$options = get_option( 'badgefactor2_badgr_settings' );
 
 		$clientParameters = array(
-			'username'                  => getenv( 'BADGR_ADMIN_USERNAME' ),
+			'username'                  => '', //getenv( 'BADGR_ADMIN_USERNAME' ),
 			'as_admin'                  => true,
 			'badgr_server_public_url'   => $options['badgr_server_public_url'],
 			'badgr_server_flavor'       => BadgrClient::FLAVOR_LOCAL_R_JAMIROQUAI,
@@ -255,6 +259,20 @@ class BadgrClient {
 	}
 
 	public static function handleAuthReturn() {
+		if ( false !== strpos($_SERVER['REQUEST_URI'], 'init' ) ) {
+			$client = BadgrUser::getOrMakeUserClient();
+			$client->initiateCodeAuthorization();
+		}
+
+		if ( ! isset( $_GET['code'] )) {
+			exit();
+		}
+
+		// Check for code and hash, retrieve client and complete code auth
+		//header( 'Content-Type: text/plain' );
+		//echo 'Badgr auth callback.';
+		//echo ' Full uri: ' . $_SERVER['REQUEST_URI'];
+		//exit();
 		 // Called when an auth callback url is invoked
 
 /* 		// Valid auth callbacks have a client_hash parameter
@@ -293,6 +311,8 @@ class BadgrClient {
 			throw new \BadMethodCallException( 'No authorization code present.' );
 		}
 
+		$client = BadgrUser::getOrMakeUserClient();
+		
 		// Attempt to get an access token
 		$client->getAccessTokenFromAuthorizationCode( $_GET['code'] );
 	}
@@ -431,11 +451,7 @@ class BadgrClient {
 	public static function hook_template_redirect() {
 		if ( $bf2 = get_query_var( 'bf2' ) ) {
 			if ( 'auth' == $bf2 ) {
-				// Check for code and hash, retrieve client and complete code auth
-				header( 'Content-Type: text/plain' );
-				echo 'Badgr auth callback.';
-				echo ' Full uri: ' . $_SERVER['REQUEST_URI'];
-				exit();
+				self::handleAuthReturn();
 			}
 			header( 'Content-Type: text/plain' );
 			echo 'Badgr callback: ' . $bf2;
@@ -551,6 +567,11 @@ class BadgrClient {
 	 * @throws \BadMethodCallException Bad method call exception.
 	 */
 	private function request( $method, $path, $args = array() ) {
+
+		// Validate that we're using a configured client. If not, return null response
+		if ( self::STATE_NEW_AND_UNCONFIGURED == $this->state ) {
+			return null;
+		}
 
 		$client = self::getGuzzleClient();
 		$method = strtoupper( $method );

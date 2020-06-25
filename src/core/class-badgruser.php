@@ -71,19 +71,19 @@ class BadgrUser {
 		// If no user passed, use the current user
 		if ( null === $wp_user ) {
 			$wp_user = wp_get_current_user();
-			if ( $wp_user == 0) {
+			if ( $wp_user->ID == 0) {
 				throw new \Exception('Can\'t determine user for client creation');
 			}
 		}
 		// Look in user metas for existing client
 		// TODO Transfer responsibility of user client fetching to BadgrUser
-		$client = get_user_meta( $wp_user->ID, self::user_meta_key_for_client, true );
+		$client = get_user_meta( $wp_user->ID, self::$user_meta_key_for_client, true );
 
 		if ( null!== $client && '' !== $client) {
 			return $client;
 		}
 
-		// No existing client, make a new one
+	/* 	// No existing client, make a new one
 		$badgr_site_settings = get_option( 'badgefactor2_badgr_settings' );
 
 		// Basic parameters
@@ -112,17 +112,14 @@ class BadgrUser {
 		// If not password grant, get client_secret
 		if ( $badgr_site_settings['badgr_authentication_process_select'] != self::GRANT_PASSWORD ) {
 			$basicParameters['badgr_server_client_secret']  = $badgr_site_settings['badgr_server_client_secret'];
-		}
-
-		// Set user
-		$basicParameters['wp_user_id'] = $wp_user->ID;
+		} */
 
 		// Make client
-		$client = self::makeInstance( $basicParameters );
+		$client = BadgrClient::makeClientFromSavedOptions();
 
-		// Store client for later use
-		// TODO Move responsibility for saving to BadgrUser
-		update_user_meta( $wp_user->ID, self::$user_meta_key_for_client, $client);
+		// Set user
+		$badgr_user = new BadgrUser( $wp_user );
+		$badgr_user->set_client( $client );
 
 		return $client;
 

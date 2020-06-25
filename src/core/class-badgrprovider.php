@@ -39,9 +39,24 @@ class BadgrProvider {
 
 	private static function getClient() {
 		if ( null == self::$client ) {
-			// TODO use user client methods
-			// return BadgrClient::getOrMakeUserClient();
-			self::$client = BadgrClient::makeClientFromSavedOptions();
+			// Get the logged in user client
+			try {
+				self::$client = BadgrUser::getOrMakeUserClient();
+				return self::$client;
+			}
+			catch ( \Exception $e) {
+			}
+			// Try to get the user 1 client (if we're in background, we'll need the admin client anyway)
+			try {
+				self::$client = (BadgrUser::make_from_user_id(1))->get_client();
+				if ( null !== self::$client ) {
+					return self::$client;
+				}
+			}
+			catch ( \Exception $e) {
+			}
+			self::$client = new BadgrClient();
+			return self::$client;
 		}
 
 		return self::$client;
@@ -83,7 +98,7 @@ class BadgrProvider {
 	 * @param string $email Email address.
 	 * @return string|boolean
 	 */
-	public static function add_user( $firstname, $lastname, $email ) {
+	public static function add_user( $firstname, $lastname, $email, $password ) {
 
 		// Setup body.
 		$request_body = array(
@@ -97,7 +112,7 @@ class BadgrProvider {
 			'marketing_opt_in'     => false,
 			'has_password_set'     => false,
 			'source'               => 'bf2',
-			'password'             => self::generate_random_password(),
+			'password'             => $password,
 		);
 
 		// Make POST request to /v1/user/profile.
@@ -109,6 +124,26 @@ class BadgrProvider {
 			$response_info = json_decode( $response->getBody() );
 			if ( isset( $response_info->slug ) && strlen( $response_info->slug ) > 0 ) {
 				return $response_info->slug;
+			}
+		}
+
+		return false;
+	}
+
+	public static function change_user_password( $slug, $old_password, $new_password) {
+		// Change password
+		$request_body = array(
+			'password'           => $new_password,
+			'currentPassword' => $old_password
+		);
+
+		$response = self::getClient()->put( '/v2/users/' . $slug, $request_body );
+		// Check for 200 response.
+		if ( null !== $response && $response->getStatusCode() == 200 ) {
+			// Return true on success or false if unsucessful.
+			$response_info = json_decode( $response->getBody() );
+			if ( isset( $response_info->status->success ) && $response_info->status->success == true) {
+				return true;
 			}
 		}
 
