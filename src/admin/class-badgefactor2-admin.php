@@ -343,11 +343,10 @@ class BadgeFactor2_Admin {
 
 		$badgefactor2_settings->add_field(
 			array(
-				'name'    => __( 'Block WordPress registration emails?', 'badgefactor2' ),
-				'desc'    => __( 'Registration emails are managed by Badgr. If you disable this, users will receive two registration validations emails.', 'badgefactor2' ),
-				'id'      => 'bf2_block_wp_registration_emails',
-				'type'    => 'checkbox',
-				'default' => true,
+				'name' => __( 'Send WordPress registration emails?', 'badgefactor2' ),
+				'desc' => __( 'Registration emails are managed by Badgr. If you enable this, users will receive two registration validations emails.', 'badgefactor2' ),
+				'id'   => 'bf2_send_new_user_notifications',
+				'type' => 'checkbox',
 			)
 		);
 

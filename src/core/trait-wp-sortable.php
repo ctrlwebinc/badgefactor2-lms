@@ -45,19 +45,22 @@ trait WP_Sortable {
 	 */
 	final public static function sort( &$array, $internal_orderby = null ) {
 
-		$orderby = $_GET['orderby'] ?? 'createdAt';
-		$order   = $_GET['order'] ?? 'desc';
+		if ( is_array( $array ) ) {
 
-		usort(
-			$array,
-			function( $a, $b ) use ( $order, $orderby, $internal_orderby ) {
-				if ( $internal_orderby && array_key_exists( $orderby, $internal_orderby ) ) {
-					$a       = $a->$orderby;
-					$b       = $b->$orderby;
-					$orderby = $internal_orderby[ $orderby ];
-				}
-				return 'desc' === $order ? strcmp( $b->$orderby, $a->$orderby ) : strcmp( $a->$orderby, $b->$orderby ); }
-		);
+			$orderby = $_GET['orderby'] ?? 'createdAt';
+			$order   = $_GET['order'] ?? 'desc';
+
+			usort(
+				$array,
+				function( $a, $b ) use ( $order, $orderby, $internal_orderby ) {
+					if ( $internal_orderby && array_key_exists( $orderby, $internal_orderby ) ) {
+						$a       = $a->$orderby;
+						$b       = $b->$orderby;
+						$orderby = $internal_orderby[ $orderby ];
+					}
+					return 'desc' === $order ? strcmp( $b->$orderby, $a->$orderby ) : strcmp( $a->$orderby, $b->$orderby ); }
+			);
+		}
 
 	}
 }

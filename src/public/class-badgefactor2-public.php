@@ -35,13 +35,15 @@ class BadgeFactor2_Public {
 	public static function init_hooks() {
 		add_action( 'init', array( BadgeFactor2_Public::class, 'add_rewrite_tags' ), 10, 0 );
 		add_action( 'init', array( BadgeFactor2_Public::class, 'add_rewrite_rules' ), 10, 0 );
+		remove_action( 'register_new_user', 'wp_send_new_user_notifications' );
+		add_action( 'register_new_user', array( BadgeFactor2_Public::class, 'suppress_new_user_notifications' ), 10, 2 );
 		add_filter( 'query_vars', array( BadgeFactor2_Public::class, 'add_custom_query_vars' ) );
 		add_filter( 'template_include', array( BadgeFactor2_Public::class, 'add_badge_to_hierarchy' ) );
 		add_filter( 'template_include', array( BadgeFactor2_Public::class, 'add_assertion_to_hierarchy' ) );
 
 	}
 
-	public static function add_rewrite_tags( ) {
+	public static function add_rewrite_tags() {
 		add_rewrite_tag( '%issuer%', '([^&]+)' );
 		add_rewrite_tag( '%badge%', '([^&]+)' );
 		add_rewrite_tag( '%assertion%', '([^&]+)' );
@@ -66,6 +68,13 @@ class BadgeFactor2_Public {
 
 	public static function add_assertion_to_hierarchy( $original_template ) {
 		return static::add_to_hierarchy( $original_template, 'assertion' );
+	}
+
+	public static function suppress_new_user_notifications( $user_id, $notify = 'both' ) {
+		$badgefactor2_options = get_option( 'badgefactor2' );
+		if ( isset( $badgefactor2_options['bf2_send_new_user_notifications'] ) && 'on' === $badgefactor2_options['bf2_send_new_user_notifications'] ) {
+			wp_send_new_user_notifications( $user_id, $notify );
+		}
 	}
 
 	private static function add_to_hierarchy( $original_template, $item ) {

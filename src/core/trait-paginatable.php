@@ -46,14 +46,16 @@ trait Paginatable {
 	 * @return array Paginated array.
 	 */
 	final public static function paginate( $array, $page = 1, $limit = 10 ) {
-		$total = count( $array );
-		$total_pages = ceil( $total / $limit );
-		$page = min( $page, $total_pages );
-		$offset = ( $page - 1 ) * $limit;
-		if ( $offset < 0 ) {
-			$offset = 0;
+		if ( is_array( $array ) ) {
+			$total       = count( $array );
+			$total_pages = ceil( $total / $limit );
+			$page        = min( $page, $total_pages );
+			$offset      = ( $page - 1 ) * $limit;
+			if ( $offset < 0 ) {
+				$offset = 0;
+			}
+			return array_slice( $array, $offset, $limit );
 		}
-		return array_slice( $array, $offset, $limit );
 	}
 
 }
