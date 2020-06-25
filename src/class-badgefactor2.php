@@ -22,11 +22,11 @@
 
 namespace BadgeFactor2;
 
-
 /**
  * Badge Factor 2 Main Class.
  */
 class BadgeFactor2 {
+
 
 	/**
 	 * Badge Factor 2 Version
@@ -104,16 +104,19 @@ class BadgeFactor2 {
 		require_once 'phar://' . BF2_ABSPATH . 'lib/league-oauth2-client.phar/vendor/autoload.php';
 		require_once BF2_ABSPATH . 'src/core/trait-singleton.php';
 		require_once BF2_ABSPATH . 'src/core/trait-paginatable.php';
+		require_once BF2_ABSPATH . 'src/core/trait-wp-sortable.php';
 		require_once BF2_ABSPATH . 'src/core/interface-badgr-entity.php';
 		require_once BF2_ABSPATH . 'src/core/class-badgrclient.php';
 		require_once BF2_ABSPATH . 'src/core/class-badgrprovider.php';
+		require_once BF2_ABSPATH . 'src/core/class-badgruser.php';
 		require_once BF2_ABSPATH . 'src/models/class-issuer.php';
 		require_once BF2_ABSPATH . 'src/models/class-badgeclass.php';
 		require_once BF2_ABSPATH . 'src/models/class-assertion.php';
-		require_once BF2_ABSPATH . 'src/core/class-badgruser.php';
 		require_once BF2_ABSPATH . 'src/client/shortcodes/class-issuers.php';
-		BadgrClient::pre_init_hooks();
+		require_once BF2_ABSPATH . 'src/post-types/class-badgepage.php';
 		require_once BF2_ABSPATH . 'src/public/class-badgefactor2-public.php';
+		Post_Types\BadgePage::init_hooks();
+		BadgrClient::pre_init_hooks();
 		BadgeFactor2_Public::init_hooks();
 
 		add_action( 'init', array( BadgrProvider::class, 'init_hooks' ) );
@@ -163,18 +166,4 @@ class BadgeFactor2 {
 		}
 	}
 
-}
-
-// Fix New User Email Notification.
-$badgefactor2_options = get_option( 'badgefactor2' );
-if ( ! function_exists( 'wp_new_user_notification' ) && ( ! isset( $badgefactor2_options['bf2_block_wp_registration_emails'] ) || 'on' === $badgefactor2_options['bf2_block_wp_registration_emails'] ) ) {
-
-	/**
-	 * Overriding new user notifications.
-	 *
-	 * @param int    $user_id User ID.
-	 * @param string $notify Notify.
-	 * @return void
-	 */
-	function wp_new_user_notification( $user_id, $notify = '' ) { }
 }

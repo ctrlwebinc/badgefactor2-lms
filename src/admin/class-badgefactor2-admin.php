@@ -310,6 +310,7 @@ class BadgeFactor2_Admin {
 	 */
 	public static function load_resources() {
 		wp_enqueue_style( 'cmb2-styles-css', BF2_BASEURL . 'lib/CMB2/css/cmb2.min.css', array(), '5.2.5', 'all' );
+		wp_enqueue_script( 'cmb2-conditional-logic', BF2_BASEURL . 'lib/CMB2-conditional-logic/cmb2-conditional-logic.min.js', array( 'jquery' ), '1.0.0', true );
 		wp_enqueue_style( 'badgefactor2-admin', BF2_BASEURL . 'assets/css/admin.css', array(), '1.0.0', 'all' );
 		wp_enqueue_script( 'badgefactor2-tinymce', 'https://cdnjs.cloudflare.com/ajax/libs/tinymce/5.3.1/tinymce.min.js', array(), '5.3.1', true );
 		wp_enqueue_script( 'badgefactor2-admin', BF2_BASEURL . 'assets/js/admin.js', array( 'jquery', 'badgefactor2-tinymce' ), '1.0.0', true );
@@ -342,11 +343,10 @@ class BadgeFactor2_Admin {
 
 		$badgefactor2_settings->add_field(
 			array(
-				'name'    => __( 'Block WordPress registration emails?', 'badgefactor2' ),
-				'desc'    => __( 'Registration emails are managed by Badgr. If you disable this, users will receive two registration validations emails.', 'badgefactor2' ),
-				'id'      => 'bf2_block_wp_registration_emails',
-				'type'    => 'checkbox',
-				'default' => true,
+				'name' => __( 'Send WordPress registration emails?', 'badgefactor2' ),
+				'desc' => __( 'Registration emails are managed by Badgr. If you enable this, users will receive two registration validations emails.', 'badgefactor2' ),
+				'id'   => 'bf2_send_new_user_notifications',
+				'type' => 'checkbox',
 			)
 		);
 

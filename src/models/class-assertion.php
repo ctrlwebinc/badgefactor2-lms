@@ -26,11 +26,14 @@ use BadgeFactor2\Admin\Lists\Badges;
 use BadgeFactor2\Admin\Lists\Issuers;
 use BadgeFactor2\Badgr_Entity;
 use BadgeFactor2\BadgrProvider;
+use BadgeFactor2\WP_Sortable;
 
 /**
  * Assertion Class.
  */
 class Assertion implements Badgr_Entity {
+
+	use WP_Sortable;
 
 	/**
 	 * Assertion Badgr Entity ID / Slug.
@@ -56,11 +59,12 @@ class Assertion implements Badgr_Entity {
 		if ( empty( $paged ) ) {
 			$paged = $_GET['paged'] ?? 1;
 		}
+		$assertions = array();
 		if ( isset( $_GET['filter_type'] ) && isset( $_GET['filter_value'] ) ) {
 			$filter_type  = $_GET['filter_type'];
 			$filter_value = $_GET['filter_value'];
 			if ( 'Issuers' === $filter_type ) {
-				return BadgrProvider::get_all_assertions_by_issuer_slug(
+				$assertions = BadgrProvider::get_all_assertions_by_issuer_slug(
 					$filter_value,
 					array(
 						'elements_per_page' => $elements_per_page,
@@ -68,7 +72,7 @@ class Assertion implements Badgr_Entity {
 					)
 				);
 			} elseif ( 'Badges' === $filter_type ) {
-				return BadgrProvider::get_all_assertions_by_badge_class_slug(
+				$assertions = BadgrProvider::get_all_assertions_by_badge_class_slug(
 					$filter_value,
 					array(
 						'elements_per_page' => $elements_per_page,
@@ -76,9 +80,11 @@ class Assertion implements Badgr_Entity {
 					)
 				);
 			}
+
+			WP_Sortable::sort( $assertions, array( 'recipient' => 'plaintextIdentity' ) );
 		}
 
-		return array();
+		return $assertions;
 	}
 
 

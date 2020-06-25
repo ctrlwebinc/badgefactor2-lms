@@ -23,9 +23,9 @@
 namespace BadgeFactor2;
 
 /**
- * Paginatable Trait.
+ * Singleton Trait.
  */
-trait Paginatable {
+trait WP_Sortable {
 
 	/**
 	 * Protected class constructor to prevent direct object creation.
@@ -40,22 +40,27 @@ trait Paginatable {
 	/**
 	 * Undocumented function.
 	 *
-	 * @param array   $array Array.
-	 * @param integer $page Page number.
-	 * @param integer $limit Number per page.
-	 * @return array Paginated array.
+	 * @param array $array Array.
+	 * @return void
 	 */
-	final public static function paginate( $array, $page = 1, $limit = 10 ) {
-		if ( is_array( $array ) ) {
-			$total       = count( $array );
-			$total_pages = ceil( $total / $limit );
-			$page        = min( $page, $total_pages );
-			$offset      = ( $page - 1 ) * $limit;
-			if ( $offset < 0 ) {
-				$offset = 0;
-			}
-			return array_slice( $array, $offset, $limit );
-		}
-	}
+	final public static function sort( &$array, $internal_orderby = null ) {
 
+		if ( is_array( $array ) ) {
+
+			$orderby = $_GET['orderby'] ?? 'createdAt';
+			$order   = $_GET['order'] ?? 'desc';
+
+			usort(
+				$array,
+				function( $a, $b ) use ( $order, $orderby, $internal_orderby ) {
+					if ( $internal_orderby && array_key_exists( $orderby, $internal_orderby ) ) {
+						$a       = $a->$orderby;
+						$b       = $b->$orderby;
+						$orderby = $internal_orderby[ $orderby ];
+					}
+					return 'desc' === $order ? strcmp( $b->$orderby, $a->$orderby ) : strcmp( $a->$orderby, $b->$orderby ); }
+			);
+		}
+
+	}
 }

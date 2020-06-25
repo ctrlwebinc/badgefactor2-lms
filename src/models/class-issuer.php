@@ -25,11 +25,14 @@ namespace BadgeFactor2\Models;
 use WP_Post;
 use BadgeFactor2\Badgr_Entity;
 use BadgeFactor2\BadgrProvider;
+use BadgeFactor2\WP_Sortable;
 
 /**
  * Issuer Class.
  */
 class Issuer implements Badgr_Entity {
+
+	use WP_Sortable;
 
 	/**
 	 * Issuer Badgr Entity ID / Slug.
@@ -91,12 +94,19 @@ class Issuer implements Badgr_Entity {
 			$paged = $_GET['paged'] ?? 1;
 		}
 
-		return BadgrProvider::get_all_issuers(
+		$issuers = BadgrProvider::get_all_issuers(
 			array(
 				'elements_per_page' => $elements_per_page,
 				'paged'             => $paged,
 			)
 		);
+
+		$orderby = $_GET['orderby'] ?? 'createdAt';
+		$order = $_GET['order'] ?? 'desc';
+
+		WP_Sortable::sort( $issuers );
+
+		return $issuers;
 	}
 
 
@@ -221,5 +231,25 @@ class Issuer implements Badgr_Entity {
 		}
 
 		return true;
+	}
+
+
+	/**
+	 * Undocumented function.
+	 *
+	 * @param array $query_args Query arguments.
+	 * @return array
+	 */
+	public static function cmb2_get_options() {
+		$issuers = Issuer::all( -1 );
+
+		$post_options = array();
+		if ( $issuers ) {
+			foreach ( $issuers as $issuer ) {
+				$post_options[ $issuer->entityId ] = $issuer->name;
+			}
+		}
+
+		return $post_options;
 	}
 }
