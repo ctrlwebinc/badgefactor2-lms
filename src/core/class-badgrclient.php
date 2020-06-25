@@ -415,7 +415,7 @@ class BadgrClient {
 	}
 
 	public static function init_hooks() {
-
+		// TODO: add auth/welcome
 		add_rewrite_rule(
 			'bf2/(emailConfirm)/(\S+)/?',
 			'index.php?bf2=$matches[1]&user=$matches[2]',
