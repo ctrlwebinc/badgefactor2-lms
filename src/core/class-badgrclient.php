@@ -54,7 +54,6 @@ class BadgrClient {
 	// Class properties
 	private static $guzzleClient            = null;
 	public static $authRedirectUri          = '/bf2/auth';
-	public static $user_meta_key_for_client = 'badgr_client_instance';
 
 	// BagrUser
 	// Badgr user associated with client instance
