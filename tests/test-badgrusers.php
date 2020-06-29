@@ -20,6 +20,7 @@
  * @package Badge_Factor_2
  */
 
+use \BadgeFactor2\BadgrUser;
 use \BadgeFactor2\BadgrClient;
 use \BadgeFactor2\BadgrProvider;
 
@@ -244,4 +245,91 @@ class BadgrUsersTest extends WP_UnitTestCase {
 		$this->assertNotEmpty( $assertion_slug);
 
 	} */
+
+	public function test_can_set_admin_instance( ) {
+		$badgr_admin_user = BadgrUser::make_from_user_id(1);
+
+		$this->assertNotNull( $badgr_admin_user );
+
+		$badgr_admin_user->set_as_admin_instance( );
+
+		$admin_instance = BadgrUser::get_admin_instance();
+
+		$this->assertNotNull( $admin_instance );
+
+		$this->assertTrue( $badgr_admin_user->is_same_user( $admin_instance ));
+	} 
+
+	public function test_client_reports_active_when_admin_client_is_ready() {
+		// Clear any previous option
+		update_option( BadgrUser::$options_key_for_badgr_admin, null);
+		update_user_meta( 1, BadgrUser::$user_meta_key_for_client, null);
+
+		$this->assertFalse( BadgrClient::is_active( ) );
+
+		// Setup user. Start without a client.
+		$badgr_admin_user = BadgrUser::make_from_user_id(1);
+		$badgr_admin_user->set_as_admin_instance( );
+		
+		$this->assertNull( $badgr_admin_user->get_client( ) );
+
+		$this->assertFalse( BadgrClient::is_active( ) );
+
+		// Attach a non-admin client
+		$basicParameters = [
+			'username' => 'dave@example.net',
+			'as_admin' => false,
+			'badgr_server_public_url' => 'http://127.0.0.1:8000',
+			'badgr_server_flavor' => BadgrClient::FLAVOR_LOCAL_R_JAMIROQUAI,
+		];
+
+		$client = BadgrClient::makeInstance( $basicParameters );
+
+		$badgr_admin_user = BadgrUser::make_from_user_id(1);
+		$badgr_admin_user->set_client( $client );
+		$badgr_admin_user->set_as_admin_instance( );
+
+
+		$this->assertFalse( BadgrClient::is_active( ) );
+
+		// Attach an admin client without token
+		$basicParameters = [
+			'username' => 'dave@example.net',
+			'as_admin' => true,
+			'badgr_server_public_url' => 'http://127.0.0.1:8000',
+			'badgr_server_flavor' => BadgrClient::FLAVOR_LOCAL_R_JAMIROQUAI,
+		];
+
+		$client = BadgrClient::makeInstance( $basicParameters );
+
+		$badgr_admin_user = BadgrUser::make_from_user_id(1);
+		$badgr_admin_user->set_client( $client );
+		$badgr_admin_user->set_as_admin_instance( );
+
+		$this->assertFalse( BadgrClient::is_active( ) );
+
+		// Attach an admin client with token and check for active status
+		$activeClientParameters = [
+			'username' => getenv('BADGR_ADMIN_USERNAME'),
+			'as_admin' => true,
+			'badgr_server_public_url' => getenv('BADGR_SERVER_PUBLIC_URL'),
+			'badgr_server_flavor' => BadgrClient::FLAVOR_LOCAL_R_JAMIROQUAI,
+			'badgr_server_internal_url'    => getenv('BADGR_SERVER_INTERNAL_URL'),
+			'client_id'     => getenv('BADGR_SERVER_CLIENT_ID'),
+			'client_secret' => getenv('BADGR_SERVER_CLIENT_SECRET'),
+			'access_token' => getenv('BADGR_SERVER_ACCESS_TOKEN'),
+			'refresh_token' => getenv('BADGR_SERVER_REFRESH_TOKEN'),
+			'token_expiration' => getenv('BADGR_SERVER_TOKEN_EXPIRATION'),
+		];
+
+		$client = BadgrClient::makeInstance( $activeClientParameters );
+
+		$badgr_admin_user = BadgrUser::make_from_user_id(1);
+		$badgr_admin_user->set_client( $client );
+		$badgr_admin_user->set_as_admin_instance( );
+
+		$this->assertEquals( BadgrClient::STATE_HAVE_ACCESS_TOKEN, $client->get_state() );
+
+		$this->assertTrue( BadgrClient::is_active( ) );
+	}
 }

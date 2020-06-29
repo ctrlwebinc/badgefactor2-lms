@@ -169,7 +169,15 @@ class BadgrClient {
 			$client->scopes = $scopes;
 		}
 
-		$client->state = self::STATE_CONFIGURED;
+		// Set initial state ( for now either configured or have token )
+		if ( null !== $client->access_token 
+			&& null !== $client->refresh_token 
+			&& null !== $client->token_expiration 
+			&& time() < $client->token_expiration) {
+				$client->state = self::STATE_HAVE_ACCESS_TOKEN;
+			} else {
+				$client->state = self::STATE_CONFIGURED;
+			}
 
 		// set BadgrUser if available (also saves instance)
 		if ( isset( $parameters['badgr_user'] ) && null !== $parameters['badgr_user'] ) {
@@ -180,6 +188,16 @@ class BadgrClient {
 
 	}
 
+	public function is_admin() {
+		return $this->as_admin;
+	}
+
+	public function get_state() {
+		return $this->state;
+	}
+
+	// public function update_client_from_opions() // Refresh urls, client ids and client secrets from options mark updated client as reuireing auth
+	// public static function get_admin_client() : client // Gets the admin client required for creating new users
 	public static function makeClientFromSavedOptions() {
 		// Make a client from the previous method of using options
 
@@ -221,6 +239,7 @@ class BadgrClient {
 
 	public function initiateCodeAuthorization() {
 		// TODO: Check that we have the required parameters
+		// TODO: Check that user is logged into WP
 
 		// Build a callback url with the client's hash
 		$redirectUri = site_url( self::$authRedirectUri );
@@ -267,30 +286,6 @@ class BadgrClient {
 			exit();
 		}
 
-		// Check for code and hash, retrieve client and complete code auth
-		//header( 'Content-Type: text/plain' );
-		//echo 'Badgr auth callback.';
-		//echo ' Full uri: ' . $_SERVER['REQUEST_URI'];
-		//exit();
-		 // Called when an auth callback url is invoked
-
-/* 		// Valid auth callbacks have a client_hash parameter
-		if ( ! isset( $_GET['client_hash'] ) ) {
-			// No client_hash parameter
-			throw new \BadMethodCallException( 'Missing client hash on auth callback.' );
-		} */
-
-/* 		// Find the badgr client instance
-		$client = self::getClientByHash( $_GET['client_hash'] );
-		if ( null === $client ) {
-			throw new \BadMethodCallException( 'Unknown client hash on auth callback.' );
-		}
- */
-/* 		// Check that we're expecting an authorization code
-		if ( $client->state != self::STATE_EXPECTING_AUTHORIZATION_CODE ) {
-			throw new \BadMethodCallException( 'Not expecting code for client ' . $client->client_hash );
-		} */
-
 		// CSRF check
 		if ( empty( $_GET['state'] ) ||
 			( isset( $_SESSION['oauth2state'] ) && $_GET['state'] !== $_SESSION['oauth2state'] ) ) {
@@ -307,6 +302,7 @@ class BadgrClient {
 
 		// Check that we have an actual code
 		if ( ! isset( $_GET['code'] ) ) {
+			// TODO set state
 			throw new \BadMethodCallException( 'No authorization code present.' );
 		}
 
@@ -380,6 +376,8 @@ class BadgrClient {
 			$args['client_id'] = $this->client_id;
 		}
 		$args = array( 'query' => $args );
+
+		// TODO: set client state prior to attemtping access token retreival
 
 		try {
 			$response = $client->request( 'POST', $this->get_internal_or_external_server_url() . '/o/token', $args );
@@ -470,7 +468,23 @@ class BadgrClient {
 	}
 
 	public static function is_active() {
-		// TODO: remove this whole function when dependencies are resolved
+		// TODO: relocate function
+		$badgr_admin_user = BadgrUser::get_admin_instance();
+
+		if ( null == $badgr_admin_user) {
+			return false;
+		}
+
+		$admin_client = $badgr_admin_user->get_client();
+
+		if ( null == $admin_client) {
+			return false;
+		}
+
+		if ( self::STATE_HAVE_ACCESS_TOKEN != $admin_client->get_state( ) || false == $admin_client->is_admin( ) ) {
+			return false;
+		}
+
 		return true;
 	}
 
@@ -481,7 +495,11 @@ class BadgrClient {
 	 */
 	public static function get_status() {
 		// TODO return proper status
-		return 'Active';
+		if ( true == self::is_active( ) ) {
+			return 'Active';
+		}
+
+		return 'Not ready';
 	}
 
 
@@ -607,7 +625,7 @@ class BadgrClient {
 
 			return $response;
 
-		} catch ( ConnectException $e ) {
+		} catch ( ConnectException $e ) { // TODO catch and treat 403s as an expired token. try to refresh and retry before failing
 			// TODO: potentially change client state
 			return null;
 		} catch ( GuzzleException $e ) {

@@ -30,7 +30,8 @@ use \WP_User;
  */
 class BadgrUser {
 
-	protected static $user_meta_key_for_client = 'badgr_client_instance';
+	public static $user_meta_key_for_client = 'badgr_client_instance';
+	public static $options_key_for_badgr_admin = 'badgefactor2_badgr_admin';
 	
 	protected $wp_user = null;
 	protected $user_client = null;
@@ -40,6 +41,20 @@ class BadgrUser {
 		$this->get_client_from_user_meta();
 
 		// TODO considering making if no client in user meta
+	}
+
+	public static function get_admin_instance() {
+		$admin_instance = get_option( self::$options_key_for_badgr_admin);
+
+		if ( false !== $admin_instance && '' != $admin_instance) {
+			return $admin_instance;
+		}
+		
+		return null;
+	}
+
+	public function set_as_admin_instance( ) {
+		update_option( self::$options_key_for_badgr_admin, $this);
 	}
 
 	public static function make_from_user_id ( int $wp_user_id) {
@@ -64,6 +79,14 @@ class BadgrUser {
 
 	public function get_client () {
 		return $this->user_client;
+	}
+
+	public function is_same_user( BadgrUser $other_badgr_user ) {
+		if ( $this->wp_user->ID == $other_badgr_user->wp_user->ID ) {
+			return true;
+		}
+
+		return false;
 	}
 
 	public static function getOrMakeUserClient( WPUser $wp_user = null ) {
