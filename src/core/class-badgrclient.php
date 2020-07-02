@@ -39,6 +39,7 @@ class BadgrClient {
 	const FLAVOR_CLOUD_v1           = 3;
 
 	const BADGR_IO_URL                    = 'https://api.badgr.io';
+	const REDIRECT_PATH_AFTER_AUTH = '/wp-admin/admin.php?page=badgefactor2_badgr_settings';
 	const DEFAULT_LOCAL_BADGR_SERVER_PORT = 8000;
 
 	// Password sources
@@ -237,22 +238,48 @@ class BadgrClient {
 	// public static function getClientByUsername($userName, $asAdmin=false, BadgrServer $badgrServer=null){}
 	// public static function getClient(WPUser $wp_user, $asAdmin=false, BadgrServer $badgrServer=null){}
 
-	public function initiateCodeAuthorization() {
-		// TODO: Check that we have the required parameters
-		// TODO: Check that user is logged into WP
+	public static function initiateCodeAuthorization() {
+		// Check that user is logged into WP
+		if ( 0 === ( $current_user = wp_get_current_user( ) ) ) {
+			// Redirect to admin page
+			header( 'Location: ' . site_url( self::REDIRECT_PATH_AFTER_AUTH ) );
+			exit;
+		}
+
+		$badgr_user = new BadgrUser( $current_user );
+
+		// Create admin client
+		$clientParameters = [
+			'username' => 'admin@example.net',
+			'badgr_user' => $badgr_user,
+			'as_admin' => true,
+			'badgr_server_public_url' => 'http://badge-factor-2.test:8000',
+			'badgr_server_flavor' => BadgrClient::FLAVOR_LOCAL_R_JAMIROQUAI,
+			'badgr_server_internal_url'    => 'http://badgr:8000',
+			'client_id'     => 'QqumN23Zmk4LzxqP0Wlhr6cB69TxXINhEmNsn1TX',
+			'client_secret' => 'hKxkkrJkUPmmzBpgg1oRuEwP8QvAFrwAbpVH2XWgtDWS9S9ouVbAtL8dbWndLCpfOa1id6R1U7rcYXUxiqlNMnh9ohZkaH3boGgBvwgZAhPvNnqxi0NeTmM9wqrVr3sv',
+		];
+
+		$client = null;
+
+		try {
+			$client = BadgrClient::makeInstance($clientParameters);
+		} catch ( BadMethodCallException $e ) {
+			$this->fail('Exception thrown on client creation: ' . $e->getMessage());
+		}
 
 		// Build a callback url with the client's hash
 		$redirectUri = site_url( self::$authRedirectUri );
 
 		$authProvider = new GenericProvider(
 			array(
-				'clientId'                => $this->client_id,
-				'clientSecret'            => $this->client_secret,
+				'clientId'                => $client->client_id,
+				'clientSecret'            => $client->client_secret,
 				'redirectUri'             => $redirectUri,
-				'urlAuthorize'            => $this->badgr_server_public_url . '/o/authorize',
-				'urlAccessToken'          => $this->get_internal_or_external_server_url() . '/o/token',
-				'urlResourceOwnerDetails' => $this->get_internal_or_external_server_url() . '/o/resource',
-				'scopes'                  => $this->scopes,
+				'urlAuthorize'            => $client->badgr_server_public_url . '/o/authorize',
+				'urlAccessToken'          => $client->get_internal_or_external_server_url() . '/o/token',
+				'urlResourceOwnerDetails' => $client->get_internal_or_external_server_url() . '/o/resource',
+				'scopes'                  => $client->scopes,
 			)
 		);
 
@@ -267,8 +294,8 @@ class BadgrClient {
 		$_SESSION['oauth2state'] = $authProvider->getState();
 
 		// Set internal state
-		$this->state = self::STATE_EXPECTING_AUTHORIZATION_CODE;
-		$this->save();
+		$client->state = self::STATE_EXPECTING_AUTHORIZATION_CODE;
+		$client->save();
 
 		// Redirect to server
 		header( 'Location: ' . $authorization_url );
@@ -277,10 +304,10 @@ class BadgrClient {
 	}
 
 	public static function handleAuthReturn() {
-		if ( false !== strpos($_SERVER['REQUEST_URI'], 'init' ) ) {
+/* 		if ( false !== strpos($_SERVER['REQUEST_URI'], 'init' ) ) {
 			$client = BadgrUser::getOrMakeUserClient();
 			$client->initiateCodeAuthorization();
-		}
+		} */
 
 		if ( ! isset( $_GET['code'] )) {
 			exit();
@@ -310,6 +337,13 @@ class BadgrClient {
 		
 		// Attempt to get an access token
 		$client->getAccessTokenFromAuthorizationCode( $_GET['code'] );
+
+		// Install this user as the admin user for site
+		$client->badgr_user->set_as_admin_instance( );
+
+		// Return us to admin page
+		header( 'Location: ' . site_url( self::REDIRECT_PATH_AFTER_AUTH ) );
+		exit;
 	}
 
 	public function getAccessTokenFromAuthorizationCode( $code ) {
@@ -424,7 +458,7 @@ class BadgrClient {
 			'top'
 		);
 		add_rewrite_rule(
-			'bf2/(auth)/?',
+			'bf2/(auth|init)/?',
 			'index.php?bf2=$matches[1]',
 			'top'
 		);
@@ -449,6 +483,9 @@ class BadgrClient {
 		if ( $bf2 = get_query_var( 'bf2' ) ) {
 			if ( 'auth' == $bf2 ) {
 				self::handleAuthReturn();
+			}
+			if ('init' == $bf2 ) {
+				self::initiateCodeAuthorization();
 			}
 			header( 'Content-Type: text/plain' );
 			echo 'Badgr callback: ' . $bf2;
