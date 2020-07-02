@@ -49,7 +49,7 @@ class BadgrUser {
 		if ( false !== $admin_instance && '' != $admin_instance) {
 			return $admin_instance;
 		}
-		
+
 		return null;
 	}
 
@@ -59,6 +59,10 @@ class BadgrUser {
 
 	public static function make_from_user_id ( int $wp_user_id) {
 		return new self( new WP_User( $wp_user_id ) );
+	}
+
+	public function get_wp_username( ) {
+		return $this->wp_user->user_nicename;
 	}
 
 	protected function get_client_from_user_meta () {

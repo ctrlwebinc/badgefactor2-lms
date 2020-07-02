@@ -26,6 +26,7 @@ use BadgeFactor2\Admin\Lists\Assertions;
 use BadgeFactor2\Admin\Lists\Badges;
 use BadgeFactor2\Admin\Lists\Issuers;
 use BadgeFactor2\Admin\Lists\Issuers_List;
+use BadgeFactor2\BadgrUser;
 use BadgeFactor2\BadgrClient;
 
 /**
@@ -325,7 +326,7 @@ class BadgeFactor2_Admin {
 	private static function register_settings_metabox() {
 		$args = array(
 			'id'           => 'badgefactor2_settings',
-			'menu_title'   => 'Badge Factor 2',
+			'menu_title'   => 'Badge Factor 2', //'Badge Factor 2',
 			'object_types' => array( 'options-page' ),
 			'option_key'   => 'badgefactor2',
 			'icon_url'     => BF2_BASEURL . ( 'assets/images/badgefactor2_logo.svg' ),
@@ -355,7 +356,7 @@ class BadgeFactor2_Admin {
 		 */
 		$args = array(
 			'id'           => 'badgefactor2_badgr_settings_page',
-			'menu_title'   => 'Badgr Server', // Use menu title, & not title to hide main h2.
+			'menu_title'   => 'Badgr Server' . BadgrClient::is_active() ? '' : '<span class="awaiting-mod" title="You need to configure the type of Badgr service you\'ll use.">!</span>', // Use menu title, & not title to hide main h2.
 			'object_types' => array( 'options-page' ),
 			'option_key'   => 'badgefactor2_badgr_settings',
 			'parent_slug'  => 'badgefactor2',
@@ -444,6 +445,7 @@ class BadgeFactor2_Admin {
 				'type'      => 'text',
 				'after_row' => function ( $field_args, $field ) {
 					include BF2_ABSPATH . 'templates/admin/tpl.badgr-server-status.php';
+					include BF2_ABSPATH . 'templates/admin/tpl.badgr-server-link-admin.php';
 				},
 			)
 		);

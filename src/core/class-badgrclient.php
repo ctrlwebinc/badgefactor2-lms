@@ -40,6 +40,7 @@ class BadgrClient {
 
 	const BADGR_IO_URL                    = 'https://api.badgr.io';
 	const REDIRECT_PATH_AFTER_AUTH = '/wp-admin/admin.php?page=badgefactor2_badgr_settings';
+	const START_ADMIN_LINK_URL = '/bf2/init';
 	const DEFAULT_LOCAL_BADGR_SERVER_PORT = 8000;
 
 	// Password sources
@@ -219,6 +220,15 @@ class BadgrClient {
 		if (isset($options['badgr_server_internal_url']))
 		$clientParameters['badgr_server_internal_url'] = $options['badgr_server_internal_url'];
 
+		if (isset($options['badgr_server_access_token']))
+		$clientParameters['badgr_server_access_token'] = $options['badgr_server_access_token'];
+
+		if (isset($options['badgr_server_refresh_token']))
+		$clientParameters['badgr_server_refresh_token'] = $options['badgr_server_refresh_token'];
+
+		if (isset($options['badgr_server_token_expiration']))
+		$clientParameters['badgr_server_token_expiration'] = $options['badgr_server_token_expiration'];
+
 		return self::makeInstance( $clientParameters );
 	}
 
@@ -238,7 +248,7 @@ class BadgrClient {
 	// public static function getClientByUsername($userName, $asAdmin=false, BadgrServer $badgrServer=null){}
 	// public static function getClient(WPUser $wp_user, $asAdmin=false, BadgrServer $badgrServer=null){}
 
-	public static function initiateCodeAuthorization() {
+	public static function setupAdminCodeAuthorization() {
 		// Check that user is logged into WP
 		if ( 0 === ( $current_user = wp_get_current_user( ) ) ) {
 			// Redirect to admin page
@@ -248,38 +258,31 @@ class BadgrClient {
 
 		$badgr_user = new BadgrUser( $current_user );
 
-		// Create admin client
-		$clientParameters = [
-			'username' => 'admin@example.net',
-			'badgr_user' => $badgr_user,
-			'as_admin' => true,
-			'badgr_server_public_url' => 'http://badge-factor-2.test:8000',
-			'badgr_server_flavor' => BadgrClient::FLAVOR_LOCAL_R_JAMIROQUAI,
-			'badgr_server_internal_url'    => 'http://badgr:8000',
-			'client_id'     => 'QqumN23Zmk4LzxqP0Wlhr6cB69TxXINhEmNsn1TX',
-			'client_secret' => 'hKxkkrJkUPmmzBpgg1oRuEwP8QvAFrwAbpVH2XWgtDWS9S9ouVbAtL8dbWndLCpfOa1id6R1U7rcYXUxiqlNMnh9ohZkaH3boGgBvwgZAhPvNnqxi0NeTmM9wqrVr3sv',
-		];
-
 		$client = null;
 
 		try {
-			$client = BadgrClient::makeInstance($clientParameters);
+			$client = BadgrClient::makeClientFromSavedOptions();
 		} catch ( BadMethodCallException $e ) {
 			$this->fail('Exception thrown on client creation: ' . $e->getMessage());
 		}
+
+		$client->initiateCodeAuthorization();
+	}
+
+	public function initiateCodeAuthorization() {
 
 		// Build a callback url with the client's hash
 		$redirectUri = site_url( self::$authRedirectUri );
 
 		$authProvider = new GenericProvider(
 			array(
-				'clientId'                => $client->client_id,
-				'clientSecret'            => $client->client_secret,
+				'clientId'                => $this->client_id,
+				'clientSecret'            => $this->client_secret,
 				'redirectUri'             => $redirectUri,
-				'urlAuthorize'            => $client->badgr_server_public_url . '/o/authorize',
-				'urlAccessToken'          => $client->get_internal_or_external_server_url() . '/o/token',
-				'urlResourceOwnerDetails' => $client->get_internal_or_external_server_url() . '/o/resource',
-				'scopes'                  => $client->scopes,
+				'urlAuthorize'            => $this->badgr_server_public_url . '/o/authorize',
+				'urlAccessToken'          => $this->get_internal_or_external_server_url() . '/o/token',
+				'urlResourceOwnerDetails' => $this->get_internal_or_external_server_url() . '/o/resource',
+				'scopes'                  => $this->scopes,
 			)
 		);
 
@@ -294,8 +297,8 @@ class BadgrClient {
 		$_SESSION['oauth2state'] = $authProvider->getState();
 
 		// Set internal state
-		$client->state = self::STATE_EXPECTING_AUTHORIZATION_CODE;
-		$client->save();
+		$this->state = self::STATE_EXPECTING_AUTHORIZATION_CODE;
+		$this->save();
 
 		// Redirect to server
 		header( 'Location: ' . $authorization_url );
@@ -485,7 +488,7 @@ class BadgrClient {
 				self::handleAuthReturn();
 			}
 			if ('init' == $bf2 ) {
-				self::initiateCodeAuthorization();
+				self::setupAdminCodeAuthorization();
 			}
 			header( 'Content-Type: text/plain' );
 			echo 'Badgr callback: ' . $bf2;
