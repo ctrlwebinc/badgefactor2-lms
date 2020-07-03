@@ -106,9 +106,6 @@ class BadgrClient {
 	private $state = self::STATE_NEW_AND_UNCONFIGURED;
 	public $retryAuthBeforeFailing = true;
 
-	//public $client_key  = null;
-	//public $client_hash = null;
-
 	private $lastMessageFromBadgrServer = null;
 
 	public static function makeInstance( array $parameters ) {
@@ -198,8 +195,6 @@ class BadgrClient {
 		return $this->state;
 	}
 
-	// public function update_client_from_opions() // Refresh urls, client ids and client secrets from options mark updated client as reuireing auth
-	// public static function get_admin_client() : client // Gets the admin client required for creating new users
 	public static function makeClientFromSavedOptions() {
 		// Make a client from the previous method of using options
 
@@ -244,9 +239,6 @@ class BadgrClient {
 
 		return self::$guzzleClient;
 	}
-
-	// public static function getClientByUsername($userName, $asAdmin=false, BadgrServer $badgrServer=null){}
-	// public static function getClient(WPUser $wp_user, $asAdmin=false, BadgrServer $badgrServer=null){}
 
 	public static function setupAdminCodeAuthorization() {
 		// Check that user is logged into WP
@@ -307,11 +299,6 @@ class BadgrClient {
 	}
 
 	public static function handleAuthReturn() {
-/* 		if ( false !== strpos($_SERVER['REQUEST_URI'], 'init' ) ) {
-			$client = BadgrUser::getOrMakeUserClient();
-			$client->initiateCodeAuthorization();
-		} */
-
 		if ( ! isset( $_GET['code'] )) {
 			exit();
 		}

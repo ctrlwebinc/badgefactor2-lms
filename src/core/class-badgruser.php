@@ -110,37 +110,6 @@ class BadgrUser {
 			return $client;
 		}
 
-	/* 	// No existing client, make a new one
-		$badgr_site_settings = get_option( 'badgefactor2_badgr_settings' );
-
-		// Basic parameters
-		$basicParameters['username'] = $wp_user->user_email;
-		$basicParameters['as_admin'] = is_admin();
-		$basicParameters['badgr_server_flavor'] = $badgr_site_settings['badgr_server_flavour'];
-
-		// Set urls by convention or with custom settings depending on server flavour
-		if ( $badgr_site_settings['badgr_server_flavour'] == self::FLAVOR_BADGRIO_01 ) {
-			$basicParameters['badgr_server_public_url']  = self::BADGR_IO_URL;
-		} elseif ( $badgr_site_settings['badgr_server_flavour'] == self::FLAVOR_LOCAL_R_JAMIROQUAI ) {
-			$basicParameters['badgr_server_public_url']  = site_url() . ':' . self::DEFAULT_LOCAL_BADGR_SERVER_PORT;
-		} else {
-			// Custom
-			$basicParameters['badgr_server_public_url'] = $badgr_site_settings['badgr_server_public_url'];
-			if ( null !== $badgr_site_settings['badgr_server_internal_url'] ) {
-				$basicParameters['badgr_server_internal_url'] = $badgr_site_settings['badgr_server_internal_url'];
-			}
-		}
-
-		// If not badgr io, get client_id
-		if ( $badgr_site_settings['badgr_server_flavour'] != self::FLAVOR_BADGRIO_01 ) {
-			$basicParameters['client_id']  = $badgr_site_settings['client_id'];
-		}
-
-		// If not password grant, get client_secret
-		if ( $badgr_site_settings['badgr_authentication_process_select'] != self::GRANT_PASSWORD ) {
-			$basicParameters['badgr_server_client_secret']  = $badgr_site_settings['badgr_server_client_secret'];
-		} */
-
 		// Make client
 		$client = BadgrClient::makeClientFromSavedOptions();
 
@@ -174,12 +143,6 @@ class BadgrUser {
 	}
 
 	public static function keep_passwords_synched( $username ) {
-		//header( 'Content-Type: text/plain' );
-		//echo null == $username ;
-		//echo 'wp_authenticate hook: ' . $username ;
-		//echo 'wp_authenticate hook: ' . $username . ' ' . $_POST['pwd'];
-		//var_dump( serialize(wp_authenticate( $username, $_POST['pwd'])));
-		//exit();
 
 		// This hook seems to also be called during logout. Username is then null
 
