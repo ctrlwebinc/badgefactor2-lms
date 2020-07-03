@@ -356,7 +356,7 @@ class BadgeFactor2_Admin {
 		 */
 		$args = array(
 			'id'           => 'badgefactor2_badgr_settings_page',
-			'menu_title'   => 'Badgr Server' . ( BadgrClient::is_active() ? '' : '<span class="awaiting-mod" title="You need to configure the connection to the Badgr service you\'ll use.">!</span>' ), // Use menu title, & not title to hide main h2.
+			'menu_title'   => 'Badgr Server' . ( BadgrClient::is_active() ? '' : '&nbsp;<span class="awaiting-mod" title="You need to configure the connection to the Badgr service you\'ll use.">!</span>' ), // Use menu title, & not title to hide main h2.
 			'object_types' => array( 'options-page' ),
 			'option_key'   => 'badgefactor2_badgr_settings',
 			'parent_slug'  => 'badgefactor2',
