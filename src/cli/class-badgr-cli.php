@@ -463,4 +463,17 @@ class Badgr_CLI extends WP_CLI_Command {
 			WP_CLI::error( 'Failed getting current profile' );
 		}
 	}
+
+	public function mark_existing_users_for_migration( $args, $assoc_args ) {
+		if ( count( $args ) != 0 ) {
+			WP_CLI::error( 'Usage: mark_existing_users_for_migration' );
+		}
+
+		$count = BadgrUser::mark_existing_users_for_migration();
+		if ( false ===  $count ) {
+			WP_CLI::error( 'Marking users for migration failed' );
+		} else {
+			WP_CLI::success( 'Finished marking user for migration: ' . $count . ' users marked' );
+		}
+	}
 }
