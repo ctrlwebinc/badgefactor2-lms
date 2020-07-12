@@ -32,11 +32,19 @@ CACHES = {
 }
 ```
 
-## Mark users for migration with WP command
+## Mark users for migration
 
+To mark your users for migration, you should run this WP command:
+```
 wp badgr mark_existing_users_for_migration
+```
 
-To mark your new users as verified, you can run a query similar to this:
+## Launch the migration
+
+To launch the migration of your users, you can run this WP command:
+
+
+To mark your new users as verified, you can run a query similar to this on your Badgr database:
 
 ```sql
 UPDATE `account_emailaddress`

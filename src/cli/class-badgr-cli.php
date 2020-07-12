@@ -476,4 +476,18 @@ class Badgr_CLI extends WP_CLI_Command {
 			WP_CLI::success( 'Finished marking user for migration: ' . $count . ' users marked' );
 		}
 	}
+
+	public function migrate_users_and_mark_as_verified( $args, $assoc_args ) {
+		if ( count( $args ) != 0 ) {
+			WP_CLI::error( 'Usage: migrate_users_and_mark_as_verified' );
+		}
+
+		$count = BadgrUser::migrate_users_and_mark_as_verified();
+
+		if ( false ===  $count ) {
+			WP_CLI::error( 'Migrating marked users failed' );
+		} else {
+			WP_CLI::success( 'Finished migrating marked users: ' . $count . ' users migrated' );
+		}
+	}
 }

@@ -285,4 +285,42 @@ class BadgrUser {
 		WHERE m.`meta_key` = 'badgr_user_state' AND u.id = m.user_id) AND u.id != 1;");
 
 	}
+
+	public static function migrate_users_and_mark_as_verified( $mark_as_verified = false) {
+		$count = 0;
+
+		// Get users in a 'to_be_created' state
+		$users_to_process = get_users( array( array( 
+			'meta_key' => self::$meta_key_for_user_state,
+			'meta_value' => 'to_be_created'
+		) ) );
+
+		foreach ( $users_to_process as $user_to_process ) {
+			// Skip admin user
+			if ( $user_to_process->ID == 1 ) {
+				continue;
+			}
+			// Create user and mark as created
+			$temporary_password = self::generate_random_password();
+			$slug      = BadgrProvider::add_user( $user_to_process->first_name, $user_to_process->last_name, $user_to_process->user_email, $temporary_password );
+	
+			// If successful set badgr user state to 'created' and save slug and save previous password.
+			if ( false !== $slug ) {
+				update_user_meta( $user_to_process->ID, self::$meta_key_for_badgr_user_slug, $slug );
+				update_user_meta( $user_to_process->ID, self::$meta_key_for_user_state, 'created' );
+				update_user_meta( $user_to_process->ID, 'badgr_password', $temporary_password);
+			} else {
+				return false;
+			}
+
+			// Add role if mark as verified flag is set
+			if ( $mark_as_verified ) {
+				$user_to_process->add_cap( 'badgefactor2_use_badgr' );
+			}
+
+			$count++;
+		}
+
+		return $count;
+	}
 }
