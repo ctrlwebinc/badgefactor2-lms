@@ -482,7 +482,7 @@ class Badgr_CLI extends WP_CLI_Command {
 			WP_CLI::error( 'Usage: migrate_users_and_mark_as_verified' );
 		}
 
-		$count = BadgrUser::migrate_users_and_mark_as_verified();
+		$count = BadgrUser::migrate_users_and_mark_as_verified(true);
 
 		if ( false ===  $count ) {
 			WP_CLI::error( 'Migrating marked users failed' );

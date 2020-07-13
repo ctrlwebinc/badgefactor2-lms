@@ -288,37 +288,60 @@ class BadgrUser {
 
 	public static function migrate_users_and_mark_as_verified( $mark_as_verified = false) {
 		$count = 0;
+		$consecutive_failures = 0;
 
 		// Get users in a 'to_be_created' state
-		$users_to_process = get_users( array( array( 
+		$users_to_process = get_users( array( 
 			'meta_key' => self::$meta_key_for_user_state,
-			'meta_value' => 'to_be_created'
-		) ) );
+			'meta_value' => 'to_be_created',
+			'number' => 50,
+			'paged' => 1,
+		) );
 
-		foreach ( $users_to_process as $user_to_process ) {
-			// Skip admin user
-			if ( $user_to_process->ID == 1 ) {
-				continue;
-			}
-			// Create user and mark as created
-			$temporary_password = self::generate_random_password();
-			$slug      = BadgrProvider::add_user( $user_to_process->first_name, $user_to_process->last_name, $user_to_process->user_email, $temporary_password );
+		while ( count( $users_to_process ) > 0 ) {
+
+			foreach ( $users_to_process as $user_to_process ) {
+				// Skip admin user
+				if ( $user_to_process->ID == 1 ) {
+					continue;
+				}
+
+				// Create user and mark as created
+				$temporary_password = self::generate_random_password();
+				$slug      = BadgrProvider::add_user( $user_to_process->first_name, $user_to_process->last_name, $user_to_process->user_email, $temporary_password );
+		
+				// If successful set badgr user state to 'created' and save slug and save previous password.
+				if ( false !== $slug ) {
+					update_user_meta( $user_to_process->ID, self::$meta_key_for_badgr_user_slug, $slug );
+					update_user_meta( $user_to_process->ID, self::$meta_key_for_user_state, 'created' );
+					update_user_meta( $user_to_process->ID, 'badgr_password', $temporary_password);
+					$consecutive_failures = 0;
+				} else {
+					update_user_meta( $user_to_process->ID, self::$meta_key_for_user_state, 'failed_to_create' );
+
+ 					if ( $consecutive_failures > 2 ) {
+						return false;
+					} 					
+					// Sleep to avoid Badgr throttling us
+					sleep(15 * ( $consecutive_failures + 1 ) );
+
+					$consecutive_failures++;
+				}
 	
-			// If successful set badgr user state to 'created' and save slug and save previous password.
-			if ( false !== $slug ) {
-				update_user_meta( $user_to_process->ID, self::$meta_key_for_badgr_user_slug, $slug );
-				update_user_meta( $user_to_process->ID, self::$meta_key_for_user_state, 'created' );
-				update_user_meta( $user_to_process->ID, 'badgr_password', $temporary_password);
-			} else {
-				return false;
-			}
+				// Add role if mark as verified flag is set
+				if ( $mark_as_verified ) {
+					$user_to_process->add_cap( 'badgefactor2_use_badgr' );
+				}
+	
+				$count++;
 
-			// Add role if mark as verified flag is set
-			if ( $mark_as_verified ) {
-				$user_to_process->add_cap( 'badgefactor2_use_badgr' );
+				$users_to_process = get_users( array( 
+					'meta_key' => self::$meta_key_for_user_state,
+					'meta_value' => 'to_be_created',
+					'number' => 50,
+					'paged' => 1,
+				) );
 			}
-
-			$count++;
 		}
 
 		return $count;
