@@ -58,16 +58,6 @@ jQuery(document).ready(function($) {
       window.location.href = url;
     }
   );
-  tinymce.init({
-    selector: "textarea.bf2_tinymce",
-    menubar: false,
-    toolbar:
-      "undo redo styleselect bold italic alignleft aligncenter alignright bullist numlist outdent indent code",
-    plugins: "code",
-    extended_valid_elements:
-      "iframe[src|frameborder|style|scrolling|class|width|height|name|align|allowfullscreen]"
-  });
-
   $("#menu-posts-badge-page img").each(function() {
     var $img = $(this);
     var imgID = $img.attr("id");
