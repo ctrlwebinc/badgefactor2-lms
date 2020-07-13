@@ -202,4 +202,12 @@ class BadgeClass implements Badgr_Entity {
 
 		return true;
 	}
+
+	public static function select_options() {
+		$badges = array();
+		foreach ( self::all() as $badge ) {
+			$badges[ $badge->entityId ] = $badge->name;
+		}
+		return $badges;
+	}
 }

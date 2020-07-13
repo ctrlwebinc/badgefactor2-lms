@@ -101,6 +101,7 @@ class BadgeFactor2 {
 	 */
 	public function includes() {
 		require_once BF2_ABSPATH . 'lib/CMB2/init.php';
+		require_once BF2_ABSPATH . 'lib/cmb-field-select2/cmb-field-select2.php';
 		require_once 'phar://' . BF2_ABSPATH . 'lib/league-oauth2-client.phar/vendor/autoload.php';
 		require_once BF2_ABSPATH . 'src/core/trait-singleton.php';
 		require_once BF2_ABSPATH . 'src/core/trait-paginatable.php';

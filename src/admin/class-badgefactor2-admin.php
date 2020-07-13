@@ -25,7 +25,6 @@ namespace BadgeFactor2;
 use BadgeFactor2\Admin\Lists\Assertions;
 use BadgeFactor2\Admin\Lists\Badges;
 use BadgeFactor2\Admin\Lists\Issuers;
-use BadgeFactor2\Admin\Lists\Issuers_List;
 use BadgeFactor2\BadgrClient;
 
 /**
@@ -68,6 +67,8 @@ class BadgeFactor2_Admin {
 		add_action( 'admin_menu', array( BadgeFactor2_Admin::class, 'admin_menus' ) );
 		add_action( 'wp_ajax_bf2_filter_type', array( BadgeFactor2_Admin::class, 'ajax_filter_type' ) );
 		add_action( 'wp_ajax_bf2_filter_value', array( BadgeFactor2_Admin::class, 'ajax_filter_value' ) );
+		add_action( 'save_post_badge-page', array( BadgeFactor2_Admin::class, 'create_badge_chain' ), 10, 2 );
+		add_filter( 'pw_cmb2_field_select2_asset_path', array( BadgeFactor2_Admin::class, 'pw_cmb2_field_select2_asset_path' ), 10 );
 	}
 
 
@@ -311,9 +312,62 @@ class BadgeFactor2_Admin {
 	public static function load_resources() {
 		wp_enqueue_style( 'cmb2-styles-css', BF2_BASEURL . 'lib/CMB2/css/cmb2.min.css', array(), '5.2.5', 'all' );
 		wp_enqueue_script( 'cmb2-conditional-logic', BF2_BASEURL . 'lib/CMB2-conditional-logic/cmb2-conditional-logic.min.js', array( 'jquery' ), '1.0.0', true );
-		wp_enqueue_style( 'badgefactor2-admin', BF2_BASEURL . 'assets/css/admin.css', array(), '1.0.0', 'all' );
-		wp_enqueue_script( 'badgefactor2-tinymce', 'https://cdnjs.cloudflare.com/ajax/libs/tinymce/5.3.1/tinymce.min.js', array(), '5.3.1', true );
-		wp_enqueue_script( 'badgefactor2-admin', BF2_BASEURL . 'assets/js/admin.js', array( 'jquery', 'badgefactor2-tinymce' ), '1.0.0', true );
+		wp_enqueue_style( 'badgefactor2-admin-css', BF2_BASEURL . 'assets/css/admin.css', array(), '1.0.0', 'all' );
+		wp_enqueue_script( 'badgefactor2-admin-js', BF2_BASEURL . 'assets/js/admin.js', array( 'jquery' ), '1.0.0', true );
+	}
+
+	/**
+	 * Undocumented function.
+	 *
+	 * @param int     $id Post ID.
+	 * @param WP_Post $post Post Object.
+	 * @return void
+	 */
+	public static function create_badge_chain( $id, $post ) {
+		// Check if it's the right post type.
+		if ( 'badge-page' === $post->post_type ) {
+
+			// Check if it's a published post.
+			if ( 'publish' === $post->post_status ) {
+
+			}
+
+			/*
+			Commented.
+			if ( get_post_meta( $ID, 'badgefactor_form_id', true ) == '' ) {
+				if ( $this->check_gravity_forms() ) {
+					$form_id = $this->create_badge_submission_form( $post );
+					if ( ! is_wp_error( $form_id ) ) {
+						update_post_meta( $ID, 'badgefactor_form_id', $form_id );
+
+						if ( get_post_meta( $ID, 'badgefactor_form_page_id', true ) == '' ) {
+							$form_page_id = $this->create_badge_form_page( $post->post_title, $form_id );
+							if ( ! is_wp_error( $form_page_id ) ) {
+								update_post_meta( $ID, 'badgefactor_form_page_id', $form_page_id );
+							}
+						}
+					}
+				}
+			}
+
+			do_action( 'badgefactor_woocommerce_create_badge', $ID, $post );
+
+			if ( get_post_meta( $ID, 'badgefactor_page_id', true ) == '' ) {
+				$page_id = $this->create_course_page( $post, '<a href="' . get_permalink( $form_page_id ) . '">' . __( 'Get this badge', 'badgefactor' ) . '</a>' );
+				if ( ! is_wp_error( $page_id ) ) {
+					update_post_meta( $ID, 'badgefactor_page_id', $page_id );
+				}
+				wp_update_post(
+					array(
+						'ID'          => $form_page_id,
+						'post_parent' => $page_id,
+					)
+				);
+			}
+
+			return true;
+			*/
+		}
 	}
 
 
@@ -544,4 +598,12 @@ class BadgeFactor2_Admin {
 		wp_die();
 	}
 
+	/**
+	 * Undocumented function.
+	 *
+	 * @return string path to cmb2-field-select2 library
+	 */
+	public static function pw_cmb2_field_select2_asset_path() {
+		return BF2_BASEURL . '/lib/cmb-field-select2';
+	}
 }
