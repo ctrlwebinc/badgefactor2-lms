@@ -30,7 +30,8 @@ use \WP_User;
  */
 class BadgrUser {
 
-	protected static $user_meta_key_for_client = 'badgr_client_instance';
+	public static $user_meta_key_for_client = 'badgr_client_instance';
+	public static $options_key_for_badgr_admin = 'badgefactor2_badgr_admin';
 	
 	protected $wp_user = null;
 	protected $user_client = null;
@@ -42,8 +43,26 @@ class BadgrUser {
 		// TODO considering making if no client in user meta
 	}
 
+	public static function get_admin_instance() {
+		$admin_instance = get_option( self::$options_key_for_badgr_admin);
+
+		if ( false !== $admin_instance && '' != $admin_instance) {
+			return $admin_instance;
+		}
+
+		return null;
+	}
+
+	public function set_as_admin_instance( ) {
+		update_option( self::$options_key_for_badgr_admin, $this);
+	}
+
 	public static function make_from_user_id ( int $wp_user_id) {
 		return new self( new WP_User( $wp_user_id ) );
+	}
+
+	public function get_wp_username( ) {
+		return $this->wp_user->user_nicename;
 	}
 
 	protected function get_client_from_user_meta () {
@@ -66,6 +85,14 @@ class BadgrUser {
 		return $this->user_client;
 	}
 
+	public function is_same_user( BadgrUser $other_badgr_user ) {
+		if ( $this->wp_user->ID == $other_badgr_user->wp_user->ID ) {
+			return true;
+		}
+
+		return false;
+	}
+
 	public static function getOrMakeUserClient( WPUser $wp_user = null ) {
 
 		// If no user passed, use the current user
@@ -82,37 +109,6 @@ class BadgrUser {
 		if ( null!== $client && '' !== $client) {
 			return $client;
 		}
-
-	/* 	// No existing client, make a new one
-		$badgr_site_settings = get_option( 'badgefactor2_badgr_settings' );
-
-		// Basic parameters
-		$basicParameters['username'] = $wp_user->user_email;
-		$basicParameters['as_admin'] = is_admin();
-		$basicParameters['badgr_server_flavor'] = $badgr_site_settings['badgr_server_flavour'];
-
-		// Set urls by convention or with custom settings depending on server flavour
-		if ( $badgr_site_settings['badgr_server_flavour'] == self::FLAVOR_BADGRIO_01 ) {
-			$basicParameters['badgr_server_public_url']  = self::BADGR_IO_URL;
-		} elseif ( $badgr_site_settings['badgr_server_flavour'] == self::FLAVOR_LOCAL_R_JAMIROQUAI ) {
-			$basicParameters['badgr_server_public_url']  = site_url() . ':' . self::DEFAULT_LOCAL_BADGR_SERVER_PORT;
-		} else {
-			// Custom
-			$basicParameters['badgr_server_public_url'] = $badgr_site_settings['badgr_server_public_url'];
-			if ( null !== $badgr_site_settings['badgr_server_internal_url'] ) {
-				$basicParameters['badgr_server_internal_url'] = $badgr_site_settings['badgr_server_internal_url'];
-			}
-		}
-
-		// If not badgr io, get client_id
-		if ( $badgr_site_settings['badgr_server_flavour'] != self::FLAVOR_BADGRIO_01 ) {
-			$basicParameters['client_id']  = $badgr_site_settings['client_id'];
-		}
-
-		// If not password grant, get client_secret
-		if ( $badgr_site_settings['badgr_authentication_process_select'] != self::GRANT_PASSWORD ) {
-			$basicParameters['badgr_server_client_secret']  = $badgr_site_settings['badgr_server_client_secret'];
-		} */
 
 		// Make client
 		$client = BadgrClient::makeClientFromSavedOptions();
@@ -143,6 +139,44 @@ class BadgrUser {
 	public static function init() {
 		add_action( 'user_register', array( BadgrUser::class, 'new_user_registers' ), 9966 );
 		add_action( 'profile_update', array( BadgrUser::class, 'update_user' ), 9966 );
+		add_action( 'wp_authenticate', array( BadgrUser::class, 'keep_passwords_synched' ), 9966 );
+	}
+
+	public static function keep_passwords_synched( $username ) {
+
+		// This hook seems to also be called during logout. Username is then null
+
+		if ( null == $username ) {
+			// It is a logout operation, nothing needs doing for us
+			return;
+		}
+
+		$password_from_login = $_POST['pwd'];
+
+		// check if password is valid: if not return
+		$auth_result = wp_authenticate( $username, $password_from_login);
+		if ( is_wp_error( $auth_result )) {
+			return;
+		}
+
+		// Password is valid
+
+		// Check if password coresponds to current password
+		$current_password = get_user_meta( $auth_result->ID, 'badgr_password', true );
+		if ( $current_password === $auth_result) {
+			// It does, return
+			return;
+		}
+		// It doesn't, so change password
+		$user_slug = get_user_meta( $auth_result->ID, 'badgr_user_slug', true );
+
+		// Perform password change using old and new
+		if ( false !== BadgrProvider::change_user_password( $user_slug, $current_password, $password_from_login)) {
+			// Record the new one as the old one
+			update_user_meta( $auth_result->ID, 'badgr_password', $password_from_login);
+
+		}
+
 	}
 
 	/**
@@ -166,12 +200,14 @@ class BadgrUser {
 
 		// Add user to badgr.
 		$user_data = get_userdata( $user_id );
-		$slug      = BadgrProvider::add_user( $user_data->first_name, $user_data->last_name, $user_data->user_email );
+		$temporary_password = self::generate_random_password();
+		$slug      = BadgrProvider::add_user( $user_data->first_name, $user_data->last_name, $user_data->user_email, $temporary_password );
 
-		// If successful set badgr user state to 'created' and save slug.
+		// If successful set badgr user state to 'created' and save slug and save previous password.
 		if ( false !== $slug ) {
 			update_user_meta( $user_id, 'badgr_user_slug', $slug );
 			update_user_meta( $user_id, 'badgr_user_state', 'created' );
+			update_user_meta( $user_id, 'badgr_password', $temporary_password);
 		}
 	}
 
@@ -217,5 +253,21 @@ class BadgrUser {
 		}
 
 		return false;
+	}
+
+	/**
+	 * Generates a random password.
+	 *
+	 * @return string Randomly generated password.
+	 */
+	protected static function generate_random_password() {
+		$alphabet        = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
+		$pass            = array( 'p' ); // Start with a letter.
+		$alpha_max_index = strlen( $alphabet ) - 1;
+		for ( $i = 0; $i < 11; $i++ ) {
+			$n      = rand( 0, $alpha_max_index );
+			$pass[] = $alphabet[ $n ];
+		}
+		return implode( $pass );
 	}
 }
