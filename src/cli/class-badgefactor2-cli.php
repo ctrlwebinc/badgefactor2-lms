@@ -26,6 +26,7 @@ namespace BadgeFactor2;
 
 use WP_CLI;
 use WP_CLI_Command;
+use BadgeFactor2\BadgrUser;
 
 WP_CLI::add_command( 'bf2', BadgeFactor2_CLI::class );
 
@@ -46,5 +47,4 @@ class BadgeFactor2_CLI extends WP_CLI_Command {
 
 		WP_CLI::success( 'Issuers successfully retrieved : ' . json_encode( $issuers, JSON_PRETTY_PRINT ) );
 	}
-
 }
