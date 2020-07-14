@@ -20,11 +20,33 @@
  * @package Badge_Factor_2
  */
 
-namespace BadgeFactor2\Exceptions;
-
-use BadgeFactor2\Exceptions\AuthenticationException;
+namespace BadgeFactor2\Post_Types;
 
 /**
- * Token Refresh Failed Exception class.
+ * Approver user helper functions.
  */
-class TokenRefreshFailedException extends AuthenticationException {}
+class Approver {
+
+	/**
+	 * Get select-formatted options.
+	 *
+	 * @return array
+	 */
+	public static function select_options() {
+		$args      = array(
+			'role'    => 'approver',
+			'orderby' => 'user_nicename',
+			'order'   => 'ASC',
+		);
+		$approvers = get_users( $args );
+
+		$post_options = array();
+		if ( $approvers ) {
+			foreach ( $approvers as $approver ) {
+				$post_options[ $approver->ID ] = $approver->user_nicename;
+			}
+		}
+
+		return $post_options;
+	}
+}

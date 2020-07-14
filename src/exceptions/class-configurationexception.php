@@ -22,9 +22,8 @@
 
 namespace BadgeFactor2\Exceptions;
 
-class ConfigurationException extends \Exception
-{
 
-}
-
-
+/**
+ * Configuration Exception class.
+ */
+class ConfigurationException extends \Exception {}

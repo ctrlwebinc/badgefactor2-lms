@@ -22,9 +22,7 @@
 
 namespace BadgeFactor2\Exceptions;
 
-class AuthenticationException extends \Exception
-{
-
-}
-
-
+/**
+ * Authentication Exception class.
+ */
+class AuthenticationException extends \Exception {}

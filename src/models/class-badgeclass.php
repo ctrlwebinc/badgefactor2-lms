@@ -142,7 +142,7 @@ class BadgeClass implements Badgr_Entity {
 
 
 	/**
-	 * Undocumented function.
+	 * Get columns.
 	 *
 	 * @return array
 	 */
@@ -157,7 +157,7 @@ class BadgeClass implements Badgr_Entity {
 
 
 	/**
-	 * Undocumented function.
+	 * Get sortable columns.
 	 *
 	 * @return array
 	 */
@@ -171,7 +171,7 @@ class BadgeClass implements Badgr_Entity {
 
 
 	/**
-	 * Undocumented function.
+	 * Validate.
 	 *
 	 * @param array $values Values.
 	 * @param array $files Files.
@@ -203,11 +203,23 @@ class BadgeClass implements Badgr_Entity {
 		return true;
 	}
 
+
+	/**
+	 * Select options.
+	 *
+	 * @return void
+	 */
 	public static function select_options() {
-		$badges = array();
-		foreach ( self::all() as $badge ) {
-			$badges[ $badge->entityId ] = $badge->name;
+		$options = array();
+
+		$badges = self::all();
+
+		if ( $badges ) {
+			foreach ( $badges as $badge ) {
+				$options[ $badge->entityId ] = $badge->name;
+			}
 		}
-		return $badges;
+
+		return $options;
 	}
 }

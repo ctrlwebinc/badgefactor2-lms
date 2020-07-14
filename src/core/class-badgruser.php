@@ -32,7 +32,7 @@ class BadgrUser {
 
 	public static $user_meta_key_for_client = 'badgr_client_instance';
 	public static $options_key_for_badgr_admin = 'badgefactor2_badgr_admin';
-	
+
 	protected $wp_user = null;
 	protected $user_client = null;
 

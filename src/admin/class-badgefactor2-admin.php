@@ -75,7 +75,7 @@ class BadgeFactor2_Admin {
 
 
 	/**
-	 * Undocumented function.
+	 * Set screen.
 	 *
 	 * @param bool   $status Status.
 	 * @param string $option Option.
@@ -128,37 +128,48 @@ class BadgeFactor2_Admin {
 	 * @return void
 	 */
 	public static function admin_menus() {
+		global $menu;
+
+		$menu[] = array( '', 'read', 'separator-badgefactor2', '', 'wp-menu-separator badgefactor2' );
 
 		$menus = array(
 			array(
 				__( 'Issuers', 'badgefactor2' ),
 				'issuers',
-				'dashicons-admin-home',
 			),
 			array(
 				__( 'Badges', 'badgefactor2' ),
 				'badges',
-				'dashicons-star-empty',
 			),
 			array(
 				__( 'Assertions', 'badgefactor2' ),
 				'assertions',
-				'dashicons-star-filled',
 			),
 		);
-		foreach ( $menus as $menu ) {
-			$hook = add_menu_page(
-				$menu[0],
-				$menu[0],
+
+		add_menu_page(
+			'Badgr',
+			'Badgr',
+			'manage_options',
+			$menus[0][1],
+			array( BadgeFactor2_Admin::class, $menus[0][1]. '_page' ),
+			BF2_BASEURL . 'assets/images/badgr.svg',
+
+		);
+
+		foreach ( $menus as $m ) {
+			$hook = add_submenu_page(
+				$menus[0][1],
+				$m[0],
+				$m[0],
 				'manage_options',
-				$menu[1],
-				array( BadgeFactor2_Admin::class, $menu[1] . '_page' ),
-				$menu[2]
+				$m[1],
+				array( BadgeFactor2_Admin::class, $m[1] . '_page' )
 			);
 
 			add_action(
 				"load-$hook",
-				array( BadgeFactor2_Admin::class, $menu[1] . '_options' )
+				array( BadgeFactor2_Admin::class, $m[1] . '_options' )
 			);
 		}
 
@@ -379,9 +390,10 @@ class BadgeFactor2_Admin {
 	 * @return void
 	 */
 	private static function register_settings_metabox() {
+
 		$args = array(
 			'id'           => 'badgefactor2_settings',
-			'menu_title'   => 'Badge Factor 2', //'Badge Factor 2',
+			'menu_title'   => 'Badge Factor 2',
 			'object_types' => array( 'options-page' ),
 			'option_key'   => 'badgefactor2',
 			'icon_url'     => BF2_BASEURL . ( 'assets/images/badgefactor2_logo.svg' ),
@@ -510,12 +522,12 @@ class BadgeFactor2_Admin {
 		 */
 		$args = array(
 			'id'           => 'badgefactor2_plugins_page',
-			'menu_title'   => 'Plugins', // Use menu title, & not title to hide main h2.
+			'menu_title'   => __( 'Add-Ons', 'badgefactor2' ),
 			'object_types' => array( 'options-page' ),
 			'option_key'   => 'badgefactor2_plugins',
 			'parent_slug'  => 'badgefactor2',
 			'tab_group'    => 'badgefactor2',
-			'tab_title'    => __( 'Plugins', 'badgefactor2' ),
+			'tab_title'    => __( 'Add-Ons', 'badgefactor2' ),
 		);
 
 		// 'tab_group' property is supported in > 2.4.0.
@@ -529,7 +541,7 @@ class BadgeFactor2_Admin {
 
 
 	/**
-	 * Undocumented function.
+	 * Ajax filter type.
 	 *
 	 * @return void
 	 */
@@ -563,7 +575,7 @@ class BadgeFactor2_Admin {
 
 
 	/**
-	 * Undocumented function.
+	 * Ajax filter value.
 	 *
 	 * @return void
 	 */
@@ -602,7 +614,7 @@ class BadgeFactor2_Admin {
 	}
 
 	/**
-	 * Undocumented function.
+	 * CMB2 Select2 field asset path.
 	 *
 	 * @return string path to cmb2-field-select2 library
 	 */

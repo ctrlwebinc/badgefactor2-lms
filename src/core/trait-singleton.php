@@ -27,17 +27,25 @@ namespace BadgeFactor2;
  */
 trait Singleton {
 
+	/**
+	 * Instance variable.
+	 *
+	 * @var array Instance.
+	 */
 	protected static $_instance = array();
+
 
 	/**
 	 * Protected class constructor to prevent direct object creation.
 	 */
 	protected function __construct() { }
 
+
 	/**
 	 * Prevent object cloning
 	 */
 	final protected function __clone() { }
+
 
 	/**
 	 * To return new or existing Singleton instance of the class from which it is called.
@@ -61,5 +69,4 @@ trait Singleton {
 		return static::$_instance[ $called_class ];
 
 	}
-
 }

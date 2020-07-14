@@ -27,18 +27,21 @@ namespace BadgeFactor2;
  */
 trait Paginatable {
 
+
 	/**
 	 * Protected class constructor to prevent direct object creation.
 	 */
 	protected function __construct() { }
+
 
 	/**
 	 * Prevent object cloning
 	 */
 	final protected function __clone() { }
 
+
 	/**
-	 * Undocumented function.
+	 * Paginate.
 	 *
 	 * @param array   $array Array.
 	 * @param integer $page Page number.
@@ -57,5 +60,4 @@ trait Paginatable {
 			return array_slice( $array, $offset, $limit );
 		}
 	}
-
 }

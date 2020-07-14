@@ -22,11 +22,9 @@
 
 namespace BadgeFactor2\Exceptions;
 
-use BadgeFactor2\ConfigurationException;
+use BadgeFactor2\Exceptions\ConfigurationException;
 
-class  UserConfigurationException extends ConfigurationException
-{
-
-}
-
-
+/**
+ * User Configuration Exception class.
+ */
+class UserConfigurationException extends ConfigurationException {}

@@ -35,7 +35,7 @@ if ( ! class_exists( 'WP_List_Table' ) ) {
 }
 
 /**
- * Undocumented class
+ * Badgr List class.
  */
 class Badgr_List extends \WP_List_Table {
 
@@ -329,7 +329,7 @@ class Badgr_List extends \WP_List_Table {
 
 
 	/**
-	 * Undocumented function.
+	 * Display.
 	 *
 	 * @return void
 	 */
@@ -347,7 +347,7 @@ class Badgr_List extends \WP_List_Table {
 
 
 	/**
-	 * Undocumented function.
+	 * Manage actions.
 	 *
 	 * @return void
 	 */
@@ -427,7 +427,7 @@ class Badgr_List extends \WP_List_Table {
 
 
 	/**
-	 * Undocumented function.
+	 * Notice created.
 	 *
 	 * @return void
 	 */
@@ -447,7 +447,7 @@ class Badgr_List extends \WP_List_Table {
 
 
 	/**
-	 * Undocumented function.
+	 * Process bulk actions.
 	 *
 	 * @return void
 	 */
@@ -492,7 +492,7 @@ class Badgr_List extends \WP_List_Table {
 
 
 	/**
-	 * Undocumented function
+	 * Extra table navigation
 	 *
 	 * @param string $which Which.
 	 * @return void
@@ -556,7 +556,7 @@ class Badgr_List extends \WP_List_Table {
 	}
 
 	/**
-	 * Undocumented function
+	 * Validate
 	 *
 	 * @return bool
 	 */
@@ -566,7 +566,7 @@ class Badgr_List extends \WP_List_Table {
 	}
 
 	/**
-	 * Undocumented function.
+	 * Get model.
 	 *
 	 * @return string Model class.
 	 */

@@ -22,17 +22,27 @@
 
 namespace BadgeFactor2\Shortcodes;
 
-use BadgeFactor2\Issuer;
+use BadgeFactor2\Models\Issuer;
 
 /**
  * Shortcodes Class.
  */
 class Issuers {
 
+	/**
+	 * Constructor.
+	 */
 	public function __construct() {
 		add_shortcode( 'bf2-issuers', array( $this, 'list' ) );
 	}
 
+
+	/**
+	 * List.
+	 *
+	 * @param array $atts Attributes.
+	 * @return void
+	 */
 	public function list( $atts ) {
 		$issuers = Issuer::all( -1 );
 		if ( $issuers ) {

@@ -32,15 +32,18 @@ trait WP_Sortable {
 	 */
 	protected function __construct() { }
 
+
 	/**
 	 * Prevent object cloning
 	 */
 	final protected function __clone() { }
 
+
 	/**
-	 * Undocumented function.
+	 * Sort.
 	 *
 	 * @param array $array Array.
+	 * @param array $internal_orderby Internal order by.
 	 * @return void
 	 */
 	final public static function sort( &$array, $internal_orderby = null ) {
@@ -61,6 +64,5 @@ trait WP_Sortable {
 					return 'desc' === $order ? strcmp( $b->$orderby, $a->$orderby ) : strcmp( $a->$orderby, $b->$orderby ); }
 			);
 		}
-
 	}
 }
