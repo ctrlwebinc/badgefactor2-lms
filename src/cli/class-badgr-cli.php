@@ -26,6 +26,7 @@ namespace BadgeFactor2;
 
 use WP_CLI;
 use WP_CLI_Command;
+use BadgeFactor2\Models\Issuer;
 
 WP_CLI::add_command( 'badgr', Badgr_CLI::class );
 
@@ -488,6 +489,22 @@ class Badgr_CLI extends WP_CLI_Command {
 			WP_CLI::error( 'Migrating marked users failed' );
 		} else {
 			WP_CLI::success( 'Finished migrating marked users: ' . $count . ' users migrated' );
+		}
+	}
+
+	public function migrate_issuers( $args, $assoc_args ) {
+		if ( count( $args ) != 0 ) {
+			WP_CLI::error( 'Usage: migrate_issuers [ --restrict-to-published | --no-restrict-to-pubished' );
+		}
+
+		$only_published = WP_CLI\Utils\get_flag_value($assoc_args, 'restrict-to-published', $default = false);
+
+		$count = Issuer::migrate_issuers( $only_published );
+
+		if ( false ===  $count ) {
+			WP_CLI::error( 'Migrating issuers failed' );
+		} else {
+			WP_CLI::success( 'Finished migrating issuers: ' . $count . ' issuers migrated' );
 		}
 	}
 }
