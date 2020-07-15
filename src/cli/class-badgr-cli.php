@@ -27,6 +27,7 @@ namespace BadgeFactor2;
 use WP_CLI;
 use WP_CLI_Command;
 use BadgeFactor2\Models\Issuer;
+use BadgeFactor2\Models\BadgeClass;
 
 WP_CLI::add_command( 'badgr', Badgr_CLI::class );
 
@@ -505,6 +506,20 @@ class Badgr_CLI extends WP_CLI_Command {
 			WP_CLI::error( 'Migrating issuers failed' );
 		} else {
 			WP_CLI::success( 'Finished migrating issuers: ' . $count . ' issuers migrated' );
+		}
+	}
+
+	public function migrate_badge_classes( $args, $assoc_args ) {
+		if ( count( $args ) != 0 ) {
+			WP_CLI::error( 'Usage: migrate_badge_classes' );
+		}
+
+		$count = BadgeClass::migrate_badge_classes( );
+
+		if ( false ===  $count ) {
+			WP_CLI::error( 'Migrating badge classes failed' );
+		} else {
+			WP_CLI::success( 'Finished migrating badge classes: ' . $count . ' badge classes migrated' );
 		}
 	}
 }

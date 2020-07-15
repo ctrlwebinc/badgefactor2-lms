@@ -378,19 +378,16 @@ class BadgrProvider {
 	 * @return string|boolean BadgeClass Entity ID or false on error.
 	 */
 	public static function add_badge_class( $class_name, $issuer_slug, $description, $image = null ) {
+		$image_data = null;
 
-		try {
-			$image_raw_data = file_get_contents( $image );
-			$mime_type      = mime_content_type( $image );
+		if ( null !== $image ) {
+			$image_data = self::handle_image_data( $image );
 
-			// Badgr doesn't seem to like just svg add the +xml.
-			if ( 'image/svg' === $mime_type ) {
-				$mime_type .= '+xml';
+			if ( false === $image_data ) {
+				return false;
 			}
-			$image_data = 'data:' . $mime_type . ';base64,' . base64_encode( $image_raw_data );
-		} catch ( \Exception $e ) {
-			return false;
 		}
+
 		// Setup body.
 		$request_body = array(
 			'name'        => $class_name,
@@ -513,17 +510,10 @@ class BadgrProvider {
 		$image_data = null;
 
 		if ( null !== $image ) {
-			try {
-				$image_raw_data = file_get_contents( $image );
-				$mime_type      = mime_content_type( $image );
+			$image_data = self::handle_image_data( $image );
 
-				// Badgr doesn't seem to like just svg add the +xml.
-				if ( 'image/svg' === $mime_type ) {
-					$mime_type .= '+xml';
-				}
-				$image_data = 'data:' . $mime_type . ';base64,' . base64_encode( $image_raw_data );
-			} catch ( \Exception $e ) {
-
+			if ( false === $image_data ) {
+				return false;
 			}
 		}
 
@@ -816,5 +806,56 @@ class BadgrProvider {
 		}
 
 		return false;
+	}
+
+	private static function handle_image_data( $image ) {
+
+		if ( ! file_exists( $image) ) {
+			return false;
+		}
+
+		$success = false;
+
+		try {
+			ob_start();
+
+			$image_raw_data = file_get_contents( $image );
+			$mime_type      = mime_content_type( $image );
+
+			// Badgr doesn't seem to like just svg add the +xml.
+			if ( 'image/svg' === $mime_type ) {
+				$mime_type .= '+xml';
+			}
+
+			// If the image is in jpeg or gif format, convert it to png
+			if ( 'image/jpeg' === $mime_type || 'image/gif' === $mime_type ) {
+				$gd_image = imagecreatefromstring( $image_raw_data );
+
+				$success = imagepng( $gd_image );
+
+				$image_raw_data = ob_get_contents();
+				$mime_type = 'image/png';
+			} else {
+				if ( 'image/png' === $mime_type || 'image/svg' === $mime_type ) {
+					$success = true;
+				}
+			}
+
+			$image_data = 'data:' . $mime_type . ';base64,' . base64_encode( $image_raw_data );
+
+		} catch ( \Exception $e ) {
+			$success = false;
+		} finally {
+			ob_end_clean();
+			if ( isset( $gd_image) && null !== $gd_image ) {
+				imagedestroy( $gd_image );
+			}
+		}
+
+		if ( $success ) {
+			return $image_data;
+		} else {
+			return false;
+		}
 	}
 }
