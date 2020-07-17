@@ -34,7 +34,7 @@ class BadgrUser {
 	public static $options_key_for_badgr_admin = 'badgefactor2_badgr_admin';
 	public static $meta_key_for_user_state = 'badgr_user_state';
 	public static $meta_key_for_badgr_user_slug = 'badgr_user_slug';
-	
+
 	protected $wp_user = null;
 	protected $user_client = null;
 

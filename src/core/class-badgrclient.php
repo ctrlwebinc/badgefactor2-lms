@@ -438,7 +438,13 @@ class BadgrClient {
 		}
 	}
 
-	public static function init_hooks() {
+
+	/**
+	 * Init hook.
+	 *
+	 * @return void
+	 */
+	public static function init() {
 		// TODO: add auth/welcome
  		add_rewrite_rule(
 			'bf2/(emailConfirm)/?',
@@ -462,7 +468,8 @@ class BadgrClient {
 		);
 	}
 
-	public static function pre_init_hooks() {
+	public static function init_hooks() {
+		add_action( 'init', array( BadgrClient::class, 'init' ) );
 		add_filter( 'query_vars', array( self::class, 'hook_query_vars' ) );
 		add_action( 'template_redirect', array( self::class, 'hook_template_redirect' ) );
 	}
@@ -487,15 +494,6 @@ class BadgrClient {
 		}
 	}
 
-
-	/**
-	 * Init hook.
-	 *
-	 * @return void
-	 */
-	public static function init() {
-
-	}
 
 	public static function is_active() {
 		// TODO: relocate function

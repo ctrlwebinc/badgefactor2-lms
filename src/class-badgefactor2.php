@@ -91,6 +91,25 @@ class BadgeFactor2 {
 	 * @return void
 	 */
 	public static function init_hooks() {
+
+		// Core.
+		BadgeFactor2_Public::init_hooks();
+
+		// Badgr.
+		BadgrClient::init_hooks();
+		BadgrProvider::init_hooks();
+		BadgrUser::init_hooks();
+
+		// Post Types.
+		Post_Types\BadgePage::init_hooks();
+		Post_Types\BadgeRequest::init_hooks();
+		Post_Types\Course::init_hooks();
+
+		// Admin.
+		if ( is_admin() || ( defined( 'WP_CLI' ) && WP_CLI ) ) {
+			BadgeFactor2_Admin::init_hooks();
+		}
+
 		self::$initialized = true;
 	}
 
@@ -101,6 +120,7 @@ class BadgeFactor2 {
 	 */
 	public function includes() {
 		require_once BF2_ABSPATH . 'lib/CMB2/init.php';
+		require_once BF2_ABSPATH . 'lib/cmb-field-select2/cmb-field-select2.php';
 		require_once 'phar://' . BF2_ABSPATH . 'lib/league-oauth2-client.phar/vendor/autoload.php';
 		require_once BF2_ABSPATH . 'src/core/trait-singleton.php';
 		require_once BF2_ABSPATH . 'src/core/trait-paginatable.php';
@@ -113,14 +133,11 @@ class BadgeFactor2 {
 		require_once BF2_ABSPATH . 'src/models/class-badgeclass.php';
 		require_once BF2_ABSPATH . 'src/models/class-assertion.php';
 		require_once BF2_ABSPATH . 'src/client/shortcodes/class-issuers.php';
+		require_once BF2_ABSPATH . 'src/post-types/class-approver.php';
 		require_once BF2_ABSPATH . 'src/post-types/class-badgepage.php';
+		require_once BF2_ABSPATH . 'src/post-types/class-badgerequest.php';
+		require_once BF2_ABSPATH . 'src/post-types/class-course.php';
 		require_once BF2_ABSPATH . 'src/public/class-badgefactor2-public.php';
-		Post_Types\BadgePage::init_hooks();
-		BadgrClient::pre_init_hooks();
-		BadgeFactor2_Public::init_hooks();
-
-		add_action( 'init', array( BadgrProvider::class, 'init_hooks' ) );
-		add_action( 'init', array( BadgrUser::class, 'init_hooks' ) );
 
 		if ( is_admin() || ( defined( 'WP_CLI' ) && WP_CLI ) ) {
 			require_once BF2_ABSPATH . 'src/admin/class-badgefactor2-admin.php';
@@ -128,8 +145,6 @@ class BadgeFactor2 {
 			require_once BF2_ABSPATH . 'src/admin/lists/class-issuers.php';
 			require_once BF2_ABSPATH . 'src/admin/lists/class-badges.php';
 			require_once BF2_ABSPATH . 'src/admin/lists/class-assertions.php';
-			BadgeFactor2_Admin::init_hooks();
-			add_action( 'init', array( BadgrClient::class, 'init_hooks' ) );
 		}
 
 		if ( defined( 'WP_CLI' ) && WP_CLI ) {

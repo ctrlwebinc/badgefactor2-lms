@@ -22,11 +22,9 @@
 
 namespace BadgeFactor2\Exceptions;
 
-use BadgeFactor2\AuthenticationException;
+use BadgeFactor2\Exceptions\AuthenticationException;
 
-class UserDeclinedAuthorizationException extends AuthenticationException
-{
-
-}
-
-
+/**
+ * User Declined Authorization Exception class.
+ */
+class UserDeclinedAuthorizationException extends AuthenticationException {}

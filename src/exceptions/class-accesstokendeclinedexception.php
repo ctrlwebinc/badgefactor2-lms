@@ -22,11 +22,9 @@
 
 namespace BadgeFactor2\Exceptions;
 
-use BadgeFactor2\AuthenticationException;
+use BadgeFactor2\Exceptions\AuthenticationException;
 
-class AccessTokenDeclinedException extends AuthenticationException
-{
-
-}
-
-
+/**
+ * Access Token Declined Exception class.
+ */
+class AccessTokenDeclinedException extends AuthenticationException {}

@@ -27,5 +27,4 @@ use WP_Post;
 /**
  * Request Class.
  */
-class Request {
-}
+class Request {}

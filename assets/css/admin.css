@@ -5,3 +5,39 @@
 .cmb2-options-page .cmb2-metabox > .cmb-row {
   padding-bottom: 3em !important;
 }
+
+#menu-posts-badge-page svg {
+  margin-top: 7px;
+  fill: rgb(238, 238, 238);
+  opacity: 0.6;
+  transition: all 0.1s ease-in-out;
+}
+
+#menu-posts-course svg {
+  margin-top: 7px;
+  fill: rgb(238, 238, 238);
+  opacity: 0.6;
+  transition: all 0.1s ease-in-out;
+}
+
+#menu-posts-badge-page a:hover svg {
+  opacity: 1;
+  fill: #00b9eb;
+}
+
+#menu-posts-course a:hover svg {
+  opacity: 1;
+  fill: #00b9eb;
+}
+
+#menu-posts-badge-page.wp-menu-open a svg,
+#menu-posts-badge-page.wp-menu-open a:hover svg {
+  fill: rgb(238, 238, 238);
+  opacity: 1;
+}
+
+#menu-posts-course.wp-menu-open a svg,
+#menu-posts-course.wp-menu-open a:hover svg {
+  fill: rgb(238, 238, 238);
+  opacity: 1;
+}

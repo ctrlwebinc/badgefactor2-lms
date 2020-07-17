@@ -27,6 +27,7 @@ namespace BadgeFactor2;
  */
 interface Badgr_Entity {
 
+
 	/**
 	 * Retrieve all entities from Badgr provider.
 	 *
@@ -37,6 +38,7 @@ interface Badgr_Entity {
 	 */
 	public static function all( $elements_per_page = null, $paged = null, $filter = array() );
 
+
 	/**
 	 * Retrieve single entity from Badgr provider.
 	 *
@@ -45,13 +47,16 @@ interface Badgr_Entity {
 	 */
 	public static function get( $entity_id );
 
+
 	/**
 	 * Create entity through Badgr provider.
 	 *
 	 * @param array $values Associated array of values of entity to create.
+	 * @param array $files Files to upload.
 	 * @return string|boolean Id of created entity, or false on error.
 	 */
 	public static function create ( $values, $files = null );
+
 
 	/**
 	 * Update single entity through Badgr provider.
@@ -62,6 +67,7 @@ interface Badgr_Entity {
 	 */
 	public static function update( $entity_id, $values );
 
+
 	/**
 	 * Delete a single entity through Badgr provider.
 	 *
@@ -70,18 +76,19 @@ interface Badgr_Entity {
 	 */
 	public static function delete( $entity_id );
 
+
 	/**
-	 * Undocumented function
+	 * Get columns.
 	 *
 	 * @return void
 	 */
 	public static function get_columns();
 
+
 	/**
-	 * Undocumented function
+	 * Get sortable columns.
 	 *
 	 * @return void
 	 */
 	public static function get_sortable_columns();
-
 }

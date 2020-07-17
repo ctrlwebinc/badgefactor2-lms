@@ -22,17 +22,17 @@
 
 namespace BadgeFactor2\Post_Types;
 
-use BadgeFactor2\BadgeFactor2;
-use BadgeFactor2\Models\Issuer;
+use BadgeFactor2\Models\BadgeClass;
+use BadgeFactor2\Post_Types\Approver;
 
 /**
- * Undocumented class.
+ * Badge Page post type.
  */
 class BadgePage {
 
 
 	/**
-	 * Undocumented function.
+	 * Init hooks.
 	 *
 	 * @return void
 	 */
@@ -42,14 +42,16 @@ class BadgePage {
 		add_action( 'cmb2_admin_init', array( BadgePage::class, 'custom_meta_boxes' ), 10 );
 	}
 
+
 	/**
 	 * Registers the `badge_page` post type.
 	 */
 	public static function init() {
+
 		register_post_type(
 			'badge-page',
 			array(
-				'labels'                => array(
+				'labels'            => array(
 					'name'                  => __( 'Badge Pages', 'badgefactor2' ),
 					'singular_name'         => __( 'Badge Page', 'badgefactor2' ),
 					'all_items'             => __( 'All Badge Pages', 'badgefactor2' ),
@@ -76,23 +78,22 @@ class BadgePage {
 					'parent_item_colon'     => __( 'Parent Badge Page:', 'badgefactor2' ),
 					'menu_name'             => __( 'Badge Pages', 'badgefactor2' ),
 				),
-				'public'                => true,
-				'hierarchical'          => false,
-				'show_ui'               => true,
-				'show_in_nav_menus'     => true,
-				'supports'              => array( 'title', 'editor' ),
-				'has_archive'           => true,
-				'rewrite'               => true,
-				'query_var'             => true,
-				'menu_position'         => null,
-				'menu_icon'             => 'dashicons-admin-post',
-				'show_in_rest'          => true,
-				'rest_base'             => 'badge-page',
-				'rest_controller_class' => 'WP_REST_Posts_Controller',
+				'public'            => true,
+				'hierarchical'      => false,
+				'show_ui'           => true,
+				'show_in_nav_menus' => true,
+				'supports'          => array( 'title', 'editor' ),
+				'has_archive'       => true,
+				'rewrite'           => true,
+				'query_var'         => true,
+				'menu_position'     => null,
+				'menu_icon'         => BF2_BASEURL . 'assets/images/badge.svg',
+				'show_in_rest'      => false,
 			)
 		);
 
 	}
+
 
 	/**
 	 * Sets the post updated messages for the `badge_page` post type.
@@ -119,8 +120,8 @@ class BadgePage {
 			7  => __( 'Badge Page saved.', 'badgefactor2' ),
 			/* translators: %s: post permalink */
 			8  => sprintf( __( 'Badge Page submitted. <a target="_blank" href="%s">Preview Badge Page</a>', 'badgefactor2' ), esc_url( add_query_arg( 'preview', 'true', $permalink ) ) ),
-			/* translators: 1: Publish box date format, see https://secure.php.net/date 2: Post permalink */
 			9  => sprintf(
+				/* translators: 1: Publish box date format, see https://secure.php.net/date 2: Post permalink */
 				__( 'Badge Page scheduled for: <strong>%1$s</strong>. <a target="_blank" href="%2$s">Preview Badge Page</a>', 'badgefactor2' ),
 				date_i18n( __( 'M j, Y @ G:i', 'badgefactor2' ), strtotime( $post->post_date ) ),
 				esc_url( $permalink )
@@ -132,11 +133,20 @@ class BadgePage {
 		return $messages;
 	}
 
+
+	/**
+	 * Custom meta boxes.
+	 *
+	 * @return void
+	 */
 	public static function custom_meta_boxes() {
+
+		// Links.
+
 		$cmb = new_cmb2_box(
 			array(
-				'id'           => 'badge',
-				'title'        => __( 'Badge', 'bagefactor2' ),
+				'id'           => 'links',
+				'title'        => __( 'Links', 'bagefactor2' ),
 				'object_types' => array( 'badge-page' ),
 				'context'      => 'normal',
 				'priority'     => 'high',
@@ -146,45 +156,19 @@ class BadgePage {
 
 		$cmb->add_field(
 			array(
-				'name' => 'Name',
-				'desc' => 'Badge name used in Badgr',
-				'id'   => 'badge_name',
-				'type' => 'text_medium',
-			)
-		);
-
-		$cmb->add_field(
-			array(
-				'name'       => 'Issuer',
-				'desc'       => 'Badge issuer',
-				'id'         => 'badge_issuer',
-				'type'       => 'select',
-				'options_cb' => array( Issuer::class, 'cmb2_get_options' ),
-			)
-		);
-
-		$cmb->add_field(
-			array(
-				'name' => 'Description',
-				'desc' => 'Description which will be used in Badgr',
-				'id'   => 'badge_description',
-				'type' => 'textarea',
-			)
-		);
-
-		$cmb->add_field(
-			array(
-				'name' => 'Image',
-				'desc' => '',
-				'id'   => 'badge_image',
-				'type' => 'file_list',
+				'id'      => 'badgr_badge',
+				'name'    => __( 'Badge', 'badgefactor2' ),
+				'desc'    => __( 'Badgr Badge associated with this Badge Page', 'badgefactor2' ),
+				'type'    => 'pw_select',
+				'style'   => 'width: 200px',
+				'options' => BadgeClass::select_options(),
 			)
 		);
 
 		$cmb = new_cmb2_box(
 			array(
 				'id'           => 'badge_request',
-				'title'        => __( 'Badge Request', 'bagefactor2' ),
+				'title'        => __( 'Badge Request Form', 'bagefactor2' ),
 				'object_types' => array( 'badge-page' ),
 				'context'      => 'normal',
 				'priority'     => 'high',
@@ -194,28 +178,44 @@ class BadgePage {
 
 		$cmb->add_field(
 			array(
-				'name'    => __( 'Form type', 'badgefactor2' ),
-				'id'      => 'badge_request_form_type',
-				'type'    => 'select',
-				'options' => array( BadgePage::class, 'get_cmb2_form_type_options' ),
+				'id'         => 'badge_request_form_type',
+				'name'       => __( 'Form type', 'badgefactor2' ),
+				'type'       => 'select',
+				'options_cb' => array( BadgePage::class, 'form_type_select_options' ),
 			)
 		);
 
 		$cmb->add_field(
 			array(
-				'name'    => __( 'Form', 'badgefactor2' ),
-				'id'      => 'badge_request_form_id',
-				'type'    => 'select',
-				'options' => array( BadgePage::class, 'get_cmb2_gf_form_options' ),	
-				'attributes'    => array(
-					'data-conditional-id'     => 'badge_request_form_type',
-					'data-conditional-value'  => 'gravityforms',
+				'id'         => 'badge_request_form_id',
+				'name'       => __( 'Form', 'badgefactor2' ),
+				'type'       => 'pw_select',
+				'options_cb' => array( BadgePage::class, 'gf_form_select_options' ),
+				'attributes' => array(
+					'data-conditional-id'    => 'badge_request_form_type',
+					'data-conditional-value' => 'gravityforms',
 				),
 			)
 		);
+
+		$cmb->add_field(
+			array(
+				'id'         => 'badge_request_approver',
+				'name'       => __( 'Approvers', 'badgefactor2' ),
+				'type'       => 'pw_multiselect',
+				'options_cb' => array( Approver::class, 'select_options' ),
+			)
+		);
+
 	}
 
-	public static function get_cmb2_form_type_options() {
+
+	/**
+	 * Get select-formatted form type options.
+	 *
+	 * @return array Options.
+	 */
+	public static function form_type_select_options() {
 		$options = array(
 			'basic' => __( 'Basic form', 'badgefactor2' ),
 		);
@@ -225,7 +225,13 @@ class BadgePage {
 		return $options;
 	}
 
-	public static function get_cmb2_gf_form_options() {
+
+	/**
+	 * Get select-formatted Gravity Forms form options.
+	 *
+	 * @return array Options.
+	 */
+	public static function gf_form_select_options() {
 		$options = array();
 		if ( is_plugin_active( 'gravityforms/gravityforms.php' ) ) {
 

@@ -22,11 +22,9 @@
 
 namespace BadgeFactor2\Exceptions;
 
-use BadgeFactor2\ConfigurationException;
+use BadgeFactor2\Exceptions\ConfigurationException;
 
-class  SiteConfigurationException extends ConfigurationException
-{
-
-}
-
-
+/**
+ * Site Configuration Exception class.
+ */
+class SiteConfigurationException extends ConfigurationException {}

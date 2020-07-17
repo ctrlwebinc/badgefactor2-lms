@@ -69,11 +69,13 @@ class BadgeFactor2_Admin {
 		add_action( 'admin_menu', array( BadgeFactor2_Admin::class, 'admin_menus' ) );
 		add_action( 'wp_ajax_bf2_filter_type', array( BadgeFactor2_Admin::class, 'ajax_filter_type' ) );
 		add_action( 'wp_ajax_bf2_filter_value', array( BadgeFactor2_Admin::class, 'ajax_filter_value' ) );
+		add_action( 'save_post_badge-page', array( BadgeFactor2_Admin::class, 'create_badge_chain' ), 10, 2 );
+		add_filter( 'pw_cmb2_field_select2_asset_path', array( BadgeFactor2_Admin::class, 'pw_cmb2_field_select2_asset_path' ), 10 );
 	}
 
 
 	/**
-	 * Undocumented function.
+	 * Set screen.
 	 *
 	 * @param bool   $status Status.
 	 * @param string $option Option.
@@ -126,37 +128,48 @@ class BadgeFactor2_Admin {
 	 * @return void
 	 */
 	public static function admin_menus() {
+		global $menu;
+
+		$menu[] = array( '', 'read', 'separator-badgefactor2', '', 'wp-menu-separator badgefactor2' );
 
 		$menus = array(
 			array(
 				__( 'Issuers', 'badgefactor2' ),
 				'issuers',
-				'dashicons-admin-home',
 			),
 			array(
 				__( 'Badges', 'badgefactor2' ),
 				'badges',
-				'dashicons-star-empty',
 			),
 			array(
 				__( 'Assertions', 'badgefactor2' ),
 				'assertions',
-				'dashicons-star-filled',
 			),
 		);
-		foreach ( $menus as $menu ) {
-			$hook = add_menu_page(
-				$menu[0],
-				$menu[0],
+
+		add_menu_page(
+			'Badgr',
+			'Badgr',
+			'manage_options',
+			$menus[0][1],
+			array( BadgeFactor2_Admin::class, $menus[0][1]. '_page' ),
+			BF2_BASEURL . 'assets/images/badgr.svg',
+
+		);
+
+		foreach ( $menus as $m ) {
+			$hook = add_submenu_page(
+				$menus[0][1],
+				$m[0],
+				$m[0],
 				'manage_options',
-				$menu[1],
-				array( BadgeFactor2_Admin::class, $menu[1] . '_page' ),
-				$menu[2]
+				$m[1],
+				array( BadgeFactor2_Admin::class, $m[1] . '_page' )
 			);
 
 			add_action(
 				"load-$hook",
-				array( BadgeFactor2_Admin::class, $menu[1] . '_options' )
+				array( BadgeFactor2_Admin::class, $m[1] . '_options' )
 			);
 		}
 
@@ -312,9 +325,62 @@ class BadgeFactor2_Admin {
 	public static function load_resources() {
 		wp_enqueue_style( 'cmb2-styles-css', BF2_BASEURL . 'lib/CMB2/css/cmb2.min.css', array(), '5.2.5', 'all' );
 		wp_enqueue_script( 'cmb2-conditional-logic', BF2_BASEURL . 'lib/CMB2-conditional-logic/cmb2-conditional-logic.min.js', array( 'jquery' ), '1.0.0', true );
-		wp_enqueue_style( 'badgefactor2-admin', BF2_BASEURL . 'assets/css/admin.css', array(), '1.0.0', 'all' );
-		wp_enqueue_script( 'badgefactor2-tinymce', 'https://cdnjs.cloudflare.com/ajax/libs/tinymce/5.3.1/tinymce.min.js', array(), '5.3.1', true );
-		wp_enqueue_script( 'badgefactor2-admin', BF2_BASEURL . 'assets/js/admin.js', array( 'jquery', 'badgefactor2-tinymce' ), '1.0.0', true );
+		wp_enqueue_style( 'badgefactor2-admin-css', BF2_BASEURL . 'assets/css/admin.css', array(), '1.0.0', 'all' );
+		wp_enqueue_script( 'badgefactor2-admin-js', BF2_BASEURL . 'assets/js/admin.js', array( 'jquery' ), '1.0.0', true );
+	}
+
+	/**
+	 * Undocumented function.
+	 *
+	 * @param int     $id Post ID.
+	 * @param WP_Post $post Post Object.
+	 * @return void
+	 */
+	public static function create_badge_chain( $id, $post ) {
+		// Check if it's the right post type.
+		if ( 'badge-page' === $post->post_type ) {
+
+			// Check if it's a published post.
+			if ( 'publish' === $post->post_status ) {
+
+			}
+
+			/*
+			Commented.
+			if ( get_post_meta( $ID, 'badgefactor_form_id', true ) == '' ) {
+				if ( $this->check_gravity_forms() ) {
+					$form_id = $this->create_badge_submission_form( $post );
+					if ( ! is_wp_error( $form_id ) ) {
+						update_post_meta( $ID, 'badgefactor_form_id', $form_id );
+
+						if ( get_post_meta( $ID, 'badgefactor_form_page_id', true ) == '' ) {
+							$form_page_id = $this->create_badge_form_page( $post->post_title, $form_id );
+							if ( ! is_wp_error( $form_page_id ) ) {
+								update_post_meta( $ID, 'badgefactor_form_page_id', $form_page_id );
+							}
+						}
+					}
+				}
+			}
+
+			do_action( 'badgefactor_woocommerce_create_badge', $ID, $post );
+
+			if ( get_post_meta( $ID, 'badgefactor_page_id', true ) == '' ) {
+				$page_id = $this->create_course_page( $post, '<a href="' . get_permalink( $form_page_id ) . '">' . __( 'Get this badge', 'badgefactor' ) . '</a>' );
+				if ( ! is_wp_error( $page_id ) ) {
+					update_post_meta( $ID, 'badgefactor_page_id', $page_id );
+				}
+				wp_update_post(
+					array(
+						'ID'          => $form_page_id,
+						'post_parent' => $page_id,
+					)
+				);
+			}
+
+			return true;
+			*/
+		}
 	}
 
 
@@ -324,9 +390,10 @@ class BadgeFactor2_Admin {
 	 * @return void
 	 */
 	private static function register_settings_metabox() {
+
 		$args = array(
 			'id'           => 'badgefactor2_settings',
-			'menu_title'   => 'Badge Factor 2', //'Badge Factor 2',
+			'menu_title'   => 'Badge Factor 2',
 			'object_types' => array( 'options-page' ),
 			'option_key'   => 'badgefactor2',
 			'icon_url'     => BF2_BASEURL . ( 'assets/images/badgefactor2_logo.svg' ),
@@ -455,12 +522,12 @@ class BadgeFactor2_Admin {
 		 */
 		$args = array(
 			'id'           => 'badgefactor2_plugins_page',
-			'menu_title'   => 'Plugins', // Use menu title, & not title to hide main h2.
+			'menu_title'   => __( 'Add-Ons', 'badgefactor2' ),
 			'object_types' => array( 'options-page' ),
 			'option_key'   => 'badgefactor2_plugins',
 			'parent_slug'  => 'badgefactor2',
 			'tab_group'    => 'badgefactor2',
-			'tab_title'    => __( 'Plugins', 'badgefactor2' ),
+			'tab_title'    => __( 'Add-Ons', 'badgefactor2' ),
 		);
 
 		// 'tab_group' property is supported in > 2.4.0.
@@ -474,7 +541,7 @@ class BadgeFactor2_Admin {
 
 
 	/**
-	 * Undocumented function.
+	 * Ajax filter type.
 	 *
 	 * @return void
 	 */
@@ -508,7 +575,7 @@ class BadgeFactor2_Admin {
 
 
 	/**
-	 * Undocumented function.
+	 * Ajax filter value.
 	 *
 	 * @return void
 	 */
@@ -546,4 +613,12 @@ class BadgeFactor2_Admin {
 		wp_die();
 	}
 
+	/**
+	 * CMB2 Select2 field asset path.
+	 *
+	 * @return string path to cmb2-field-select2 library
+	 */
+	public static function pw_cmb2_field_select2_asset_path() {
+		return BF2_BASEURL . '/lib/cmb-field-select2';
+	}
 }

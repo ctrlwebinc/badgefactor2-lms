@@ -105,7 +105,7 @@ class Issuer implements Badgr_Entity {
 		);
 
 		$orderby = $_GET['orderby'] ?? 'createdAt';
-		$order = $_GET['order'] ?? 'desc';
+		$order   = $_GET['order'] ?? 'desc';
 
 		WP_Sortable::sort( $issuers );
 
@@ -171,7 +171,7 @@ class Issuer implements Badgr_Entity {
 
 
 	/**
-	 * Undocumented function.
+	 * Get columns.
 	 *
 	 * @return array
 	 */
@@ -185,7 +185,7 @@ class Issuer implements Badgr_Entity {
 
 
 	/**
-	 * Undocumented function.
+	 * Get sortable columns.
 	 *
 	 * @return array
 	 */
@@ -199,7 +199,7 @@ class Issuer implements Badgr_Entity {
 
 
 	/**
-	 * Undocumented function.
+	 * Validate.
 	 *
 	 * @param array $values Values.
 	 * @param array $files Files.
@@ -238,12 +238,11 @@ class Issuer implements Badgr_Entity {
 
 
 	/**
-	 * Undocumented function.
+	 * Get select-formatted options.
 	 *
-	 * @param array $query_args Query arguments.
 	 * @return array
 	 */
-	public static function cmb2_get_options() {
+	public static function select_options() {
 		$issuers = Issuer::all( -1 );
 
 		$post_options = array();
