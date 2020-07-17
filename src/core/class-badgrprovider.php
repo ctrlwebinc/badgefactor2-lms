@@ -22,6 +22,7 @@
 
 namespace BadgeFactor2;
 
+use \Datetime;
 use BadgeFactor2\BadgrUser;
 
 /**
@@ -589,6 +590,42 @@ class BadgrProvider {
 
 		return false;
 	}
+
+	public static function add_assertion_v2( $badge_class_slug, $recipient_identifier, $recipient_type = 'email', $issuedOn = null  ) {
+		// Setup body.
+		$request_body = array(
+			'recipient'        => array (
+				'identity' => $recipient_identifier,
+				'type' => $recipient_type
+			),
+		);
+
+		if ( null !== $issuedOn ) {
+			try {
+				$issue_date = new DateTime( $issuedOn );
+			} catch (\Exception $e) {
+				return false;
+			}
+
+			$request_body["issuedOn"] = $issue_date->format('c');
+		}
+		// Make POST request to /v2/badgeclasses/{entity_id}/assertions.
+		$response = self::getClient()->post( '/v2/badgeclasses/' . $badge_class_slug . '/assertions', $request_body );
+
+		// Check for 201 response.
+		if ( null !== $response && 201 === $response->getStatusCode() ) {
+			// Return slug-entity_id or false if unsuccessful.
+			$response_info = json_decode( $response->getBody() );
+			if ( isset( $response_info->status->success ) &&
+				$response_info->status->success == true &&
+				isset( $response_info->result[0]->entityId ) ) {
+				return $response_info->result[0]->entityId;
+			}
+		}
+
+		return false;
+	}
+
 
 	/**
 	 * TODO.
