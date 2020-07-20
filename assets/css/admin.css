@@ -41,3 +41,19 @@
   fill: rgb(238, 238, 238);
   opacity: 1;
 }
+
+.addon {
+  padding: 5px 0;
+}
+
+.addon > td {
+  padding: 0 10px 10px;
+}
+
+.addon > .addon-status.active {
+  color: #24831d;
+}
+
+.addon > .addon-status.inactive {
+  color: #cd2f23;
+}

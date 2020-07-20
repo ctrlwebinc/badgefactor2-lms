@@ -246,6 +246,12 @@ class BadgePage {
 		return $options;
 	}
 
+
+	/**
+	 * Undocumented function.
+	 *
+	 * @return array
+	 */
 	public static function all() {
 		$args  = array(
 			'post_type'   => 'badge-page',

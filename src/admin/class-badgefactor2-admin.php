@@ -538,6 +538,14 @@ class BadgeFactor2_Admin {
 
 		$plugins = new_cmb2_box( $args );
 
+		$plugins->add_field(
+			array(
+				'name' => __('Add-Ons List'),
+				'id'   => 'badgefactor2_addons_list',
+				'type' => 'addons',
+			)
+		);
+
 	}
 
 
