@@ -18,6 +18,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  * @package Badge_Factor_2
+ *
+ * @phpcs:disable WordPress.WP.I18n.NonSingularStringLiteralDomain
  */
 
 namespace BadgeFactor2\Admin;
@@ -155,7 +157,7 @@ class Badgr_List extends \WP_List_Table {
 	 */
 	public function no_items() {
 		// Translators: This will be displayed if no object is returned by Badgr.
-		printf( __( 'No %s avaliable.', 'badgefactor2' ), $this->singular );
+		printf( __( 'No %s avaliable.', BF2_DATA['TextDomain'] ), $this->singular );
 	}
 
 
@@ -228,7 +230,7 @@ class Badgr_List extends \WP_List_Table {
 		$title = '<a href="admin.php?page=' . $this->slug . '&action=edit&entity_id=' . $item->entityId . '">' . $item->name . '</a>';
 
 		$actions = array(
-			'delete' => sprintf( '<a onclick="if(!confirm( \'%s\' ) ) { event.preventDefault() }" href="?page=%s&action=%s&entity_id=%s&_wpnonce=%s">%s</a>', __( 'Are you sure you want to delete this item?', 'badgefactor2' ), $this->slug, 'delete', $item->entityId, $delete_nonce, __( 'Delete', 'badgefactor2' ) ),
+			'delete' => sprintf( '<a onclick="if(!confirm( \'%s\' ) ) { event.preventDefault() }" href="?page=%s&action=%s&entity_id=%s&_wpnonce=%s">%s</a>', __( 'Are you sure you want to delete this item?', BF2_DATA['TextDomain'] ), $this->slug, 'delete', $item->entityId, $delete_nonce, __( 'Delete', BF2_DATA['TextDomain'] ) ),
 		);
 
 		return $title . $this->row_actions( $actions );
@@ -246,12 +248,12 @@ class Badgr_List extends \WP_List_Table {
 			$revoke_nonce = wp_create_nonce( 'bf2_revoke_' . $this->slug );
 			$badge        = BadgeClass::get( $item->badgeclass );
 			if ( $item->revoked ) {
-				$title   = '<a href="admin.php?page=assertions&action=edit&entity_id=' . $item->entityId . '">' . $badge->name . '</a><br/>' . __( 'REVOKED!', 'badgefactor2' );
+				$title   = '<a href="admin.php?page=assertions&action=edit&entity_id=' . $item->entityId . '">' . $badge->name . '</a><br/>' . __( 'REVOKED!', BF2_DATA['TextDomain'] );
 				$actions = array();
 			} else {
 				$title   = '<a href="admin.php?page=assertions&action=edit&entity_id=' . $item->entityId . '">' . $badge->name . '</a>';
 				$actions = array(
-					'revoke' => sprintf( '<a href="?page=%s&action=%s&entity_id=%s">%s</a>', $this->slug, 'revoke', $item->entityId, __( 'Revoke', 'badgefactor2' ) ),
+					'revoke' => sprintf( '<a href="?page=%s&action=%s&entity_id=%s">%s</a>', $this->slug, 'revoke', $item->entityId, __( 'Revoke', BF2_DATA['TextDomain'] ) ),
 				);
 			}
 
@@ -296,7 +298,7 @@ class Badgr_List extends \WP_List_Table {
 	 */
 	public function get_bulk_actions() {
 		$actions = array(
-			'delete' => __( 'Delete', 'badgefactor2' ),
+			'delete' => __( 'Delete', BF2_DATA['TextDomain'] ),
 		);
 
 		return $actions;
@@ -371,13 +373,13 @@ class Badgr_List extends \WP_List_Table {
 			case 'edit':
 				if ( ! isset( $_GET['entity_id'] ) ) {
 					// Entity ID is not set.
-					wp_die( __( 'You are missing an entity ID.', 'badgefactor2' ) );
+					wp_die( __( 'You are missing an entity ID.', BF2_DATA['TextDomain'] ) );
 				} else {
 					// Entity ID is set.
 					try {
 						$entity = $this->model::get( $_GET['entity_id'] );
 						if ( false === $entity ) {
-							wp_die( __( 'You attempted to edit an item that doesn\'t exist. Perhaps it was deleted?', 'badgefactor2' ) );
+							wp_die( __( 'You attempted to edit an item that doesn\'t exist. Perhaps it was deleted?', BF2_DATA['TextDomain'] ) );
 						}
 
 						if ( 'POST' === $_SERVER['REQUEST_METHOD'] ) {
@@ -389,9 +391,9 @@ class Badgr_List extends \WP_List_Table {
 
 					} catch ( ClientException $e ) {
 						if ( 404 === $e->getResponse()->getStatusCode() ) {
-							echo '<div class="notice notice-error is-dismissible"><p>' . __( 'Item does not exist.', 'badgefactor2' ) . '</p></div>';
+							echo '<div class="notice notice-error is-dismissible"><p>' . __( 'Item does not exist.', BF2_DATA['TextDomain'] ) . '</p></div>';
 						} elseif ( 400 === $e->getResponse()->getStatusCode() ) {
-							echo '<div class="notice notice-error is-dismissible"><p>' . __( 'Item cannot be edited.', 'badgefactor2' ) . '</p></div>';
+							echo '<div class="notice notice-error is-dismissible"><p>' . __( 'Item cannot be edited.', BF2_DATA['TextDomain'] ) . '</p></div>';
 						} else {
 							echo $e->getMessage();
 						}
@@ -401,19 +403,19 @@ class Badgr_List extends \WP_List_Table {
 			case 'revoke':
 				if ( ! isset( $_GET['entity_id'] ) ) {
 					// Entity ID is not set.
-					wp_die( __( 'You are missing an entity ID.', 'badgefactor2' ) );
+					wp_die( __( 'You are missing an entity ID.', BF2_DATA['TextDomain'] ) );
 				} else {
 					// Entity ID is set.
 					$entity = $this->model::get( $_GET['entity_id'] );
 					if ( false === $entity ) {
-						wp_die( __( 'You attempted to edit an item that doesn\'t exist. Perhaps it was deleted?', 'badgefactor2' ) );
+						wp_die( __( 'You attempted to edit an item that doesn\'t exist. Perhaps it was deleted?', BF2_DATA['TextDomain'] ) );
 					}
 
 					if ( 'POST' === $_SERVER['REQUEST_METHOD'] ) {
 						// Revoke.
 
 						if ( $_GET['entity_id'] !== $_POST['assertion'] ) {
-							wp_die( __( 'You attempted to edit an item that doesn\'t exist. Perhaps it was deleted?', 'badgefactor2' ) );
+							wp_die( __( 'You attempted to edit an item that doesn\'t exist. Perhaps it was deleted?', BF2_DATA['TextDomain'] ) );
 						} else {
 							BadgrProvider::revoke_assertion( $_POST['assertion'], $_POST['reason'] );
 							$_GET['notice'] = 'revoked';
@@ -436,9 +438,9 @@ class Badgr_List extends \WP_List_Table {
 		if ( 'admin.php' === $pagenow && isset( $_GET['page'] ) && isset( $_GET['notice'] ) && 'created' === $_GET['notice'] ) :
 			?>
 		<div class="updated settings-error notice is-dismissible"> 
-			<p><strong><?php echo __( 'Object created.', 'badgefactor2' ); ?></strong></p>
+			<p><strong><?php echo __( 'Object created.', BF2_DATA['TextDomain'] ); ?></strong></p>
 			<button type="button" class="notice-dismiss">
-				<span class="screen-reader-text"><?php echo __( 'Dismiss this message.', 'badgefactor2' ); ?></span>
+				<span class="screen-reader-text"><?php echo __( 'Dismiss this message.', BF2_DATA['TextDomain'] ); ?></span>
 			</button>
 		</div>
 			<?php
@@ -465,12 +467,12 @@ class Badgr_List extends \WP_List_Table {
 				} else {
 					try {
 						$this->delete( $_GET['entity_id'] );
-						echo '<div class="notice notice-success is-dismissible"><p>' . __( 'Item deleted.', 'badgefactor2' ) . '</p></div>';
+						echo '<div class="notice notice-success is-dismissible"><p>' . __( 'Item deleted.', BF2_DATA['TextDomain'] ) . '</p></div>';
 					} catch ( ClientException $e ) {
 						if ( 404 === $e->getResponse()->getStatusCode() ) {
-							echo '<div class="notice notice-error is-dismissible"><p>' . __( 'Item does not exist.', 'badgefactor2' ) . '</p></div>';
+							echo '<div class="notice notice-error is-dismissible"><p>' . __( 'Item does not exist.', BF2_DATA['TextDomain'] ) . '</p></div>';
 						} elseif ( 400 === $e->getResponse()->getStatusCode() ) {
-							echo '<div class="notice notice-error is-dismissible"><p>' . __( 'Item cannot be deleted.', 'badgefactor2' ) . '</p></div>';
+							echo '<div class="notice notice-error is-dismissible"><p>' . __( 'Item cannot be deleted.', BF2_DATA['TextDomain'] ) . '</p></div>';
 						}
 					}
 				}
@@ -484,7 +486,7 @@ class Badgr_List extends \WP_List_Table {
 					foreach ( $_GET['entity_id'] as $id ) {
 						$this->delete( $id );
 					}
-					echo '<div class="notice notice-success is-dismissible"><p>' . __( 'Items deleted.', 'badgefactor2' ) . '</p></div>';
+					echo '<div class="notice notice-success is-dismissible"><p>' . __( 'Items deleted.', BF2_DATA['TextDomain'] ) . '</p></div>';
 				}
 			}
 		}
@@ -505,15 +507,15 @@ class Badgr_List extends \WP_List_Table {
 					if ( isset( $_GET['filter_type'] ) && isset( $_GET['filter_value'] ) ) {
 						$filter_type  = stripslashes( $_GET['filter_type'] );
 						$filter_value = stripslashes( $_GET['filter_value'] );
-						echo '<a class="button action button-primary" href="admin.php?page=' . $this->slug . '&filter_type=' . $filter_type . '&filter_value=' . $filter_value . '&action=new">' . __( 'Add New', 'badgefactor2' ) . '</a>';
+						echo '<a class="button action button-primary" href="admin.php?page=' . $this->slug . '&filter_type=' . $filter_type . '&filter_value=' . $filter_value . '&action=new">' . __( 'Add New', BF2_DATA['TextDomain'] ) . '</a>';
 					}
 				} else {
-					echo '<a class="button action button-primary" href="admin.php?page=' . $this->slug . '&action=new">' . __( 'Add New', 'badgefactor2' ) . '</a>';
+					echo '<a class="button action button-primary" href="admin.php?page=' . $this->slug . '&action=new">' . __( 'Add New', BF2_DATA['TextDomain'] ) . '</a>';
 				}
 				if ( ! empty( $this->filter ) ) {
 					echo '<input type="hidden" name="filter_for" value="' . get_class( $this ) . '">';
 					echo '<select name="filter_type">';
-					echo '<option value="">' . __( 'List type', 'badgefactor2' ) . '</option>';
+					echo '<option value="">' . __( 'List type', BF2_DATA['TextDomain'] ) . '</option>';
 					$disabled = 'disabled';
 					if ( isset( $_GET['filter_type'] ) ) {
 						$selected_filter = $_GET['filter_type'];
@@ -530,7 +532,7 @@ class Badgr_List extends \WP_List_Table {
 					}
 					echo '</select>';
 					echo "<select name='filter_value' {$disabled}>";
-					echo '<option value="">' . __( 'List for', 'badgefactor2' ) . '</option>';
+					echo '<option value="">' . __( 'List for', BF2_DATA['TextDomain'] ) . '</option>';
 					if ( ! $disabled ) {
 						$selected_filter = 'BadgeFactor2\Admin\Lists\\' . $selected_filter;
 						$filter          = new $selected_filter();
@@ -550,7 +552,7 @@ class Badgr_List extends \WP_List_Table {
 				}
 				echo '</div>';
 			} else {
-				echo __( 'Badgr connection inactive!', 'badgefactor2' );
+				echo __( 'Badgr connection inactive!', BF2_DATA['TextDomain'] );
 			}
 		}
 	}
