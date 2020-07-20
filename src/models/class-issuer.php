@@ -18,6 +18,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  * @package Badge_Factor_2
+ *
+ * @phpcs:disable WordPress.WP.I18n.NonSingularStringLiteralDomain
  */
 
 namespace BadgeFactor2\Models;
@@ -174,9 +176,9 @@ class Issuer implements Badgr_Entity {
 	 */
 	public static function get_columns() {
 		return array(
-			'name'      => __( 'Name', 'badgefactor2' ),
-			'email'     => __( 'Email', 'badgefactor2' ),
-			'createdAt' => __( 'Created on', 'badgefactor2' ),
+			'name'      => __( 'Name', BF2_DATA['TextDomain'] ),
+			'email'     => __( 'Email', BF2_DATA['TextDomain'] ),
+			'createdAt' => __( 'Created on', BF2_DATA['TextDomain'] ),
 		);
 	}
 
