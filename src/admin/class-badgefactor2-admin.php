@@ -18,6 +18,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  * @package Badge_Factor_2
+ *
+ * @phpcs:disable WordPress.WP.I18n.NonSingularStringLiteralDomain
  */
 
 namespace BadgeFactor2;
@@ -94,7 +96,7 @@ class BadgeFactor2_Admin {
 	 * @return void
 	 */
 	public static function admin_init() {
-		load_plugin_textdomain( 'badgefactor2', false, basename( dirname( __FILE__, 3 ) ) . '/languages/' );
+		load_plugin_textdomain( BF2_DATA['TextDomain'], false, basename( dirname( __FILE__, 3 ) ) . '/languages/' );
 		self::register_settings_metabox();
 	}
 
@@ -134,15 +136,15 @@ class BadgeFactor2_Admin {
 
 		$menus = array(
 			array(
-				__( 'Issuers', 'badgefactor2' ),
+				__( 'Issuers', BF2_DATA['TextDomain'] ),
 				'issuers',
 			),
 			array(
-				__( 'Badges', 'badgefactor2' ),
+				__( 'Badges', BF2_DATA['TextDomain'] ),
 				'badges',
 			),
 			array(
-				__( 'Assertions', 'badgefactor2' ),
+				__( 'Assertions', BF2_DATA['TextDomain'] ),
 				'assertions',
 			),
 		);
@@ -152,9 +154,8 @@ class BadgeFactor2_Admin {
 			'Badgr',
 			'manage_options',
 			$menus[0][1],
-			array( BadgeFactor2_Admin::class, $menus[0][1]. '_page' ),
+			array( BadgeFactor2_Admin::class, $menus[0][1] . '_page' ),
 			BF2_BASEURL . 'assets/images/badgr.svg',
-
 		);
 
 		foreach ( $menus as $m ) {
@@ -268,7 +269,7 @@ class BadgeFactor2_Admin {
 	public static function issuers_options() {
 		$option = 'per_page';
 		$args   = array(
-			'label'   => __( 'Issuers', 'badgefactor2' ),
+			'label'   => __( 'Issuers', BF2_DATA['TextDomain'] ),
 			'default' => 10,
 			'option'  => 'issuers_per_page',
 		);
@@ -287,7 +288,7 @@ class BadgeFactor2_Admin {
 	public static function badges_options() {
 		$option = 'per_page';
 		$args   = array(
-			'label'   => __( 'Badges', 'badgefactor2' ),
+			'label'   => __( 'Badges', BF2_DATA['TextDomain'] ),
 			'default' => 10,
 			'option'  => 'badges_per_page',
 		);
@@ -306,7 +307,7 @@ class BadgeFactor2_Admin {
 	public static function assertions_options() {
 		$option = 'per_page';
 		$args   = array(
-			'label'   => __( 'Assertions', 'badgefactor2' ),
+			'label'   => __( 'Assertions', BF2_DATA['TextDomain'] ),
 			'default' => 10,
 			'option'  => 'assertions_per_page',
 		);
@@ -325,8 +326,8 @@ class BadgeFactor2_Admin {
 	public static function load_resources() {
 		wp_enqueue_style( 'cmb2-styles-css', BF2_BASEURL . 'lib/CMB2/css/cmb2.min.css', array(), '5.2.5', 'all' );
 		wp_enqueue_script( 'cmb2-conditional-logic', BF2_BASEURL . 'lib/CMB2-conditional-logic/cmb2-conditional-logic.min.js', array( 'jquery' ), '1.0.0', true );
-		wp_enqueue_style( 'badgefactor2-admin-css', BF2_BASEURL . 'assets/css/admin.css', array(), '1.0.0', 'all' );
-		wp_enqueue_script( 'badgefactor2-admin-js', BF2_BASEURL . 'assets/js/admin.js', array( 'jquery' ), '1.0.0', true );
+		wp_enqueue_style( 'badgefactor2-admin-css', BF2_BASEURL . 'assets/css/admin.css', array(), BF2_DATA['Version'], 'all' );
+		wp_enqueue_script( 'badgefactor2-admin-js', BF2_BASEURL . 'assets/js/admin.js', array( 'jquery' ), BF2_DATA['Version'], true );
 	}
 
 	/**
@@ -398,7 +399,7 @@ class BadgeFactor2_Admin {
 			'option_key'   => 'badgefactor2',
 			'icon_url'     => BF2_BASEURL . ( 'assets/images/badgefactor2_logo.svg' ),
 			'tab_group'    => 'badgefactor2',
-			'tab_title'    => __( 'Settings', 'badgefactor2' ),
+			'tab_title'    => __( 'Settings', BF2_DATA['TextDomain'] ),
 
 		);
 
@@ -411,8 +412,8 @@ class BadgeFactor2_Admin {
 
 		$badgefactor2_settings->add_field(
 			array(
-				'name' => __( 'Send WordPress registration emails?', 'badgefactor2' ),
-				'desc' => __( 'Registration emails are managed by Badgr. If you enable this, users will receive two registration validations emails.', 'badgefactor2' ),
+				'name' => __( 'Send WordPress registration emails?', BF2_DATA['TextDomain'] ),
+				'desc' => __( 'Registration emails are managed by Badgr. If you enable this, users will receive two registration validations emails.', BF2_DATA['TextDomain'] ),
 				'id'   => 'bf2_send_new_user_notifications',
 				'type' => 'checkbox',
 			)
@@ -441,16 +442,16 @@ class BadgeFactor2_Admin {
 		// Badgr server quick select.
 		$badgr_settings->add_field(
 			array(
-				'name'             => __( 'Badgr server', 'badgefactor2' ),
-				'desc'             => __( 'Choose the type of Badgr server you\'re using', 'badgefactor2' ),
+				'name'             => __( 'Badgr server', BF2_DATA['TextDomain'] ),
+				'desc'             => __( 'Choose the type of Badgr server you\'re using', BF2_DATA['TextDomain'] ),
 				'id'               => 'badgr_server_quick_select',
 				'type'             => 'radio',
 				'show_option_none' => false,
 				'default'          => 'local',
 				'options'          => array(
-					'local'    => __( 'Local Badgr', 'badgefactor2' ),
-					'badgr_io' => __( 'Badgr.io', 'badgefactor2' ),
-					'custom'   => __( 'Custom', 'badgefactor2' ),
+					'local'    => __( 'Local Badgr', BF2_DATA['TextDomain'] ),
+					'badgr_io' => __( 'Badgr.io', BF2_DATA['TextDomain'] ),
+					'custom'   => __( 'Custom', BF2_DATA['TextDomain'] ),
 				),
 
 			)
@@ -459,15 +460,15 @@ class BadgeFactor2_Admin {
 		// Badgr server quick select.
 		$badgr_settings->add_field(
 			array(
-				'name'             => __( 'Authorization type', 'badgefactor2' ),
-				'desc'             => __( 'Choose how to exchange credentials with Badgr', 'badgefactor2' ),
+				'name'             => __( 'Authorization type', BF2_DATA['TextDomain'] ),
+				'desc'             => __( 'Choose how to exchange credentials with Badgr', BF2_DATA['TextDomain'] ),
 				'id'               => 'badgr_authentication_process_select',
 				'type'             => 'radio',
 				'show_option_none' => false,
 				'default'          => BadgrClient::GRANT_CODE,
 				'options'          => array(
-					BadgrClient::GRANT_PASSWORD => __( 'Use passwords', 'badgefactor2' ),
-					BadgrClient::GRANT_CODE     => __( 'Redirect to server', 'badgefactor2' ),
+					BadgrClient::GRANT_PASSWORD => __( 'Use passwords', BF2_DATA['TextDomain'] ),
+					BadgrClient::GRANT_CODE     => __( 'Redirect to server', BF2_DATA['TextDomain'] ),
 				),
 			)
 		);
@@ -475,8 +476,8 @@ class BadgeFactor2_Admin {
 		// Public url to use with custom server setting.
 		$badgr_settings->add_field(
 			array(
-				'name'      => __( 'Public URL', 'badgefactor2' ),
-				'desc'      => __( 'Format: scheme://URL:port', 'badgefactor2' ),
+				'name'      => __( 'Public URL', BF2_DATA['TextDomain'] ),
+				'desc'      => __( 'Format: scheme://URL:port', BF2_DATA['TextDomain'] ),
 				'id'        => 'badgr_server_public_url',
 				'type'      => 'text_url',
 				'default'   => 'http://localhost:8000',
@@ -487,8 +488,8 @@ class BadgeFactor2_Admin {
 
 		$badgr_settings->add_field(
 			array(
-				'name'      => __( 'Internal URL', 'badgefactor2' ),
-				'desc'      => __( 'Format: scheme://URL:port', 'badgefactor2' ),
+				'name'      => __( 'Internal URL', BF2_DATA['TextDomain'] ),
+				'desc'      => __( 'Format: scheme://URL:port', BF2_DATA['TextDomain'] ),
 				'id'        => 'badgr_server_internal_url',
 				'type'      => 'text_url',
 				'default'   => '',
@@ -499,7 +500,7 @@ class BadgeFactor2_Admin {
 
 		$badgr_settings->add_field(
 			array(
-				'name' => __( 'Client ID', 'badgefactor2' ),
+				'name' => __( 'Client ID', BF2_DATA['TextDomain'] ),
 				'id'   => 'badgr_server_client_id',
 				'type' => 'text',
 			)
@@ -507,7 +508,7 @@ class BadgeFactor2_Admin {
 
 		$badgr_settings->add_field(
 			array(
-				'name'      => __( 'Client Secret', 'badgefactor2' ),
+				'name'      => __( 'Client Secret', BF2_DATA['TextDomain'] ),
 				'id'        => 'badgr_server_client_secret',
 				'type'      => 'text',
 				'after_row' => function ( $field_args, $field ) {
@@ -522,12 +523,12 @@ class BadgeFactor2_Admin {
 		 */
 		$args = array(
 			'id'           => 'badgefactor2_plugins_page',
-			'menu_title'   => __( 'Add-Ons', 'badgefactor2' ),
+			'menu_title'   => __( 'Add-Ons', BF2_DATA['TextDomain'] ),
 			'object_types' => array( 'options-page' ),
 			'option_key'   => 'badgefactor2_plugins',
 			'parent_slug'  => 'badgefactor2',
 			'tab_group'    => 'badgefactor2',
-			'tab_title'    => __( 'Add-Ons', 'badgefactor2' ),
+			'tab_title'    => __( 'Add-Ons', BF2_DATA['TextDomain'] ),
 		);
 
 		// 'tab_group' property is supported in > 2.4.0.
