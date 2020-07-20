@@ -18,6 +18,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  * @package Badge_Factor_2
+ *
+ * @phpcs:disable WordPress.WP.I18n.NonSingularStringLiteralDomain
  */
 
 ?>
@@ -28,9 +30,9 @@
 			case 'updated':
 				?>
 					<div class="updated settings-error notice is-dismissible"> 
-						<p><strong><?php echo __( 'Assertion updated.', 'badgefactor2' ); ?></strong></p>
+						<p><strong><?php echo __( 'Assertion updated.', BF2_DATA['TextDomain'] ); ?></strong></p>
 						<button type="button" class="notice-dismiss">
-							<span class="screen-reader-text"><?php echo __( 'Dismiss this message.', 'badgefactor2' ); ?></span>
+							<span class="screen-reader-text"><?php echo __( 'Dismiss this message.', BF2_DATA['TextDomain'] ); ?></span>
 						</button>
 					</div>
 					<?php
@@ -46,7 +48,7 @@
 		<div class="cmb2-metabox cmb-field-list">
 			<div class="cmb-row cmb-type-file table-layout">
 				<div class="cmb-th">
-					<?php echo __( 'Image', 'badgefactor2' ); ?>
+					<?php echo __( 'Image', BF2_DATA['TextDomain'] ); ?>
 				</div>
 				<div class="cmb-td">
 					<?php
@@ -63,7 +65,7 @@
 			</div>
 			<div class="cmb-row table-layout">	
 				<div class="cmb-th">
-					<?php echo __( 'Issuer', 'badgefactor2' ); ?>
+					<?php echo __( 'Issuer', BF2_DATA['TextDomain'] ); ?>
 				</div>
 				<div class="cmb-td">
 					<?php $issuer = \BadgeFactor2\Models\Issuer::get( $entity->issuer ); ?>
@@ -72,7 +74,7 @@
 			</div>
 			<div class="cmb-row table-layout">	
 				<div class="cmb-th">
-					<?php echo __( 'Badge', 'badgefactor2' ); ?>
+					<?php echo __( 'Badge', BF2_DATA['TextDomain'] ); ?>
 				</div>
 				<div class="cmb-td">
 					<?php $badge = \BadgeFactor2\Models\BadgeClass::get( $entity->badgeclass ); ?>
@@ -81,7 +83,7 @@
 			</div>
 			<div class="cmb-row table-layout">	
 				<div class="cmb-th">
-					<?php echo __( 'Recipient', 'badgefactor2' ); ?>
+					<?php echo __( 'Recipient', BF2_DATA['TextDomain'] ); ?>
 				</div>
 				<div class="cmb-td">
 					<?php echo $entity->recipient->plaintextIdentity; ?>
@@ -89,7 +91,7 @@
 			</div>
 			<div class="cmb-row table-layout">	
 				<div class="cmb-th">
-					<?php echo __( 'Issued On', 'badgefactor2' ); ?>
+					<?php echo __( 'Issued On', BF2_DATA['TextDomain'] ); ?>
 				</div>
 				<div class="cmb-td">
 					<?php $date = strtotime( $entity->issuedOn ); ?>
@@ -99,7 +101,7 @@
 			<?php if ( $entity->revoked ) : ?>
 				<div class="cmb-row table-layout">	
 				<div class="cmb-th">
-					<?php echo __( 'Revocation reason', 'badgefactor2' ); ?>
+					<?php echo __( 'Revocation reason', BF2_DATA['TextDomain'] ); ?>
 				</div>
 				<div class="cmb-td">
 					<?php echo $entity->revocationReason; ?>
@@ -110,7 +112,7 @@
 	</div>
 		<?php if ( ! $entity->revoked ) : ?>
 	<p class="submit">
-		<a class="button button-primary" href="<?php echo "?page=assertions&action=revoke&entity_id={$entity->entityId}"; ?>"><?php echo __( 'Revoke Assertion', 'badgefactor2' ); ?></a>
+		<a class="button button-primary" href="<?php echo "?page=assertions&action=revoke&entity_id={$entity->entityId}"; ?>"><?php echo __( 'Revoke Assertion', BF2_DATA['TextDomain'] ); ?></a>
 	</p>
 	<?php endif; ?>
 		<?php
@@ -143,7 +145,7 @@
 			<div class="cmb2-metabox cmb-field-list">
 				<div class="cmb-row table-layout">	
 					<div class="cmb-th">
-						<label for="issuer"><?php echo __( 'Issuer', 'badgefactor2' ); ?></label>
+						<label for="issuer"><?php echo __( 'Issuer', BF2_DATA['TextDomain'] ); ?></label>
 					</div>
 					<div class="cmb-td">
 						<input type="hidden" name="issuer" value="<?php echo $issuer->entityId; ?>">
@@ -153,11 +155,11 @@
 				<?php if ( is_array( $badge ) ) : ?>
 				<div class="cmb-row cmb-type-select table-layout">	
 					<div class="cmb-th">
-						<label for="badge"><?php echo __( 'Badge', 'badgefactor2' ); ?></label>
+						<label for="badge"><?php echo __( 'Badge', BF2_DATA['TextDomain'] ); ?></label>
 					</div>
 					<div class="cmb-td">
 						<select name="badge" class="cmb2-select cmb2-select-medium" required>
-							<option value=""><?php echo __( 'Select a Badge', 'badgefactor2' ); ?></option>
+							<option value=""><?php echo __( 'Select a Badge', BF2_DATA['TextDomain'] ); ?></option>
 							<?php foreach ( $badge as $b ) : ?>
 							<option value="<?php echo $b->entityId; ?>"><?php echo $b->name; ?></option>
 							<?php endforeach; ?>
@@ -167,7 +169,7 @@
 				<?php else : ?>
 				<div class="cmb-row table-layout">	
 					<div class="cmb-th">
-						<?php echo __( 'Badge', 'badgefactor2' ); ?>
+						<?php echo __( 'Badge', BF2_DATA['TextDomain'] ); ?>
 					</div>
 					<div class="cmb-td">
 							<input type="hidden" name="badge" value="<?php echo $badge->entityId; ?>">
@@ -177,7 +179,7 @@
 				<?php endif; ?>
 				<div class="cmb-row cmb-type-text table-layout">
 					<div class="cmb-th">
-						<?php echo __( 'Recipient Email', 'badgefactor2' ); ?>
+						<?php echo __( 'Recipient Email', BF2_DATA['TextDomain'] ); ?>
 					</div>
 					<div class="cmb-td">
 						<input type="text" name="recipient" class="cmb2-text cmb2-text-medium regular-text" required>
@@ -186,7 +188,7 @@
 			</div>
 		</div>
 		<p class="submit">
-			<input type="submit" class="button button-primary" value="<?php echo __( 'Create Assertion', 'badgefactor2' ); ?>">
+			<input type="submit" class="button button-primary" value="<?php echo __( 'Create Assertion', BF2_DATA['TextDomain'] ); ?>">
 		</p>
 	</form>
 	<?php else : ?>
