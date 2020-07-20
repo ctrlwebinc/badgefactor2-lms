@@ -26,6 +26,9 @@ namespace BadgeFactor2;
 
 use WP_CLI;
 use WP_CLI_Command;
+use BadgeFactor2\Models\Issuer;
+use BadgeFactor2\Models\BadgeClass;
+use BadgeFactor2\Models\Assertion;
 
 WP_CLI::add_command( 'badgr', Badgr_CLI::class );
 
@@ -350,6 +353,28 @@ class Badgr_CLI extends WP_CLI_Command {
 		}
 	}
 
+	public function add_assertion_v2( $args, $assoc_args ) {
+		if ( count( $args ) != 2 ) {
+			WP_CLI::error( 'Usage: add_assertion_v2 badge_class_slug recipient_identity' );
+		}
+
+		if ( strlen( $args[0] ) < 1 ) {
+			WP_CLI::error( 'Please provide a badge class slug as the first argument' );
+		}
+
+		if ( strlen( $args[1] ) < 1 || ! filter_var( $args[1], FILTER_VALIDATE_EMAIL ) ) {
+			WP_CLI::error( 'Please provide a recipient identity (email) as the 2nd argument' );
+		}
+
+		$slug = BadgrProvider::add_assertion_v2( $args[0], $args[1] ,'email','1977-04-22T06:00:00Z');
+
+		if ( $slug ) {
+			WP_CLI::success( 'Assertion added with slug ' . $slug );
+		} else {
+			WP_CLI::error( 'Adding assertion failed.' );
+		}
+	}
+
 	public function list_assertions_by_issuer( $args, $assoc_args ) {
 		if ( count( $args ) != 1 ) {
 			WP_CLI::error( 'Usage: list_assertions_by_issuer issuer_slug' );
@@ -488,6 +513,50 @@ class Badgr_CLI extends WP_CLI_Command {
 			WP_CLI::error( 'Migrating marked users failed' );
 		} else {
 			WP_CLI::success( 'Finished migrating marked users: ' . $count . ' users migrated' );
+		}
+	}
+
+	public function migrate_issuers( $args, $assoc_args ) {
+		if ( count( $args ) != 0 ) {
+			WP_CLI::error( 'Usage: migrate_issuers [ --restrict-to-published | --no-restrict-to-pubished' );
+		}
+
+		$only_published = WP_CLI\Utils\get_flag_value($assoc_args, 'restrict-to-published', $default = false);
+
+		$count = Issuer::migrate_issuers( $only_published );
+
+		if ( false ===  $count ) {
+			WP_CLI::error( 'Migrating issuers failed' );
+		} else {
+			WP_CLI::success( 'Finished migrating issuers: ' . $count . ' issuers migrated' );
+		}
+	}
+
+	public function migrate_badge_classes( $args, $assoc_args ) {
+		if ( count( $args ) != 0 ) {
+			WP_CLI::error( 'Usage: migrate_badge_classes' );
+		}
+
+		$count = BadgeClass::migrate_badge_classes( );
+
+		if ( false ===  $count ) {
+			WP_CLI::error( 'Migrating badge classes failed' );
+		} else {
+			WP_CLI::success( 'Finished migrating badge classes: ' . $count . ' badge classes migrated' );
+		}
+	}
+
+	public function migrate_badge_assertions( $args, $assoc_args ) {
+		if ( count( $args ) != 0 ) {
+			WP_CLI::error( 'Usage: migrate_badge_assertions' );
+		}
+
+		$count = Assertion::migrate_badge_assertions( );
+
+		if ( false ===  $count ) {
+			WP_CLI::error( 'Migrating badge assertions failed' );
+		} else {
+			WP_CLI::success( 'Finished migrating badge assertions: ' . $count . ' badge assertions migrated' );
 		}
 	}
 }

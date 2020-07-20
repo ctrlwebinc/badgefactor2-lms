@@ -205,6 +205,53 @@ class BadgeClass implements Badgr_Entity {
 		return true;
 	}
 
+	public static function migrate_badge_classes() {
+		// Get badges posts without badgr slug enriched with organisation issuer slug
+		global $wpdb;
+		
+		$badges = $wpdb->get_results("SELECT bc.*, os.meta_value AS issuer_slug, i.meta_value AS image_name FROM wp_posts AS bc
+		JOIN wp_postmeta AS o
+		ON bc.ID = o.post_id
+		JOIN wp_postmeta AS os
+		ON o.meta_value = os.post_id
+		JOIN wp_postmeta AS a
+		ON bc.ID = a.post_id
+		JOIN wp_postmeta as i
+		ON a.meta_value = i.post_id
+		WHERE bc.post_type = 'badges' AND
+		bc.post_status != 'trash' AND
+		o.meta_key = 'organisation' AND
+		os.meta_key = 'badgr_issuer_slug' AND
+		a.meta_key = '_thumbnail_id' AND
+		i.meta_key = '_wp_attached_file'
+		AND NOT EXISTS
+		(SELECT bcs.meta_id FROM wp_postmeta as bcs
+		 WHERE bcs.meta_key = 'badgr_badge_class_slug' AND bc.ID = bcs.post_id);", OBJECT_K);
+
+		$count = 0;
+
+		foreach ( $badges as $badge_post_id => $badge_post ) {
+
+			$class_name = $badge_post->post_title;
+			$issuer_slug = $badge_post->issuer_slug;
+			// TODO: trim description
+			$description = $badge_post->post_content;
+			$image = get_home_path() . 'wp-content/uploads/' . $badge_post->image_name;
+
+			$badge_class_slug = BadgrProvider::add_badge_class( $class_name, $issuer_slug, $description, $image );
+
+			if ( false === $badge_class_slug ) {
+				update_post_meta( $badge_post_id, 'badgr_badge_class_failed', 'failed' );
+				continue;
+			}
+
+			// Save slug in post meta
+			update_post_meta( $badge_post_id, 'badgr_badge_class_slug', $badge_class_slug );
+			$count++;
+		}
+
+		return $count;
+	}
 
 	/**
 	 * Select options.
@@ -223,5 +270,6 @@ class BadgeClass implements Badgr_Entity {
 		}
 
 		return $options;
+
 	}
 }

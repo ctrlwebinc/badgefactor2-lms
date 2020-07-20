@@ -207,4 +207,51 @@ class Assertion implements Badgr_Entity {
 
 		return true;
 	}
+
+	public static function migrate_badge_assertions() {
+
+		global $wpdb;
+		
+		// Get posts of type submission with status approved
+		$assertions = $wpdb->get_results("SELECT ap.*, bcs.meta_value AS badge_class_slug, u.user_email AS recipient FROM wp_posts AS ap
+		JOIN wp_postmeta AS apm
+		ON ap.ID = apm.post_id
+		JOIN wp_users AS u
+		ON ap.post_author = u.ID
+		JOIN wp_postmeta AS bc
+		ON ap.ID = bc.post_id
+		JOIN wp_postmeta AS bcs
+		ON bc.meta_value = bcs.post_id
+		WHERE ap.post_type = 'submission' AND
+		apm.meta_key = '_badgeos_submission_status' AND
+		apm.meta_value = 'approved' AND
+		bc.meta_key = '_badgeos_submission_achievement_id' AND
+		bcs.meta_key = 'badgr_badge_class_slug'
+		AND NOT EXISTS (
+			SELECT aps.meta_id FROM wp_postmeta AS aps
+			WHERE aps.meta_key = 'badgr_assertion_slug' AND ap.ID = aps.post_id
+		);", OBJECT_K);
+
+		$count = 0;
+
+		foreach ( $assertions as $assertion_post_id => $assertion_post ) {
+
+			// TODO: confirm use of post_date or post_modified
+			$issued_on = $assertion_post->post_date;
+
+			// Add assertion
+			$assertion_slug = BadgrProvider::add_assertion_v2( $assertion_post->badge_class_slug, $assertion_post->recipient, 'email',  $issued_on);
+
+			if ( false === $assertion_slug ) {
+				update_post_meta( $assertion_post_id, 'badgr_assertion_failed', 'failed' );
+				continue;
+			}
+
+			// Save slug in post meta
+			update_post_meta( $assertion_post_id, 'badgr_assertion_slug', $assertion_slug );
+			$count++;
+		}
+
+		return $count;
+	}
 }
