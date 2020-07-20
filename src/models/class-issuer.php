@@ -37,6 +37,11 @@ class Issuer implements Badgr_Entity {
 
 	use WP_Sortable;
 
+	/**
+	 * Undocumented variable.
+	 *
+	 * @var string
+	 */
 	public static $meta_key_for_badgr_issuer_slug = 'badgr_issuer_slug';
 
 	/**
@@ -257,41 +262,50 @@ class Issuer implements Badgr_Entity {
 		return $post_options;
 	}
 
-	public static function migrate_issuers( $only_published = false) {
-		// Get all posts of organisation type
-		$query = new WP_Query( array ( 
-			'post_type' => 'organisation',
-			'nopaging' => true,
-			'meta_key' => self::$meta_key_for_badgr_issuer_slug,
-			'meta_compare' => 'NOT EXISTS',
-			'post_status' => $only_published ? 'publish' : 'any',
-		) );
+
+	/**
+	 * Undocumented function.
+	 *
+	 * @param boolean $only_published Migrate only published.
+	 * @return int
+	 */
+	public static function migrate_issuers( $only_published = false ) {
+		// Get all posts of organisation type.
+		$query = new WP_Query(
+			array(
+				'post_type'    => 'organisation',
+				'nopaging'     => true,
+				'meta_key'     => self::$meta_key_for_badgr_issuer_slug,
+				'meta_compare' => 'NOT EXISTS',
+				'post_status'  => $only_published ? 'publish' : 'any',
+			)
+		);
 
 		$posts_to_process = $query->posts;
-		$count = 0;
+		$count            = 0;
 
-		// For each post
-		foreach( $posts_to_process as $post_to_process) {
-			// Extract name
+		// For each post.
+		foreach ( $posts_to_process as $post_to_process ) {
+			// Extract name.
 			$name = $post_to_process->post_name;
-			// Extract email
+			// Extract email.
 			$email = $name . '@example.net';
-			// Extract url
+			// Extract url.
 			$url = 'https://' . $name . '.cadre21.org';
-			// Extract description
-			if ( strlen($post_to_process->post_content) > 0 ) {
+			// Extract description.
+			if ( strlen( $post_to_process->post_content ) > 0 ) {
 				$description = $post_to_process->post_content;
 			} else {
 				$description = 'Émetteur ' . $name;
 			}
 
-			// Create an issuer
+			// Create an issuer.
 			$slug = BadgrProvider::add_issuer( $name, $email, $url, $description );
 
 			if ( false === $slug ) {
 				return false;
 			}
-			// Save slug in post meta
+			// Save slug in post meta.
 			update_post_meta( $post_to_process->ID, self::$meta_key_for_badgr_issuer_slug, $slug );
 			$count++;
 		}
