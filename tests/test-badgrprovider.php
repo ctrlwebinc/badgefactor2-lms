@@ -64,7 +64,7 @@ class BadgrProviderTest extends WP_UnitTestCase {
 
 		$client = BadgrClient::make_instance( $client_parameters );
 
-		BadgrProvider::setClient( $client );
+		BadgrProvider::set_client( $client );
 
 		// Check that we can retreive information on the authorized user
 		// Make GET request to /v2/users/self.
@@ -125,7 +125,7 @@ class BadgrProviderTest extends WP_UnitTestCase {
 
 		$client = BadgrClient::make_instance( $client_parameters );
 
-		BadgrProvider::setClient( $client );
+		BadgrProvider::set_client( $client );
 
 		// Check that we can retreive information on the authorized user
 		// Make GET request to /v2/users/self.

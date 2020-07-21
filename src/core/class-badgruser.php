@@ -180,7 +180,7 @@ class BadgrUser {
 	 * @return BadgrClient
 	 * @throws \Exception Throws exception if can't determine the user for client creation.
 	 */
-	public static function getOrMakeUserClient( WPUser $wp_user = null ) {
+	public static function get_or_make_user_client( WPUser $wp_user = null ) {
 
 		// If no user passed, use the current user.
 		if ( null === $wp_user ) {

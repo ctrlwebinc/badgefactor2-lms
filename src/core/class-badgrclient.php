@@ -503,7 +503,7 @@ class BadgrClient {
 			throw new \BadMethodCallException( 'No authorization code present.' );
 		}
 
-		$client = BadgrUser::getOrMakeUserClient();
+		$client = BadgrUser::get_or_make_user_client();
 
 		// Attempt to get an access token.
 		$client->get_access_token_from_authorization_code( $_GET['code'] );

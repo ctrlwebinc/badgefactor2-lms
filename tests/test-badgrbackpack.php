@@ -69,7 +69,7 @@ class BadgrBackpackTest extends WP_UnitTestCase {
 			$this->fail('Exception thrown on client creation: ' . $e->getMessage());
 		}
 
-		BadgrProvider::setClient( $adminClient);
+		BadgrProvider::set_client( $adminClient);
 
 		$random_suffix = $this->generateRandomString();
 		// New user creation
@@ -164,7 +164,7 @@ class BadgrBackpackTest extends WP_UnitTestCase {
 		$existing_backpack = BadgrProvider::get_all_assertions_from_user_backpack( $badgr_user );
 
 		// Now award a new badge
-		BadgrProvider::setClient( $adminClient);
+		BadgrProvider::set_client( $adminClient);
 
 		// Setup a random string to avoid data collisions
 		$random = $this->generateRandomString(5);
@@ -239,7 +239,7 @@ class BadgrBackpackTest extends WP_UnitTestCase {
 	   }
 
 	   // Now award 2 new badges
-	   BadgrProvider::setClient( $adminClient);
+	   BadgrProvider::set_client( $adminClient);
 
 	   $random = $this->generateRandomString(5);
 
@@ -313,7 +313,7 @@ class BadgrBackpackTest extends WP_UnitTestCase {
 	   }
 
 	   // Now award a new badge: it will be by default Unaccepted
-	   BadgrProvider::setClient( $adminClient);
+	   BadgrProvider::set_client( $adminClient);
 
 	   // Setup a random string to avoid data collisions
 	   $random = $this->generateRandomString(5);
