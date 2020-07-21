@@ -18,6 +18,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  * @package Badge_Factor_2
+ *
+ * @phpcs:disable WordPress.WP.I18n.NonSingularStringLiteralDomain
  */
 
 ?>
@@ -28,9 +30,9 @@
 			case 'updated':
 				?>
 					<div class="updated settings-error notice is-dismissible"> 
-						<p><strong><?php echo __( 'Badge updated.', 'badgefactor2' ); ?></strong></p>
+						<p><strong><?php echo __( 'Badge updated.', BF2_DATA['TextDomain'] ); ?></strong></p>
 						<button type="button" class="notice-dismiss">
-							<span class="screen-reader-text"><?php echo __( 'Dismiss this message.', 'badgefactor2' ); ?></span>
+							<span class="screen-reader-text"><?php echo __( 'Dismiss this message.', BF2_DATA['TextDomain'] ); ?></span>
 						</button>
 					</div>
 					<?php
@@ -43,7 +45,7 @@
 			<div class="cmb2-metabox cmb-field-list">
 				<div class="cmb-row cmb-type-text table-layout">	
 					<div class="cmb-th">
-						<label for="name"><?php echo __( 'Name', 'badgefactor2' ); ?></label>
+						<label for="name"><?php echo __( 'Name', BF2_DATA['TextDomain'] ); ?></label>
 					</div>
 					<div class="cmb-td">
 						<input type="text" name="name" class="cmb2-text cmb2-text-medium regular-text" required 
@@ -55,7 +57,7 @@
 				</div>
 				<div class="cmb-row cmb-type-select table-layout">	
 					<div class="cmb-th">
-						<label for="issuer_slug"><?php echo __( 'Issuer', 'badgefactor2' ); ?></label>
+						<label for="issuer_slug"><?php echo __( 'Issuer', BF2_DATA['TextDomain'] ); ?></label>
 					</div>
 					<div class="cmb-td">
 						<select name="issuer_slug" class="cmb2-select cmb2-select-medium" required>
@@ -67,7 +69,7 @@
 				</div>
 				<div class="cmb-row cmb-type-textarea table-layout">	
 					<div class="cmb-th">
-						<label for="description"><?php echo __( 'Description', 'badgefactor2' ); ?></label>
+						<label for="description"><?php echo __( 'Description', BF2_DATA['TextDomain'] ); ?></label>
 					</div>
 					<div class="cmb-td">
 						<textarea class="bf2_tinymce" name="description" cols="60" rows="10">
@@ -79,7 +81,7 @@
 				</div>
 				<div class="cmb-row cmb-type-file table-layout">
 					<div class="cmb-th">
-						<label for="image"><?php echo __( 'Image', 'badgefactor2' ); ?></label>
+						<label for="image"><?php echo __( 'Image', BF2_DATA['TextDomain'] ); ?></label>
 					</div>
 					<div class="cmb-td">
 						<?php
@@ -100,9 +102,9 @@
 		<p class="submit">
 			<input type="submit" class="button button-primary" value="
 			<?php if ( isset( $entity ) ) : ?>
-				<?php echo __( 'Edit Badge', 'badgefactor2' ); ?>
+				<?php echo __( 'Edit Badge', BF2_DATA['TextDomain'] ); ?>
 			<?php else : ?>
-				<?php echo __( 'Create Badge', 'badgefactor2' ); ?>
+				<?php echo __( 'Create Badge', BF2_DATA['TextDomain'] ); ?>
 			<?php endif; ?>"
 				>
 		</p>

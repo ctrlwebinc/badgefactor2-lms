@@ -22,28 +22,52 @@
  * @phpcs:disable WordPress.WP.I18n.NonSingularStringLiteralDomain
  */
 
-namespace BadgeFactor2\Admin\Lists;
+namespace BadgeFactor2\Shortcodes;
 
-use BadgeFactor2\Admin\Badgr_List;
 use BadgeFactor2\Models\Issuer;
 
-if ( ! class_exists( 'WP_List_Table' ) ) {
-	require_once( ABSPATH . 'wp-admin/includes/class-wp-list-table.php' );
-}
+/**
+ * Shortcodes Class.
+ */
+class Issuers {
 
-class Issuers extends Badgr_List {
 
 	/**
-	 * Class constructor.
+	 * Issuers Shortcode Init.
+	 *
+	 * @return void
 	 */
-	public function __construct() {
-
-		parent::__construct(
-			Issuer::class,
-			__( 'Issuer', BF2_DATA['TextDomain'] ),
-			__( 'Issuers', BF2_DATA['TextDomain'] ),
-			'issuers'
-		);
+	public static function init_hooks() {
+		add_action( 'init', array( Issuers::class, 'init' ) );
 	}
 
+
+	/**
+	 * Init hook.
+	 *
+	 * @return void
+	 */
+	public static function init() {
+		add_shortcode( 'bf2-issuers', array( Issuers::class, 'list' ) );
+	}
+
+
+	/**
+	 * List.
+	 *
+	 * @param array  $atts Attributes.
+	 * @param string $content Content.
+	 * @param string $tag Tag.
+	 * @return void
+	 */
+	public function list( $atts = array(), $content = null, $tag = '' ) {
+		$issuers = Issuer::all( -1 );
+		if ( $issuers ) {
+			foreach ( Issuer::all() as $issuer ) {
+				echo $issuer->name;
+			}
+		} else {
+			echo __( 'No issuer for the moment.', BF2_DATA['TextDomain'] );
+		}
+	}
 }

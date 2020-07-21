@@ -18,6 +18,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  * @package Badge_Factor_2
+ *
+ * @phpcs:disable WordPress.WP.I18n.NonSingularStringLiteralDomain
  */
 
 namespace BadgeFactor2\Admin\Lists;
@@ -38,8 +40,8 @@ class Badges extends Badgr_List {
 
 		parent::__construct(
 			BadgeClass::class,
-			__( 'Badge', 'badgefactor2' ),
-			__( 'Badges', 'badgefactor2' ),
+			__( 'Badge', BF2_DATA['TextDomain'] ),
+			__( 'Badges', BF2_DATA['TextDomain'] ),
 			'badges'
 		);
 	}

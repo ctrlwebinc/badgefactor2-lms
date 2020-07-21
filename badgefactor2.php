@@ -29,6 +29,8 @@
  * License: GNU AGPL
  * Text Domain: badgefactor2
  * Domain Path: /languages
+ *
+ * @phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedConstantFound
  */
 
 namespace BadgeFactor2;

@@ -58,7 +58,7 @@ jQuery(document).ready(function($) {
       window.location.href = url;
     }
   );
-  $("#menu-posts-badge-page img, #menu-posts-course img").each(function() {
+  $("#menu-posts-badge-page img").each(function() {
     var $img = $(this);
     var imgID = $img.attr("id");
     var imgClass = $img.attr("class");

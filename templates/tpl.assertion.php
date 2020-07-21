@@ -18,6 +18,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  * @package Badge_Factor_2
+ *
+ * @phpcs:disable WordPress.WP.I18n.NonSingularStringLiteralDomain
  */
 
 /*
@@ -40,21 +42,21 @@ $issuer    = BadgeFactor2\Models\Issuer::get( $assertion->issuer );
 				<div class="badge__container">
 					<div class="badge__badge">
 						<figure>
-							<img class="badge__image" src="<?php echo $assertion->image; ?>" alt="<?php echo $badge->name; ?> <?php echo __( 'badge issued to', 'badgefactor2' ); ?> <?php echo $assertion->recipient->plaintextIdentity; ?>">
+							<img class="badge__image" src="<?php echo $assertion->image; ?>" alt="<?php echo $badge->name; ?> <?php echo __( 'badge issued to', BF2_DATA['TextDomain'] ); ?> <?php echo $assertion->recipient->plaintextIdentity; ?>">
 						</figure>
 						<div class="badge__issued-to">
-							<?php echo __( 'Issued to', 'badgefactor2' ); ?>
+							<?php echo __( 'Issued to', BF2_DATA['TextDomain'] ); ?>
 							<a href="#" class="badge__issued-to-link">
 								<?php echo $assertion->recipient->plaintextIdentity; ?>
 							</a>
 						</div><!-- .badge__issued-to -->
 						<div class="badge__issue-date">
-							<?php echo __( 'Issue date:', 'badgefactor2' ); ?> 
+							<?php echo __( 'Issue date:', BF2_DATA['TextDomain'] ); ?> 
 							<?php echo gmdate( 'Y-m-d H:i', strtotime( $assertion->issuedOn ) ); ?>
 						</div><!-- .badge__issued-date -->
 						<a href="#" class="badge__issued-to-link"></a>
 						<div class="badge__issued">
-							<h3><?php echo __( 'Issued by', 'badgefactor2' ); ?></h3>
+							<h3><?php echo __( 'Issued by', BF2_DATA['TextDomain'] ); ?></h3>
 							<a target="_blank" href="<?php echo $issuer->url; ?>"><?php echo $issuer->name; ?></a>
 						</div><!-- .badge__issued -->
 					</div><!-- .badge__badge -->

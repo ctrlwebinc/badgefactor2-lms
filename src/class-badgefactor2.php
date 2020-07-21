@@ -18,6 +18,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  * @package Badge_Factor_2
+ *
+ * @phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.VariableConstantNameFound
  */
 
 namespace BadgeFactor2;
@@ -95,6 +97,9 @@ class BadgeFactor2 {
 		// Core.
 		BadgeFactor2_Public::init_hooks();
 
+		// Shortcodes.
+		Shortcodes\Badges::init_hooks();
+
 		// Badgr.
 		BadgrClient::init_hooks();
 		BadgrProvider::init_hooks();
@@ -103,7 +108,6 @@ class BadgeFactor2 {
 		// Post Types.
 		Post_Types\BadgePage::init_hooks();
 		Post_Types\BadgeRequest::init_hooks();
-		Post_Types\Course::init_hooks();
 
 		// Admin.
 		if ( is_admin() || ( defined( 'WP_CLI' ) && WP_CLI ) ) {
@@ -119,26 +123,43 @@ class BadgeFactor2 {
 	 * @return void
 	 */
 	public function includes() {
+
+		// Libraries.
 		require_once BF2_ABSPATH . 'lib/CMB2/init.php';
 		require_once BF2_ABSPATH . 'lib/cmb-field-select2/cmb-field-select2.php';
 		require_once 'phar://' . BF2_ABSPATH . 'lib/league-oauth2-client.phar/vendor/autoload.php';
+
+		// Traits.
 		require_once BF2_ABSPATH . 'src/core/trait-singleton.php';
 		require_once BF2_ABSPATH . 'src/core/trait-paginatable.php';
 		require_once BF2_ABSPATH . 'src/core/trait-wp-sortable.php';
+
+		// Interfaces.
 		require_once BF2_ABSPATH . 'src/core/interface-badgr-entity.php';
+
+		// Core Classes.
 		require_once BF2_ABSPATH . 'src/core/class-badgrclient.php';
 		require_once BF2_ABSPATH . 'src/core/class-badgrprovider.php';
 		require_once BF2_ABSPATH . 'src/core/class-badgruser.php';
+
+		// Models.
 		require_once BF2_ABSPATH . 'src/models/class-issuer.php';
 		require_once BF2_ABSPATH . 'src/models/class-badgeclass.php';
 		require_once BF2_ABSPATH . 'src/models/class-assertion.php';
-		require_once BF2_ABSPATH . 'src/client/shortcodes/class-issuers.php';
+
+		// Shortcodes.
+		require_once BF2_ABSPATH . 'src/public/shortcodes/class-badges.php';
+		require_once BF2_ABSPATH . 'src/public/shortcodes/class-issuers.php';
+
+		// Post Types.
 		require_once BF2_ABSPATH . 'src/post-types/class-approver.php';
 		require_once BF2_ABSPATH . 'src/post-types/class-badgepage.php';
 		require_once BF2_ABSPATH . 'src/post-types/class-badgerequest.php';
-		require_once BF2_ABSPATH . 'src/post-types/class-course.php';
+
+		// Public (site) class.
 		require_once BF2_ABSPATH . 'src/public/class-badgefactor2-public.php';
 
+		// Admin / CLI classes.
 		if ( is_admin() || ( defined( 'WP_CLI' ) && WP_CLI ) ) {
 			require_once BF2_ABSPATH . 'src/admin/class-badgefactor2-admin.php';
 			require_once BF2_ABSPATH . 'src/admin/class-badgr-list.php';
@@ -147,6 +168,7 @@ class BadgeFactor2 {
 			require_once BF2_ABSPATH . 'src/admin/lists/class-assertions.php';
 		}
 
+		// CLI-only classes.
 		if ( defined( 'WP_CLI' ) && WP_CLI ) {
 			require_once BF2_ABSPATH . 'src/cli/class-badgefactor2-cli.php';
 			require_once BF2_ABSPATH . 'src/cli/class-badgr-cli.php';
@@ -166,6 +188,7 @@ class BadgeFactor2 {
 		$this->define( 'BF2_PLUGIN_BASENAME', plugin_basename( BF2_FILE ) );
 		$this->define( 'BF2_VERSION', $this->version );
 		$this->define( 'BF2_LOG_DIR', $upload_dir['basedir'] . '/bf2-logs/' );
+		$this->define( 'BF2_DATA', get_plugin_data( BF2_FILE ) );
 	}
 
 	/**

@@ -18,6 +18,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  * @package Badge_Factor_2
+ *
+ * @phpcs:disable WordPress.WP.I18n.NonSingularStringLiteralDomain
  */
 
 /*
@@ -42,7 +44,7 @@ $issuer = BadgeFactor2\Models\Issuer::get( $badge->issuer );
 						<img class="badge__image" src="<?php echo $badge->image; ?>" alt="<?php echo $badge->name; ?>">
 					</figure>
 					<div class="badge__issued">
-						<h3><?php echo __( 'Issued by', 'badgefactor2' ); ?></h3>
+						<h3><?php echo __( 'Issued by', BF2_DATA['TextDomain'] ); ?></h3>
 						<a target="_blank" href="<?php echo $issuer->url; ?>"><?php echo $issuer->name; ?></a>
 					</div><!-- .badge__issued -->
 				</div><!-- .badge__badge -->

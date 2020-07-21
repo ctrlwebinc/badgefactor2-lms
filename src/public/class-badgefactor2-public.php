@@ -41,6 +41,7 @@ class BadgeFactor2_Public {
 		add_filter( 'query_vars', array( BadgeFactor2_Public::class, 'add_custom_query_vars' ) );
 		add_filter( 'template_include', array( BadgeFactor2_Public::class, 'add_badge_to_hierarchy' ) );
 		add_filter( 'template_include', array( BadgeFactor2_Public::class, 'add_assertion_to_hierarchy' ) );
+		add_action( 'wp_enqueue_scripts', array( BadgeFactor2_Public::class, 'load_resources' ) );
 
 	}
 
@@ -117,6 +118,17 @@ class BadgeFactor2_Public {
 		if ( isset( $badgefactor2_options['bf2_send_new_user_notifications'] ) && 'on' === $badgefactor2_options['bf2_send_new_user_notifications'] ) {
 			wp_send_new_user_notifications( $user_id, $notify );
 		}
+	}
+
+
+	/**
+	 * Public Resources Loader.
+	 *
+	 * @return void
+	 */
+	public static function load_resources() {
+		wp_enqueue_style( 'badgefactor2-css', BF2_BASEURL . 'assets/css/public.css', array(), BF2_DATA['Version'], 'all' );
+		wp_enqueue_script( 'badgefactor2-js', BF2_BASEURL . 'assets/js/public.js', array( 'jquery' ), BF2_DATA['Version'], true );
 	}
 
 

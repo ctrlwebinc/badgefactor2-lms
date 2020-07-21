@@ -18,6 +18,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  * @package Badge_Factor_2
+ *
+ * @phpcs:disable WordPress.WP.I18n.NonSingularStringLiteralDomain
  */
 
 namespace BadgeFactor2\Models;
@@ -148,10 +150,10 @@ class BadgeClass implements Badgr_Entity {
 	 */
 	public static function get_columns() {
 		return array(
-			'name'      => __( 'Name', 'badgefactor2' ),
-			'issuer'    => __( 'Issuer', 'badgefactor2' ),
-			'image'     => __( 'Image', 'badgefactor2' ),
-			'createdAt' => __( 'Created on', 'badgefactor2' ),
+			'name'      => __( 'Name', BF2_DATA['TextDomain'] ),
+			'issuer'    => __( 'Issuer', BF2_DATA['TextDomain'] ),
+			'image'     => __( 'Image', BF2_DATA['TextDomain'] ),
+			'createdAt' => __( 'Created on', BF2_DATA['TextDomain'] ),
 		);
 	}
 
@@ -203,11 +205,17 @@ class BadgeClass implements Badgr_Entity {
 		return true;
 	}
 
+	/**
+	 * Undocumented function.
+	 *
+	 * @return int
+	 */
 	public static function migrate_badge_classes() {
-		// Get badges posts without badgr slug enriched with organisation issuer slug
+		// Get badges posts without badgr slug enriched with organisation issuer slug.
 		global $wpdb;
-		
-		$badges = $wpdb->get_results("SELECT bc.*, os.meta_value AS issuer_slug, i.meta_value AS image_name FROM wp_posts AS bc
+
+		$badges = $wpdb->get_results(
+			"SELECT bc.*, os.meta_value AS issuer_slug, i.meta_value AS image_name FROM wp_posts AS bc
 		JOIN wp_postmeta AS o
 		ON bc.ID = o.post_id
 		JOIN wp_postmeta AS os
@@ -224,17 +232,19 @@ class BadgeClass implements Badgr_Entity {
 		i.meta_key = '_wp_attached_file'
 		AND NOT EXISTS
 		(SELECT bcs.meta_id FROM wp_postmeta as bcs
-		 WHERE bcs.meta_key = 'badgr_badge_class_slug' AND bc.ID = bcs.post_id);", OBJECT_K);
+		 WHERE bcs.meta_key = 'badgr_badge_class_slug' AND bc.ID = bcs.post_id);",
+			OBJECT_K
+		);
 
 		$count = 0;
 
 		foreach ( $badges as $badge_post_id => $badge_post ) {
 
-			$class_name = $badge_post->post_title;
+			$class_name  = $badge_post->post_title;
 			$issuer_slug = $badge_post->issuer_slug;
-			// TODO: trim description
+			// TODO: trim description.
 			$description = $badge_post->post_content;
-			$image = get_home_path() . 'wp-content/uploads/' . $badge_post->image_name;
+			$image       = get_home_path() . 'wp-content/uploads/' . $badge_post->image_name;
 
 			$badge_class_slug = BadgrProvider::add_badge_class( $class_name, $issuer_slug, $description, $image );
 
@@ -243,7 +253,7 @@ class BadgeClass implements Badgr_Entity {
 				continue;
 			}
 
-			// Save slug in post meta
+			// Save slug in post meta.
 			update_post_meta( $badge_post_id, 'badgr_badge_class_slug', $badge_class_slug );
 			$count++;
 		}
@@ -254,7 +264,7 @@ class BadgeClass implements Badgr_Entity {
 	/**
 	 * Select options.
 	 *
-	 * @return void
+	 * @return array
 	 */
 	public static function select_options() {
 		$options = array();
