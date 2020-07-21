@@ -198,7 +198,7 @@ class BadgrUser {
 		}
 
 		// Make client.
-		$client = BadgrClient::makeClientFromSavedOptions();
+		$client = BadgrClient::make_client_from_saved_options();
 
 		// Set user.
 		$badgr_user = new BadgrUser( $wp_user );

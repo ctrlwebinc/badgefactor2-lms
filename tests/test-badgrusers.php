@@ -32,7 +32,7 @@ class BadgrUsersTest extends WP_UnitTestCase {
 	public function test_user_create_and_change_password() {
 
 		// Setup a completely client and check that we can get the profile info
-		$clientParameters = [
+		$client_parameters = [
 			'username' => getenv('BADGR_ADMIN_USERNAME'),
 			'as_admin' => true,
 			'badgr_server_public_url' => getenv('BADGR_SERVER_PUBLIC_URL'),
@@ -45,7 +45,7 @@ class BadgrUsersTest extends WP_UnitTestCase {
 			'token_expiration' => getenv('BADGR_SERVER_TOKEN_EXPIRATION'),
 		];
 
-		$client = BadgrClient::makeInstance( $clientParameters );
+		$client = BadgrClient::make_instance( $client_parameters );
 
 		BadgrProvider::setClient( $client );
 
@@ -96,7 +96,7 @@ class BadgrUsersTest extends WP_UnitTestCase {
 /* 	public function test_issuer_to_assertion_flow() {
 
 		// Setup a completely client and check that we can get the profile info
-		$clientParameters = [
+		$client_parameters = [
 			'username' => getenv('BADGR_ADMIN_USERNAME'),
 			'as_admin' => true,
 			'badgr_server_public_url' => getenv('BADGR_SERVER_PUBLIC_URL'),
@@ -109,7 +109,7 @@ class BadgrUsersTest extends WP_UnitTestCase {
 			'token_expiration' => getenv('BADGR_SERVER_TOKEN_EXPIRATION'),
 		];
 
-		$client = BadgrClient::makeInstance( $clientParameters );
+		$client = BadgrClient::make_instance( $client_parameters );
 
 		BadgrProvider::setClient( $client );
 
@@ -157,7 +157,7 @@ class BadgrUsersTest extends WP_UnitTestCase {
 /* 	public function test_issuer_to_new_user_assertion_flow() {
 
 		// Setup a completely client and check that we can get the profile info
-		$clientParameters = [
+		$client_parameters = [
 			'username' => getenv('BADGR_ADMIN_USERNAME'),
 			'as_admin' => true,
 			'badgr_server_public_url' => getenv('BADGR_SERVER_PUBLIC_URL'),
@@ -170,7 +170,7 @@ class BadgrUsersTest extends WP_UnitTestCase {
 			'token_expiration' => getenv('BADGR_SERVER_TOKEN_EXPIRATION'),
 		];
 
-		$client = BadgrClient::makeInstance( $clientParameters );
+		$client = BadgrClient::make_instance( $client_parameters );
 
 		BadgrProvider::setClient( $client );
 
@@ -283,7 +283,7 @@ class BadgrUsersTest extends WP_UnitTestCase {
 			'badgr_server_flavor' => BadgrClient::FLAVOR_LOCAL_R_JAMIROQUAI,
 		];
 
-		$client = BadgrClient::makeInstance( $basicParameters );
+		$client = BadgrClient::make_instance( $basicParameters );
 
 		$badgr_admin_user = BadgrUser::make_from_user_id(1);
 		$badgr_admin_user->set_client( $client );
@@ -300,7 +300,7 @@ class BadgrUsersTest extends WP_UnitTestCase {
 			'badgr_server_flavor' => BadgrClient::FLAVOR_LOCAL_R_JAMIROQUAI,
 		];
 
-		$client = BadgrClient::makeInstance( $basicParameters );
+		$client = BadgrClient::make_instance( $basicParameters );
 
 		$badgr_admin_user = BadgrUser::make_from_user_id(1);
 		$badgr_admin_user->set_client( $client );
@@ -322,7 +322,7 @@ class BadgrUsersTest extends WP_UnitTestCase {
 			'token_expiration' => getenv('BADGR_SERVER_TOKEN_EXPIRATION'),
 		];
 
-		$client = BadgrClient::makeInstance( $activeClientParameters );
+		$client = BadgrClient::make_instance( $activeClientParameters );
 
 		$badgr_admin_user = BadgrUser::make_from_user_id(1);
 		$badgr_admin_user->set_client( $client );

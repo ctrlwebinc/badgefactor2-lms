@@ -36,7 +36,7 @@ class BadgrClient {
 
 	const FLAVOR_BADGRIO_01         = 1;
 	const FLAVOR_LOCAL_R_JAMIROQUAI = 2;
-	const FLAVOR_CLOUD_v1           = 3;
+	const FLAVOR_CLOUD_V1           = 3;
 
 	const BADGR_IO_URL                    = 'https://api.badgr.io';
 	const REDIRECT_PATH_AFTER_AUTH        = '/wp-admin/admin.php?page=badgefactor2_badgr_settings';
@@ -60,14 +60,14 @@ class BadgrClient {
 	 *
 	 * @var Client
 	 */
-	private static $guzzleClient = null;
+	private static $guzzle_client = null;
 
 	/**
 	 * Undocumented variable
 	 *
 	 * @var string
 	 */
-	public static $authRedirectUri = '/bf2/auth';
+	public static $auth_redirect_uri = '/bf2/auth';
 
 	// BagrUser.
 	// Badgr user associated with client instance.
@@ -186,14 +186,14 @@ class BadgrClient {
 	 *
 	 * @var boolean
 	 */
-	private $needsConfiguration = true;
+	private $needs_configuration = true;
 
 	/**
 	 * Undocumented variable
 	 *
 	 * @var boolean
 	 */
-	private $needsAuth = true; // Needs auth is true whenever token is expired or if we get a 401 status during a call.
+	private $needs_auth = true; // Needs auth is true whenever token is expired or if we get a 401 status during a call.
 
 	const STATE_NEW_AND_UNCONFIGURED                      = 1;
 	const STATE_CONFIGURED                                = 2;
@@ -223,14 +223,14 @@ class BadgrClient {
 	 *
 	 * @var boolean
 	 */
-	public $retryAuthBeforeFailing = true;
+	public $retry_auth_before_failing = true;
 
 	/**
 	 * Message fromBadgr server
 	 *
 	 * @var [type]
 	 */
-	private $lastMessageFromBadgrServer = null;
+	private $last_message_from_badgr_server = null;
 
 	/**
 	 * Make an instance of a BadgrClient
@@ -238,7 +238,7 @@ class BadgrClient {
 	 * @param array $parameters Parameters.
 	 * @return BadgrClient
 	 */
-	public static function makeInstance( array $parameters ) {
+	public static function make_instance( array $parameters ) {
 		// Check that basic parameters are present.
 		$key_parameters = array(
 			'username',
@@ -265,7 +265,7 @@ class BadgrClient {
 
 		// TODO: save optionnal parameters in new instance.
 
-		$optionnalParameters = array(
+		$optionnal_parameters = array(
 			'badgr_server_internal_url',
 			'scopes',
 			'badgr_password',
@@ -279,9 +279,9 @@ class BadgrClient {
 			'auth_type',
 		);
 
-		foreach ( $optionnalParameters as $optionnalParameter ) {
-			if ( isset( $parameters[ $optionnalParameter ] ) ) {
-				$client->{$optionnalParameter} = $parameters[ $optionnalParameter ];
+		foreach ( $optionnal_parameters as $optionnal_parameter ) {
+			if ( isset( $parameters[ $optionnal_parameter ] ) ) {
+				$client->{$optionnal_parameter} = $parameters[ $optionnal_parameter ];
 			}
 		}
 
@@ -340,46 +340,46 @@ class BadgrClient {
 	 *
 	 * @return BadgrClient
 	 */
-	public static function makeClientFromSavedOptions() {
+	public static function make_client_from_saved_options() {
 		// Make a client from the previous method of using options.
 
 		$options = get_option( 'badgefactor2_badgr_settings' );
 
-		$clientParameters = array(
+		$client_parameters = array(
 			'username'            => '',
 			'as_admin'            => true,
 			'badgr_server_flavor' => self::FLAVOR_LOCAL_R_JAMIROQUAI,
 		);
 
 		if ( isset( $options['badgr_server_public_url'] ) ) {
-			$clientParameters['badgr_server_public_url'] = $options['badgr_server_public_url'];
+			$client_parameters['badgr_server_public_url'] = $options['badgr_server_public_url'];
 		}
 
 		if ( isset( $options['badgr_server_client_id'] ) ) {
-			$clientParameters['client_id'] = $options['badgr_server_client_id'];
+			$client_parameters['client_id'] = $options['badgr_server_client_id'];
 		}
 
 		if ( isset( $options['badgr_server_client_secret'] ) ) {
-			$clientParameters['client_secret'] = $options['badgr_server_client_secret'];
+			$client_parameters['client_secret'] = $options['badgr_server_client_secret'];
 		}
 
 		if ( isset( $options['badgr_server_internal_url'] ) ) {
-			$clientParameters['badgr_server_internal_url'] = $options['badgr_server_internal_url'];
+			$client_parameters['badgr_server_internal_url'] = $options['badgr_server_internal_url'];
 		}
 
 		if ( isset( $options['badgr_server_access_token'] ) ) {
-			$clientParameters['badgr_server_access_token'] = $options['badgr_server_access_token'];
+			$client_parameters['badgr_server_access_token'] = $options['badgr_server_access_token'];
 		}
 
 		if ( isset( $options['badgr_server_refresh_token'] ) ) {
-			$clientParameters['badgr_server_refresh_token'] = $options['badgr_server_refresh_token'];
+			$client_parameters['badgr_server_refresh_token'] = $options['badgr_server_refresh_token'];
 		}
 
 		if ( isset( $options['badgr_server_token_expiration'] ) ) {
-			$clientParameters['badgr_server_token_expiration'] = $options['badgr_server_token_expiration'];
+			$client_parameters['badgr_server_token_expiration'] = $options['badgr_server_token_expiration'];
 		}
 
-		return self::makeInstance( $clientParameters );
+		return self::make_instance( $client_parameters );
 	}
 
 	/**
@@ -388,8 +388,8 @@ class BadgrClient {
 	 * @param Client $client Guzzle client to use.
 	 * @return void
 	 */
-	public static function setGuzzleClient( Client $client ) {
-		self::$guzzleClient = $client;
+	public static function set_guzzle_client( Client $client ) {
+		self::$guzzle_client = $client;
 	}
 
 	/**
@@ -397,12 +397,12 @@ class BadgrClient {
 	 *
 	 * @return Client
 	 */
-	private static function getGuzzleClient() {
-		if ( null === self::$guzzleClient ) {
-			self::$guzzleClient = new Client();
+	private static function get_guzzle_client() {
+		if ( null === self::$guzzle_client ) {
+			self::$guzzle_client = new Client();
 		}
 
-		return self::$guzzleClient;
+		return self::$guzzle_client;
 	}
 
 	/**
@@ -410,7 +410,7 @@ class BadgrClient {
 	 *
 	 * @return void
 	 */
-	public static function setupAdminCodeAuthorization() {
+	public static function setup_admin_code_authorization() {
 		// Check that user is logged into WP.
 		if ( 0 === ( $current_user = wp_get_current_user() ) ) {
 			// Redirect to admin page.
@@ -423,12 +423,12 @@ class BadgrClient {
 		$client = null;
 
 		try {
-			$client = self::makeClientFromSavedOptions();
+			$client = self::make_client_from_saved_options();
 		} catch ( BadMethodCallException $e ) {
 			$this->fail( 'Exception thrown on client creation: ' . $e->getMessage() );
 		}
 
-		$client->initiateCodeAuthorization();
+		$client->initiate_code_authorization();
 	}
 
 	/**
@@ -436,16 +436,16 @@ class BadgrClient {
 	 *
 	 * @return void
 	 */
-	public function initiateCodeAuthorization() {
+	public function initiate_code_authorization() {
 
 		// Build a callback url with the client's hash.
-		$redirectUri = site_url( self::$authRedirectUri );
+		$redirect_uri = site_url( self::$auth_redirect_uri );
 
-		$authProvider = new GenericProvider(
+		$auth_provider = new GenericProvider(
 			array(
 				'clientId'                => $this->client_id,
 				'clientSecret'            => $this->client_secret,
-				'redirectUri'             => $redirectUri,
+				'redirectUri'             => $redirect_uri,
 				'urlAuthorize'            => $this->badgr_server_public_url . '/o/authorize',
 				'urlAccessToken'          => $this->get_internal_or_external_server_url() . '/o/token',
 				'urlResourceOwnerDetails' => $this->get_internal_or_external_server_url() . '/o/resource',
@@ -453,15 +453,15 @@ class BadgrClient {
 			)
 		);
 
-		$authProvider->setHttpClient( self::getGuzzleClient() );
+		$auth_provider->setHttpClient( self::get_guzzle_client() );
 
 		// Fetch the authorization URL from the provider; this returns the
 		// urlAuthorize option, generates and applies any necessary parameters
 		// (e.g. state).
-		$authorization_url = $authProvider->getAuthorizationUrl();
+		$authorization_url = $auth_provider->getAuthorizationUrl();
 
 		// Get the state generated for you and store it to the session.
-		$_SESSION['oauth2state'] = $authProvider->getState();
+		$_SESSION['oauth2state'] = $auth_provider->getState();
 
 		// Set internal state.
 		$this->state = self::STATE_EXPECTING_AUTHORIZATION_CODE;
@@ -478,7 +478,7 @@ class BadgrClient {
 	 *
 	 * @return void
 	 */
-	public static function handleAuthReturn() {
+	public static function handle_auth_return() {
 		if ( ! isset( $_GET['code'] ) ) {
 			exit();
 		}
@@ -506,7 +506,7 @@ class BadgrClient {
 		$client = BadgrUser::getOrMakeUserClient();
 
 		// Attempt to get an access token.
-		$client->getAccessTokenFromAuthorizationCode( $_GET['code'] );
+		$client->get_access_token_from_authorization_code( $_GET['code'] );
 
 		// Install this user as the admin user for site.
 		$client->badgr_user->set_as_admin_instance();
@@ -522,14 +522,14 @@ class BadgrClient {
 	 * @param string $code Authorization code.
 	 * @return void
 	 */
-	public function getAccessTokenFromAuthorizationCode( $code ) {
-		$redirectUri = site_url( self::$authRedirectUri );
+	public function get_access_token_from_authorization_code( $code ) {
+		$redirect_uri = site_url( self::$auth_redirect_uri );
 
-		$authProvider = new GenericProvider(
+		$auth_provider = new GenericProvider(
 			array(
 				'clientId'                => $this->client_id,
 				'clientSecret'            => $this->client_secret,
-				'redirectUri'             => $redirectUri,
+				'redirectUri'             => $redirect_uri,
 				'urlAuthorize'            => $this->badgr_server_public_url . '/o/authorize',
 				'urlAccessToken'          => $this->get_internal_or_external_server_url() . '/o/token',
 				'urlResourceOwnerDetails' => $this->get_internal_or_external_server_url() . '/o/resource',
@@ -537,14 +537,14 @@ class BadgrClient {
 			)
 		);
 
-		$authProvider->setHttpClient( self::getGuzzleClient() );
+		$auth_provider->setHttpClient( self::get_guzzle_client() );
 
 		try {
 			$this->state = self::STATE_EXPECTING_ACCESS_TOKEN_FROM_CODE;
 			$this->save();
 
 			// Try to get an access token using the authorization code grant.
-			$access_token = $authProvider->getAccessToken(
+			$access_token = $auth_provider->getAccessToken(
 				'authorization_code',
 				array(
 					'code' => $code,
@@ -556,8 +556,8 @@ class BadgrClient {
 			$this->token_expiration  = $access_token->getExpires();
 			$this->resource_owner_id = $access_token->getResourceOwnerId();
 
-			$this->state     = self::STATE_HAVE_ACCESS_TOKEN;
-			$this->needsAuth = false;
+			$this->state      = self::STATE_HAVE_ACCESS_TOKEN;
+			$this->needs_auth = false;
 			$this->save();
 
 		} catch ( IdentityProviderException $e ) {
@@ -579,10 +579,9 @@ class BadgrClient {
 	 *
 	 * @return void
 	 * @throws BadMethodCallException
-	 * 
 	 */
-	public function getAccessTokenFromPasswordGrant() {
-		$client = self::getGuzzleClient();
+	public function get_access_token_from_password_grant() {
+		$client = self::get_guzzle_client();
 		$args   = array(
 			'username'   => $this->username,
 			'password'   => $this->badgr_password,
@@ -613,7 +612,7 @@ class BadgrClient {
 			throw new \BadMethodCallException( 'Connection exception ' . $e->getMessage() );
 		} catch ( GuzzleException $e ) {
 			if ( $e->getResponse()->getStatusCode() == 401 ) {
-				$this->needsAuth = true;
+				$this->needs_auth = true;
 			} else {
 				$this->save();
 				throw new \BadMethodCallException( 'Guzzle exception ' . $e->getMessage() );
@@ -693,10 +692,10 @@ class BadgrClient {
 	public static function hook_template_redirect() {
 		if ( $bf2 = get_query_var( 'bf2' ) ) {
 			if ( 'auth' == $bf2 ) {
-				self::handleAuthReturn();
+				self::handle_auth_return();
 			}
 			if ( 'init' == $bf2 ) {
-				self::setupAdminCodeAuthorization();
+				self::setup_admin_code_authorization();
 			}
 			header( 'Content-Type: text/plain' );
 			echo 'Badgr callback: ' . $bf2;
@@ -764,16 +763,17 @@ class BadgrClient {
 
 	/**
 	 * Refreshes Badgr Server token.
+	 *
 	 * @throws BadMethodCallException
 	 */
 	public function refresh_token() {
-		$redirectUri = site_url( self::$authRedirectUri );
+		$redirect_uri = site_url( self::$auth_redirect_uri );
 
-		$authProvider = new GenericProvider(
+		$auth_provider = new GenericProvider(
 			array(
 				'clientId'                => $this->client_id,
 				'clientSecret'            => $this->client_secret,
-				'redirectUri'             => $redirectUri,
+				'redirectUri'             => $redirect_uri,
 				'urlAuthorize'            => $this->badgr_server_public_url . '/o/authorize',
 				'urlAccessToken'          => $this->get_internal_or_external_server_url() . '/o/token',
 				'urlResourceOwnerDetails' => $this->get_internal_or_external_server_url() . '/o/resource',
@@ -781,7 +781,7 @@ class BadgrClient {
 			)
 		);
 
-		$authProvider->setHttpClient( self::getGuzzleClient() );
+		$auth_provider->setHttpClient( self::get_guzzle_client() );
 
 		try {
 			$this->state = self::STATE_EXPECTING_ACCESS_TOKEN_FROM_REFRESH_TOKEN;
@@ -833,7 +833,7 @@ class BadgrClient {
 			return null;
 		}
 
-		$client = self::getGuzzleClient();
+		$client = self::get_guzzle_client();
 		$method = strtoupper( $method );
 		if ( ! in_array( $method, array( 'GET', 'PUT', 'POST', 'DELETE' ) ) ) {
 			throw new \BadMethodCallException( 'Method not supported' );

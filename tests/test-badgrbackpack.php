@@ -63,8 +63,8 @@ class BadgrBackpackTest extends WP_UnitTestCase {
 		$adminClient = null;
 
 		try {
-			$adminClient = BadgrClient::makeInstance($adminClientParameters);
-			$adminClient->getAccessTokenFromPasswordGrant();
+			$adminClient = BadgrClient::make_instance($adminClientParameters);
+			$adminClient->get_access_token_from_password_grant();
 		} catch ( BadMethodCallException $e ) {
 			$this->fail('Exception thrown on client creation: ' . $e->getMessage());
 		}
@@ -108,8 +108,8 @@ class BadgrBackpackTest extends WP_UnitTestCase {
 		$userClient = null;
 
 		try {
-			$userClient = BadgrClient::makeInstance($userClientParameters);
-			$userClient->getAccessTokenFromPasswordGrant();
+			$userClient = BadgrClient::make_instance($userClientParameters);
+			$userClient->get_access_token_from_password_grant();
 
 		} catch ( BadMethodCallException $e ) {
 			$this->fail('Exception thrown on client creation: ' . $e->getMessage());
@@ -154,8 +154,8 @@ class BadgrBackpackTest extends WP_UnitTestCase {
 		$adminClient = null;
 
 		try {
-			$adminClient = BadgrClient::makeInstance($adminClientParameters);
-			$adminClient->getAccessTokenFromPasswordGrant();
+			$adminClient = BadgrClient::make_instance($adminClientParameters);
+			$adminClient->get_access_token_from_password_grant();
 		} catch ( BadMethodCallException $e ) {
 			$this->fail('Exception thrown on client creation: ' . $e->getMessage());
 		}
@@ -232,8 +232,8 @@ class BadgrBackpackTest extends WP_UnitTestCase {
 	   $adminClient = null;
 
 	   try {
-		   $adminClient = BadgrClient::makeInstance($adminClientParameters);
-		   $adminClient->getAccessTokenFromPasswordGrant();
+		   $adminClient = BadgrClient::make_instance($adminClientParameters);
+		   $adminClient->get_access_token_from_password_grant();
 	   } catch ( BadMethodCallException $e ) {
 		   $this->fail('Exception thrown on client creation: ' . $e->getMessage());
 	   }
@@ -306,8 +306,8 @@ class BadgrBackpackTest extends WP_UnitTestCase {
 	   $adminClient = null;
 
 	   try {
-		   $adminClient = BadgrClient::makeInstance($adminClientParameters);
-		   $adminClient->getAccessTokenFromPasswordGrant();
+		   $adminClient = BadgrClient::make_instance($adminClientParameters);
+		   $adminClient->get_access_token_from_password_grant();
 	   } catch ( BadMethodCallException $e ) {
 		   $this->fail('Exception thrown on client creation: ' . $e->getMessage());
 	   }
