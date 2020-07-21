@@ -31,30 +31,42 @@ use BadgeFactor2\BadgrUser;
 class BadgrProvider {
 
 	use Paginatable;
-
+	/**
+	 * Undocumented variable
+	 *
+	 * @var [type]
+	 */
 	private static $client = null;
-
+	/**
+	 * Undocumented function
+	 *
+	 * @param BadgrClient $client The BadgrClient to use.
+	 * @return void
+	 */
 	public static function setClient( BadgrClient $client ) {
 		self::$client = $client;
 	}
-
+	/**
+	 * Undocumented function
+	 *
+	 * @return BadgrClient|null
+	 */
 	private static function getClient() {
-		if ( null == self::$client ) {
-			// Get the logged in user client
+		if ( null === self::$client ) {
+			// Get the logged in user client.
 			try {
 				self::$client = BadgrUser::getOrMakeUserClient();
 				return self::$client;
+			} catch ( \Exception $e ) {
 			}
-			catch ( \Exception $e) {
-			}
-			// Try to get the user 1 client (if we're in background, we'll need the admin client anyway)
+			// Try to get the user 1 client (if we're in background, we'll need the admin client anyway).
 			try {
-				self::$client = (BadgrUser::make_from_user_id(1))->get_client();
+				self::$client = ( BadgrUser::make_from_user_id( 1 ) )->get_client();
 				if ( null !== self::$client ) {
 					return self::$client;
 				}
-			}
-			catch ( \Exception $e) {
+			} catch ( \Exception $e ) {
+				// Add debugging here as required.
 			}
 			self::$client = new BadgrClient();
 			return self::$client;
@@ -69,8 +81,8 @@ class BadgrProvider {
 	 * @return void
 	 */
 	public static function init_hooks() {
-		add_action( 'init', array( BadgrProvider::class, 'init' ), 9966 );
-		add_action( 'cmb2_admin_init', array( BadgrProvider::class, 'cmb2_admin_init' ) );
+		add_action( 'init', array( self::class, 'init' ), 9966 );
+		add_action( 'cmb2_admin_init', array( self::class, 'cmb2_admin_init' ) );
 	}
 
 	/**
@@ -97,6 +109,7 @@ class BadgrProvider {
 	 * @param string $firstname First name.
 	 * @param string $lastname Last name.
 	 * @param string $email Email address.
+	 * @param string $password User Badgr password.
 	 * @return string|boolean
 	 */
 	public static function add_user( $firstname, $lastname, $email, $password ) {
@@ -130,12 +143,19 @@ class BadgrProvider {
 
 		return false;
 	}
-
-	public static function change_user_password( $slug, $old_password, $new_password) {
-		// Change password
+	/**
+	 * Undocumented function
+	 *
+	 * @param string $slug User slug.
+	 * @param string $old_password Previous password.
+	 * @param string $new_password New password.
+	 * @return boolean
+	 */
+	public static function change_user_password( $slug, $old_password, $new_password ) {
+		// Change password.
 		$request_body = array(
-			'password'           => $new_password,
-			'currentPassword' => $old_password
+			'password'        => $new_password,
+			'currentPassword' => $old_password,
 		);
 
 		$response = self::getClient()->put( '/v2/users/' . $slug, $request_body );
@@ -143,7 +163,7 @@ class BadgrProvider {
 		if ( null !== $response && $response->getStatusCode() == 200 ) {
 			// Return true on success or false if unsucessful.
 			$response_info = json_decode( $response->getBody() );
-			if ( isset( $response_info->status->success ) && $response_info->status->success == true) {
+			if ( isset( $response_info->status->success ) && true == $response_info->status->success ) {
 				return true;
 			}
 		}
@@ -167,7 +187,7 @@ class BadgrProvider {
 			// Check for a non-null recipient field.
 			$response_info = json_decode( $response->getBody() );
 			if ( isset( $response_info->status->success ) &&
-				$response_info->status->success == true &&
+			true == $response_info->status->success &&
 				isset( $response_info->result[0] ) &&
 					null !== $response_info->result[0]->recipient ) {
 				return true;
@@ -244,7 +264,7 @@ class BadgrProvider {
 		if ( null !== $response && 200 === $response->getStatusCode() ) {
 			$response_info = json_decode( $response->getBody() );
 			if ( isset( $response_info->status->success ) &&
-				$response_info->status->success == true &&
+				true == $response_info->status->successtrue &&
 				isset( $response_info->result ) && is_array( $response_info->result ) ) {
 				if ( $params['elements_per_page'] > 0 ) {
 					return self::paginate( $response_info->result, $params['paged'], $params['elements_per_page'] );
@@ -260,7 +280,7 @@ class BadgrProvider {
 	 * Get Badgr Issuer by entity ID / slug.
 	 *
 	 * @param string $slug Entity ID / slug.
-	 * @return void
+	 * @return boolean|object
 	 */
 	public static function get_issuer_by_slug( $slug ) {
 		// Make GET request to /v2/issuers/{entity_id}.
@@ -270,7 +290,7 @@ class BadgrProvider {
 		if ( null !== $response && $response->getStatusCode() == 200 ) {
 			$response_info = json_decode( $response->getBody() );
 			if ( isset( $response_info->status->success ) &&
-				$response_info->status->success == true &&
+				true == $response_info->status->success &&
 				isset( $response_info->result[0] ) ) {
 				return $response_info->result[0];
 			}
@@ -283,7 +303,7 @@ class BadgrProvider {
 	 * Delete Badgr Issuer by entity ID / slug.
 	 *
 	 * @param string $slug Entity ID / slug.
-	 * @return void
+	 * @return boolean
 	 */
 	public static function delete_issuer( $slug ) {
 		// Make DELETE request to /v2/issuers/{entity_id}.
@@ -326,7 +346,7 @@ class BadgrProvider {
 			// Return slug-entity_id or false if unsuccessful.
 			$response_info = json_decode( $response->getBody() );
 			if ( isset( $response_info->status->success ) &&
-				$response_info->status->success == true &&
+				true == $response_info->status->success &&
 				isset( $response_info->result[0]->entityId ) ) {
 				return $response_info->result[0]->entityId;
 			}
@@ -405,7 +425,7 @@ class BadgrProvider {
 			// Return slug-entity_id or false if unsuccessful.
 			$response_info = json_decode( $response->getBody() );
 			if ( isset( $response_info->status->success ) &&
-				$response_info->status->success == true &&
+				true == $response_info->status->success &&
 				isset( $response_info->result[0]->entityId ) ) {
 				return $response_info->result[0]->entityId;
 			}
@@ -418,8 +438,8 @@ class BadgrProvider {
 	 * Retrieve all badges by issuer slug from Badgr.
 	 *
 	 * @param string $issuer_slug Issuer Entity ID / Slug.
-	 * @param array $params Parameters.
-	 * @return void TODO.
+	 * @param array  $params Parameters.
+	 * @return boolean|object.
 	 */
 	public static function get_all_badge_classes_by_issuer_slug( $issuer_slug, $params = array(
 		'paged'             => 1,
@@ -432,7 +452,7 @@ class BadgrProvider {
 		if ( null !== $response && 200 === $response->getStatusCode() ) {
 			$response_info = json_decode( $response->getBody() );
 			if ( isset( $response_info->status->success ) &&
-				$response_info->status->success == true &&
+				true == $response_info->status->success &&
 				isset( $response_info->result ) && is_array( $response_info->result ) ) {
 				if ( $params['elements_per_page'] > 0 ) {
 					return self::paginate( $response_info->result, $params['paged'], $params['elements_per_page'] );
@@ -461,7 +481,7 @@ class BadgrProvider {
 		if ( null !== $response && 200 === $response->getStatusCode() ) {
 			$response_info = json_decode( $response->getBody() );
 			if ( isset( $response_info->status->success ) &&
-				$response_info->status->success == true &&
+				treu == $response_info->status->success &&
 				isset( $response_info->result ) && is_array( $response_info->result ) ) {
 				if ( $params['elements_per_page'] > 0 ) {
 					return self::paginate( $response_info->result, $params['paged'], $params['elements_per_page'] );
@@ -477,8 +497,7 @@ class BadgrProvider {
 	 * TODO.
 	 *
 	 * @param string $badge_class_slug Badge Entity ID / Slug.
-	 * @param array $params Parameters.
-	 * @return void TODO.
+	 * @return boolean|object
 	 */
 	public static function get_badge_class_by_badge_class_slug( $badge_class_slug ) {
 		// Make GET request to /v2/badgeclasses/{entity_id}.
@@ -488,7 +507,7 @@ class BadgrProvider {
 		if ( null !== $response && $response->getStatusCode() == 200 ) {
 			$response_info = json_decode( $response->getBody() );
 			if ( isset( $response_info->status->success ) &&
-				$response_info->status->success == true &&
+				true == $response_info->status->success &&
 				isset( $response_info->result[0] ) ) {
 				return $response_info->result[0];
 			}
@@ -543,7 +562,7 @@ class BadgrProvider {
 	 * Delete Badgr Badge Class by entity ID / slug.
 	 *
 	 * @param string $slug Entity ID / slug.
-	 * @return void
+	 * @return boolean
 	 */
 	public static function delete_badge_class( $slug ) {
 		// Make DELETE request to /v2/badgeclasses/{entity_id}.
@@ -590,24 +609,32 @@ class BadgrProvider {
 
 		return false;
 	}
-
-	public static function add_assertion_v2( $badge_class_slug, $recipient_identifier, $recipient_type = 'email', $issuedOn = null  ) {
+	/**
+	 * Undocumented function
+	 *
+	 * @param string $badge_class_slug Badge class slug.
+	 * @param string $recipient_identifier Recipient identifier.
+	 * @param string $recipient_type Recipient type. Defaults to 'email'.
+	 * @param string $issued_on Date assertion was issued on.
+	 * @return boolean|object
+	 */
+	public static function add_assertion_v2( $badge_class_slug, $recipient_identifier, $recipient_type = 'email', $issued_on = null ) {
 		// Setup body.
 		$request_body = array(
-			'recipient'        => array (
+			'recipient' => array(
 				'identity' => $recipient_identifier,
-				'type' => $recipient_type
+				'type'     => $recipient_type,
 			),
 		);
 
-		if ( null !== $issuedOn ) {
+		if ( null !== $issued_on ) {
 			try {
-				$issue_date = new DateTime( $issuedOn );
-			} catch (\Exception $e) {
+				$issue_date = new DateTime( $issued_on );
+			} catch ( \Exception $e ) {
 				return false;
 			}
 
-			$request_body["issuedOn"] = $issue_date->format('c');
+			$request_body['issuedOn'] = $issue_date->format( 'c' );
 		}
 		// Make POST request to /v2/badgeclasses/{entity_id}/assertions.
 		$response = self::getClient()->post( '/v2/badgeclasses/' . $badge_class_slug . '/assertions', $request_body );
@@ -617,7 +644,7 @@ class BadgrProvider {
 			// Return slug-entity_id or false if unsuccessful.
 			$response_info = json_decode( $response->getBody() );
 			if ( isset( $response_info->status->success ) &&
-				$response_info->status->success == true &&
+				true == $response_info->status->success &&
 				isset( $response_info->result[0]->entityId ) ) {
 				return $response_info->result[0]->entityId;
 			}
@@ -631,8 +658,8 @@ class BadgrProvider {
 	 * TODO.
 	 *
 	 * @param string $badge_class_slug BadgeClass slug.
-	 * @param array  $params Parameters.
-	 * @return void TODO.
+	 * @param array  $params Badge class parameters.
+	 * @return boolean|object.
 	 */
 	public static function get_all_assertions_by_badge_class_slug( $badge_class_slug, $params = array(
 		'paged'             => 1,
@@ -645,7 +672,7 @@ class BadgrProvider {
 		if ( null !== $response && 200 === $response->getStatusCode() ) {
 			$response_info = json_decode( $response->getBody() );
 			if ( isset( $response_info->status->success ) &&
-				$response_info->status->success == true &&
+				true == $response_info->status->success &&
 				isset( $response_info->result ) && is_array( $response_info->result ) ) {
 				if ( $params['elements_per_page'] > 0 ) {
 					return self::paginate( $response_info->result, $params['paged'], $params['elements_per_page'] );
@@ -661,8 +688,8 @@ class BadgrProvider {
 	 * TODO.
 	 *
 	 * @param string $issuer_slug Issuer slug.
-	 * @param array $params Parameters.
-	 * @return void TODO.
+	 * @param array  $params Assertions parameters.
+	 * @return boolean|object.
 	 */
 	public static function get_all_assertions_by_issuer_slug( $issuer_slug, $params = array(
 		'paged'             => 1,
@@ -681,7 +708,7 @@ class BadgrProvider {
 		if ( null !== $response && 200 === $response->getStatusCode() ) {
 			$response_info = json_decode( $response->getBody() );
 			if ( isset( $response_info->status->success ) &&
-				$response_info->status->success == true &&
+				true == $response_info->status->success &&
 				isset( $response_info->result ) && is_array( $response_info->result ) ) {
 				if ( $params['elements_per_page'] > 0 ) {
 					return self::paginate( $response_info->result, $params['paged'], $params['elements_per_page'] );
@@ -697,7 +724,7 @@ class BadgrProvider {
 	 * TOOD.
 	 *
 	 * @param string $assertion_slug Assertion slug.
-	 * @return void TODO.
+	 * @return boolean|object.
 	 */
 	public static function get_assertion_by_assertion_slug( $assertion_slug ) {
 		// Make GET request to /v2/assertions/{entity_id}.
@@ -707,7 +734,7 @@ class BadgrProvider {
 		if ( null !== $response && $response->getStatusCode() == 200 ) {
 			$response_info = json_decode( $response->getBody() );
 			if ( isset( $response_info->status->success ) &&
-				$response_info->status->success == true &&
+				true == $response_info->status->success &&
 				isset( $response_info->result[0] ) ) {
 				return $response_info->result[0];
 			}
@@ -721,7 +748,7 @@ class BadgrProvider {
 	 *
 	 * @param string $slug Entity ID / slug.
 	 * @param string $reason Reason.
-	 * @return void
+	 * @return boolean|object
 	 */
 	public static function revoke_assertion( $slug, $reason ) {
 
@@ -741,52 +768,63 @@ class BadgrProvider {
 		return false;
 	}
 
-	// Given a BadgrUser, get all assertions from that user's backpack
-	// By default, return assertions regradless of status
-	// To omit 'Rejected' and 'Unaccepted' assertions set $exclude_not_accepted parameter to true
-	public static function get_all_assertions_from_user_backpack ( BadgrUser $badgr_user,  $exclude_not_accepted = false , $params = array(
+	/**
+	 * Undocumented function
+	 *
+	 * @param BadgrUser $badgr_user Badgr user.
+	 * @param boolean   $exclude_not_accepted Set to true to exclude assertions not yet accepted.
+	 * @param boolean   $params Parameters.
+	 * @return boolean|object
+	 */
+	public static function get_all_assertions_from_user_backpack( BadgrUser $badgr_user, $exclude_not_accepted = false, $params = array(
 		'paged'             => 1,
 		'elements_per_page' => -1,
 	) ) {
-		$response = $badgr_user->get_client()->get('/v2/backpack/assertions');
+		$response = $badgr_user->get_client()->get( '/v2/backpack/assertions' );
 
 		// Check for 200 response.
 		if ( null !== $response && 200 === $response->getStatusCode() ) {
 			$response_info = json_decode( $response->getBody() );
 			if ( isset( $response_info->status->success ) &&
-				$response_info->status->success == true &&
+				true == $response_info->status->success &&
 				isset( $response_info->result ) && is_array( $response_info->result ) ) {
-					// Filter for acceptance status
-					if ( $exclude_not_accepted ) {
-						$result = array( );
-						foreach ( $response_info->result as $assertion ) {
-							if ( $assertion->acceptance == 'Accepted') {
-								$result[] = $assertion;
-							}
-						} 
-					} else {
-						$result = $response_info->result;
+					// Filter for acceptance status.
+				if ( $exclude_not_accepted ) {
+					$result = array();
+					foreach ( $response_info->result as $assertion ) {
+						if ( 'Accepted' == $assertion->acceptance ) {
+							$result[] = $assertion;
+						}
 					}
-					if ( $params['elements_per_page'] > 0 ) {
-						return self::paginate( $result, $params['paged'], $params['elements_per_page'] );
-					} else {
-						return $result;
-					}
+				} else {
+					$result = $response_info->result;
+				}
+				if ( $params['elements_per_page'] > 0 ) {
+					return self::paginate( $result, $params['paged'], $params['elements_per_page'] );
+				} else {
+					return $result;
+				}
 			}
 		}
 
 		return false;
 	}
 
-	// Given a BadgrUser, get details of an assertion
-	public static function get_assertion_details_from_user_backpack (BadgrUser $badgr_user, $slug ) {
-		$response = $badgr_user->get_client()->get('/v2/backpack/assertions/' . $slug );
+	/**
+	 * Given a BadgrUser, get details of an assertion
+	 *
+	 * @param BadgrUser $badgr_user Badgr user.
+	 * @param string    $slug Assertion slug.
+	 * @return boolean|object
+	 */
+	public static function get_assertion_details_from_user_backpack( BadgrUser $badgr_user, $slug ) {
+		$response = $badgr_user->get_client()->get( '/v2/backpack/assertions/' . $slug );
 
 		// Check for 200 response.
 		if ( null !== $response && $response->getStatusCode() == 200 ) {
 			$response_info = json_decode( $response->getBody() );
 			if ( isset( $response_info->status->success ) &&
-				$response_info->status->success == true &&
+				true == $response_info->status->success &&
 				isset( $response_info->result[0] ) ) {
 				return $response_info->result[0];
 			}
@@ -794,16 +832,22 @@ class BadgrProvider {
 
 		return false;
 	}
-
+	/**
+	 * Undocumented function
+	 *
+	 * @param BadgrUser $badgr_user Badgr user.
+	 * @param string    $slug Assertion slug.
+	 * @return boolean
+	 */
 	public static function accept_assertion_in_user_backpack( BadgrUser $badgr_user, $slug ) {
-		$response = $badgr_user->get_client()->put('/v2/backpack/assertions/' . $slug, ['acceptance' => 'Accepted'] );
+		$response = $badgr_user->get_client()->put( '/v2/backpack/assertions/' . $slug, array( 'acceptance' => 'Accepted' ) );
 
 		// Check for 200 response.
 		if ( null !== $response && $response->getStatusCode() == 200 ) {
 			$response_info = json_decode( $response->getBody() );
 			if ( isset( $response_info->status->success ) &&
-				$response_info->status->success == true &&
-				isset( $response_info->result[0] ) && $response_info->result[0]->acceptance == 'Accepted') {
+				true == $response_info->status->success &&
+				isset( $response_info->result[0] ) && 'Accepted' == $response_info->result[0]->acceptance ) {
 				return true;
 			}
 		}
@@ -811,32 +855,20 @@ class BadgrProvider {
 		return false;
 	}
 
-	// Badgr doesn't allow rejection in the backpack at the moment
-	// Comment in Badgr code: Only updating acceptance status (to 'Accepted') is permitted for now.
-/* 	public static function reject_assertion_in_user_backpack( BadgrUser $badgr_user, $slug ) {
-		$response = $badgr_user->get_client()->put('/v2/backpack/assertions/' . $slug, ['acceptance' => 'Rejected'] );
+
+	/**
+	 * Undocumented function
+	 *
+	 * @return boolean|object
+	 */
+	public static function get_profile_associated_to_client_in_use() {
+		$response = self::getClient()->get( '/v2/users/self' );
 
 		// Check for 200 response.
 		if ( null !== $response && $response->getStatusCode() == 200 ) {
 			$response_info = json_decode( $response->getBody() );
 			if ( isset( $response_info->status->success ) &&
-				$response_info->status->success == true &&
-				isset( $response_info->result[0] ) && $response_info->result[0]->acceptance == 'Rejected') {
-				return true;
-			}
-		}
-
-		return false;
-	} */
-
-	public static function get_profile_associated_to_client_in_use () {
-		$response = self::getClient()->get( '/v2/users/self');
-
-		// Check for 200 response.
-		if ( null !== $response && $response->getStatusCode() == 200 ) {
-			$response_info = json_decode( $response->getBody() );
-			if ( isset( $response_info->status->success ) &&
-				$response_info->status->success == true &&
+				true == $response_info->status->success &&
 				isset( $response_info->result[0] ) ) {
 				return $response_info->result[0];
 			}
@@ -844,10 +876,15 @@ class BadgrProvider {
 
 		return false;
 	}
-
+	/**
+	 * Undocumented function
+	 *
+	 * @param string $image Image path.
+	 * @return boolean|string
+	 */
 	private static function handle_image_data( $image ) {
 
-		if ( ! file_exists( $image) ) {
+		if ( ! file_exists( $image ) ) {
 			return false;
 		}
 
@@ -864,14 +901,14 @@ class BadgrProvider {
 				$mime_type .= '+xml';
 			}
 
-			// If the image is in jpeg or gif format, convert it to png
+			// If the image is in jpeg or gif format, convert it to png.
 			if ( 'image/jpeg' === $mime_type || 'image/gif' === $mime_type ) {
 				$gd_image = imagecreatefromstring( $image_raw_data );
 
 				$success = imagepng( $gd_image );
 
 				$image_raw_data = ob_get_contents();
-				$mime_type = 'image/png';
+				$mime_type      = 'image/png';
 			} else {
 				if ( 'image/png' === $mime_type || 'image/svg' === $mime_type ) {
 					$success = true;
@@ -884,7 +921,7 @@ class BadgrProvider {
 			$success = false;
 		} finally {
 			ob_end_clean();
-			if ( isset( $gd_image) && null !== $gd_image ) {
+			if ( isset( $gd_image ) && null !== $gd_image ) {
 				imagedestroy( $gd_image );
 			}
 		}
