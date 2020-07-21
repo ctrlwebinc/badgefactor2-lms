@@ -540,7 +540,7 @@ class BadgeFactor2_Admin {
 
 		$plugins->add_field(
 			array(
-				'name' => __('Add-Ons List'),
+				'name' => __( 'Add-Ons List', BF2_DATA['TextDomain'] ),
 				'id'   => 'badgefactor2_addons_list',
 				'type' => 'addons',
 			)
