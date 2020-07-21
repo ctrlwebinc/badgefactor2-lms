@@ -97,7 +97,7 @@ class BadgeFactor2_Admin {
 	 */
 	public static function admin_init() {
 		load_plugin_textdomain( BF2_DATA['TextDomain'], false, basename( dirname( __FILE__, 3 ) ) . '/languages/' );
-		self::register_settings_metabox();
+		self::register_settings_metaboxes();
 	}
 
 
@@ -390,7 +390,7 @@ class BadgeFactor2_Admin {
 	 *
 	 * @return void
 	 */
-	private static function register_settings_metabox() {
+	private static function register_settings_metaboxes() {
 
 		$args = array(
 			'id'           => 'badgefactor2_settings',
@@ -420,16 +420,16 @@ class BadgeFactor2_Admin {
 		);
 
 		/**
-		 * Registers Badgr options page.
+		 * Registers Badgr settings page.
 		 */
 		$args = array(
 			'id'           => 'badgefactor2_badgr_settings_page',
-			'menu_title'   => 'Badgr Server' . ( BadgrClient::is_active() ? '' : '&nbsp;<span class="awaiting-mod" title="You need to configure the connection to the Badgr service you\'ll use.">!</span>' ), // Use menu title, & not title to hide main h2.
+			'menu_title'   => __( 'Badgr Server', BF2_DATA['TextDomain'] ) . ( BadgrClient::is_active() ? '' : '&nbsp;<span class="awaiting-mod" title="' . __( 'You need to configure the connection to the Badgr service you\'ll use.', BF2_DATA['TextDomain'] ) . '">!</span>' ),
 			'object_types' => array( 'options-page' ),
 			'option_key'   => 'badgefactor2_badgr_settings',
 			'parent_slug'  => 'badgefactor2',
 			'tab_group'    => 'badgefactor2',
-			'tab_title'    => 'Badgr Settings',
+			'tab_title'    => 'Badgr',
 		);
 
 		// 'tab_group' property is supported in > 2.4.0.
@@ -519,7 +519,7 @@ class BadgeFactor2_Admin {
 		);
 
 		/**
-		 * Registers badge factor 2 plugins options page.
+		 * Registers Add-Ons page.
 		 */
 		$args = array(
 			'id'           => 'badgefactor2_plugins_page',

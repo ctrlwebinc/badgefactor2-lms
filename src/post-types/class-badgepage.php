@@ -42,7 +42,7 @@ class BadgePage {
 	public static function init_hooks() {
 		add_action( 'init', array( BadgePage::class, 'init' ), 10 );
 		add_filter( 'post_updated_messages', array( BadgePage::class, 'updated_messages' ), 10 );
-		add_action( 'cmb2_admin_init', array( BadgePage::class, 'custom_meta_boxes' ), 10 );
+		add_action( 'cmb2_admin_init', array( BadgePage::class, 'register_cpt_metaboxes' ), 10 );
 	}
 
 
@@ -142,7 +142,7 @@ class BadgePage {
 	 *
 	 * @return void
 	 */
-	public static function custom_meta_boxes() {
+	public static function register_cpt_metaboxes() {
 
 		// Links.
 

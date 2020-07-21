@@ -179,6 +179,17 @@ class BadgeFactor2 {
 		}
 	}
 
+
+	/**
+	 * Checks whether or not plugin is initialized.
+	 *
+	 * @return boolean
+	 */
+	public static function is_initialized() {
+		return self::$initialized;
+	}
+
+
 	/**
 	 * Define BadgeFactor2 Constants.
 	 *
