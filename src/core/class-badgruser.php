@@ -29,64 +29,142 @@ use \WP_User;
  * BadgrUser Class.
  */
 class BadgrUser {
-
+	/**
+	 * Undocumented variable
+	 *
+	 * @var string
+	 */
 	public static $user_meta_key_for_client = 'badgr_client_instance';
+	/**
+	 * Undocumented variable
+	 *
+	 * @var string
+	 */
 	public static $options_key_for_badgr_admin = 'badgefactor2_badgr_admin';
-	public static $meta_key_for_user_state = 'badgr_user_state';
-	public static $meta_key_for_badgr_user_slug = 'badgr_user_slug';
 
+	/**
+	 * Undocumented variable
+	 *
+	 * @var string
+	 */
+	public static $meta_key_for_user_state = 'badgr_user_state';
+
+	/**
+	 * Undocumented variable
+	 *
+	 * @var string
+	 */
+	public static $meta_key_for_badgr_user_slug = 'badgr_user_slug';
+	/**
+	 * Undocumented variable
+	 *
+	 * @var [type]
+	 */
 	protected $wp_user = null;
+	/**
+	 * Undocumented variable
+	 *
+	 * @var [type]
+	 */
 	protected $user_client = null;
 
-	function __construct ( WP_User $wp_user) {
+	/**
+	 * Undocumented function
+	 *
+	 * @param WP_User $wp_user WordPress user.
+	 */
+	public function __construct( WP_User $wp_user ) {
 		$this->wp_user = $wp_user;
 		$this->get_client_from_user_meta();
 
-		// TODO considering making if no client in user meta
+		// TODO considering making if no client in user meta.
 	}
 
+	/**
+	 * Undocumented function
+	 *
+	 * @return null|BadgrUser
+	 */
 	public static function get_admin_instance() {
-		$admin_instance = get_option( self::$options_key_for_badgr_admin);
+		$admin_instance = get_option( self::$options_key_for_badgr_admin );
 
-		if ( false !== $admin_instance && '' != $admin_instance) {
+		if ( false !== $admin_instance && '' != $admin_instance ) {
 			return $admin_instance;
 		}
 
 		return null;
 	}
 
-	public function set_as_admin_instance( ) {
-		update_option( self::$options_key_for_badgr_admin, $this);
+	/**
+	 * Undocumented function
+	 *
+	 * @return void
+	 */
+	public function set_as_admin_instance() {
+		update_option( self::$options_key_for_badgr_admin, $this );
 	}
-
-	public static function make_from_user_id ( int $wp_user_id) {
+	/**
+	 * Undocumented function
+	 *
+	 * @param integer $wp_user_id WordPress user id.
+	 * @return BadgrUser
+	 */
+	public static function make_from_user_id( int $wp_user_id ) {
 		return new self( new WP_User( $wp_user_id ) );
 	}
-
-	public function get_wp_username( ) {
+	/**
+	 * Undocumented function
+	 *
+	 * @return string
+	 */
+	public function get_wp_username() {
 		return $this->wp_user->user_nicename;
 	}
-
-	protected function get_client_from_user_meta () {
+	/**
+	 * Undocumented function
+	 *
+	 * @return void
+	 */
+	protected function get_client_from_user_meta() {
 		$this->user_client = get_user_meta( $this->wp_user->ID, self::$user_meta_key_for_client, true );
 	}
-	
-	public function save_client () {
+	/**
+	 * Undocumented function
+	 *
+	 * @return void
+	 */
+	public function save_client() {
 		if ( null !== $this->user_client ) {
-			update_user_meta( $this->wp_user->ID, self::$user_meta_key_for_client, $this->user_client);
+			update_user_meta( $this->wp_user->ID, self::$user_meta_key_for_client, $this->user_client );
 		}
 	}
 
-	public function set_client( BadgrClient $badgr_client) {
+	/**
+	 * Undocumented function
+	 *
+	 * @param BadgrClient $badgr_client Badgr Client to use.
+	 * @return void
+	 */
+	public function set_client( BadgrClient $badgr_client ) {
 		$badgr_client->badgr_user = $this;
-		$this->user_client = $badgr_client;
+		$this->user_client        = $badgr_client;
 		$this->save_client();
 	}
-
-	public function get_client () {
+	/**
+	 * Undocumented function
+	 *
+	 * @return null|BadgrClient
+	 */
+	public function get_client() {
 		return $this->user_client;
 	}
 
+	/**
+	 * Undocumented function
+	 *
+	 * @param BadgrUser $other_badgr_user Badgr user to compare.
+	 * @return boolean
+	 */
 	public function is_same_user( BadgrUser $other_badgr_user ) {
 		if ( $this->wp_user->ID == $other_badgr_user->wp_user->ID ) {
 			return true;
@@ -95,27 +173,34 @@ class BadgrUser {
 		return false;
 	}
 
-	public static function getOrMakeUserClient( WPUser $wp_user = null ) {
+	/**
+	 * Undocumented function
+	 *
+	 * @param WPUser $wp_user WordPress user.
+	 * @return BadgrClient
+	 * @throws \Exception Throws exception if can't determine the user for client creation.
+	 */
+	public static function get_or_make_user_client( WPUser $wp_user = null ) {
 
-		// If no user passed, use the current user
+		// If no user passed, use the current user.
 		if ( null === $wp_user ) {
 			$wp_user = wp_get_current_user();
-			if ( $wp_user->ID == 0) {
-				throw new \Exception('Can\'t determine user for client creation');
+			if ( 0 == $wp_user->ID ) {
+				throw new \Exception( 'Can\'t determine user for client creation' );
 			}
 		}
-		// Look in user metas for existing client
-		// TODO Transfer responsibility of user client fetching to BadgrUser
+		// Look in user metas for existing client.
+		// TODO Transfer responsibility of user client fetching to BadgrUser.
 		$client = get_user_meta( $wp_user->ID, self::$user_meta_key_for_client, true );
 
-		if ( null!== $client && '' !== $client) {
+		if ( null !== $client && '' !== $client ) {
 			return $client;
 		}
 
-		// Make client
-		$client = BadgrClient::makeClientFromSavedOptions();
+		// Make client.
+		$client = BadgrClient::make_client_from_saved_options();
 
-		// Set user
+		// Set user.
 		$badgr_user = new BadgrUser( $wp_user );
 		$badgr_user->set_client( $client );
 
@@ -129,8 +214,8 @@ class BadgrUser {
 	 * @return void
 	 */
 	public static function init_hooks() {
-		add_action( 'init', array( BadgrUser::class, 'init' ), 9966 );
-		add_action( 'cmb2_admin_init', array( BadgrUser::class, 'cmb2_admin_init' ) );
+		add_action( 'init', array( self::class, 'init' ), 9966 );
+		add_action( 'cmb2_admin_init', array( self::class, 'cmb2_admin_init' ) );
 	}
 
 	/**
@@ -139,43 +224,53 @@ class BadgrUser {
 	 * @return void
 	 */
 	public static function init() {
-		add_action( 'user_register', array( BadgrUser::class, 'new_user_registers' ), 9966 );
-		add_action( 'profile_update', array( BadgrUser::class, 'update_user' ), 9966 );
-		add_action( 'wp_authenticate', array( BadgrUser::class, 'keep_passwords_synched' ), 9966 );
+		add_action( 'user_register', array( self::class, 'new_user_registers' ), 9966 );
+		add_action( 'profile_update', array( self::class, 'update_user' ), 9966 );
+		add_action( 'wp_authenticate', array( self::class, 'keep_passwords_synched' ), 9966 );
 	}
 
+	/**
+	 * Undocumented function
+	 *
+	 * @param string $username Username.
+	 * @return void
+	 */
 	public static function keep_passwords_synched( $username ) {
 
-		// This hook seems to also be called during logout. Username is then null
+		// This hook seems to also be called during logout. Username is then null.
 
 		if ( null == $username ) {
-			// It is a logout operation, nothing needs doing for us
+			// It is a logout operation, nothing needs doing for us.
 			return;
 		}
 
-		$password_from_login = $_POST['pwd'];
+		if ( ! isset( $_POST['pwd'] ) ) {
+			return false;
+		}
 
-		// check if password is valid: if not return
-		$auth_result = wp_authenticate( $username, $password_from_login);
-		if ( is_wp_error( $auth_result )) {
+		$password_from_login = wp_unslash( $_POST['pwd'] );
+
+		// check if password is valid: if not return.
+		$auth_result = wp_authenticate( $username, $password_from_login );
+		if ( is_wp_error( $auth_result ) ) {
 			return;
 		}
 
-		// Password is valid
+		// Password is valid.
 
-		// Check if password coresponds to current password
+		// Check if password coresponds to current password.
 		$current_password = get_user_meta( $auth_result->ID, 'badgr_password', true );
-		if ( $current_password === $auth_result) {
-			// It does, return
+		if ( $current_password === $auth_result ) {
+			// It does, return.
 			return;
 		}
-		// It doesn't, so change password
+		// It doesn't, so change password.
 		$user_slug = get_user_meta( $auth_result->ID, self::$meta_key_for_badgr_user_slug, true );
 
-		// Perform password change using old and new
-		if ( false !== BadgrProvider::change_user_password( $user_slug, $current_password, $password_from_login)) {
-			// Record the new one as the old one
-			update_user_meta( $auth_result->ID, 'badgr_password', $password_from_login);
+		// Perform password change using old and new.
+		if ( false !== BadgrProvider::change_user_password( $user_slug, $current_password, $password_from_login ) ) {
+			// Record the new one as the old one.
+			update_user_meta( $auth_result->ID, 'badgr_password', $password_from_login );
 
 		}
 
@@ -201,15 +296,15 @@ class BadgrUser {
 		update_user_meta( $user_id, self::$meta_key_for_user_state, 'to_be_created' );
 
 		// Add user to badgr.
-		$user_data = get_userdata( $user_id );
+		$user_data          = get_userdata( $user_id );
 		$temporary_password = self::generate_random_password();
-		$slug      = BadgrProvider::add_user( $user_data->first_name, $user_data->last_name, $user_data->user_email, $temporary_password );
+		$slug               = BadgrProvider::add_user( $user_data->first_name, $user_data->last_name, $user_data->user_email, $temporary_password );
 
 		// If successful set badgr user state to 'created' and save slug and save previous password.
 		if ( false !== $slug ) {
 			update_user_meta( $user_id, self::$meta_key_for_badgr_user_slug, $slug );
 			update_user_meta( $user_id, self::$meta_key_for_user_state, 'created' );
-			update_user_meta( $user_id, 'badgr_password', $temporary_password);
+			update_user_meta( $user_id, 'badgr_password', $temporary_password );
 		}
 	}
 
@@ -272,75 +367,94 @@ class BadgrUser {
 		}
 		return implode( $pass );
 	}
-
+	/**
+	 * Undocumented function
+	 *
+	 * @return object
+	 */
 	public static function mark_existing_users_for_migration() {
-		// Query for users withtout a badgr_user_state meta
-		// Set to 'to_be_created'
+		// Query for users withtout a badgr_user_state <meta class="">
+		// Set to 'to_be_created'.
 		global $wpdb;
-		
-		return $wpdb->query("INSERT INTO wp_usermeta (user_id,meta_key,meta_value)
+
+		return $wpdb->query(
+			"INSERT INTO wp_usermeta (user_id,meta_key,meta_value)
 		SELECT u.id, 'badgr_user_state', 'to_be_created' FROM wp_users AS u
 		WHERE NOT EXISTS
 		(SELECT m.umeta_id FROM wp_usermeta as m
-		WHERE m.`meta_key` = 'badgr_user_state' AND u.id = m.user_id) AND u.id != 1;");
+		WHERE m.`meta_key` = 'badgr_user_state' AND u.id = m.user_id) AND u.id != 1;"
+		);
 
 	}
-
-	public static function migrate_users_and_mark_as_verified( $mark_as_verified = false) {
-		$count = 0;
+	/**
+	 * Undocumented function
+	 *
+	 * @param boolean $mark_as_verified Set to true to mark users as verified as they are processed.
+	 * @return int|boolean
+	 */
+	public static function migrate_users_and_mark_as_verified( $mark_as_verified = false ) {
+		$count                = 0;
 		$consecutive_failures = 0;
 
-		// Get users in a 'to_be_created' state
-		$users_to_process = get_users( array( 
-			'meta_key' => self::$meta_key_for_user_state,
-			'meta_value' => 'to_be_created',
-			'number' => 50,
-			'paged' => 1,
-		) );
+		// Get users in a 'to_be_created' state.
+		$users_to_process = get_users(
+			array(
+				'meta_key'   => self::$meta_key_for_user_state,
+				'meta_value' => 'to_be_created',
+				'number'     => 50,
+				'paged'      => 1,
+			)
+		);
 
-		while ( count( $users_to_process ) > 0 ) {
+		$user_to_process_count = count( $users_to_process );
+		while ( 0 < $user_to_process_count ) {
 
 			foreach ( $users_to_process as $user_to_process ) {
-				// Skip admin user
-				if ( $user_to_process->ID == 1 ) {
+				// Skip admin user.
+				if ( 1 == $user_to_process->ID ) {
 					continue;
 				}
 
-				// Create user and mark as created
+				// Create user and mark as created.
 				$temporary_password = self::generate_random_password();
-				$slug      = BadgrProvider::add_user( $user_to_process->first_name, $user_to_process->last_name, $user_to_process->user_email, $temporary_password );
-		
+				$slug               = BadgrProvider::add_user( $user_to_process->first_name, $user_to_process->last_name, $user_to_process->user_email, $temporary_password );
+
 				// If successful set badgr user state to 'created' and save slug and save previous password.
 				if ( false !== $slug ) {
 					update_user_meta( $user_to_process->ID, self::$meta_key_for_badgr_user_slug, $slug );
 					update_user_meta( $user_to_process->ID, self::$meta_key_for_user_state, 'created' );
-					update_user_meta( $user_to_process->ID, 'badgr_password', $temporary_password);
+					update_user_meta( $user_to_process->ID, 'badgr_password', $temporary_password );
 					$consecutive_failures = 0;
 				} else {
 					update_user_meta( $user_to_process->ID, self::$meta_key_for_user_state, 'failed_to_create' );
 
- 					if ( $consecutive_failures > 2 ) {
+					if ( $consecutive_failures > 2 ) {
 						return false;
-					} 					
-					// Sleep to avoid Badgr throttling us
-					sleep(15 * ( $consecutive_failures + 1 ) );
+					}
+					// Sleep to avoid Badgr throttling us.
+					sleep( 15 * ( $consecutive_failures + 1 ) );
 
 					$consecutive_failures++;
 				}
-	
-				// Add role if mark as verified flag is set
+
+				// Add role if mark as verified flag is set.
 				if ( $mark_as_verified ) {
 					$user_to_process->add_cap( 'badgefactor2_use_badgr' );
 				}
-	
+
 				$count++;
 
-				$users_to_process = get_users( array( 
-					'meta_key' => self::$meta_key_for_user_state,
-					'meta_value' => 'to_be_created',
-					'number' => 50,
-					'paged' => 1,
-				) );
+				$users_to_process = get_users(
+					array(
+						'meta_key'   => self::$meta_key_for_user_state,
+						'meta_value' => 'to_be_created',
+						'number'     => 50,
+						'paged'      => 1,
+					)
+				);
+
+				$user_to_process_count = count( $users_to_process );
+
 			}
 		}
 

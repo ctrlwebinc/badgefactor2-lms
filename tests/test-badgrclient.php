@@ -51,7 +51,7 @@ class BadgrClientTest extends WP_UnitTestCase {
 		$client = null;
 
 		try {
-			$client = BadgrClient::makeInstance($basicParameters);
+			$client = BadgrClient::make_instance($basicParameters);
 		} catch ( BadMethodCallException $e ) {
 
 		}
@@ -76,7 +76,7 @@ class BadgrClientTest extends WP_UnitTestCase {
 			unset($incompleteParameters[$key]);
 
 			try {
-				$client = BadgrClient::makeInstance($incompleteParameters);
+				$client = BadgrClient::make_instance($incompleteParameters);
 
 				// We shouldn't make it to the next line if exceptions are generated
 				$this->fail('Exception not thrown');
@@ -102,7 +102,7 @@ class BadgrClientTest extends WP_UnitTestCase {
 		$client = null;
 
 		try {
-			$client = BadgrClient::makeInstance($parameters);
+			$client = BadgrClient::make_instance($parameters);
 		} catch ( BadMethodCallException $e ) {
 
 		}
@@ -114,7 +114,7 @@ class BadgrClientTest extends WP_UnitTestCase {
 
 		// Setup a completely configured client and check that we can get the profile info
 
-		$clientParameters = [
+		$client_parameters = [
 			'username' => getenv('BADGR_ADMIN_USERNAME'),
 			'as_admin' => true,
 			'badgr_server_public_url' => getenv('BADGR_SERVER_PUBLIC_URL'),
@@ -130,7 +130,7 @@ class BadgrClientTest extends WP_UnitTestCase {
 		$client = null;
 
 		try {
-			$client = BadgrClient::makeInstance($clientParameters);
+			$client = BadgrClient::make_instance($client_parameters);
 		} catch ( BadMethodCallException $e ) {
 			$this->fail('Exception thrown on client creation: ' . $e->getMessage());
 		}
@@ -161,7 +161,7 @@ class BadgrClientTest extends WP_UnitTestCase {
 
 		// Setup a completely configured client and check that we can get the profile info
 
-		$clientParameters = [
+		$client_parameters = [
 			'username' => getenv('BADGR_ADMIN_USERNAME'),
 			'as_admin' => true,
 			'badgr_server_public_url' => getenv('BADGR_SERVER_PUBLIC_URL'),
@@ -174,7 +174,7 @@ class BadgrClientTest extends WP_UnitTestCase {
 		$client = null;
 
 		try {
-			$client = BadgrClient::makeInstance($clientParameters);
+			$client = BadgrClient::make_instance($client_parameters);
 		} catch ( BadMethodCallException $e ) {
 			$this->fail('Exception thrown on client creation: ' . $e->getMessage());
 		}
@@ -182,7 +182,7 @@ class BadgrClientTest extends WP_UnitTestCase {
 		$this->assertNotNull($client);
 
 		// Attempt to get token
-		$client->getAccessTokenFromPasswordGrant();
+		$client->get_access_token_from_password_grant();
 
 		// Check that we can retreive information on the authorized user
 		// Make GET request to /v2/users/self.
@@ -208,7 +208,7 @@ class BadgrClientTest extends WP_UnitTestCase {
 
 		// Setup a completely configured client and check that we can get the profile info
 
-		$clientParameters = [
+		$client_parameters = [
 			'username' => 'dev@ctrlweb.ca',
 			'as_admin' => false,
 			'badgr_server_public_url' => getenv('BADGR_SERVER_PUBLIC_URL'),
@@ -221,7 +221,7 @@ class BadgrClientTest extends WP_UnitTestCase {
 		$client = null;
 
 		try {
-			$client = BadgrClient::makeInstance($clientParameters);
+			$client = BadgrClient::make_instance($client_parameters);
 		} catch ( BadMethodCallException $e ) {
 			$this->fail('Exception thrown on client creation: ' . $e->getMessage());
 		}
@@ -230,7 +230,7 @@ class BadgrClientTest extends WP_UnitTestCase {
 
 		try {
 			// Attempt to get token
-			$client->getAccessTokenFromPasswordGrant();
+			$client->get_access_token_from_password_grant();
 
 			// If exception is thrown, we shouldn't get this far
 			$this->fail('Bad credentials didn\'t raise exception');
@@ -243,7 +243,7 @@ class BadgrClientTest extends WP_UnitTestCase {
 
 		// Setup a completely configured client and check that we can get the profile info
 
-		$clientParameters = [
+		$client_parameters = [
 			'username' => getenv('BADGRIO_USERNAME'),
 			'as_admin' => false,
 			'badgr_server_public_url' => getenv('BADGRIO_URL'),
@@ -254,7 +254,7 @@ class BadgrClientTest extends WP_UnitTestCase {
 		$client = null;
 
 		try {
-			$client = BadgrClient::makeInstance($clientParameters);
+			$client = BadgrClient::make_instance($client_parameters);
 		} catch ( BadMethodCallException $e ) {
 			$this->fail('Exception thrown on client creation: ' . $e->getMessage());
 		}
@@ -262,7 +262,7 @@ class BadgrClientTest extends WP_UnitTestCase {
 		$this->assertNotNull($client);
 
 		// Attempt to get token
-		$client->getAccessTokenFromPasswordGrant();
+		$client->get_access_token_from_password_grant();
 
 		// Check that we can retreive information on the authorized user
 		// Make GET request to /v2/users/self.
@@ -307,10 +307,10 @@ class BadgrClientTest extends WP_UnitTestCase {
     new Response(500,[], ''),
 		]);
 		$handlerStack = HandlerStack::create($mock);
-		$guzzleClient = new Client(['handler' => $handlerStack]);
+		$guzzle_client = new Client(['handler' => $handlerStack]);
 
 		// Setup a badgr client instance
-		$clientParameters = [
+		$client_parameters = [
 			'username' => 'dev@ctrlweb.ca',
 			'as_admin' => false,
 			'badgr_server_public_url' => getenv('BADGR_SERVER_PUBLIC_URL'),
@@ -323,7 +323,7 @@ class BadgrClientTest extends WP_UnitTestCase {
 		$client = null;
 
 		try {
-			$client = BadgrClient::makeInstance($clientParameters);
+			$client = BadgrClient::make_instance($client_parameters);
 		} catch ( BadMethodCallException $e ) {
 			$this->fail('Unexpected exception at client creation.');
 		}
@@ -331,7 +331,7 @@ class BadgrClientTest extends WP_UnitTestCase {
 		$this->assertNotNull($client);
 
 		// Setup our Guzzle client
-		$client::setGuzzleClient($guzzleClient);
+		$client::set_guzzle_client($guzzle_client);
 
 		// Make an api call, get a 401
 		try {
@@ -387,8 +387,8 @@ class BadgrClientTest extends WP_UnitTestCase {
 		$adminClient = null;
 
 		try {
-			$adminClient = BadgrClient::makeInstance($adminClientParameters);
-			$adminClient->getAccessTokenFromPasswordGrant();
+			$adminClient = BadgrClient::make_instance($adminClientParameters);
+			$adminClient->get_access_token_from_password_grant();
 		} catch ( BadMethodCallException $e ) {
 			$this->fail('Exception thrown on client creation: ' . $e->getMessage());
 		}
@@ -424,8 +424,8 @@ class BadgrClientTest extends WP_UnitTestCase {
 		// Add the history middleware to the handler stack.
 		$handlerStack->push($history);
 		
-		$guzzleClient = new Client(['handler' => $handlerStack]);
-		BadgrClient::setGuzzleClient($guzzleClient); */
+		$guzzle_client = new Client(['handler' => $handlerStack]);
+		BadgrClient::set_guzzle_client($guzzle_client); */
 		
 		// Password grant admin client
 		$adminClientParameters = [
@@ -441,8 +441,8 @@ class BadgrClientTest extends WP_UnitTestCase {
 		$adminClient = null;
 
 		try {
-			$adminClient = BadgrClient::makeInstance($adminClientParameters);
-			$adminClient->getAccessTokenFromPasswordGrant();
+			$adminClient = BadgrClient::make_instance($adminClientParameters);
+			$adminClient->get_access_token_from_password_grant();
 			
 			// Assert success
 			$this->assertTrue(true);
@@ -486,7 +486,7 @@ class BadgrClientTest extends WP_UnitTestCase {
 		update_option( 'badgefactor2_badgr_settings', $options );
 
 		// Fetch and use client
-		$client = BadgrClient::makeClientFromSavedOptions();
+		$client = BadgrClient::make_client_from_saved_options();
 
 		// Make GET request to /v2/users/self.
 		$response = $client->get( '/v2/users/self' );

@@ -49,7 +49,7 @@ class BadgrProviderTest extends WP_UnitTestCase {
 /* 	public function test_provider_can_fetch_a_client_from_old_style_options() {
 
 		// Setup a completely client and check that we can get the profile info
-		$clientParameters = [
+		$client_parameters = [
 			'username' => getenv('BADGR_ADMIN_USERNAME'),
 			'as_admin' => true,
 			'badgr_server_public_url' => getenv('BADGR_SERVER_PUBLIC_URL'),
@@ -62,9 +62,9 @@ class BadgrProviderTest extends WP_UnitTestCase {
 			'token_expiration' => getenv('BADGR_SERVER_TOKEN_EXPIRATION'),
 		];
 
-		$client = BadgrClient::makeInstance( $clientParameters );
+		$client = BadgrClient::make_instance( $client_parameters );
 
-		BadgrProvider::setClient( $client );
+		BadgrProvider::set_client( $client );
 
 		// Check that we can retreive information on the authorized user
 		// Make GET request to /v2/users/self.
@@ -110,7 +110,7 @@ class BadgrProviderTest extends WP_UnitTestCase {
 	/* public function test_issuer_to_new_user_assertion_flow() {
 
 		// Setup a completely client and check that we can get the profile info
-		$clientParameters = [
+		$client_parameters = [
 			'username' => getenv('BADGR_ADMIN_USERNAME'),
 			'as_admin' => true,
 			'badgr_server_public_url' => getenv('BADGR_SERVER_PUBLIC_URL'),
@@ -123,9 +123,9 @@ class BadgrProviderTest extends WP_UnitTestCase {
 			'token_expiration' => getenv('BADGR_SERVER_TOKEN_EXPIRATION'),
 		];
 
-		$client = BadgrClient::makeInstance( $clientParameters );
+		$client = BadgrClient::make_instance( $client_parameters );
 
-		BadgrProvider::setClient( $client );
+		BadgrProvider::set_client( $client );
 
 		// Check that we can retreive information on the authorized user
 		// Make GET request to /v2/users/self.
