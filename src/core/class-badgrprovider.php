@@ -910,7 +910,7 @@ class BadgrProvider {
 				$image_raw_data = ob_get_contents();
 				$mime_type      = 'image/png';
 			} else {
-				if ( 'image/png' === $mime_type || 'image/svg' === $mime_type ) {
+				if ( 'image/png' === $mime_type || 'image/svg+xml' === $mime_type ) {
 					$success = true;
 				}
 			}
