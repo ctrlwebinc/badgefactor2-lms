@@ -20,12 +20,46 @@
  * @package Badge_Factor_2
  */
 
-namespace BadgeFactor2\Post_Types;
+namespace BadgeFactor2\Roles;
 
 /**
  * Approver user helper functions.
  */
 class Approver {
+
+
+	/**
+	 * Init hooks.
+	 *
+	 * @return void
+	 */
+	public static function init_hooks() {
+		add_action( 'init', array( BadgeFactor2_Admin::class, 'add_custom_role_and_capabilities' ), 11 );
+	}
+
+
+	/**
+	 * Adds custom roles and capabilities requires by Badge Factor 2.
+	 *
+	 * @return void
+	 */
+	public static function add_custom_role_and_capabilities() {
+		$approver = add_role(
+			'approver',
+			__( 'Approver', BF2_DATA['TextDomain'] ),
+			array(
+				'read'                 => true,
+				'edit_posts'           => true,
+				'edit_published_posts' => true,
+				// FIXME List must be validated at a later development stage.
+			)
+		);
+
+		if ( null !== $approver ) {
+			$approver->add_cap( 'badgefactor2_approve_badge_requests' );
+		}
+	}
+
 
 	/**
 	 * Get select-formatted options.

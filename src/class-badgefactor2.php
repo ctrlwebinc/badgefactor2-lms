@@ -111,6 +111,9 @@ class BadgeFactor2 {
 		Post_Types\BadgePage::init_hooks();
 		Post_Types\BadgeRequest::init_hooks();
 
+		// Roles.
+		Roles\Approver::init_hooks();
+
 		// Admin.
 		if ( is_admin() || ( defined( 'WP_CLI' ) && WP_CLI ) ) {
 			BadgeFactor2_Admin::init_hooks();
@@ -155,7 +158,7 @@ class BadgeFactor2 {
 		require_once BF2_ABSPATH . 'src/public/shortcodes/class-issuers.php';
 
 		// Post Types.
-		require_once BF2_ABSPATH . 'src/post-types/class-approver.php';
+		require_once BF2_ABSPATH . 'src/roles/class-approver.php';
 		require_once BF2_ABSPATH . 'src/post-types/class-badgepage.php';
 		require_once BF2_ABSPATH . 'src/post-types/class-badgerequest.php';
 
