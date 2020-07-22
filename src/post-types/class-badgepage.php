@@ -20,19 +20,33 @@
  * @package Badge_Factor_2
  *
  * @phpcs:disable WordPress.WP.I18n.NonSingularStringLiteralDomain
+ * @phpcs:disable WordPress.WP.I18n.NonSingularStringLiteralContext
  */
 
 namespace BadgeFactor2\Post_Types;
 
 use BadgeFactor2\Models\BadgeClass;
 use BadgeFactor2\Models\Issuer;
-use BadgeFactor2\Post_Types\Approver;
+use BadgeFactor2\Roles\Approver;
 
 /**
  * Badge Page post type.
  */
 class BadgePage {
 
+	/**
+	 * Custom post type's slug.
+	 *
+	 * @var string
+	 */
+	private static $slug = 'badge-page';
+
+	/**
+	 * Custom post type's slug, pluralized.
+	 *
+	 * @var string
+	 */
+	private static $slug_plural = 'badge-pages';
 
 	/**
 	 * Init hooks.
@@ -41,6 +55,7 @@ class BadgePage {
 	 */
 	public static function init_hooks() {
 		add_action( 'init', array( BadgePage::class, 'init' ), 10 );
+		add_action( 'admin_init', array( BadgePage::class, 'add_capabilities' ), 10 );
 		add_filter( 'post_updated_messages', array( BadgePage::class, 'updated_messages' ), 10 );
 		add_action( 'cmb2_admin_init', array( BadgePage::class, 'register_cpt_metaboxes' ), 10 );
 	}
@@ -52,7 +67,7 @@ class BadgePage {
 	public static function init() {
 
 		register_post_type(
-			'badge-page',
+			self::$slug,
 			array(
 				'labels'            => array(
 					'name'                  => __( 'Badge Pages', BF2_DATA['TextDomain'] ),
@@ -62,10 +77,10 @@ class BadgePage {
 					'attributes'            => __( 'Badge Page Attributes', BF2_DATA['TextDomain'] ),
 					'insert_into_item'      => __( 'Insert into Badge Page', BF2_DATA['TextDomain'] ),
 					'uploaded_to_this_item' => __( 'Uploaded to this Badge Page', BF2_DATA['TextDomain'] ),
-					'featured_image'        => _x( 'Featured Image', 'badge-page', BF2_DATA['TextDomain'] ),
-					'set_featured_image'    => _x( 'Set featured image', 'badge-page', BF2_DATA['TextDomain'] ),
-					'remove_featured_image' => _x( 'Remove featured image', 'badge-page', BF2_DATA['TextDomain'] ),
-					'use_featured_image'    => _x( 'Use as featured image', 'badge-page', BF2_DATA['TextDomain'] ),
+					'featured_image'        => _x( 'Featured Image', self::$slug, BF2_DATA['TextDomain'] ),
+					'set_featured_image'    => _x( 'Set featured image', self::$slug, BF2_DATA['TextDomain'] ),
+					'remove_featured_image' => _x( 'Remove featured image', self::$slug, BF2_DATA['TextDomain'] ),
+					'use_featured_image'    => _x( 'Use as featured image', self::$slug, BF2_DATA['TextDomain'] ),
 					'filter_items_list'     => __( 'Filter Badge Pages list', BF2_DATA['TextDomain'] ),
 					'items_list_navigation' => __( 'Badge Pages list navigation', BF2_DATA['TextDomain'] ),
 					'items_list'            => __( 'Badge Pages list', BF2_DATA['TextDomain'] ),
@@ -89,9 +104,11 @@ class BadgePage {
 				'has_archive'       => true,
 				'rewrite'           => true,
 				'query_var'         => true,
-				'menu_position'     => null,
+				'menu_position'     => 50,
 				'menu_icon'         => BF2_BASEURL . 'assets/images/badge.svg',
 				'show_in_rest'      => false,
+				'capability_type'   => array( self::$slug, self::$slug_plural ),
+				'map_meta_cap'      => true,
 			)
 		);
 
@@ -109,7 +126,7 @@ class BadgePage {
 
 		$permalink = get_permalink( $post );
 
-		$messages['badge-page'] = array(
+		$messages[ self::$slug ] = array(
 			0  => '', // Unused. Messages start at index 1.
 			/* translators: %s: post permalink */
 			1  => sprintf( __( 'Badge Page updated. <a target="_blank" href="%s">View Badge Page</a>', BF2_DATA['TextDomain'] ), esc_url( $permalink ) ),
@@ -138,6 +155,58 @@ class BadgePage {
 
 
 	/**
+	 * Add roles (capabilities) to custom post type.
+	 *
+	 * @return void
+	 */
+	public static function add_capabilities() {
+		$capabilities = array(
+			'edit_' . self::$slug_plural         => array(
+				'administrator',
+			),
+			'edit_other_' . self::$slug_plural   => array(
+				'administrator',
+			),
+			'edit_published_' . self::$slug_plural   => array(
+				'administrator',
+			),
+			'publish_' . self::$slug_plural      => array(
+				'administrator',
+			),
+			'delete_' . self::$slug              => array(
+				'administrator',
+			),
+			'delete_others_' . self::$slug              => array(
+				'administrator',
+			),
+			'delete_published_' . self::$slug              => array(
+				'administrator',
+			),
+			'delete_private_' . self::$slug              => array(
+				'administrator',
+			),
+			'edit_private_' . self::$slug              => array(
+				'administrator',
+			),
+			'read_private_' . self::$slug_plural => array(
+				'administrator',
+			),
+			'read_' . self::$slug                => array(
+				'administrator',
+			),
+		);
+
+		foreach ( $capabilities as $capability => $roles ) {
+			foreach ( $roles as $role ) {
+				$role = get_role( $role );
+				$role->add_cap( $capability );
+			}
+		}
+
+	}
+
+
+	/**
 	 * Custom meta boxes.
 	 *
 	 * @return void
@@ -148,9 +217,9 @@ class BadgePage {
 
 		$cmb = new_cmb2_box(
 			array(
-				'id'           => 'links',
-				'title'        => __( 'Links', 'bagefactor2' ),
-				'object_types' => array( 'badge-page' ),
+				'id'           => 'badgepage_links',
+				'title'        => __( 'Links', BF2_DATA['TextDomain'] ),
+				'object_types' => array( self::$slug ),
 				'context'      => 'normal',
 				'priority'     => 'high',
 				'show_names'   => true,
@@ -159,20 +228,23 @@ class BadgePage {
 
 		$cmb->add_field(
 			array(
-				'id'      => 'badgr_badge',
-				'name'    => __( 'Badge', BF2_DATA['TextDomain'] ),
-				'desc'    => __( 'Badgr Badge associated with this Badge Page', BF2_DATA['TextDomain'] ),
-				'type'    => 'pw_select',
-				'style'   => 'width: 200px',
-				'options' => BadgeClass::select_options(),
+				'id'         => 'badgepage_badge',
+				'name'       => __( 'Badge', BF2_DATA['TextDomain'] ),
+				'desc'       => __( 'Badgr Badge associated with this Badge Page', BF2_DATA['TextDomain'] ),
+				'type'       => 'pw_select',
+				'style'      => 'width: 200px',
+				'options'    => BadgeClass::select_options(),
+				'attributes' => array(
+					'required' => 'required',
+				),
 			)
 		);
 
 		$cmb = new_cmb2_box(
 			array(
-				'id'           => 'badge_request',
-				'title'        => __( 'Badge Request Form', 'bagefactor2' ),
-				'object_types' => array( 'badge-page' ),
+				'id'           => 'badgepage_badge_request',
+				'title'        => __( 'Badge Request Form', BF2_DATA['TextDomain'] ),
+				'object_types' => array( self::$slug ),
 				'context'      => 'normal',
 				'priority'     => 'high',
 				'show_names'   => true,
@@ -181,7 +253,7 @@ class BadgePage {
 
 		$cmb->add_field(
 			array(
-				'id'         => 'badge_request_form_type',
+				'id'         => 'badgepage_badge_request_form_type',
 				'name'       => __( 'Form type', BF2_DATA['TextDomain'] ),
 				'type'       => 'select',
 				'options_cb' => array( BadgePage::class, 'form_type_select_options' ),
@@ -190,7 +262,7 @@ class BadgePage {
 
 		$cmb->add_field(
 			array(
-				'id'         => 'badge_request_form_id',
+				'id'         => 'badgepage_badge_request_form_id',
 				'name'       => __( 'Form', BF2_DATA['TextDomain'] ),
 				'type'       => 'pw_select',
 				'options_cb' => array( BadgePage::class, 'gf_form_select_options' ),
@@ -203,7 +275,7 @@ class BadgePage {
 
 		$cmb->add_field(
 			array(
-				'id'         => 'badge_request_approver',
+				'id'         => 'badgepage_badge_request_approver',
 				'name'       => __( 'Approvers', BF2_DATA['TextDomain'] ),
 				'type'       => 'pw_multiselect',
 				'options_cb' => array( Approver::class, 'select_options' ),
@@ -254,7 +326,7 @@ class BadgePage {
 	 */
 	public static function all() {
 		$args  = array(
-			'post_type'   => 'badge-page',
+			'post_type'   => self::$slug,
 			'numberposts' => -1,
 			'post_status' => 'publish',
 		);
@@ -272,4 +344,22 @@ class BadgePage {
 
 		return $posts;
 	}
+
+
+	/**
+	 * Get select-formatted options.
+	 *
+	 * @return array
+	 */
+	public static function select_options() {
+		$badge_pages  = self::all();
+		$post_options = array();
+		foreach ( $badge_pages as $badge_page ) {
+			$post_options[ $badge_page->ID ] = $badge_page->post_title;
+		}
+
+		return $post_options;
+	}
+
+
 }

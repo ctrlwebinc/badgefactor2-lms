@@ -27,8 +27,6 @@ namespace BadgeFactor2;
 use BadgeFactor2\Admin\Lists\Assertions;
 use BadgeFactor2\Admin\Lists\Badges;
 use BadgeFactor2\Admin\Lists\Issuers;
-use BadgeFactor2\Admin\Lists\Issuers_List;
-use BadgeFactor2\BadgrUser;
 use BadgeFactor2\BadgrClient;
 
 /**
@@ -67,7 +65,6 @@ class BadgeFactor2_Admin {
 		add_filter( 'set-screen-option', array( BadgeFactor2_Admin::class, 'set_screen' ), 10, 3 );
 		add_action( 'cmb2_admin_init', array( BadgeFactor2_Admin::class, 'admin_init' ) );
 		add_action( 'admin_enqueue_scripts', array( BadgeFactor2_Admin::class, 'load_resources' ) );
-		add_action( 'init', array( BadgeFactor2_Admin::class, 'add_custom_roles_and_capabilities' ), 11 );
 		add_action( 'admin_menu', array( BadgeFactor2_Admin::class, 'admin_menus' ) );
 		add_action( 'wp_ajax_bf2_filter_type', array( BadgeFactor2_Admin::class, 'ajax_filter_type' ) );
 		add_action( 'wp_ajax_bf2_filter_value', array( BadgeFactor2_Admin::class, 'ajax_filter_value' ) );
@@ -98,29 +95,6 @@ class BadgeFactor2_Admin {
 	public static function admin_init() {
 		load_plugin_textdomain( BF2_DATA['TextDomain'], false, basename( dirname( __FILE__, 3 ) ) . '/languages/' );
 		self::register_settings_metaboxes();
-	}
-
-
-	/**
-	 * Adds custom roles and capabilities requires by Badge Factor 2.
-	 *
-	 * @return void
-	 */
-	public static function add_custom_roles_and_capabilities() {
-		$approver = add_role(
-			'approver',
-			__( 'Approver' ),
-			array(
-				'read'                 => true,
-				'edit_posts'           => true,
-				'edit_published_posts' => true,
-				// FIXME List must be validated at a later development stage.
-			)
-		);
-
-		if ( null !== $approver ) {
-			$approver->add_cap( 'badgefactor2_approve_badge_requests' );
-		}
 	}
 
 
@@ -561,7 +535,7 @@ class BadgeFactor2_Admin {
 			$response = array(
 				'listClass' => null,
 				'options'   => array(
-					"<option value=''>" . __( 'Filter for' ) . '</option>',
+					"<option value=''>" . __( 'Filter for', BF2_DATA['TextDomain'] ) . '</option>',
 				),
 			);
 		} else {
@@ -569,7 +543,7 @@ class BadgeFactor2_Admin {
 			$response      = array(
 				'listClass' => array_values( $filter_values )[0]->listClass,
 				'options'   => array(
-					"<option value=''>" . __( 'Filter for' ) . '</option>',
+					"<option value=''>" . __( 'Filter for', BF2_DATA['TextDomain'] ) . '</option>',
 				),
 			);
 			foreach ( $filter_values as $filter ) {
@@ -597,7 +571,7 @@ class BadgeFactor2_Admin {
 			$response = array(
 				'listClass' => null,
 				'options'   => array(
-					"<option value=''>" . __( 'Filter for' ) . '</option>',
+					"<option value=''>" . __( 'Filter for', BF2_DATA['TextDomain'] ) . '</option>',
 				),
 			);
 		} else {

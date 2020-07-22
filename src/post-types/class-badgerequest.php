@@ -31,12 +31,27 @@ class BadgeRequest {
 
 
 	/**
+	 * Custom post type's slug.
+	 *
+	 * @var string
+	 */
+	private static $slug = 'badge-request';
+
+	/**
+	 * Custom post type's slug, pluralized.
+	 *
+	 * @var string
+	 */
+	private static $slug_plural = 'badge-requests';
+
+	/**
 	 * Init hooks.
 	 *
 	 * @return void
 	 */
 	public static function init_hooks() {
 		add_action( 'init', array( BadgeRequest::class, 'init' ), 10 );
+		add_action( 'admin_init', array( BadgeRequest::class, 'add_capabilities' ), 10 );
 		add_filter( 'post_updated_messages', array( BadgeRequest::class, 'updated_messages' ), 10 );
 		add_action( 'cmb2_admin_init', array( BadgeRequest::class, 'custom_meta_boxes' ), 10 );
 	}
@@ -47,9 +62,9 @@ class BadgeRequest {
 	 */
 	public static function init() {
 		register_post_type(
-			'badge-request',
+			self::$slug,
 			array(
-				'labels'                => array(
+				'labels'            => array(
 					'name'                  => __( 'Badge Requests', BF2_DATA['TextDomain'] ),
 					'singular_name'         => __( 'Badge Request', BF2_DATA['TextDomain'] ),
 					'all_items'             => __( 'All Badge Requests', BF2_DATA['TextDomain'] ),
@@ -57,10 +72,10 @@ class BadgeRequest {
 					'attributes'            => __( 'Badge Request Attributes', BF2_DATA['TextDomain'] ),
 					'insert_into_item'      => __( 'Insert into Badge Request', BF2_DATA['TextDomain'] ),
 					'uploaded_to_this_item' => __( 'Uploaded to this Badge Request', BF2_DATA['TextDomain'] ),
-					'featured_image'        => _x( 'Featured Image', 'badge-request', BF2_DATA['TextDomain'] ),
-					'set_featured_image'    => _x( 'Set featured image', 'badge-request', BF2_DATA['TextDomain'] ),
-					'remove_featured_image' => _x( 'Remove featured image', 'badge-request', BF2_DATA['TextDomain'] ),
-					'use_featured_image'    => _x( 'Use as featured image', 'badge-request', BF2_DATA['TextDomain'] ),
+					'featured_image'        => _x( 'Featured Image', self::$slug, BF2_DATA['TextDomain'] ),
+					'set_featured_image'    => _x( 'Set featured image', self::$slug, BF2_DATA['TextDomain'] ),
+					'remove_featured_image' => _x( 'Remove featured image', self::$slug, BF2_DATA['TextDomain'] ),
+					'use_featured_image'    => _x( 'Use as featured image', self::$slug, BF2_DATA['TextDomain'] ),
 					'filter_items_list'     => __( 'Filter Badge Requests list', BF2_DATA['TextDomain'] ),
 					'items_list_navigation' => __( 'Badge Requests list navigation', BF2_DATA['TextDomain'] ),
 					'items_list'            => __( 'Badge Requests list', BF2_DATA['TextDomain'] ),
@@ -76,19 +91,19 @@ class BadgeRequest {
 					'parent_item_colon'     => __( 'Parent Badge Request:', BF2_DATA['TextDomain'] ),
 					'menu_name'             => __( 'Badge Requests', BF2_DATA['TextDomain'] ),
 				),
-				'public'                => true,
-				'hierarchical'          => false,
-				'show_ui'               => true,
-				'show_in_nav_menus'     => true,
-				'supports'              => array( 'title', 'editor' ),
-				'has_archive'           => true,
-				'rewrite'               => true,
-				'query_var'             => true,
-				'menu_position'         => null,
-				'menu_icon'             => 'dashicons-feedback',
-				'show_in_rest'          => true,
-				'rest_base'             => 'badge-request',
-				'rest_controller_class' => 'WP_REST_Posts_Controller',
+				'public'            => true,
+				'hierarchical'      => false,
+				'show_ui'           => true,
+				'show_in_nav_menus' => true,
+				'supports'          => array( 'title', 'editor' ),
+				'has_archive'       => true,
+				'rewrite'           => true,
+				'query_var'         => true,
+				'menu_position'     => 52,
+				'menu_icon'         => 'dashicons-feedback',
+				'show_in_rest'      => false,
+				'capability_type'   => array( self::$slug, self::$slug_plural ),
+				'map_meta_cap'      => true,
 			)
 		);
 
@@ -106,7 +121,7 @@ class BadgeRequest {
 
 		$permalink = get_permalink( $post );
 
-		$messages['badge-request'] = array(
+		$messages[ self::$slug ] = array(
 			0  => '', // Unused. Messages start at index 1.
 		/* translators: %s: post permalink */
 			1  => sprintf( __( 'Badge Request updated. <a target="_blank" href="%s">View Badge Request</a>', BF2_DATA['TextDomain'] ), esc_url( $permalink ) ),
@@ -133,6 +148,57 @@ class BadgeRequest {
 		return $messages;
 	}
 
+
+	/**
+	 * Add roles (capabilities) to custom post type.
+	 *
+	 * @return void
+	 */
+	public static function add_capabilities() {
+		$capabilities = array(
+			'edit_' . self::$slug_plural         => array(
+				'administrator',
+			),
+			'edit_other_' . self::$slug_plural   => array(
+				'administrator',
+			),
+			'edit_published_' . self::$slug_plural   => array(
+				'administrator',
+			),
+			'publish_' . self::$slug_plural      => array(
+				'administrator',
+			),
+			'delete_' . self::$slug              => array(
+				'administrator',
+			),
+			'delete_others_' . self::$slug              => array(
+				'administrator',
+			),
+			'delete_published_' . self::$slug              => array(
+				'administrator',
+			),
+			'delete_private_' . self::$slug              => array(
+				'administrator',
+			),
+			'edit_private_' . self::$slug              => array(
+				'administrator',
+			),
+			'read_private_' . self::$slug_plural => array(
+				'administrator',
+			),
+			'read_' . self::$slug                => array(
+				'administrator',
+			),
+		);
+
+		foreach ( $capabilities as $capability => $roles ) {
+			foreach ( $roles as $role ) {
+				$role = get_role( $role );
+				$role->add_cap( $capability );
+			}
+		}
+
+	}
 
 
 	/**
