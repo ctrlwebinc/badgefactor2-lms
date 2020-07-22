@@ -206,6 +206,11 @@ class BadgeFactor2 {
 		$this->define( 'BF2_PLUGIN_BASENAME', plugin_basename( BF2_FILE ) );
 		$this->define( 'BF2_VERSION', $this->version );
 		$this->define( 'BF2_LOG_DIR', $upload_dir['basedir'] . '/bf2-logs/' );
+
+		// TODO: remove or reloacate this temporary fix.
+		if( ! function_exists('get_plugin_data') ){
+			require_once( ABSPATH . 'wp-admin/includes/plugin.php' );
+		}
 		$this->define( 'BF2_DATA', get_plugin_data( BF2_FILE ) );
 	}
 
