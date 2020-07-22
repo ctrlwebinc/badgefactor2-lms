@@ -36,7 +36,7 @@ class Approver {
 	 * @return void
 	 */
 	public static function init_hooks() {
-		add_action( 'init', array( BadgeFactor2_Admin::class, 'add_custom_role_and_capabilities' ), 11 );
+		add_action( 'init', array( Approver::class, 'add_custom_role_and_capabilities' ), 11 );
 	}
 
 
