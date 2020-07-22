@@ -18,6 +18,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  * @package Badge_Factor_2
+ *
+ * @phpcs:disable WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
  */
 
 namespace BadgeFactor2;
@@ -236,6 +238,7 @@ class BadgrClient {
 	 * Make an instance of a BadgrClient
 	 *
 	 * @param array $parameters Parameters.
+	 * @throws \BadMethodCallException Bad Method Call Exception.
 	 * @return BadgrClient
 	 */
 	public static function make_instance( array $parameters ) {
