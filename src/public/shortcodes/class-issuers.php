@@ -63,7 +63,7 @@ class Issuers {
 	public function list( $atts = array(), $content = null, $tag = '' ) {
 		$issuers = Issuer::all( -1 );
 		if ( $issuers ) {
-			foreach ( Issuer::all() as $issuer ) {
+			foreach ( $issuers as $issuer ) {
 				echo $issuer->name;
 			}
 		} else {

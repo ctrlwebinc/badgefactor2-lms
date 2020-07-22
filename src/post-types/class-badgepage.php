@@ -352,7 +352,7 @@ class BadgePage {
 	 * @return array
 	 */
 	public static function select_options() {
-		$badge_pages  = self::all();
+		$badge_pages  = self::all( -1 );
 		$post_options = array();
 		foreach ( $badge_pages as $badge_page ) {
 			$post_options[ $badge_page->ID ] = $badge_page->post_title;

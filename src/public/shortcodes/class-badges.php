@@ -79,7 +79,7 @@ class Badges {
 			$tag
 		);
 
-		$badge_pages = BadgePage::all();
+		$badge_pages = BadgePage::all( -1 );
 
 		// Start output.
 		$o = '';

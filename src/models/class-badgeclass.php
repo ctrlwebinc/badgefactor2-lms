@@ -53,18 +53,19 @@ class BadgeClass implements Badgr_Entity {
 	 * @return array|boolean Badges array or false in case of error.
 	 */
 	public static function all( $elements_per_page = null, $paged = null, $filter = array() ) {
+		$args = array();
+
 		if ( empty( $elements_per_page ) ) {
-			$elements_per_page = $_GET['posts_per_page'] ?? 10;
+			$args['elements_per_page'] = $_GET['posts_per_page'] ?? 10;
 		}
-		if ( empty( $paged ) ) {
-			$paged = $_GET['paged'] ?? 1;
+		if ( -1 !== $args['elements_per_page'] ) {
+			if ( empty( $paged ) ) {
+				$args['paged'] = $_GET['paged'] ?? 1;
+			} else {
+				$args['paged'] = $paged;
+			}
 		}
-		$badges = BadgrProvider::get_all_badge_classes(
-			array(
-				'elements_per_page' => $elements_per_page,
-				'paged'             => $paged,
-			)
-		);
+		$badges = BadgrProvider::get_all_badge_classes( $args );
 		if ( isset( $filter['issuer'] ) ) {
 			foreach ( $badges as $i => $badge ) {
 				if ( $badge->issuer !== $filter['issuer'] ) {
@@ -269,7 +270,7 @@ class BadgeClass implements Badgr_Entity {
 	public static function select_options() {
 		$options = array();
 
-		$badges = self::all();
+		$badges = self::all( -1 );
 
 		if ( $badges ) {
 			foreach ( $badges as $badge ) {
