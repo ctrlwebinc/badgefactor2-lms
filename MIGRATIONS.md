@@ -1,5 +1,9 @@
 # Migrations
-If you're switching to Badge Factor 2 from another badge system, the process of requiring each one of your users to respond to an activation email might be problematic in terms of user experience.
+
+Here are some instructions to migrate users, issuers, badge classes and assertions into Badgr.
+
+## Users
+If you're switching to Badge Factor 2 from another badge system, the process of requiring each one of your users to respond to a Badgr activation email might be problematic in terms of user experience.
 
 Here are steps that you can take to bypass this process on behalf of your users.
 
@@ -10,6 +14,8 @@ Here are steps that you can take to bypass this process on behalf of your users.
 -Let the badgr user creation complete
 -Update verified and primary in the badgr DB
 -Re-enable email and caching on badgr
+
+The process of migrating users for Badgr is independent from migrating issuers, badge classes and assertions and can be done before or after those migrations.
 
 ### Temporarily disable email backend on badgr
 In app/mainsite/settings_local.py
@@ -66,7 +72,7 @@ from approving users that are in a legitimate process of having their email veri
 
 Re-enable caching and email to return to a behavior where the system sends an email confirmation to each new user that registers on the site.
 
-## Useful queries for migration preflight
+### Useful queries for user migration preflight
 
 Here are some queries you might run on your WordPress database to identify potential migration issues.
 
@@ -90,3 +96,51 @@ Find users without an email address:
 ```sql
 SELECT user_email, user_login FROM `wp_users` WHERE LENGTH(`user_email`) < 1;
 ```
+
+## Issuers
+
+Issuers migrations is a one-step process where posts of type 'organisation' are created as issuers in Badgr.
+
+To migrate issuers, run the command:
+
+```
+wp badgr migrate_issuers
+```
+
+By default, the command will migrate all posts of type 'organisation'. To limit to only published posts, you can add the --restrict-to-published flag:
+
+```
+wp badgr migrate_issuers --restrict-to-published
+```
+
+The command attempts to migrate any post of post type 'organisation' that doesn't have a 'badgr_issuer_slug' meta. A successfully migrated issuer will have a coresponding 'badgr_issuer_slug'.
+
+Issuer migrations must be run before badge class ( and assertion ) migrations.
+
+## Badge classes
+
+Badge class migration in a one-step process where posts of post type 'badges' are created in Badgr as badge classes.
+
+Issuers must be migrated before attempting to migrate badge classes and badge classes must be migrated before attemtpting to migrate assertions.
+
+To migrate badge classes, run the command:
+
+```
+wp badgr migrate_badge_classes
+```
+
+Posts of type 'badges' without a 'badgr_badge_class_slug' meta will be migrated. Should any migration fail, those posts will be marked with a 'badgr_badge_class_failed' meta.
+
+## Assertions
+
+Assertion migration is a one-step process where posts of type 'submission' are created as assertions in Badgr.
+
+Badges classes ( and issuers ) must already be migrated before attempting to migrate assertions.
+
+To migrate assertions, run the command:
+
+```
+wp badgr migrate_badge_assertions
+```
+
+Approved posts of type 'submission' without a 'badgr_assertion_slug' will be migrated. Failed assertion migrations are marked with a 'badgr_assertion_failed' meta.
