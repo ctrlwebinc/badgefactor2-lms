@@ -57,6 +57,8 @@ class BadgeClass implements Badgr_Entity {
 
 		if ( empty( $elements_per_page ) ) {
 			$args['elements_per_page'] = $_GET['posts_per_page'] ?? 10;
+		} else {
+			$args['elements_per_page'] = $elements_per_page;
 		}
 		if ( -1 !== $args['elements_per_page'] ) {
 			if ( empty( $paged ) ) {
