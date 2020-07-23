@@ -112,7 +112,7 @@ class Assertion implements Badgr_Entity {
 	 */
 	public static function create( $values, $files = null ) {
 		if ( self::validate( $values, $files ) ) {
-			return BadgrProvider::add_assertion( $values['issuer'], $values['badge'], $values['recipient'] );
+			return BadgrProvider::add_assertion( $values['badge'], $values['recipient'] );
 		}
 		return false;
 	}
@@ -153,7 +153,7 @@ class Assertion implements Badgr_Entity {
 	public static function get_columns() {
 		return array(
 			'image'      => __( 'Issued Badge', BF2_DATA['TextDomain'] ),
-			'issuer'     => __( 'Issuer', BF2_DATA['TextDomain'] ),
+			//'issuer'     => __( 'Issuer', BF2_DATA['TextDomain'] ),
 			'badgeclass' => __( 'Badge', BF2_DATA['TextDomain'] ),
 			'recipient'  => __( 'Recipient', BF2_DATA['TextDomain'] ),
 			'createdAt'  => __( 'Created on', BF2_DATA['TextDomain'] ),
@@ -185,19 +185,19 @@ class Assertion implements Badgr_Entity {
 	 */
 	public static function validate( $values, $files = null ) {
 		// Not empty.
-		if ( ! isset( $values['issuer'] ) || ! isset( $values['badge'] ) || ! isset( $values['recipient'] ) ) {
+		if ( ! isset( $values['badge'] ) || ! isset( $values['recipient'] ) ) {
 			return false;
 		}
 		// Right type.
-		if ( ! is_string( $values['issuer'] ) || ! is_string( $values['badge'] ) || ! is_string( $values['recipient'] ) ) {
+		if ( ! is_string( $values['badge'] ) || ! is_string( $values['recipient'] ) ) {
 			return false;
 		}
 		// Not too big.
-		if ( strlen( $values['issuer'] ) > 254 || strlen( $values['badge'] ) > 254 || strlen( $values['recipient'] ) > 768 ) {
+		if ( strlen( $values['badge'] ) > 254 || strlen( $values['recipient'] ) > 768 ) {
 			return false;
 		}
 		// Not too small.
-		if ( strlen( $values['issuer'] ) < 16 || strlen( $values['badge'] ) < 16 || strlen( $values['recipient'] ) < 3 ) {
+		if ( strlen( $values['badge'] ) < 16 || strlen( $values['recipient'] ) < 3 ) {
 			return false;
 		}
 		// Email format is ok.
@@ -248,7 +248,7 @@ class Assertion implements Badgr_Entity {
 			$issued_on = $assertion_post->post_date;
 
 			// Add assertion.
-			$assertion_slug = BadgrProvider::add_assertion_v2( $assertion_post->badge_class_slug, $assertion_post->recipient, 'email', $issued_on );
+			$assertion_slug = BadgrProvider::add_assertion( $assertion_post->badge_class_slug, $assertion_post->recipient, 'email', $issued_on );
 
 			if ( false === $assertion_slug ) {
 				update_post_meta( $assertion_post_id, 'badgr_assertion_failed', 'failed' );

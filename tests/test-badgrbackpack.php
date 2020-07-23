@@ -182,7 +182,7 @@ class BadgrBackpackTest extends WP_UnitTestCase {
 		$this->assertNotEmpty( $badge_class_slug);
 
 		// Issue a badge
-		$assertion_slug = BadgrProvider::add_assertion( $issuer_slug, $badge_class_slug, $badgr_recipient);
+		$assertion_slug = BadgrProvider::add_assertion( $badge_class_slug, $badgr_recipient);
 
 		$this->assertTrue( false !== $assertion_slug );
 		$this->assertNotEmpty( $assertion_slug);
@@ -262,7 +262,7 @@ class BadgrBackpackTest extends WP_UnitTestCase {
 		   $this->assertNotEmpty( $badge_class_slug);
 
 		   // Issue a badge
-		   $assertion_slug = BadgrProvider::add_assertion( $issuer_slug, $badge_class_slug, $badgr_recipient);
+		   $assertion_slug = BadgrProvider::add_assertion( $badge_class_slug, $badgr_recipient);
 
 		   $this->assertTrue( false !== $assertion_slug );
 		   $this->assertNotEmpty( $assertion_slug);
@@ -331,7 +331,7 @@ class BadgrBackpackTest extends WP_UnitTestCase {
 	   $this->assertNotEmpty( $badge_class_slug);
 
 	   // Issue a badge
-	   $assertion_slug = BadgrProvider::add_assertion( $issuer_slug, $badge_class_slug, $badgr_recipient);
+	   $assertion_slug = BadgrProvider::add_assertion( $badge_class_slug, $badgr_recipient);
 
 	   $this->assertTrue( false !== $assertion_slug );
 	   $this->assertNotEmpty( $assertion_slug);

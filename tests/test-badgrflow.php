@@ -99,7 +99,7 @@ class BadgrFlowTest extends WP_UnitTestCase {
 		$this->assertNotEmpty( $badge_class_slug);
 
 		// Issue a badge
-		$assertion_slug = BadgrProvider::add_assertion( $issuer_slug, $badge_class_slug, 'recipient' . $random . '@example.net');
+		$assertion_slug = BadgrProvider::add_assertion( $badge_class_slug, 'recipient' . $random . '@example.net');
 
 		$this->assertTrue( false !== $assertion_slug );
 		$this->assertNotEmpty( $assertion_slug);
@@ -194,7 +194,7 @@ class BadgrFlowTest extends WP_UnitTestCase {
 		$this->assertNotEmpty( $badge_class_slug);
 
 		// Issue a badge
-		$assertion_slug = BadgrProvider::add_assertion( $issuer_slug, $badge_class_slug, $email);
+		$assertion_slug = BadgrProvider::add_assertion( $badge_class_slug, $email);
 
 		$this->assertTrue( false !== $assertion_slug );
 		$this->assertNotEmpty( $assertion_slug);
