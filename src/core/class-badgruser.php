@@ -186,6 +186,7 @@ class BadgrUser {
 		if ( null === $wp_user ) {
 			$wp_user = wp_get_current_user();
 			if ( 0 == $wp_user->ID ) {
+				return null;
 				throw new \Exception( 'Can\'t determine user for client creation' );
 			}
 		}

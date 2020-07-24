@@ -337,9 +337,11 @@ class BadgePage {
 			$badge              = BadgeClass::get( $badge_entity_id );
 			$posts[ $i ]->badge = $badge;
 
-			$issuer_entity_id           = $badge->issuer;
-			$issuer                     = Issuer::get( $issuer_entity_id );
-			$posts[ $i ]->badge->issuer = $issuer;
+			if ( $badge ) {
+				$issuer_entity_id           = $badge->issuer;
+				$issuer                     = Issuer::get( $issuer_entity_id );
+				$posts[ $i ]->badge->issuer = $issuer;
+			}
 		}
 
 		return $posts;
