@@ -3,6 +3,7 @@
 Here are some instructions to migrate users, issuers, badge classes and assertions into Badgr.
 
 ## Users
+
 If you're switching to Badge Factor 2 from another badge system, the process of requiring each one of your users to respond to a Badgr activation email might be problematic in terms of user experience.
 
 Here are steps that you can take to bypass this process on behalf of your users.
@@ -18,15 +19,19 @@ Here are steps that you can take to bypass this process on behalf of your users.
 The process of migrating users for Badgr is independent from migrating issuers, badge classes and assertions and can be done before or after those migrations.
 
 ### Temporarily disable email backend on badgr
+
 In app/mainsite/settings_local.py
-```
+
+```bash
 EMAIL_BACKEND = 'django.core.mail.backends.dummy.EmailBackend'
 
 ```
 
 ### Temporarily disable caching on badgr
+
 In app/mainsite/settings_local.py
-```
+
+```bash
 CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
@@ -41,14 +46,16 @@ CACHES = {
 ### Mark users for migration
 
 To mark your users for migration, you should run this WP command:
-```
+
+```bash
 wp badgr mark_existing_users_for_migration
 ```
 
 ### Launch the migration
 
 To launch the migration of your users, you can run this WP command:
-```
+
+```bash
 wp --allow-root badgr migrate_users_and_mark_as_verified
 ```
 
@@ -77,22 +84,26 @@ Re-enable caching and email to return to a behavior where the system sends an em
 Here are some queries you might run on your WordPress database to identify potential migration issues.
 
 Find users with a lengthy first_name:
+
 ```sql
 SELECT m1.user_id, m1.meta_value FROM `wp_usermeta` AS m1
 WHERE m1.meta_key = 'first_name' AND length(m1.meta_value) > 30;
 ```
 
 Find users with an email address that includes a dot just before @:
+
 ```sql
 SELECT user_email, `user_email` NOT REGEXP '\\.@' as email_valid FROM `wp_users` HAVING email_valid = 0;
 ```
 
 Find users with an email address ending with a single-letter top-level domain:
+
 ```sql
 SELECT user_email, `user_email` REGEXP '\\..$' as email_invalid FROM `wp_users` HAVING email_invalid = 1;
 ```
 
 Find users without an email address:
+
 ```sql
 SELECT user_email, user_login FROM `wp_users` WHERE LENGTH(`user_email`) < 1;
 ```
@@ -103,13 +114,13 @@ Issuers migrations is a one-step process where posts of type 'organisation' are 
 
 To migrate issuers, run the command:
 
-```
+```bash
 wp badgr migrate_issuers
 ```
 
 By default, the command will migrate all posts of type 'organisation'. To limit to only published posts, you can add the --restrict-to-published flag:
 
-```
+```bash
 wp badgr migrate_issuers --restrict-to-published
 ```
 
@@ -125,7 +136,7 @@ Issuers must be migrated before attempting to migrate badge classes and badge cl
 
 To migrate badge classes, run the command:
 
-```
+```bash
 wp badgr migrate_badge_classes
 ```
 
@@ -139,7 +150,7 @@ Badges classes ( and issuers ) must already be migrated before attempting to mig
 
 To migrate assertions, run the command:
 
-```
+```bash
 wp badgr migrate_badge_assertions
 ```
 

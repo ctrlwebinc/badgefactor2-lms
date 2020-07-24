@@ -4,7 +4,8 @@ Badge Factor 2 includes some command line utilities.
 
 ## Available commands
 
-Commands available in the *badgr* command space:
+Commands available in the _badgr_ command space:
+
 ```bash
 add_user firstname lastname email
 check_user_verified slug
@@ -28,6 +29,7 @@ revoke_assertion slug reason
 ```
 
 Add user example:
+
 ```bash
 wp badgr add_user Suzy Anderson suzy.anderson@example.net
 ```

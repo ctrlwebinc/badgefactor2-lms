@@ -22,7 +22,7 @@ Browse to /staff and check your installation by logging in using your super user
 
 Edit apps/mainsite/settings.py and specify the login url and Http origin:
 
-```
+```bash
 LOGIN_URL = '/staff/login/'
 HTTP_ORIGIN = 'http://127.0.0.1:8000'
 ```
@@ -72,16 +72,16 @@ If your Badge Factor 2 instance and your Badgr instance are running on the same 
 
 Make sure that your oauth client redirect uris include a version prefixed with 127.0.0.1 . E.g. https:://my-badge-factor-2.example.net/wp-admin/admin.php _and_ http:://127.0.0.1/wp-admin/admin.php .
 
-In the Badge Factor 2 Badgr Server Settings, make sure to fill out the _Internal URL_ . E.g. http://127.0.0.1:8000 .
+In the Badge Factor 2 Badgr Server Settings, make sure to fill out the _Internal URL_ . E.g. [http://127.0.0.1:8000](http://127.0.0.1:8000) .
 
 ### Dockerized installations considerations
 
 If you're using Docker either for your Badge Factor 2 instance or for your Badgr instance or both, you'll need to specify the _Internal URL_ accordingly.
 
-The _Internal URL_ should be set to whatever path your Badge Factor 2 instance needs to follow to connect to your Badgr instance. For example, if your Badge factor 2 instance is dockerized and your Badgr server is running directly on your host, you would probably use _http://host.docker.internal:8000_ as your Internal URL. If both your Badge Factor 2 and your Badgr instances are dockerized, you'll probaby use the badgr container name for your _Inernal URL_ as in http://badgr:8000 .
+The _Internal URL_ should be set to whatever path your Badge Factor 2 instance needs to follow to connect to your Badgr instance. For example, if your Badge factor 2 instance is dockerized and your Badgr server is running directly on your host, you would probably use [http://host.docker.internal:8000](http://host.docker.internal:8000) as your Internal URL. If both your Badge Factor 2 and your Badgr instances are dockerized, you'll probaby use the badgr container name for your _Inernal URL_ as in [http://badgr:8000](http://badgr:8000).
 
 Refer to Docker's networking configuration documentation for help.
-https://docs.docker.com/v17.09/engine/userguide/networking/
+[https://docs.docker.com/v17.09/engine/userguide/networking/](https://docs.docker.com/v17.09/engine/userguide/networking/)
 
 ### Necessary adjustments to Badgr server
 
