@@ -608,10 +608,14 @@ class BadgrProvider {
 		}
 
 		if ( null !== $evidence_narrative || null !== $evidence_url ) {
-			$request_body['evidence'] = array(
-				'narrative' => $evidence_narrative,
-				'url' => $evidence_url
-			);
+			$evidence = array();
+			if ( null !== $evidence_narrative ) {
+				$evidence['narrative'] = $evidence_narrative;
+			}
+			if ( null !== $evidence_url ) {
+				$evidence['url'] = $evidence_url;
+			}
+			$request_body['evidence'] = array( $evidence );
 		}
 
 		// Make POST request to /v2/badgeclasses/{entity_id}/assertions.
