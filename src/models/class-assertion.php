@@ -251,7 +251,7 @@ class Assertion implements Badgr_Entity {
 		foreach ( $assertions as $assertion_post_id => $assertion_post ) {
 			$issued_on = $assertion_post->post_date;
 
-			// Workout full url
+			// Workout full url.
 			if ( 'NULL' !== $assertion_post->evidence_url ) {
 				$evidence_url = site_url( 'wp_content/uploads/' . $assertion_post->evidence_url );
 			} else {
