@@ -592,45 +592,15 @@ class BadgrProvider {
 	/**
 	 * Add assertion to Badgr Server.
 	 *
-	 * @param string $issuer_slug Issuer slug.
 	 * @param string $badge_class_slug BadgeClass slug.
 	 * @param string $recipient_identifier Recipient identifier.
 	 * @param string $recipient_type Recipient type.
+	 * @param mixed $issuedOn Issued on date.
+	 * @param mixed $evidence_url Evidence url.
+	 * @param mixed $evidence_narrative Evidence narrative
 	 * @return string|false Assertion slug or false on error.
 	 */
-	public static function add_assertion( $issuer_slug, $badge_class_slug, $recipient_identifier, $recipient_type = 'email' ) {
-
-		// Setup body.
-		$request_body = array(
-			'recipient_identifier' => $recipient_identifier,
-			'recipient_type'       => $recipient_type,
-			'create_notification'  => false,
-		);
-
-		// Make POST request to /v1/issuer/issuers/{issuerSlug}/badges/{slug}/assertions.
-		$response = self::get_client()->post( '/v1/issuer/issuers/' . $issuer_slug . '/badges/' . $badge_class_slug . '/assertions', $request_body );
-
-		// Check for 201 response.
-		if ( null !== $response && $response->getStatusCode() == 201 ) {
-			// Return slug-entity_id or false if unsuccessful.
-			$response_info = json_decode( $response->getBody() );
-			if ( isset( $response_info->slug ) && strlen( $response_info->slug ) > 0 ) {
-				return $response_info->slug;
-			}
-		}
-
-		return false;
-	}
-	/**
-	 * Undocumented function
-	 *
-	 * @param string $badge_class_slug Badge class slug.
-	 * @param string $recipient_identifier Recipient identifier.
-	 * @param string $recipient_type Recipient type. Defaults to 'email'.
-	 * @param string $issued_on Date assertion was issued on.
-	 * @return boolean|object
-	 */
-	public static function add_assertion_v2( $badge_class_slug, $recipient_identifier, $recipient_type = 'email', $issued_on = null ) {
+	public static function add_assertion( $badge_class_slug, $recipient_identifier, $recipient_type = 'email', $issued_on = null, $evidence_url = null, $evidence_narrative = null  ) {
 		// Setup body.
 		$request_body = array(
 			'recipient' => array(
@@ -648,6 +618,14 @@ class BadgrProvider {
 
 			$request_body['issuedOn'] = $issue_date->format( 'c' );
 		}
+
+		if ( null !== $evidence_narrative || null !== $evidence_url ) {
+			$request_body['evidence'] = array(
+				'narrative' => $evidence_narrative,
+				'url' => $evidence_url
+			);
+		}
+
 		// Make POST request to /v2/badgeclasses/{entity_id}/assertions.
 		$response = self::get_client()->post( '/v2/badgeclasses/' . $badge_class_slug . '/assertions', $request_body );
 

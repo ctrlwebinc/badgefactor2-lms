@@ -328,34 +328,8 @@ class Badgr_CLI extends WP_CLI_Command {
 	}
 
 	public function add_assertion( $args, $assoc_args ) {
-		if ( count( $args ) != 3 ) {
-			WP_CLI::error( 'Usage: add_assertion issuer_slug badge_class_slug recipient_identity' );
-		}
-
-		if ( strlen( $args[0] ) < 1 ) {
-			WP_CLI::error( 'Please provide an issuer slug as the 1st argument' );
-		}
-
-		if ( strlen( $args[1] ) < 1 ) {
-			WP_CLI::error( 'Please provide a badge class slug as the 2nd argument' );
-		}
-
-		if ( strlen( $args[2] ) < 1 || ! filter_var( $args[2], FILTER_VALIDATE_EMAIL ) ) {
-			WP_CLI::error( 'Please provide a recipient identity (email) as the 3rd argument' );
-		}
-
-		$slug = BadgrProvider::add_assertion( $args[0], $args[1], $args[2] );
-
-		if ( $slug ) {
-			WP_CLI::success( 'Assertion added with slug ' . $slug );
-		} else {
-			WP_CLI::error( 'Adding assertion failed.' );
-		}
-	}
-
-	public function add_assertion_v2( $args, $assoc_args ) {
 		if ( count( $args ) != 2 ) {
-			WP_CLI::error( 'Usage: add_assertion_v2 badge_class_slug recipient_identity' );
+			WP_CLI::error( 'Usage: add_assertion badge_class_slug recipient_identity' );
 		}
 
 		if ( strlen( $args[0] ) < 1 ) {
@@ -366,7 +340,7 @@ class Badgr_CLI extends WP_CLI_Command {
 			WP_CLI::error( 'Please provide a recipient identity (email) as the 2nd argument' );
 		}
 
-		$slug = BadgrProvider::add_assertion_v2( $args[0], $args[1] ,'email','1977-04-22T06:00:00Z');
+		$slug = BadgrProvider::add_assertion( $args[0], $args[1] ,'email','1977-04-22T06:00:00Z');
 
 		if ( $slug ) {
 			WP_CLI::success( 'Assertion added with slug ' . $slug );
