@@ -20,9 +20,15 @@
  * @package Badge_Factor_2
  */
 
-use BadgFactor2\BadgrProvider;
+use BadgeFactor2\BadgrProvider;
 use BadgeFactor2\BadgrClient;
 use BadgeFactor2\BadgrUser;
+use GuzzleHttp\Client;
+use GuzzleHttp\Handler\MockHandler;
+use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Psr7\Response;
+use GuzzleHttp\Psr7\Request;
+
 
 class BadgrProviderTest extends WP_UnitTestCase {
 
@@ -42,6 +48,133 @@ class BadgrProviderTest extends WP_UnitTestCase {
 	    }
 	    return $randomString;
 	}
+
+	public function test_badgr_provider_returns_count() {
+
+		// Setup mock Guzzle client
+		$mock = new MockHandler([
+				new Response(200,[], '{
+					"status": {
+						"success": true,
+						"description": "ok"
+					},
+					"result": [
+						{
+							"entityType": "BadgeClass",
+							"entityId": "_IJnluA4TS2Yuc7utglHjQ",
+							"openBadgeId": "http://badge-factor-2.test:8000/public/badges/_IJnluA4TS2Yuc7utglHjQ",
+							"createdAt": "2020-06-15T15:29:23.779830Z",
+							"createdBy": "3TavqPc9QhyWRy_TF5oi6g",
+							"issuer": "DX0SwWVqTtOz3JSbOAK9CQ",
+							"issuerOpenBadgeId": "http://badge-factor-2.test:8000/public/issuers/DX0SwWVqTtOz3JSbOAK9CQ",
+							"name": "BadgeClasslMkP3r",
+							"image": "http://badge-factor-2.test:8000/media/uploads/badges/21ebbe89-b1a4-4603-93ef-33d2307991a3.svg",
+							"description": "Description for lMkP3r",
+							"criteriaUrl": null,
+							"criteriaNarrative": null,
+							"alignments": [],
+							"tags": [],
+							"expires": {
+								"amount": null,
+								"duration": null
+							},
+							"extensions": {}
+						},
+						{
+							"entityType": "BadgeClass",
+							"entityId": "pY4XoP9XTtqxEZMqsSODjg",
+							"openBadgeId": "http://badge-factor-2.test:8000/public/badges/pY4XoP9XTtqxEZMqsSODjg",
+							"createdAt": "2020-06-15T15:29:30.213020Z",
+							"createdBy": "3TavqPc9QhyWRy_TF5oi6g",
+							"issuer": "8TuvlghxT7aLnvAERcTFCQ",
+							"issuerOpenBadgeId": "http://badge-factor-2.test:8000/public/issuers/8TuvlghxT7aLnvAERcTFCQ",
+							"name": "BadgeClasslA88c3",
+							"image": "http://badge-factor-2.test:8000/media/uploads/badges/f01f78d9-e9ff-40c6-8f5d-53f9213c76ab.svg",
+							"description": "Description for lA88c3",
+							"criteriaUrl": null,
+							"criteriaNarrative": null,
+							"alignments": [],
+							"tags": [],
+							"expires": {
+								"amount": null,
+								"duration": null
+							},
+							"extensions": {}
+						}
+					]
+				}'),
+				new Response(200,[], '{
+					"status": {
+						"success": true,
+						"description": "ok"
+					},
+					"count": 2,
+					"result": [
+						{
+							"entityType": "BadgeClass",
+							"entityId": "pY4XoP9XTtqxEZMqsSODjg",
+							"openBadgeId": "http://badge-factor-2.test:8000/public/badges/pY4XoP9XTtqxEZMqsSODjg",
+							"createdAt": "2020-06-15T15:29:30.213020Z",
+							"createdBy": "3TavqPc9QhyWRy_TF5oi6g",
+							"issuer": "8TuvlghxT7aLnvAERcTFCQ",
+							"issuerOpenBadgeId": "http://badge-factor-2.test:8000/public/issuers/8TuvlghxT7aLnvAERcTFCQ",
+							"name": "BadgeClasslA88c3",
+							"image": "http://badge-factor-2.test:8000/media/uploads/badges/f01f78d9-e9ff-40c6-8f5d-53f9213c76ab.svg",
+							"description": "Description for lA88c3",
+							"criteriaUrl": null,
+							"criteriaNarrative": null,
+							"alignments": [],
+							"tags": [],
+							"expires": {
+								"amount": null,
+								"duration": null
+							},
+							"extensions": {}
+						}
+					]
+				}'),
+
+			]);
+		$handlerStack = HandlerStack::create($mock);
+		$guzzle_client = new Client(['handler' => $handlerStack]);
+
+		// Setup a badgr client instance
+		// Setup a complete client
+		$client_parameters = [
+			'username' => getenv('BADGR_ADMIN_USERNAME'),
+			'as_admin' => true,
+			'badgr_server_public_url' => getenv('BADGR_SERVER_PUBLIC_URL'),
+			'badgr_server_flavor' => BadgrClient::FLAVOR_LOCAL_R_JAMIROQUAI,
+			'badgr_server_internal_url'    => getenv('BADGR_SERVER_INTERNAL_URL'),
+			'client_id'     => getenv('BADGR_SERVER_CLIENT_ID'),
+			'client_secret' => getenv('BADGR_SERVER_CLIENT_SECRET'),
+			'access_token' => getenv('BADGR_SERVER_ACCESS_TOKEN'),
+			'refresh_token' => getenv('BADGR_SERVER_REFRESH_TOKEN'),
+			'token_expiration' => getenv('BADGR_SERVER_TOKEN_EXPIRATION'),
+		];
+
+		$client = null;
+
+		try {
+			$client = BadgrClient::make_instance($client_parameters);
+		} catch ( BadMethodCallException $e ) {
+			$this->fail('Unexpected exception at client creation.');
+		}
+
+		$this->assertNotNull($client);
+
+		BadgrProvider::set_client( $client );
+		// Setup our Guzzle client
+		$client::set_guzzle_client($guzzle_client);
+
+		$result_count = count( BadgrProvider::get_all_badge_classes( ) );
+
+		$direct_count = BadgrProvider::get_all_badge_classes_count( );
+
+		$this->assertEquals( 2, $result_count );
+		$this->assertEquals( $result_count, $direct_count );
+	}
+
     /**
      * @backupStaticAttributes enabled
 	 * @runInSeparateProcess
