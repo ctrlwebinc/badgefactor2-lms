@@ -58,6 +58,8 @@ class BadgrProvider {
 				self::$client = BadgrUser::get_or_make_user_client();
 				return self::$client;
 			} catch ( \Exception $e ) {
+				echo $e->getMessage();
+				// Add debugging here as required.
 			}
 			// Try to get the user 1 client (if we're in background, we'll need the admin client anyway).
 			try {
@@ -66,6 +68,7 @@ class BadgrProvider {
 					return self::$client;
 				}
 			} catch ( \Exception $e ) {
+				echo $e->getMessage();
 				// Add debugging here as required.
 			}
 			self::$client = new BadgrClient();
@@ -158,7 +161,10 @@ class BadgrProvider {
 			'currentPassword' => $old_password,
 		);
 
-		$response = self::get_client()->put( '/v2/users/' . $slug, $request_body );
+		$client = self::get_client();
+		if ( $client ) {
+			$response = $client->put( '/v2/users/' . $slug, $request_body );
+		}
 		// Check for 200 response.
 		if ( null !== $response && $response->getStatusCode() == 200 ) {
 			// Return true on success or false if unsucessful.
@@ -475,7 +481,10 @@ class BadgrProvider {
 		'elements_per_page' => -1,
 	) ) {
 		// Make GET request to /v2/badgeclasses.
-		$response = self::get_client()->get( '/v2/badgeclasses' );
+		$client = self::get_client();
+		if ( $client ) {
+			$response = $client->get( '/v2/badgeclasses' );
+		}
 
 		// Check for 200 response.
 		if ( null !== $response && 200 === $response->getStatusCode() ) {
@@ -501,7 +510,10 @@ class BadgrProvider {
 	 */
 	public static function get_badge_class_by_badge_class_slug( $badge_class_slug ) {
 		// Make GET request to /v2/badgeclasses/{entity_id}.
-		$response = self::get_client()->get( '/v2/badgeclasses/' . $badge_class_slug );
+		$client = self::get_client();
+		if ( $client ) {
+			$response = $client->get( '/v2/badgeclasses/' . $badge_class_slug );
+		}
 
 		// Check for 200 response.
 		if ( null !== $response && $response->getStatusCode() == 200 ) {
@@ -862,7 +874,10 @@ class BadgrProvider {
 	 * @return boolean|object
 	 */
 	public static function get_profile_associated_to_client_in_use() {
-		$response = self::get_client()->get( '/v2/users/self' );
+		$client = self::get_client();
+		if ( $client ) {
+			$response = $client->get( '/v2/users/self' );
+		}
 
 		// Check for 200 response.
 		if ( null !== $response && $response->getStatusCode() == 200 ) {
