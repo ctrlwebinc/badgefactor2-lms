@@ -515,10 +515,7 @@ class BadgrProvider {
 		}
 
 		// Make GET request to /v2/badgeclasses.
-		$client = self::get_client();
-		if ( $client ) {
-			$response = $client->get( '/v2/badgeclasses', $additional_parameters );
-		}
+		$response = self::get_client()->get( '/v2/badgeclasses', $additional_parameters );
 
 		// Check for 200 response.
 		if ( null !== $response && 200 === $response->getStatusCode() ) {
