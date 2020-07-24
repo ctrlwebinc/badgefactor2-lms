@@ -61,7 +61,6 @@ class BadgrProvider {
 				self::$client = BadgrUser::get_or_make_user_client();
 				return self::$client;
 			} catch ( \Exception $e ) {
-				echo $e->getMessage();
 				// Add debugging here as required.
 			}
 			// Try to get the user 1 client (if we're in background, we'll need the admin client anyway).
@@ -71,7 +70,6 @@ class BadgrProvider {
 					return self::$client;
 				}
 			} catch ( \Exception $e ) {
-				echo $e->getMessage();
 				// Add debugging here as required.
 			}
 			self::$client = new BadgrClient();
@@ -426,8 +424,16 @@ class BadgrProvider {
 		'paged'             => 1,
 		'elements_per_page' => -1,
 	) ) {
+
+		$additional_parameters = array();
+
+		if ( $params['elements_per_page'] > 0 ) {
+			$server_side_pagination =  self::calculate_server_side_pagination( $params['paged'], $params['elements_per_page'] );
+			$additional_parameters = array_merge( $additional_parameters, $server_side_pagination);
+		}
+
 		// Make GET request to /v2/issuers/{entity_id}/badgeclasses.
-		$response = self::get_client()->get( '/v2/issuers/' . $issuer_slug . '/badgeclasses' );
+		$response = self::get_client()->get( '/v2/issuers/' . $issuer_slug . '/badgeclasses', $additional_parameters );
 
 		// Check for 200 response.
 		if ( null !== $response && 200 === $response->getStatusCode() ) {
@@ -435,9 +441,6 @@ class BadgrProvider {
 			if ( isset( $response_info->status->success ) &&
 				true === $response_info->status->success &&
 				isset( $response_info->result ) && is_array( $response_info->result ) ) {
-				if ( $params['elements_per_page'] > 0 ) {
-					return self::paginate( $response_info->result, $params['paged'], $params['elements_per_page'] );
-				}
 				return $response_info->result;
 			}
 		}
@@ -455,10 +458,18 @@ class BadgrProvider {
 		'paged'             => 1,
 		'elements_per_page' => -1,
 	) ) {
+
+		$additional_parameters = array();
+
+		if ( $params['elements_per_page'] > 0 ) {
+			$server_side_pagination =  self::calculate_server_side_pagination( $params['paged'], $params['elements_per_page'] );
+			$additional_parameters = array_merge( $additional_parameters, $server_side_pagination);
+		}
+
 		// Make GET request to /v2/badgeclasses.
 		$client = self::get_client();
 		if ( $client ) {
-			$response = $client->get( '/v2/badgeclasses' );
+			$response = $client->get( '/v2/badgeclasses', $additional_parameters );
 		}
 
 		// Check for 200 response.
@@ -467,10 +478,7 @@ class BadgrProvider {
 			if ( isset( $response_info->status->success ) &&
 				true === $response_info->status->success &&
 				isset( $response_info->result ) && is_array( $response_info->result ) ) {
-				if ( $params['elements_per_page'] > 0 ) {
-					return self::paginate( $response_info->result, $params['paged'], $params['elements_per_page'] );
-				}
-				return $response_info->result;
+					return $response_info->result;
 			}
 		}
 
@@ -634,8 +642,17 @@ class BadgrProvider {
 		'paged'             => 1,
 		'elements_per_page' => -1,
 	) ) {
+		$additional_parameters = array(
+			'include_revoked' => true,
+		);
+
+		if ( $params['elements_per_page'] > 0 ) {
+			$server_side_pagination =  self::calculate_server_side_pagination( $params['paged'], $params['elements_per_page'] );
+			$additional_parameters = array_merge( $additional_parameters, $server_side_pagination);
+		}
+
 		// Make GET request to /v2/badgeclasses/{entity_id}/assertions.
-		$response = self::get_client()->get( '/v2/badgeclasses/' . $badge_class_slug . '/assertions' );
+		$response = self::get_client()->get( '/v2/badgeclasses/' . $badge_class_slug . '/assertions', $additional_parameters );
 
 		// Check for 200 response.
 		if ( null !== $response && 200 === $response->getStatusCode() ) {
@@ -643,10 +660,7 @@ class BadgrProvider {
 			if ( isset( $response_info->status->success ) &&
 				true === $response_info->status->success &&
 				isset( $response_info->result ) && is_array( $response_info->result ) ) {
-				if ( $params['elements_per_page'] > 0 ) {
-					return self::paginate( $response_info->result, $params['paged'], $params['elements_per_page'] );
-				}
-				return $response_info->result;
+					return $response_info->result;
 			}
 		}
 
@@ -666,12 +680,19 @@ class BadgrProvider {
 	) ) {
 		// Make GET request to /v2/issuers/{entity_id}/assertions.
 
-		$response = self::get_client()->get(
-			'/v2/issuers/' . $issuer_slug . '/assertions',
-			array(
-				'include_revoked' => true,
-			)
+		$additional_parameters = array(
+			'include_revoked' => true,
 		);
+
+		if ( $params['elements_per_page'] > 0 ) {
+			$server_side_pagination =  self::calculate_server_side_pagination( $params['paged'], $params['elements_per_page'] );
+			$additional_parameters = array_merge( $additional_parameters, $server_side_pagination);
+		}
+
+		$response = self::get_client()->get(
+			'/v2/issuers/' . $issuer_slug . '/assertions', $additional_parameters );
+
+
 
 		// Check for 200 response.
 		if ( null !== $response && 200 === $response->getStatusCode() ) {
@@ -679,9 +700,6 @@ class BadgrProvider {
 			if ( isset( $response_info->status->success ) &&
 				true === $response_info->status->success &&
 				isset( $response_info->result ) && is_array( $response_info->result ) ) {
-				if ( $params['elements_per_page'] > 0 ) {
-					return self::paginate( $response_info->result, $params['paged'], $params['elements_per_page'] );
-				}
 				return $response_info->result;
 			}
 		}
