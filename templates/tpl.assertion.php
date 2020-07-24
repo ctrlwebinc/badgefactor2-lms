@@ -20,6 +20,8 @@
  * @package Badge_Factor_2
  *
  * @phpcs:disable WordPress.WP.I18n.NonSingularStringLiteralDomain
+ * @phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound
+ * @phpcs:disable WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
  */
 
 /*

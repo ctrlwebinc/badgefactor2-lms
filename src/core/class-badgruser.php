@@ -88,7 +88,7 @@ class BadgrUser {
 	public static function get_admin_instance() {
 		$admin_instance = get_option( self::$options_key_for_badgr_admin );
 
-		if ( false !== $admin_instance && '' != $admin_instance ) {
+		if ( false !== $admin_instance && '' !== $admin_instance ) {
 			return $admin_instance;
 		}
 
@@ -166,7 +166,7 @@ class BadgrUser {
 	 * @return boolean
 	 */
 	public function is_same_user( BadgrUser $other_badgr_user ) {
-		if ( $this->wp_user->ID == $other_badgr_user->wp_user->ID ) {
+		if ( $this->wp_user->ID === $other_badgr_user->wp_user->ID ) {
 			return true;
 		}
 
@@ -176,16 +176,16 @@ class BadgrUser {
 	/**
 	 * Undocumented function
 	 *
-	 * @param WPUser $wp_user WordPress user.
+	 * @param WP_User $wp_user WordPress user.
 	 * @return BadgrClient
 	 * @throws \Exception Throws exception if can't determine the user for client creation.
 	 */
-	public static function get_or_make_user_client( WPUser $wp_user = null ) {
+	public static function get_or_make_user_client( WP_User $wp_user = null ) {
 
 		// If no user passed, use the current user.
 		if ( null === $wp_user ) {
 			$wp_user = wp_get_current_user();
-			if ( 0 == $wp_user->ID ) {
+			if ( 0 === $wp_user->ID ) {
 				return null;
 				throw new \Exception( 'Can\'t determine user for client creation' );
 			}
@@ -240,7 +240,7 @@ class BadgrUser {
 
 		// This hook seems to also be called during logout. Username is then null.
 
-		if ( null == $username ) {
+		if ( null === $username ) {
 			// It is a logout operation, nothing needs doing for us.
 			return;
 		}
@@ -412,7 +412,7 @@ class BadgrUser {
 
 			foreach ( $users_to_process as $user_to_process ) {
 				// Skip admin user.
-				if ( 1 == $user_to_process->ID ) {
+				if ( 1 === $user_to_process->ID ) {
 					continue;
 				}
 

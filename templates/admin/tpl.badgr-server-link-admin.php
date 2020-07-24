@@ -18,6 +18,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  * @package Badge_Factor_2
+ *
+ * @phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound
  */
 
 ?>
@@ -26,12 +28,13 @@
 		<label for="badgr_server_status">Server Admin</label>
 	</div>
 	<div class="cmb-td">
-        <?php
-            if ( null == ( $badgr_admin_user = \BadgeFactor2\BadgrUser::get_admin_instance( ) ) ) {
-                echo '<a href="' . site_url( \BadgeFactor2\BadgrClient::START_ADMIN_LINK_URL) . '" class="button button-primary">Link admin account</a>';
-            } else {
-                echo $badgr_admin_user->get_wp_username();
-            }
-        ?>
+		<?php
+		$badgr_admin_user = \BadgeFactor2\BadgrUser::get_admin_instance();
+		if ( null === $badgr_admin_user ) {
+			echo '<a href="' . site_url( \BadgeFactor2\BadgrClient::START_ADMIN_LINK_URL ) . '" class="button button-primary">Link admin account</a>';
+		} else {
+			echo $badgr_admin_user->get_wp_username();
+		}
+		?>
 	</div>
 </div>

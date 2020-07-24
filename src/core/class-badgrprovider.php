@@ -31,12 +31,14 @@ use BadgeFactor2\BadgrUser;
 class BadgrProvider {
 
 	use Paginatable;
+
 	/**
 	 * Undocumented variable
 	 *
-	 * @var [type]
+	 * @var BadgrClient
 	 */
 	private static $client = null;
+
 	/**
 	 * Undocumented function
 	 *
@@ -46,6 +48,7 @@ class BadgrProvider {
 	public static function set_client( BadgrClient $client ) {
 		self::$client = $client;
 	}
+
 	/**
 	 * Undocumented function
 	 *
@@ -79,34 +82,6 @@ class BadgrProvider {
 	}
 
 	/**
-	 * BadgrProvider Init.
-	 *
-	 * @return void
-	 */
-	public static function init_hooks() {
-		add_action( 'init', array( self::class, 'init' ), 9966 );
-		add_action( 'cmb2_admin_init', array( self::class, 'cmb2_admin_init' ) );
-	}
-
-	/**
-	 * Init hook.
-	 *
-	 * @return void
-	 */
-	public static function init() {
-		// TODO.
-	}
-
-	/**
-	 * CMB2 Admin Init hook.
-	 *
-	 * @return void
-	 */
-	public static function cmb2_admin_init() {
-		// TODO.
-	}
-
-	/**
 	 * Add user to Badgr Server.
 	 *
 	 * @param string $firstname First name.
@@ -136,7 +111,7 @@ class BadgrProvider {
 		$response = self::get_client()->post( '/v1/user/profile', $request_body );
 
 		// Check for 201 response.
-		if ( null !== $response && $response->getStatusCode() == 201 ) {
+		if ( null !== $response && $response->getStatusCode() === 201 ) {
 			// Return slug-entity_id or false if unsucessful.
 			$response_info = json_decode( $response->getBody() );
 			if ( isset( $response_info->slug ) && strlen( $response_info->slug ) > 0 ) {
@@ -166,10 +141,10 @@ class BadgrProvider {
 			$response = $client->put( '/v2/users/' . $slug, $request_body );
 		}
 		// Check for 200 response.
-		if ( null !== $response && $response->getStatusCode() == 200 ) {
+		if ( null !== $response && $response->getStatusCode() === 200 ) {
 			// Return true on success or false if unsucessful.
 			$response_info = json_decode( $response->getBody() );
-			if ( isset( $response_info->status->success ) && true == $response_info->status->success ) {
+			if ( isset( $response_info->status->success ) && true === $response_info->status->success ) {
 				return true;
 			}
 		}
@@ -189,11 +164,11 @@ class BadgrProvider {
 		$response = self::get_client()->get( '/v2/users/' . $user_entity_id );
 
 		// Check for 200 response.
-		if ( null !== $response && $response->getStatusCode() == 200 ) {
+		if ( null !== $response && $response->getStatusCode() === 200 ) {
 			// Check for a non-null recipient field.
 			$response_info = json_decode( $response->getBody() );
 			if ( isset( $response_info->status->success ) &&
-			true == $response_info->status->success &&
+			true === $response_info->status->success &&
 				isset( $response_info->result[0] ) &&
 					null !== $response_info->result[0]->recipient ) {
 				return true;
@@ -229,7 +204,7 @@ class BadgrProvider {
 		$response = self::get_client()->put( '/v2/users/' . $slug, $request_body );
 
 		// Check for 200 response.
-		if ( null !== $response && $response->getStatusCode() == 200 ) {
+		if ( null !== $response && $response->getStatusCode() === 200 ) {
 			return true;
 		}
 
@@ -270,7 +245,7 @@ class BadgrProvider {
 		if ( null !== $response && 200 === $response->getStatusCode() ) {
 			$response_info = json_decode( $response->getBody() );
 			if ( isset( $response_info->status->success ) &&
-				true == $response_info->status->success &&
+				true === $response_info->status->success &&
 				isset( $response_info->result ) && is_array( $response_info->result ) ) {
 				if ( $params['elements_per_page'] > 0 ) {
 					return self::paginate( $response_info->result, $params['paged'], $params['elements_per_page'] );
@@ -293,10 +268,10 @@ class BadgrProvider {
 		$response = self::get_client()->get( '/v2/issuers/' . $slug );
 
 		// Check for 200 response.
-		if ( null !== $response && $response->getStatusCode() == 200 ) {
+		if ( null !== $response && $response->getStatusCode() === 200 ) {
 			$response_info = json_decode( $response->getBody() );
 			if ( isset( $response_info->status->success ) &&
-				true == $response_info->status->success &&
+				true === $response_info->status->success &&
 				isset( $response_info->result[0] ) ) {
 				return $response_info->result[0];
 			}
@@ -316,7 +291,7 @@ class BadgrProvider {
 		$response = self::get_client()->delete( '/v2/issuers/' . $slug );
 
 		// Check for 204 or 404 response.
-		if ( null !== $response && ( $response->getStatusCode() == 204 || $response->getStatusCode() == 404 ) ) {
+		if ( null !== $response && ( $response->getStatusCode() === 204 || $response->getStatusCode() === 404 ) ) {
 
 			return true;
 		}
@@ -348,11 +323,11 @@ class BadgrProvider {
 		$response = self::get_client()->post( '/v2/issuers', $request_body );
 
 		// Check for 201 response.
-		if ( null !== $response && $response->getStatusCode() == 201 ) {
+		if ( null !== $response && $response->getStatusCode() === 201 ) {
 			// Return slug-entity_id or false if unsuccessful.
 			$response_info = json_decode( $response->getBody() );
 			if ( isset( $response_info->status->success ) &&
-				true == $response_info->status->success &&
+				true === $response_info->status->success &&
 				isset( $response_info->result[0]->entityId ) ) {
 				return $response_info->result[0]->entityId;
 			}
@@ -388,7 +363,7 @@ class BadgrProvider {
 		$response = self::get_client()->put( '/v2/issuers/' . $issuer_slug, $request_body );
 
 		// Check for 200 response.
-		if ( null !== $response && $response->getStatusCode() == 200 ) {
+		if ( null !== $response && $response->getStatusCode() === 200 ) {
 			return true;
 		}
 
@@ -431,7 +406,7 @@ class BadgrProvider {
 			// Return slug-entity_id or false if unsuccessful.
 			$response_info = json_decode( $response->getBody() );
 			if ( isset( $response_info->status->success ) &&
-				true == $response_info->status->success &&
+				true === $response_info->status->success &&
 				isset( $response_info->result[0]->entityId ) ) {
 				return $response_info->result[0]->entityId;
 			}
@@ -458,7 +433,7 @@ class BadgrProvider {
 		if ( null !== $response && 200 === $response->getStatusCode() ) {
 			$response_info = json_decode( $response->getBody() );
 			if ( isset( $response_info->status->success ) &&
-				true == $response_info->status->success &&
+				true === $response_info->status->success &&
 				isset( $response_info->result ) && is_array( $response_info->result ) ) {
 				if ( $params['elements_per_page'] > 0 ) {
 					return self::paginate( $response_info->result, $params['paged'], $params['elements_per_page'] );
@@ -490,7 +465,7 @@ class BadgrProvider {
 		if ( null !== $response && 200 === $response->getStatusCode() ) {
 			$response_info = json_decode( $response->getBody() );
 			if ( isset( $response_info->status->success ) &&
-				true == $response_info->status->success &&
+				true === $response_info->status->success &&
 				isset( $response_info->result ) && is_array( $response_info->result ) ) {
 				if ( $params['elements_per_page'] > 0 ) {
 					return self::paginate( $response_info->result, $params['paged'], $params['elements_per_page'] );
@@ -516,10 +491,10 @@ class BadgrProvider {
 		}
 
 		// Check for 200 response.
-		if ( null !== $response && $response->getStatusCode() == 200 ) {
+		if ( null !== $response && $response->getStatusCode() === 200 ) {
 			$response_info = json_decode( $response->getBody() );
 			if ( isset( $response_info->status->success ) &&
-				true == $response_info->status->success &&
+				true === $response_info->status->success &&
 				isset( $response_info->result[0] ) ) {
 				return $response_info->result[0];
 			}
@@ -563,7 +538,7 @@ class BadgrProvider {
 		$response = self::get_client()->put( '/v2/badgeclasses/' . $badge_class_slug, $request_body );
 
 		// Check for 200 response.
-		if ( null !== $response && $response->getStatusCode() == 200 ) {
+		if ( null !== $response && $response->getStatusCode() === 200 ) {
 			return true;
 		}
 
@@ -581,7 +556,7 @@ class BadgrProvider {
 		$response = self::get_client()->delete( '/v2/badgeclasses/' . $slug );
 
 		// Check for 204 or 404 response.
-		if ( null !== $response && ( $response->getStatusCode() == 204 || $response->getStatusCode() == 404 ) ) {
+		if ( null !== $response && ( $response->getStatusCode() === 204 || $response->getStatusCode() === 404 ) ) {
 
 			return true;
 		}
@@ -595,12 +570,12 @@ class BadgrProvider {
 	 * @param string $badge_class_slug BadgeClass slug.
 	 * @param string $recipient_identifier Recipient identifier.
 	 * @param string $recipient_type Recipient type.
-	 * @param mixed $issuedOn Issued on date.
-	 * @param mixed $evidence_url Evidence url.
-	 * @param mixed $evidence_narrative Evidence narrative
+	 * @param mixed  $issued_on Issued on date.
+	 * @param mixed  $evidence_url Evidence url.
+	 * @param mixed  $evidence_narrative Evidence narrative.
 	 * @return string|false Assertion slug or false on error.
 	 */
-	public static function add_assertion( $badge_class_slug, $recipient_identifier, $recipient_type = 'email', $issued_on = null, $evidence_url = null, $evidence_narrative = null  ) {
+	public static function add_assertion( $badge_class_slug, $recipient_identifier, $recipient_type = 'email', $issued_on = null, $evidence_url = null, $evidence_narrative = null ) {
 		// Setup body.
 		$request_body = array(
 			'recipient' => array(
@@ -622,7 +597,7 @@ class BadgrProvider {
 		if ( null !== $evidence_narrative || null !== $evidence_url ) {
 			$request_body['evidence'] = array(
 				'narrative' => $evidence_narrative,
-				'url' => $evidence_url
+				'url'       => $evidence_url,
 			);
 		}
 
@@ -634,7 +609,7 @@ class BadgrProvider {
 			// Return slug-entity_id or false if unsuccessful.
 			$response_info = json_decode( $response->getBody() );
 			if ( isset( $response_info->status->success ) &&
-				true == $response_info->status->success &&
+				true === $response_info->status->success &&
 				isset( $response_info->result[0]->entityId ) ) {
 				return $response_info->result[0]->entityId;
 			}
@@ -662,7 +637,7 @@ class BadgrProvider {
 		if ( null !== $response && 200 === $response->getStatusCode() ) {
 			$response_info = json_decode( $response->getBody() );
 			if ( isset( $response_info->status->success ) &&
-				true == $response_info->status->success &&
+				true === $response_info->status->success &&
 				isset( $response_info->result ) && is_array( $response_info->result ) ) {
 				if ( $params['elements_per_page'] > 0 ) {
 					return self::paginate( $response_info->result, $params['paged'], $params['elements_per_page'] );
@@ -698,7 +673,7 @@ class BadgrProvider {
 		if ( null !== $response && 200 === $response->getStatusCode() ) {
 			$response_info = json_decode( $response->getBody() );
 			if ( isset( $response_info->status->success ) &&
-				true == $response_info->status->success &&
+				true === $response_info->status->success &&
 				isset( $response_info->result ) && is_array( $response_info->result ) ) {
 				if ( $params['elements_per_page'] > 0 ) {
 					return self::paginate( $response_info->result, $params['paged'], $params['elements_per_page'] );
@@ -721,10 +696,10 @@ class BadgrProvider {
 		$response = self::get_client()->get( '/v2/assertions/' . $assertion_slug );
 
 		// Check for 200 response.
-		if ( null !== $response && $response->getStatusCode() == 200 ) {
+		if ( null !== $response && $response->getStatusCode() === 200 ) {
 			$response_info = json_decode( $response->getBody() );
 			if ( isset( $response_info->status->success ) &&
-				true == $response_info->status->success &&
+				true === $response_info->status->success &&
 				isset( $response_info->result[0] ) ) {
 				return $response_info->result[0];
 			}
@@ -750,7 +725,7 @@ class BadgrProvider {
 		$response = self::get_client()->delete( '/v2/assertions/' . $slug, $request_body );
 
 		// Check for 200 response.
-		if ( null !== $response && $response->getStatusCode() == 200 ) {
+		if ( null !== $response && $response->getStatusCode() === 200 ) {
 
 			return true;
 		}
@@ -776,13 +751,13 @@ class BadgrProvider {
 		if ( null !== $response && 200 === $response->getStatusCode() ) {
 			$response_info = json_decode( $response->getBody() );
 			if ( isset( $response_info->status->success ) &&
-				true == $response_info->status->success &&
+				true === $response_info->status->success &&
 				isset( $response_info->result ) && is_array( $response_info->result ) ) {
 					// Filter for acceptance status.
 				if ( $exclude_not_accepted ) {
 					$result = array();
 					foreach ( $response_info->result as $assertion ) {
-						if ( 'Accepted' == $assertion->acceptance ) {
+						if ( 'Accepted' === $assertion->acceptance ) {
 							$result[] = $assertion;
 						}
 					}
@@ -811,10 +786,10 @@ class BadgrProvider {
 		$response = $badgr_user->get_client()->get( '/v2/backpack/assertions/' . $slug );
 
 		// Check for 200 response.
-		if ( null !== $response && $response->getStatusCode() == 200 ) {
+		if ( null !== $response && $response->getStatusCode() === 200 ) {
 			$response_info = json_decode( $response->getBody() );
 			if ( isset( $response_info->status->success ) &&
-				true == $response_info->status->success &&
+				true === $response_info->status->success &&
 				isset( $response_info->result[0] ) ) {
 				return $response_info->result[0];
 			}
@@ -833,11 +808,11 @@ class BadgrProvider {
 		$response = $badgr_user->get_client()->put( '/v2/backpack/assertions/' . $slug, array( 'acceptance' => 'Accepted' ) );
 
 		// Check for 200 response.
-		if ( null !== $response && $response->getStatusCode() == 200 ) {
+		if ( null !== $response && $response->getStatusCode() === 200 ) {
 			$response_info = json_decode( $response->getBody() );
 			if ( isset( $response_info->status->success ) &&
-				true == $response_info->status->success &&
-				isset( $response_info->result[0] ) && 'Accepted' == $response_info->result[0]->acceptance ) {
+				true === $response_info->status->success &&
+				isset( $response_info->result[0] ) && 'Accepted' === $response_info->result[0]->acceptance ) {
 				return true;
 			}
 		}
@@ -858,10 +833,10 @@ class BadgrProvider {
 		}
 
 		// Check for 200 response.
-		if ( null !== $response && $response->getStatusCode() == 200 ) {
+		if ( null !== $response && $response->getStatusCode() === 200 ) {
 			$response_info = json_decode( $response->getBody() );
 			if ( isset( $response_info->status->success ) &&
-				true == $response_info->status->success &&
+				true === $response_info->status->success &&
 				isset( $response_info->result[0] ) ) {
 				return $response_info->result[0];
 			}

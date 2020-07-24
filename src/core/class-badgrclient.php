@@ -291,9 +291,9 @@ class BadgrClient {
 		// If scopes not already set, set to default value.
 		if ( null === $client->scopes ) {
 			$scopes = 'rw:profile rw:backpack';
-			if ( true == $client->as_admin ) {
+			if ( true === $client->as_admin ) {
 				$scopes .= ' rw:issuer';
-				if ( self::FLAVOR_LOCAL_R_JAMIROQUAI == $client->badgr_server_flavor ) {
+				if ( self::FLAVOR_LOCAL_R_JAMIROQUAI === $client->badgr_server_flavor ) {
 					$scopes .= ' rw:serverAdmin';
 				}
 			}
@@ -415,7 +415,8 @@ class BadgrClient {
 	 */
 	public static function setup_admin_code_authorization() {
 		// Check that user is logged into WP.
-		if ( 0 === ( $current_user = wp_get_current_user() ) ) {
+		$current_user = wp_get_current_user();
+		if ( 0 === $current_user ) {
 			// Redirect to admin page.
 			header( 'Location: ' . site_url( self::REDIRECT_PATH_AFTER_AUTH ) );
 			exit;
@@ -479,6 +480,7 @@ class BadgrClient {
 	/**
 	 * Handle Badgr auth callbacks
 	 *
+	 * @throws \BadMethodCallException Bad Method Call Exception.
 	 * @return void
 	 */
 	public static function handle_auth_return() {
@@ -523,6 +525,7 @@ class BadgrClient {
 	 * Complete the code authorization process by obtaining a token
 	 *
 	 * @param string $code Authorization code.
+	 * @throws \BadMethodCallException Bad Method Call Exception.
 	 * @return void
 	 */
 	public function get_access_token_from_authorization_code( $code ) {
@@ -581,7 +584,7 @@ class BadgrClient {
 	 * Get a token by using a username and password
 	 *
 	 * @return void
-	 * @throws BadMethodCallException
+	 * @throws \BadMethodCallException Bad Method Call Exception.
 	 */
 	public function get_access_token_from_password_grant() {
 		$client = self::get_guzzle_client();
@@ -591,7 +594,7 @@ class BadgrClient {
 			'grant_type' => 'password',
 			'scope'      => $this->scopes,
 		);
-		if ( $this->badgr_server_flavor != self::FLAVOR_BADGRIO_01 ) {
+		if ( self::FLAVOR_BADGRIO_01 !== $this->badgr_server_flavor ) {
 			$args['client_id'] = $this->client_id;
 		}
 		$args = array( 'query' => $args );
@@ -601,7 +604,7 @@ class BadgrClient {
 		try {
 			$response = $client->request( 'POST', $this->get_internal_or_external_server_url() . '/o/token', $args );
 			// Check for 200 response.
-			if ( null !== $response && $response->getStatusCode() == 200 ) {
+			if ( null !== $response && $response->getStatusCode() === 200 ) {
 				$response_info          = json_decode( $response->getBody() );
 				$this->access_token     = $response_info->access_token;
 				$this->refresh_token    = $response_info->refresh_token;
@@ -614,7 +617,7 @@ class BadgrClient {
 			$this->save();
 			throw new \BadMethodCallException( 'Connection exception ' . $e->getMessage() );
 		} catch ( GuzzleException $e ) {
-			if ( $e->getResponse()->getStatusCode() == 401 ) {
+			if ( $e->getResponse()->getStatusCode() === 401 ) {
 				$this->needs_auth = true;
 			} else {
 				$this->save();
@@ -679,8 +682,8 @@ class BadgrClient {
 	/**
 	 * Signal ou interest in bf2 query variable
 	 *
-	 * @param array $vars
-	 * @return void
+	 * @param array $vars Variables.
+	 * @return array
 	 */
 	public static function hook_query_vars( $vars ) {
 		$vars[] = 'bf2';
@@ -693,11 +696,12 @@ class BadgrClient {
 	 * @return void
 	 */
 	public static function hook_template_redirect() {
-		if ( $bf2 = get_query_var( 'bf2' ) ) {
-			if ( 'auth' == $bf2 ) {
+		$bf2 = get_query_var( 'bf2' );
+		if ( $bf2 ) {
+			if ( 'auth' === $bf2 ) {
 				self::handle_auth_return();
 			}
-			if ( 'init' == $bf2 ) {
+			if ( 'init' === $bf2 ) {
 				self::setup_admin_code_authorization();
 			}
 			header( 'Content-Type: text/plain' );
@@ -716,17 +720,17 @@ class BadgrClient {
 		// TODO: relocate function.
 		$badgr_admin_user = BadgrUser::get_admin_instance();
 
-		if ( null == $badgr_admin_user ) {
+		if ( null === $badgr_admin_user ) {
 			return false;
 		}
 
 		$admin_client = $badgr_admin_user->get_client();
 
-		if ( null == $admin_client ) {
+		if ( null === $admin_client ) {
 			return false;
 		}
 
-		if ( self::STATE_HAVE_ACCESS_TOKEN != $admin_client->get_state() || false == $admin_client->is_admin() ) {
+		if ( self::STATE_HAVE_ACCESS_TOKEN !== $admin_client->get_state() || false === $admin_client->is_admin() ) {
 			return false;
 		}
 
@@ -740,7 +744,7 @@ class BadgrClient {
 	 */
 	public static function get_status() {
 		// TODO return proper status.
-		if ( true == self::is_active() ) {
+		if ( true === self::is_active() ) {
 			return 'Active';
 		}
 
@@ -755,7 +759,7 @@ class BadgrClient {
 	 * @return string
 	 */
 	private function get_internal_or_external_server_url() {
-		if ( null !== $this->badgr_server_internal_url && '' != $this->badgr_server_internal_url ) {
+		if ( null !== $this->badgr_server_internal_url && '' !== $this->badgr_server_internal_url ) {
 			return $this->badgr_server_internal_url;
 		} else {
 			return $this->badgr_server_public_url;
@@ -767,7 +771,7 @@ class BadgrClient {
 	/**
 	 * Refreshes Badgr Server token.
 	 *
-	 * @throws BadMethodCallException
+	 * @throws \BadMethodCallException Bad Method Call Exception.
 	 */
 	public function refresh_token() {
 		$redirect_uri = site_url( self::$auth_redirect_uri );
@@ -832,13 +836,13 @@ class BadgrClient {
 	private function request( $method, $path, $args = array() ) {
 
 		// Validate that we're using a configured client. If not, return null response.
-		if ( self::STATE_NEW_AND_UNCONFIGURED == $this->state ) {
+		if ( self::STATE_NEW_AND_UNCONFIGURED === $this->state ) {
 			return null;
 		}
 
 		$client = self::get_guzzle_client();
 		$method = strtoupper( $method );
-		if ( ! in_array( $method, array( 'GET', 'PUT', 'POST', 'DELETE' ) ) ) {
+		if ( ! in_array( $method, array( 'GET', 'PUT', 'POST', 'DELETE' ), true ) ) {
 			throw new \BadMethodCallException( 'Method not supported' );
 		}
 

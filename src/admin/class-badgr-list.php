@@ -20,6 +20,7 @@
  * @package Badge_Factor_2
  *
  * @phpcs:disable WordPress.WP.I18n.NonSingularStringLiteralDomain
+ * @phpcs:disable WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
  */
 
 namespace BadgeFactor2\Admin;
@@ -164,7 +165,7 @@ class Badgr_List extends \WP_List_Table {
 	/**
 	 * Render a column when no column specific method exist.
 	 *
-	 * @param array  $item Item.
+	 * @param object $item Item.
 	 * @param string $column_name Column name.
 	 *
 	 * @return mixed
@@ -204,7 +205,7 @@ class Badgr_List extends \WP_List_Table {
 	/**
 	 * Render the bulk edit checkbox
 	 *
-	 * @param array $item Item.
+	 * @param object $item Item.
 	 *
 	 * @return string
 	 */
@@ -219,7 +220,7 @@ class Badgr_List extends \WP_List_Table {
 	/**
 	 * Method for name column
 	 *
-	 * @param array $item an array of DB data.
+	 * @param object $item an array of DB data.
 	 *
 	 * @return string
 	 */
@@ -321,8 +322,8 @@ class Badgr_List extends \WP_List_Table {
 
 		$this->set_pagination_args(
 			array(
-				'total_items' => $total_items, //WE have to calculate the total number of items
-				'per_page'    => $per_page, //WE have to determine how many items to show on a page
+				'total_items' => $total_items, // We have to calculate the total number of items.
+				'per_page'    => $per_page, // We have to determine how many items to show on a page.
 			)
 		);
 

@@ -20,6 +20,8 @@
  * @package Badge_Factor_2
  *
  * @phpcs:disable WordPress.WP.I18n.NonSingularStringLiteralDomain
+ * @phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound
+ * @phpcs:disable WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
  */
 
 ?>
@@ -29,13 +31,13 @@
 		switch ( $_GET['notice'] ) {
 			case 'updated':
 				?>
-					<div class="updated settings-error notice is-dismissible"> 
-						<p><strong><?php echo __( 'Assertion updated.', BF2_DATA['TextDomain'] ); ?></strong></p>
-						<button type="button" class="notice-dismiss">
-							<span class="screen-reader-text"><?php echo __( 'Dismiss this message.', BF2_DATA['TextDomain'] ); ?></span>
-						</button>
-					</div>
-					<?php
+				<div class="updated settings-error notice is-dismissible"> 
+					<p><strong><?php echo __( 'Assertion updated.', BF2_DATA['TextDomain'] ); ?></strong></p>
+					<button type="button" class="notice-dismiss">
+						<span class="screen-reader-text"><?php echo __( 'Dismiss this message.', BF2_DATA['TextDomain'] ); ?></span>
+					</button>
+				</div>
+				<?php
 				break;
 		}
 		?>
@@ -107,7 +109,7 @@
 			</div>
 		</div>
 		<p class="submit">
-			<input type="submit" class="button button-secondary delete" onclick="if(!confirm( '<?php echo __('Are you sure you want to revoke this item?', BF2_DATA['TextDomain']); ?>' ) ) { event.preventDefault() }" value="<?php echo __( 'Revoke Assertion', BF2_DATA['TextDomain'] ); ?>">
+			<input type="submit" class="button button-secondary delete" onclick="if(!confirm( '<?php echo __( 'Are you sure you want to revoke this item?', BF2_DATA['TextDomain'] ); ?>' ) ) { event.preventDefault() }" value="<?php echo __( 'Revoke Assertion', BF2_DATA['TextDomain'] ); ?>">
 		</p>
 		<?php else : ?>
 			You shouldn't be here.

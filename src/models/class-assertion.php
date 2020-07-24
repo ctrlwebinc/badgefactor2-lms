@@ -153,7 +153,7 @@ class Assertion implements Badgr_Entity {
 	public static function get_columns() {
 		return array(
 			'image'      => __( 'Issued Badge', BF2_DATA['TextDomain'] ),
-			//'issuer'     => __( 'Issuer', BF2_DATA['TextDomain'] ),
+			'issuer'     => __( 'Issuer', BF2_DATA['TextDomain'] ),
 			'badgeclass' => __( 'Badge', BF2_DATA['TextDomain'] ),
 			'recipient'  => __( 'Recipient', BF2_DATA['TextDomain'] ),
 			'createdAt'  => __( 'Created on', BF2_DATA['TextDomain'] ),

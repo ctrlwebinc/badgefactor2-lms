@@ -104,7 +104,6 @@ class BadgeFactor2 {
 
 		// Badgr.
 		BadgrClient::init_hooks();
-		BadgrProvider::init_hooks();
 		BadgrUser::init_hooks();
 
 		// Post Types.
