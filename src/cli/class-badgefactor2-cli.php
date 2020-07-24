@@ -41,7 +41,7 @@ class BadgeFactor2_CLI extends WP_CLI_Command {
 	 * @return void
 	 */
 	public function list_issuers( $args, $assoc_args ) {
-		if ( count( $args ) != 0 ) {
+		if ( count( $args ) !== 0 ) {
 			WP_CLI::error( 'Usage: list_issuers' );
 		}
 
