@@ -87,6 +87,10 @@ Refer to Docker's networking configuration documentation for help.
 
 For the moment badgr server needs some adjustments to be fully decoupled from its front-end and to operate with BF2. Here are the required changes based on release/jamiroquai :
 
+```bash
+pip install https://github.com/ctrlwebinc/badgr-server-bf2/archive/master.zip
+```
+
 apps/badgeuser/api.py
 
 ```patch
@@ -103,6 +107,16 @@ apps/badgeuser/api.py
 apps/entity/api.py
 
 ```patch
+
+ import badgrlog
+ from mainsite.pagination import BadgrCursorPagination
++from bf2.pagination import BadgrLimitOffsetPagination
+
+
+ class BaseEntityView(APIView):
+```
+
+```patch
      min_per_page = 1
      max_per_page = 500
      default_per_page = None  # dont paginate by default
@@ -111,6 +125,63 @@ apps/entity/api.py
      ordering = "-created_at"
 
      def get_ordering(self):
+```
+
+```patch
+
+         # only paginate on request
+         if per_page:
+-            self.paginator = BadgrCursorPagination(ordering=self.get_ordering(), page_size=per_page)
++            # self.paginator = BadgrCursorPagination(ordering=self.get_ordering(), page_size=per_page)
++            self.paginator = BadgrLimitOffsetPagination(ordering=self.get_ordering(), page_size=per_page)
+             page = self.paginator.paginate_queryset(queryset, request=request)
+         else:
+             page = list(queryset)
+```
+
+apps/issuer/api.py
+
+```patch
+     apispec_delete_operation, apispec_list_operation, apispec_post_operation
+ from mainsite.permissions import AuthenticatedWithVerifiedIdentifier, IsServerAdmin
+ from mainsite.serializers import CursorPaginatedListSerializer
++from bf2.serializers import LimitOffsetPaginatedListSerializer
+ from mainsite.models import AccessTokenProxy
+
+ logger = badgrlog.BadgrLogger()
+```
+
+```patch
+         return Response(serializer.data)
+
+
+-class PaginatedAssertionsSinceSerializer(CursorPaginatedListSerializer):
++class PaginatedAssertionsSinceSerializer(LimitOffsetPaginatedListSerializer):
+     child = BadgeInstanceSerializerV2()
+
+     def __init__(self, *args, **kwargs):
+```
+
+```patch
+         return Response(serializer.data)
+
+
+-class PaginatedBadgeClassesSinceSerializer(CursorPaginatedListSerializer):
++class PaginatedBadgeClassesSinceSerializer(LimitOffsetPaginatedListSerializer):
+     child = BadgeClassSerializerV2()
+
+     def __init__(self, *args, **kwargs):
+```
+
+```patch
+         return Response(serializer.data)
+
+
+-class PaginatedIssuersSinceSerializer(CursorPaginatedListSerializer):
++class PaginatedIssuersSinceSerializer(LimitOffsetPaginatedListSerializer):
+     child = IssuerSerializerV2()
+
+     def __init__(self, *args, **kwargs):
 ```
 
 apps/mainsite/account_adapter.py
@@ -128,42 +199,18 @@ apps/mainsite/account_adapter.py
 
 ```
 
-apps/mainsite/pagination.py
+apps/mainsite/settings.py
 
 ```patch
--from rest_framework.pagination import CursorPagination
-+from rest_framework.pagination import LimitOffsetPagination
+      'DEFAULT_VERSION': 'v1',
+     'ALLOWED_VERSIONS': ['v1','v2'],
+     'EXCEPTION_HANDLER': 'entity.views.exception_handler',
+-    'PAGE_SIZE': 100,
++    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
++    'PAGE_SIZE': 10,
+ }
 
 
--class BadgrCursorPagination(CursorPagination):
-+class BadgrCursorPagination(LimitOffsetPagination):
-     ordering = '-created_at'
--    page_size_query_param = 'num'
--    offset_cutoff = 15000
-
-     def __init__(self, ordering=None, page_size=None):
--        if ordering is not None:
--            self.ordering = ordering
--        if page_size is not None:
--            self.page_size = page_size
-         super(BadgrCursorPagination, self).__init__()
--
--    def get_link_header(self):
--        links = []
--        if self.has_next:
--            links.append('<{}>; rel="next"'.format(self.get_next_link()))
--        if self.has_previous:
--            links.append('<{}>; rel="prev"'.format(self.get_previous_link()))
--        if len(links):
--            return ', '.join(links)
--
--    def get_page_info(self):
--        return OrderedDict([
--            ('hasNext', self.has_next),
--            ('nextResults', self.get_next_link() if self.has_next else None),
--            ('hasPrevious', self.has_previous),
--            ('previousResults', self.get_previous_link() if self.has_previous else None),
--        ])
 ```
 
 apps/mainsite/urls.py
@@ -179,15 +226,14 @@ apps/mainsite/urls.py
      url(r'^o/', include(oauth2_provider_base_urlpatterns, namespace='oauth2_provider')),
 ```
 
-apps/mainsite/settings.py
-
 ```patch
- ##
+     url(r'^v2/externaltools/', include('externaltools.v2_api_urls'), kwargs={'version': 'v2'}),
 
- AUTH_USER_MODEL = 'badgeuser.BadgeUser'
--LOGIN_URL = '/accounts/login/'
-+LOGIN_URL = '/staff/login/'
- LOGIN_REDIRECT_URL = '/docs'
 
- AUTHENTICATION_BACKENDS = [
++    # bf2 API additions
++    url(r'^v2/', include('bf2.v2_api_urls')),
++
+ ]
+
+ # Test URLs to allow you to see these pages while DEBUG is True
 ```
