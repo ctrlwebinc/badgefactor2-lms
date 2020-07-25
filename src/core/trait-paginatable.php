@@ -65,14 +65,14 @@ trait Paginatable {
 	 * Undocumented function
 	 *
 	 * @param integer $page Page number starting at 1.
-	 * @param integer $limit Limit of results per page
+	 * @param integer $limit Limit of results per page.
 	 * @return array
 	 */
 	final public static function calculate_server_side_pagination( $page = 1, $limit = 10 ) {
 
 		return ( array(
 			'limit'  => $limit,
-			'offset' => $limit * ($page - 1 ),
-		));
+			'offset' => $limit * ( $page - 1 ),
+		) );
 	}
 }
