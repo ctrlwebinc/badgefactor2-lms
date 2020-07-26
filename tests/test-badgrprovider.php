@@ -49,6 +49,10 @@ class BadgrProviderTest extends WP_UnitTestCase {
 	    return $randomString;
 	}
 
+    /**
+     * @backupStaticAttributes enabled
+	 * @runInSeparateProcess
+     */
 	public function test_badgr_provider_returns_count() {
 
 		// Setup mock Guzzle client
