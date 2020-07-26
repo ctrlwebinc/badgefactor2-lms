@@ -91,6 +91,26 @@ class Assertion implements Badgr_Entity {
 
 
 	/**
+	 * Count assertions.
+	 *
+	 * @return int
+	 */
+	public static function count() {
+		$count = 0;
+		if ( isset( $_GET['filter_type'] ) && isset( $_GET['filter_value'] ) ) {
+			$filter_type  = $_GET['filter_type'];
+			$filter_value = $_GET['filter_value'];
+			if ( 'Issuers' === $filter_type ) {
+				$count = BadgrProvider::get_all_assertions_by_issuer_slug_count( $filter_value );
+			} elseif ( 'Badges' === $filter_type ) {
+				$count = BadgrProvider::get_all_assertions_by_badge_class_slug_count( $filter_value );
+			}
+		}
+		return $count;
+	}
+
+
+	/**
 	 * Retrieve issuer from Badgr provider.
 	 *
 	 * @param string $entity_id Issuer ID.

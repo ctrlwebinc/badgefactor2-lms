@@ -40,6 +40,14 @@ interface Badgr_Entity {
 
 
 	/**
+	 * Count entities.
+	 *
+	 * @return int
+	 */
+	public static function count();
+
+
+	/**
 	 * Retrieve single entity from Badgr provider.
 	 *
 	 * @param string $entity_id Slug / Entity ID.

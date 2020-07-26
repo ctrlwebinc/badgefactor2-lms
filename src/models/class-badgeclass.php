@@ -84,6 +84,19 @@ class BadgeClass implements Badgr_Entity {
 
 
 	/**
+	 * Count badge classes.
+	 *
+	 * @return int
+	 */
+	public static function count() {
+
+		$count = BadgrProvider::get_all_badge_classes_count();
+
+		return $count;
+	}
+
+
+	/**
 	 * Retrieve badge from Badgr provider.
 	 *
 	 * @param string $entity_id Badge ID.

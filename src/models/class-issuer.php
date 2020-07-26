@@ -122,6 +122,19 @@ class Issuer implements Badgr_Entity {
 
 
 	/**
+	 * Count issuers.
+	 *
+	 * @return int
+	 */
+	public static function count() {
+
+		$count = BadgrProvider::get_all_issuers_count();
+
+		return $count;
+	}
+
+
+	/**
 	 * Retrieve issuer from Badgr provider.
 	 *
 	 * @param string $entity_id Issuer ID.

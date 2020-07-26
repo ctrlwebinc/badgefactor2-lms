@@ -265,10 +265,8 @@ class BadgrProvider {
 		// Check for 200 response.
 		if ( null !== $response && 200 === $response->getStatusCode() ) {
 			$response_info = json_decode( $response->getBody() );
-			if ( isset( $response_info->status->success ) &&
-				true === $response_info->status->success &&
-				isset( $response_info->count ) && is_numeric( $response_info->count ) ) {
-					return intval( $response_info->count );
+			if ( isset( $response_info->count ) && is_numeric( $response_info->count ) ) {
+				return intval( $response_info->count );
 			}
 		}
 
@@ -488,9 +486,7 @@ class BadgrProvider {
 		// Check for 200 response.
 		if ( null !== $response && 200 === $response->getStatusCode() ) {
 			$response_info = json_decode( $response->getBody() );
-			if ( isset( $response_info->status->success ) &&
-				true === $response_info->status->success &&
-				isset( $response_info->count ) && is_numeric( $response_info->count ) ) {
+			if ( isset( $response_info->count ) && is_numeric( $response_info->count ) ) {
 				return intval( $response_info->count );
 			}
 		}
@@ -543,9 +539,7 @@ class BadgrProvider {
 		// Check for 200 response.
 		if ( null !== $response && 200 === $response->getStatusCode() ) {
 			$response_info = json_decode( $response->getBody() );
-			if ( isset( $response_info->status->success ) &&
-				true === $response_info->status->success &&
-				isset( $response_info->count ) && is_numeric( $response_info->count ) ) {
+			if ( isset( $response_info->count ) && is_numeric( $response_info->count ) ) {
 					return intval( $response_info->count );
 			}
 		}
@@ -747,9 +741,7 @@ class BadgrProvider {
 		// Check for 200 response.
 		if ( null !== $response && 200 === $response->getStatusCode() ) {
 			$response_info = json_decode( $response->getBody() );
-			if ( isset( $response_info->status->success ) &&
-				true === $response_info->status->success &&
-				isset( $response_info->count ) && is_numeric( $response_info->count ) ) {
+			if ( isset( $response_info->count ) && is_numeric( $response_info->count ) ) {
 					return intval( $response_info->count );
 			}
 		}
@@ -811,9 +803,7 @@ class BadgrProvider {
 		// Check for 200 response.
 		if ( null !== $response && 200 === $response->getStatusCode() ) {
 			$response_info = json_decode( $response->getBody() );
-			if ( isset( $response_info->status->success ) &&
-				true === $response_info->status->success &&
-				isset( $response_info->count ) && is_numeric( $response_info->count ) ) {
+			if ( isset( $response_info->count ) && is_numeric( $response_info->count ) ) {
 				return intval( $response_info->count );
 			}
 		}
