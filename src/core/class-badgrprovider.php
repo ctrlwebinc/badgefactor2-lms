@@ -255,16 +255,18 @@ class BadgrProvider {
 		return false;
 	}
 
-
-	public static function get_all_issuers_count( ) {
-		// Make GET request to /v2/issuers.
+	/**
+	 * Count issuers.
+	 */
+	public static function get_all_issuers_count() {
+		// Make GET request to /v2/issuers_count.
 		$response = self::get_client()->get( '/v2/issuers_count' );
 
 		// Check for 200 response.
 		if ( null !== $response && 200 === $response->getStatusCode() ) {
 			$response_info = json_decode( $response->getBody() );
 			if ( isset( $response_info->status->success ) &&
-				true == $response_info->status->success &&
+				true === $response_info->status->success &&
 				isset( $response_info->count ) && is_numeric( $response_info->count ) ) {
 					return intval( $response_info->count );
 			}
@@ -446,8 +448,8 @@ class BadgrProvider {
 		$additional_parameters = array();
 
 		if ( $params['elements_per_page'] > 0 ) {
-			$server_side_pagination =  self::calculate_server_side_pagination( $params['paged'], $params['elements_per_page'] );
-			$additional_parameters = array_merge( $additional_parameters, $server_side_pagination);
+			$server_side_pagination = self::calculate_server_side_pagination( $params['paged'], $params['elements_per_page'] );
+			$additional_parameters  = array_merge( $additional_parameters, $server_side_pagination );
 		}
 
 		// Make GET request to /v2/issuers/{entity_id}/badgeclasses.
@@ -465,22 +467,29 @@ class BadgrProvider {
 
 		return false;
 	}
+
 	/**
-	 * Undocumented function
+	 * Count badge classes for issuer.
 	 *
 	 * @param string $issuer_slug Issuer slug.
 	 * @return mixed
 	 */
 	public static function get_all_badge_classes_by_issuer_slug_count( $issuer_slug ) {
 
-		// Make GET request to /v2/issuers/{entity_id}/badgeclasses.
-		$response = self::get_client()->get( '/v2/issuers/' . $issuer_slug . '/badgeclasses', array( 'limit' => 1, 'offset' => 0 ) );
+		// Make GET request to /v2/badgeclasses_count/issuer/{entity_id}.
+		$response = self::get_client()->get(
+			'/v2/badgeclasses_count/issuer/' . $issuer_slug,
+			array(
+				'limit'  => 1,
+				'offset' => 0,
+			)
+		);
 
 		// Check for 200 response.
 		if ( null !== $response && 200 === $response->getStatusCode() ) {
 			$response_info = json_decode( $response->getBody() );
 			if ( isset( $response_info->status->success ) &&
-				true == $response_info->status->success &&
+				true === $response_info->status->success &&
 				isset( $response_info->count ) && is_numeric( $response_info->count ) ) {
 				return intval( $response_info->count );
 			}
@@ -503,8 +512,8 @@ class BadgrProvider {
 		$additional_parameters = array();
 
 		if ( $params['elements_per_page'] > 0 ) {
-			$server_side_pagination =  self::calculate_server_side_pagination( $params['paged'], $params['elements_per_page'] );
-			$additional_parameters = array_merge( $additional_parameters, $server_side_pagination);
+			$server_side_pagination = self::calculate_server_side_pagination( $params['paged'], $params['elements_per_page'] );
+			$additional_parameters  = array_merge( $additional_parameters, $server_side_pagination );
 		}
 
 		// Make GET request to /v2/badgeclasses.
@@ -524,7 +533,7 @@ class BadgrProvider {
 	}
 
 	/**
-	 * Undocumented function
+	 * Count badge classes.
 	 *
 	 * @return mixed
 	 */
@@ -535,7 +544,7 @@ class BadgrProvider {
 		if ( null !== $response && 200 === $response->getStatusCode() ) {
 			$response_info = json_decode( $response->getBody() );
 			if ( isset( $response_info->status->success ) &&
-				true == $response_info->status->success &&
+				true === $response_info->status->success &&
 				isset( $response_info->count ) && is_numeric( $response_info->count ) ) {
 					return intval( $response_info->count );
 			}
@@ -706,8 +715,8 @@ class BadgrProvider {
 		);
 
 		if ( $params['elements_per_page'] > 0 ) {
-			$server_side_pagination =  self::calculate_server_side_pagination( $params['paged'], $params['elements_per_page'] );
-			$additional_parameters = array_merge( $additional_parameters, $server_side_pagination);
+			$server_side_pagination = self::calculate_server_side_pagination( $params['paged'], $params['elements_per_page'] );
+			$additional_parameters  = array_merge( $additional_parameters, $server_side_pagination );
 		}
 
 		// Make GET request to /v2/badgeclasses/{entity_id}/assertions.
@@ -727,19 +736,19 @@ class BadgrProvider {
 	}
 
 	/**
-	 * Undocumented function
+	 * Count assertions for badge class.
 	 *
 	 * @param string $badge_class_slug Badge class slug.
 	 * @return mixed
 	 */
 	public static function get_all_assertions_by_badge_class_slug_count( $badge_class_slug ) {
-		$response = self::get_client()->get( '/v2/badgeinstances_count/badgeclass' . $badge_class_slug );
+		$response = self::get_client()->get( '/v2/badgeinstances_count/badgeclass/' . $badge_class_slug );
 
 		// Check for 200 response.
 		if ( null !== $response && 200 === $response->getStatusCode() ) {
 			$response_info = json_decode( $response->getBody() );
 			if ( isset( $response_info->status->success ) &&
-				true == $response_info->status->success &&
+				true === $response_info->status->success &&
 				isset( $response_info->count ) && is_numeric( $response_info->count ) ) {
 					return intval( $response_info->count );
 			}
@@ -766,14 +775,14 @@ class BadgrProvider {
 		);
 
 		if ( $params['elements_per_page'] > 0 ) {
-			$server_side_pagination =  self::calculate_server_side_pagination( $params['paged'], $params['elements_per_page'] );
-			$additional_parameters = array_merge( $additional_parameters, $server_side_pagination);
+			$server_side_pagination = self::calculate_server_side_pagination( $params['paged'], $params['elements_per_page'] );
+			$additional_parameters  = array_merge( $additional_parameters, $server_side_pagination );
 		}
 
 		$response = self::get_client()->get(
-			'/v2/issuers/' . $issuer_slug . '/assertions', $additional_parameters );
-
-
+			'/v2/issuers/' . $issuer_slug . '/assertions',
+			$additional_parameters
+		);
 
 		// Check for 200 response.
 		if ( null !== $response && 200 === $response->getStatusCode() ) {
@@ -788,15 +797,22 @@ class BadgrProvider {
 		return false;
 	}
 
-	public static function get_all_assertions_by_issuer_slug_count( $issuer_slug)  {
+	/**
+	 * Count assertions for issuer.
+	 *
+	 * @param string $issuer_slug Issuer slug.
+	 * @return int|bool
+	 */
+	public static function get_all_assertions_by_issuer_slug_count( $issuer_slug ) {
 		$response = self::get_client()->get(
-			'/v2/badgeinstances_count/issuer/' . $issuer_slug );
+			'/v2/badgeinstances_count/issuer/' . $issuer_slug
+		);
 
 		// Check for 200 response.
 		if ( null !== $response && 200 === $response->getStatusCode() ) {
 			$response_info = json_decode( $response->getBody() );
 			if ( isset( $response_info->status->success ) &&
-				true == $response_info->status->success &&
+				true === $response_info->status->success &&
 				isset( $response_info->count ) && is_numeric( $response_info->count ) ) {
 				return intval( $response_info->count );
 			}

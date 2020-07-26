@@ -231,7 +231,7 @@ apps/mainsite/urls.py
 
 
 +    # bf2 API additions
-+    url(r'^v2/', include('bf2.v2_api_urls')),
++    url(r'^v2/', include('bf2.urls')),
 +
  ]
 
