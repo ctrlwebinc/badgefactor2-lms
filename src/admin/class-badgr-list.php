@@ -537,7 +537,7 @@ class Badgr_List extends \WP_List_Table {
 						if ( isset( $_GET['filter_value'] ) ) {
 							$selected_filter = stripslashes( $_GET['filter_value'] );
 						}
-						foreach ( $filter->all() as $filter ) {
+						foreach ( $filter->all( -1 ) as $filter ) {
 							$selected = '';
 							if ( $filter->entityId === $selected_filter ) {
 								$selected = 'selected';

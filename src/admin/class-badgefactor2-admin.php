@@ -539,7 +539,7 @@ class BadgeFactor2_Admin {
 				),
 			);
 		} else {
-			$filter_values = $filter_type::get_instance()->all();
+			$filter_values = $filter_type::get_instance()->all( -1 );
 			$response      = array(
 				'listClass' => array_values( $filter_values )[0]->listClass,
 				'options'   => array(
@@ -579,7 +579,7 @@ class BadgeFactor2_Admin {
 			$model    = $instance->get_model();
 			switch ( $filter_type ) {
 				case 'BadgeFactor2\Admin\Lists\Badges':
-					$model->all();
+					$model->all( -1 );
 					break;
 				case 'BadgeFactor2\Admin\Lists\Issuers':
 					break;
