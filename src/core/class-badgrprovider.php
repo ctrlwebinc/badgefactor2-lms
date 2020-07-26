@@ -477,13 +477,7 @@ class BadgrProvider {
 	public static function get_all_badge_classes_by_issuer_slug_count( $issuer_slug ) {
 
 		// Make GET request to /v2/badgeclasses_count/issuer/{entity_id}.
-		$response = self::get_client()->get(
-			'/v2/badgeclasses_count/issuer/' . $issuer_slug,
-			array(
-				'limit'  => 1,
-				'offset' => 0,
-			)
-		);
+		$response = self::get_client()->get('/v2/badgeclasses_count/issuer/' . $issuer_slug );
 
 		// Check for 200 response.
 		if ( null !== $response && 200 === $response->getStatusCode() ) {
