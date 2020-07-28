@@ -466,16 +466,19 @@ class BadgePage {
 
 		// Get badges with a badgr_badge_class_slug meta where no badge-page with same meta exists.
 		$badges = $wpdb->get_results(
-			"SELECT b.*, bcs.meta_value AS badge_class_slug FROM wp_posts as b
+			"SELECT b.*, bcs.meta_value AS badge_class_slug, c.meta_value AS criteria FROM wp_posts as b
 			JOIN wp_postmeta as bcs
 			ON b.ID = bcs.post_id
+			JOIN wp_postmeta AS c
+			ON b.ID = c.post_id
 			WHERE post_type = 'badges' AND
-			bcs.meta_key = 'badgr_badge_class_slug'
+			bcs.meta_key = 'badgr_badge_class_slug' AND
+			c.meta_key = 'badge_criteria'
 			AND NOT EXISTS (
 			SELECT bp.ID FROM wp_posts AS bp
 			JOIN wp_postmeta AS bpbcs
 			ON bp.ID = bpbcs.post_id
-			WHERE bp.post_type = 'badge-page' AND bpbcs.meta_key = 'badgepage_badge' AND bcs.meta_value = bpbcs.meta_value);",
+			WHERE bp.post_type = 'badge-page' AND bpbcs.meta_key = 'badge' AND bcs.meta_value = bpbcs.meta_value);",
 			OBJECT_K
 		);
 
@@ -485,8 +488,8 @@ class BadgePage {
 			// Create a post of post type badge-page.
 			$created_post_id = wp_insert_post( array(
 				'post_author' => 1,
-				'post_content' => $badge_post->post_content,
-				'post_title' => $badge_post->post_title,
+				'post_content' => $badge_post->post_content, // Reuse post_title.
+				'post_title' => $badge_post->post_title, // Reuse post_content.
 				'post_status' => 'publish',
 				'post_type' => 'badge-page',
 			));
@@ -495,9 +498,12 @@ class BadgePage {
 				return false;
 			}
 			// Add badgepage_badge meta with the associated badge class slug as its value.
-			update_post_meta( $created_post_id, 'badgepage_badge', $badge_post->badge_class_slug);
+			update_post_meta( $created_post_id, 'badge', $badge_post->badge_class_slug);
 			// Add badge_page_request_form_type with value basic.
 			update_post_meta( $created_post_id, 'badge_page_request_form_type', 'basic');
+			// Add criteria as the value of badge_criteria.
+			update_post_meta( $created_post_id, 'badge_criteria', $badge_post->criteria);
+
 
 			$count++;
 		}
