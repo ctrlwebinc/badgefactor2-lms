@@ -466,19 +466,25 @@ class BadgePage {
 
 		// Get badges with a badgr_badge_class_slug meta where no badge-page with same meta exists.
 		$badges = $wpdb->get_results(
-			"SELECT b.*, bcs.meta_value AS badge_class_slug, c.meta_value AS criteria FROM wp_posts as b
+			"SELECT b.*, bcs.meta_value AS badge_class_slug, c.meta_value AS criteria, t.slug AS badge_category FROM wp_posts as b
 			JOIN wp_postmeta as bcs
 			ON b.ID = bcs.post_id
 			JOIN wp_postmeta AS c
 			ON b.ID = c.post_id
+			JOIN wp_term_relationships as tr
+			ON b.ID = tr.object_id 
+			JOIN wp_terms as t
+			ON tr.term_taxonomy_id = t.term_id
 			WHERE post_type = 'badges' AND
 			bcs.meta_key = 'badgr_badge_class_slug' AND
+		    ( tr.term_taxonomy_id = 190 OR tr.term_taxonomy_id = 191 ) AND
 			c.meta_key = 'badge_criteria'
 			AND NOT EXISTS (
 			SELECT bp.ID FROM wp_posts AS bp
 			JOIN wp_postmeta AS bpbcs
 			ON bp.ID = bpbcs.post_id
-			WHERE bp.post_type = 'badge-page' AND bpbcs.meta_key = 'badge' AND bcs.meta_value = bpbcs.meta_value);",
+			WHERE bp.post_type = 'badge-page' AND bpbcs.meta_key = 'badge' AND bcs.meta_value = bpbcs.meta_value);
+",
 			OBJECT_K
 		);
 
@@ -503,7 +509,10 @@ class BadgePage {
 			update_post_meta( $created_post_id, 'badge_page_request_form_type', 'basic');
 			// Add criteria as the value of badge_criteria.
 			update_post_meta( $created_post_id, 'badge_criteria', $badge_post->criteria);
+			// TODO: Add badge approval type under badge_approval_type as one of approved, auto-approved or given.
 
+			// Add badge category in badge-category taxonomy slug.
+			wp_set_object_terms( $created_post_id, $badge_post->badge_category, 'badge-category', true);
 
 			$count++;
 		}
