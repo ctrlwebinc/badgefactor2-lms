@@ -30,8 +30,9 @@
 
 get_header();
 
-$badge  = BadgeFactor2\Models\BadgeClass::get( $badge );
-$issuer = BadgeFactor2\Models\Issuer::get( $badge->issuer );
+$badge_entity_id = get_post_meta( $post->ID, 'badge', true );
+$badge           = BadgeFactor2\Models\BadgeClass::get( $badge_entity_id );
+$issuer          = BadgeFactor2\Models\Issuer::get( $badge->issuer );
 ?>
 <section id="primary" class="content-area">
 	<main id="main" class="site-main">

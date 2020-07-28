@@ -48,6 +48,7 @@ class BadgePage {
 	 */
 	private static $slug_plural = 'badge-pages';
 
+
 	/**
 	 * Init hooks.
 	 *
@@ -55,9 +56,11 @@ class BadgePage {
 	 */
 	public static function init_hooks() {
 		add_action( 'init', array( BadgePage::class, 'init' ), 10 );
+		add_action( 'init', array( BadgePage::class, 'register_taxonomies' ), 10 );
 		add_action( 'admin_init', array( BadgePage::class, 'add_capabilities' ), 10 );
 		add_filter( 'post_updated_messages', array( BadgePage::class, 'updated_messages' ), 10 );
 		add_action( 'cmb2_admin_init', array( BadgePage::class, 'register_cpt_metaboxes' ), 10 );
+		add_action( 'single_template', array( BadgePage::class, 'single_template' ), 10 );
 	}
 
 
@@ -102,11 +105,12 @@ class BadgePage {
 				'show_in_nav_menus' => true,
 				'supports'          => array( 'title', 'editor' ),
 				'has_archive'       => true,
-				'rewrite'           => true,
+				'rewrite'           => array( 'slug' => 'badges' ),
 				'query_var'         => true,
 				'menu_position'     => 50,
 				'menu_icon'         => BF2_BASEURL . 'assets/images/badge.svg',
 				'show_in_rest'      => false,
+				'taxonomies'        => array( 'badge-category' ),
 				'capability_type'   => array( self::$slug, self::$slug_plural ),
 				'map_meta_cap'      => true,
 			)
@@ -213,12 +217,12 @@ class BadgePage {
 	 */
 	public static function register_cpt_metaboxes() {
 
-		// Links.
+		// Badge Info.
 
 		$cmb = new_cmb2_box(
 			array(
-				'id'           => 'badgepage_links',
-				'title'        => __( 'Links', BF2_DATA['TextDomain'] ),
+				'id'           => 'badgepage_badge_info',
+				'title'        => __( 'Badge Info', BF2_DATA['TextDomain'] ),
 				'object_types' => array( self::$slug ),
 				'context'      => 'normal',
 				'priority'     => 'high',
@@ -228,7 +232,7 @@ class BadgePage {
 
 		$cmb->add_field(
 			array(
-				'id'         => 'badgepage_badge',
+				'id'         => 'badge',
 				'name'       => __( 'Badge', BF2_DATA['TextDomain'] ),
 				'desc'       => __( 'Badgr Badge associated with this Badge Page', BF2_DATA['TextDomain'] ),
 				'type'       => 'pw_select',
@@ -240,21 +244,22 @@ class BadgePage {
 			)
 		);
 
-		$cmb = new_cmb2_box(
+		$cmb->add_field(
 			array(
-				'id'           => 'badgepage_badge_request',
-				'title'        => __( 'Badge Request Form', BF2_DATA['TextDomain'] ),
-				'object_types' => array( self::$slug ),
-				'context'      => 'normal',
-				'priority'     => 'high',
-				'show_names'   => true,
+				'id'         => 'badge_criteria',
+				'name'       => __( 'Badge Criteria', BF2_DATA['TextDomain'] ),
+				'desc'       => __( 'Criteria to obtain this badge.', BF2_DATA['TextDomain'] ),
+				'type'       => 'wysiwyg',
+				'attributes' => array(
+					'required' => 'required',
+				),
 			)
 		);
 
 		$cmb->add_field(
 			array(
-				'id'         => 'badgepage_badge_request_form_type',
-				'name'       => __( 'Form type', BF2_DATA['TextDomain'] ),
+				'id'         => 'badge_request_form_type',
+				'name'       => __( 'Badge Request Form type', BF2_DATA['TextDomain'] ),
 				'type'       => 'select',
 				'options_cb' => array( BadgePage::class, 'form_type_select_options' ),
 			)
@@ -262,7 +267,7 @@ class BadgePage {
 
 		$cmb->add_field(
 			array(
-				'id'         => 'badgepage_badge_request_form_id',
+				'id'         => 'badge_request_form_id',
 				'name'       => __( 'Form', BF2_DATA['TextDomain'] ),
 				'type'       => 'pw_select',
 				'options_cb' => array( BadgePage::class, 'gf_form_select_options' ),
@@ -275,13 +280,69 @@ class BadgePage {
 
 		$cmb->add_field(
 			array(
-				'id'         => 'badgepage_badge_request_approver',
-				'name'       => __( 'Approvers', BF2_DATA['TextDomain'] ),
-				'type'       => 'pw_multiselect',
-				'options_cb' => array( Approver::class, 'select_options' ),
+				'id'      => 'badge_approval_type',
+				'name'    => __( 'Badge Request Form type', BF2_DATA['TextDomain'] ),
+				'type'    => 'select',
+				'options' => array(
+					''              => __( 'Select approval type', BF2_DATA['TextDomain'] ),
+					'approved'      => __( 'Approved', BF2_DATA['TextDomain'] ),
+					'auto-approved' => __( 'Auto-approved', BF2_DATA['TextDomain'] ),
+					'given'         => __( 'Given', BF2_DATA['TextDomain'] ),
+				),
+				'attributes' => array(
+					'required' => 'required',
+				),
 			)
 		);
 
+		$cmb->add_field(
+			array(
+				'id'         => 'badge_request_approver',
+				'name'       => __( 'Approvers', BF2_DATA['TextDomain'] ),
+				'type'       => 'pw_multiselect',
+				'options_cb' => array( Approver::class, 'select_options' ),
+				'attributes' => array(
+					'data-conditional-id'    => 'badge_approval_type',
+					'data-conditional-value' => 'approved',
+				),
+			)
+		);
+
+	}
+
+
+	/**
+	 * Register taxonomies.
+	 *
+	 * @return void
+	 */
+	public static function register_taxonomies() {
+		$plugin_data = get_plugin_data( __FILE__ );
+
+		register_taxonomy(
+			'badge-category',
+			array( self::$slug ),
+			array(
+				'hierarchical'      => true,
+				'labels'            => array(
+					'name'              => __( 'Category', $plugin_data['TextDomain'] ),
+					'singular_name'     => __( 'Category', $plugin_data['TextDomain'] ),
+					'search_items'      => __( 'Search Categories', $plugin_data['TextDomain'] ),
+					'all_items'         => __( 'All Categories', $plugin_data['TextDomain'] ),
+					'parent_item'       => __( 'parent Category', $plugin_data['TextDomain'] ),
+					'parent_item_colon' => __( 'parent Category:', $plugin_data['TextDomain'] ),
+					'edit_item'         => __( 'Edit Category', $plugin_data['TextDomain'] ),
+					'update_item'       => __( 'Update Category', $plugin_data['TextDomain'] ),
+					'add_new_item'      => __( 'Add new Category', $plugin_data['TextDomain'] ),
+					'new_item_name'     => __( 'new Category Name', $plugin_data['TextDomain'] ),
+					'menu_name'         => __( 'Categories', $plugin_data['TextDomain'] ),
+				),
+				'show_ui'           => true,
+				'show_admin_column' => true,
+				'query_var'         => true,
+				'rewrite'           => array( 'slug' => 'badge-category' ),
+			)
+		);
 	}
 
 
@@ -361,6 +422,30 @@ class BadgePage {
 		}
 
 		return $post_options;
+	}
+
+
+	/**
+	 * Single Template.
+	 *
+	 * @param string $single Single.
+	 * @return string
+	 */
+	public static function single_template( $single ) {
+		global $post;
+
+		$slug = self::$slug;
+
+		/* Checks for single template by post type */
+		if ( $post->post_type === $slug ) {
+			$original_template = locate_template( "templates/badgefactor2/tpl.{$slug}.php" );
+			if ( ! $original_template ) {
+				$original_template = BF2_ABSPATH . "templates/tpl.{$slug}.php";
+			}
+			$single = $original_template;
+		}
+
+		return $single;
 	}
 
 

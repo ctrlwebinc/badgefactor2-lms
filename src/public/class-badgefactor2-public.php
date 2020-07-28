@@ -64,9 +64,9 @@ class BadgeFactor2_Public {
 	 * @return void
 	 */
 	public static function add_rewrite_rules() {
-		add_rewrite_rule( '^issuers/([^/]*)/?', 'index.php?issuer=$matches[1]', 'top' );
-		add_rewrite_rule( '^badges/([^/]*)/?', 'index.php?badge=$matches[1]', 'top' );
-		add_rewrite_rule( '^assertions/([^/]*)/?', 'index.php?assertion=$matches[1]', 'top' );
+		add_rewrite_rule( '^issuers/([^/]*)/?', 'index.php?issuer=$matches[1]' );
+		add_rewrite_rule( '^badges/([^/]*)/?', 'index.php?badge=$matches[1]' );
+		add_rewrite_rule( '^assertions/([^/]*)/?', 'index.php?assertion=$matches[1]' );
 	}
 
 
@@ -141,7 +141,7 @@ class BadgeFactor2_Public {
 	 */
 	private static function add_to_hierarchy( $original_template, $item ) {
 		if ( get_query_var( $item, false ) ) {
-			$original_template = locate_template( "badgefactor2/tpl.{$item}.php" );
+			$original_template = locate_template( "templates/badgefactor2/tpl.{$item}.php" );
 			if ( ! $original_template ) {
 				$original_template = BF2_ABSPATH . "templates/tpl.{$item}.php";
 			}
