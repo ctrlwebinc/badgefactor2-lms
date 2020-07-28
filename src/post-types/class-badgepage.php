@@ -258,6 +258,15 @@ class BadgePage {
 
 		$cmb->add_field(
 			array(
+				'id'         => 'badge_endorsed_by',
+				'name'       => __( 'Endorsed By', BF2_DATA['TextDomain'] ),
+				'type'       => 'pw_multiselect',
+				'options_cb' => array( Issuer::class, 'select_options' ),
+			)
+		);
+
+		$cmb->add_field(
+			array(
 				'id'         => 'badge_request_form_type',
 				'name'       => __( 'Badge Request Form type', BF2_DATA['TextDomain'] ),
 				'type'       => 'select',
