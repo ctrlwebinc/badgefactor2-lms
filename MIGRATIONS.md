@@ -1,6 +1,6 @@
 # Migrations
 
-Here are some instructions to migrate users, issuers, badge classes and assertions into Badgr.
+Here are some instructions to migrate users, issuers, badge classes and assertions into Badgr and to migrate badges into bf2 badge pages.
 
 ## Users
 
@@ -155,3 +155,15 @@ wp badgr migrate_badge_assertions
 ```
 
 Approved posts of type 'submission' without a 'badgr_assertion_slug' will be migrated. Failed assertion migrations are marked with a 'badgr_assertion_failed' meta.
+
+## Badge pages
+
+Badge Factor 2 uses a different set of post types to manage badges. Posts of post type 'badges' become badge pages.
+
+To migrate badges into badge pages, make sure that the Badges classes migrations ave alredy run successfully and then use the command:
+
+```bash
+wp bf2 create_badge_pages_from_badges
+```
+
+The command creates a new badge page for each badge that has a Badgr badge class slug and for which no badge page with the same slug already exists.
