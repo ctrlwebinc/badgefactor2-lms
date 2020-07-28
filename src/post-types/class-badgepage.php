@@ -433,7 +433,6 @@ class BadgePage {
 		return $post_options;
 	}
 
-
 	/**
 	 * Single Template.
 	 *
@@ -457,5 +456,52 @@ class BadgePage {
 		return $single;
 	}
 
+	/**
+	 * Create badge pages from badges
+	 *
+	 * @return mixed
+	 */
+	public static function create_from_badges() {
+		global $wpdb;
 
+		// Get badges with a badgr_badge_class_slug meta where no badge-page with same meta exists.
+		$badges = $wpdb->get_results(
+			"SELECT b.*, bcs.meta_value AS badge_class_slug FROM wp_posts as b
+			JOIN wp_postmeta as bcs
+			ON b.ID = bcs.post_id
+			WHERE post_type = 'badges' AND
+			bcs.meta_key = 'badgr_badge_class_slug'
+			AND NOT EXISTS (
+			SELECT bp.ID FROM wp_posts AS bp
+			JOIN wp_postmeta AS bpbcs
+			ON bp.ID = bpbcs.post_id
+			WHERE bp.post_type = 'badge-page' AND bpbcs.meta_key = 'badgepage_badge' AND bcs.meta_value = bpbcs.meta_value);",
+			OBJECT_K
+		);
+
+		$count = 0;
+
+		foreach ( $badges as $badge_post_id => $badge_post ) {
+			// Create a post of post type badge-page.
+			$created_post_id = wp_insert_post( array(
+				'post_author' => 1,
+				'post_content' => $badge_post->post_content,
+				'post_title' => $badge_post->post_title,
+				'post_status' => 'publish',
+				'post_type' => 'badge-page',
+			));
+
+			if ( 0 == $created_post_id ) {
+				return false;
+			}
+			// Add badgepage_badge meta with the associated badge class slug as its value.
+			update_post_meta( $created_post_id, 'badgepage_badge', $badge_post->badge_class_slug);
+			// Add badge_page_request_form_type with value basic.
+			update_post_meta( $created_post_id, 'badge_page_request_form_type', 'basic');
+
+			$count++;
+		}
+
+		return $count;
+	}
 }

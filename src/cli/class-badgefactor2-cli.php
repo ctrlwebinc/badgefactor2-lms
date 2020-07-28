@@ -25,6 +25,7 @@ namespace BadgeFactor2;
 use WP_CLI;
 use WP_CLI_Command;
 use BadgeFactor2\BadgrUser;
+use BadgeFactor2\Post_Types\BadgePage;
 
 WP_CLI::add_command( 'bf2', BadgeFactor2_CLI::class );
 
@@ -51,5 +52,26 @@ class BadgeFactor2_CLI extends WP_CLI_Command {
 		}
 
 		WP_CLI::success( 'Issuers successfully retrieved : ' . json_encode( $issuers, JSON_PRETTY_PRINT ) );
+	}
+
+	/**
+	 * Undocumented function
+	 *
+	 * @param array $args Arguments.
+	 * @param array $assoc_args Associative arguments.
+	 * @return void
+	 */
+	public function create_badge_pages_from_badges( $args, $assoc_args ) {
+		if ( count( $args ) !== 0 ) {
+			WP_CLI::error( 'Usage: create_badge_pages_from_badges' );
+		}
+
+		$count = BadgePage::create_from_badges();
+
+		if ( false === $count ) {
+			WP_CLI::error( 'Migrating badges failed' );
+		} else {
+			WP_CLI::success( 'Finished migrating badgees: ' . $count . ' badge pages created' );
+		}
 	}
 }
