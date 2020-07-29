@@ -519,4 +519,59 @@ class BadgePage {
 
 		return $count;
 	}
+
+	/**
+	 * Create badge pages from badges
+	 *
+	 * @return mixed
+	 */
+	public static function create_courses_from_badges() {
+		global $wpdb;
+
+		// Get badges with a badgr_badge_class_slug meta where no course with same meta exists.
+		$badges = $wpdb->get_results(
+			"SELECT b.*
+			, bcs.meta_value AS badge_class_slug
+			, ccp.post_content AS course_content
+			, ccp.post_title AS course_title
+			FROM wp_posts as b
+			JOIN wp_postmeta as bcs
+			ON b.ID = bcs.post_id
+			JOIN wp_postmeta AS ccm
+			ON b.ID = ccm.post_id
+			JOIN wp_posts AS ccp
+			ON ccm.meta_value = ccp.ID
+			WHERE b.post_type = 'badges'
+			AND	bcs.meta_key = 'badgr_badge_class_slug'
+			AND ccm.meta_key = 'badgefactor_page_id';",
+			OBJECT_K
+		);
+
+		$count = 0;
+
+		foreach ( $badges as $badge_post_id => $badge_post ) {
+			// Create a post of post type course.
+			$created_post_id = wp_insert_post( array(
+				'post_author' => 1,
+				'post_content' => $badge_post->course_content, // Course content is from BF badgefactor_page_id meta.
+				'post_title' => $badge_post->post_title, // Reuse post_content.
+				'post_status' => 'publish',
+				'post_type' => 'course',
+			));
+
+			if ( 0 == $created_post_id ) {
+				return false;
+			}
+			// Add badgepage_badge meta with the associated badge class slug as its value.
+			update_post_meta( $created_post_id, 'badgr_badge_class_slug', $badge_post->badge_class_slug);
+			// Badge category.
+			// Course level.
+			// Course title.
+			// Course category.
+
+			$count++;
+		}
+
+		return $count;
+	}
 }
