@@ -161,7 +161,7 @@ Approved posts of type 'submission' without a 'badgr_assertion_slug' will be mig
 
 Badge Factor 2 uses a different set of post types to manage badges. Posts of post type 'badges' become badge pages.
 
-To migrate badges into badge pages, make sure that the Badges classes migrations ave alredy run successfully and then use the command:
+To migrate badges into badge pages, make sure that the Badges classes migrations have alredy run successfully and then use the command:
 
 ```bash
 wp bf2 create_badge_pages_from_badges
@@ -173,7 +173,7 @@ The command creates a new badge page for each badge that has a Badgr badge class
 
 Badge Factor 2 has a courses add-on. Part of the content of badges and related posts in Badge Factor (1) map to courses in Badge Factor 2.
 
-To created courses from badges, make sure that the Badges classes migrations ave alredy run successfully and then use the command:
+To created courses from badges, make sure that the Badges classes migrations have alredy run successfully and then use the command:
 
 ```bash
 wp bf2 create_courses_from_badges
