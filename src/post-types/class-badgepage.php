@@ -548,7 +548,7 @@ class BadgePage {
 		);
 
 		$levels = $wpdb->get_results(
-			"SELECT b.ID, tt.taxonomy AS taxonomy, t.slug AS slug FROM wp_posts AS b
+			"SELECT b.ID, tt.taxonomy AS taxonomy, t.slug AS slug, t.name AS term_name, t.term_id AS term_id FROM wp_posts AS b
 			JOIN wp_term_relationships AS tr
 			ON b.ID = tr.object_id
 			JOIN wp_term_taxonomy AS tt
@@ -560,7 +560,7 @@ class BadgePage {
 		);
 
 		$titles = $wpdb->get_results(
-			"SELECT b.ID, tt.taxonomy AS taxonomy, t.slug AS slug FROM wp_posts AS b
+			"SELECT b.ID, tt.taxonomy AS taxonomy, t.slug AS slug, t.name AS term_name, t.term_id AS term_id FROM wp_posts AS b
 			JOIN wp_term_relationships AS tr
 			ON b.ID = tr.object_id
 			JOIN wp_term_taxonomy AS tt
@@ -580,7 +580,7 @@ class BadgePage {
 		);
 		
 		$terms = $wpdb->get_results(
-			"SELECT t.term_id AS ID, t.slug FROM wp_terms AS t;",
+			"SELECT t.term_id AS ID, t.slug AS slug, t.name AS term_name FROM wp_terms AS t;",
 			OBJECT_K
 		);
 
@@ -607,16 +607,23 @@ class BadgePage {
 				$term_ids = unserialize( $categories[$badge_post->ID]->badge_categories );
 
 				foreach( $term_ids as $term_id ) {
-					wp_set_object_terms( $created_post_id, $terms[$term_id]->slug, 'course-category', true);
+					$new_term = wp_set_object_terms( $created_post_id, $terms[$term_id]->slug, 'course-category', true);
+					// Enrich term with full name
+					wp_update_term( intval($new_term[0]), 'course-category', array('name' => $terms[$term_id]->term_name) );
 				}
 			}
 			// Course level badges-level => course-level.
 			if ( isset( $levels[$badge_post->ID] ) ) {
-				wp_set_object_terms( $created_post_id, $levels[$badge_post->ID]->slug, 'course-level', true);
+				$new_term = wp_set_object_terms( $created_post_id, $levels[$badge_post->ID]->slug, 'course-level', true);
+				//  Enrich new term with full name
+			    wp_update_term( intval($new_term[0]), 'course-level', array('name' => $levels[$badge_post->ID]->term_name) );
 			}
 			// Course title badges-title => course-title.
 			if ( isset( $titles[$badge_post->ID] ) ) {
-				wp_set_object_terms( $created_post_id, $titles[$badge_post->ID]->slug, 'course-title', true);
+				$new_term = wp_set_object_terms( $created_post_id, $titles[$badge_post->ID]->slug, 'course-title', true);
+				// Enrich term with full name
+				wp_update_term( intval($new_term[0]), 'course-title', array('name' => $titles[$badge_post->ID]->term_name) );
+
 			}
 
 			$count++;
