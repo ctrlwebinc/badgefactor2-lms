@@ -466,7 +466,7 @@ class BadgePage {
 
 		// Get badges with a badgr_badge_class_slug meta where no badge-page with same meta exists.
 		$badges = $wpdb->get_results(
-			"SELECT b.*, bcs.meta_value AS badge_class_slug, c.meta_value AS criteria, t.slug AS badge_category FROM wp_posts as b
+			"SELECT b.*, bcs.meta_value AS badge_class_slug, c.meta_value AS criteria, t.slug AS badge_category, t.name AS badge_category_name FROM wp_posts as b
 			JOIN wp_postmeta as bcs
 			ON b.ID = bcs.post_id
 			JOIN wp_postmeta AS c
@@ -512,7 +512,10 @@ class BadgePage {
 			// TODO: Add badge approval type under badge_approval_type as one of approved, auto-approved or given.
 
 			// Add badge category in badge-category taxonomy slug.
-			wp_set_object_terms( $created_post_id, $badge_post->badge_category, 'badge-category', true);
+			$new_term = wp_set_object_terms( $created_post_id, $badge_post->badge_category, 'badge-category', true);
+			//  Enrich new term with full name
+			wp_update_term( intval($new_term[0]), 'badge-category', array('name' => $badge_post->badge_category_name) );
+
 
 			$count++;
 		}
