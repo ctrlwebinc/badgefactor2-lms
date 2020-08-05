@@ -31,7 +31,8 @@
 		<?php
 		$badgr_admin_user = \BadgeFactor2\BadgrUser::get_admin_instance();
 		if ( null === $badgr_admin_user ) {
-			echo '<a href="' . site_url( \BadgeFactor2\BadgrClient::START_ADMIN_LINK_URL ) . '" class="button button-primary">Link admin account</a>';
+			$protected_url = wp_nonce_url( \BadgeFactor2\BadgrClient::START_ADMIN_LINK_URL, \BadgeFactor2\BadgrClient::ADMIN_INIT_NONCE_ACTION );
+			echo '<a href="' . $protected_url . '" class="button button-primary">Link admin account</a>';
 		} else {
 			echo $badgr_admin_user->get_wp_username();
 		}
