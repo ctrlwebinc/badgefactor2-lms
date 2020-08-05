@@ -157,37 +157,37 @@ class BadgeRequest {
 	 */
 	public static function add_capabilities() {
 		$capabilities = array(
-			'edit_' . self::$slug_plural           => array(
+			'edit_' . self::$slug_plural             => array(
 				'administrator',
 			),
-			'edit_other_' . self::$slug_plural     => array(
+			'edit_other_' . self::$slug_plural       => array(
 				'administrator',
 			),
-			'edit_published_' . self::$slug_plural => array(
+			'edit_published_' . self::$slug_plural   => array(
 				'administrator',
 			),
-			'publish_' . self::$slug_plural        => array(
+			'publish_' . self::$slug_plural          => array(
 				'administrator',
 			),
-			'delete_' . self::$slug                => array(
+			'delete_' . self::$slug_plural           => array(
 				'administrator',
 			),
-			'delete_others_' . self::$slug         => array(
+			'delete_others_' . self::$slug_plural    => array(
 				'administrator',
 			),
-			'delete_published_' . self::$slug      => array(
+			'delete_published_' . self::$slug_plural => array(
 				'administrator',
 			),
-			'delete_private_' . self::$slug        => array(
+			'delete_private_' . self::$slug_plural   => array(
 				'administrator',
 			),
-			'edit_private_' . self::$slug          => array(
+			'edit_private_' . self::$slug_plural     => array(
 				'administrator',
 			),
-			'read_private_' . self::$slug_plural   => array(
+			'read_private_' . self::$slug_plural     => array(
 				'administrator',
 			),
-			'read_' . self::$slug                  => array(
+			'read_' . self::$slug                    => array(
 				'administrator',
 			),
 		);

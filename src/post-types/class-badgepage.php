@@ -28,6 +28,7 @@ namespace BadgeFactor2\Post_Types;
 use BadgeFactor2\Models\BadgeClass;
 use BadgeFactor2\Models\Issuer;
 use BadgeFactor2\Roles\Approver;
+use BadgeFactor2\Helpers\Template;
 
 /**
  * Badge Page post type.
@@ -61,6 +62,7 @@ class BadgePage {
 		add_filter( 'post_updated_messages', array( BadgePage::class, 'updated_messages' ), 10 );
 		add_action( 'cmb2_admin_init', array( BadgePage::class, 'register_cpt_metaboxes' ), 10 );
 		add_action( 'single_template', array( BadgePage::class, 'single_template' ), 10 );
+		add_filter( 'archive_template', array( BadgePage::class, 'archive_template' ), 10 );
 	}
 
 
@@ -165,37 +167,37 @@ class BadgePage {
 	 */
 	public static function add_capabilities() {
 		$capabilities = array(
-			'edit_' . self::$slug_plural           => array(
+			'edit_' . self::$slug_plural             => array(
 				'administrator',
 			),
-			'edit_other_' . self::$slug_plural     => array(
+			'edit_other_' . self::$slug_plural       => array(
 				'administrator',
 			),
-			'edit_published_' . self::$slug_plural => array(
+			'edit_published_' . self::$slug_plural   => array(
 				'administrator',
 			),
-			'publish_' . self::$slug_plural        => array(
+			'publish_' . self::$slug_plural          => array(
 				'administrator',
 			),
-			'delete_' . self::$slug                => array(
+			'delete_' . self::$slug_plural           => array(
 				'administrator',
 			),
-			'delete_others_' . self::$slug         => array(
+			'delete_others_' . self::$slug_plural    => array(
 				'administrator',
 			),
-			'delete_published_' . self::$slug      => array(
+			'delete_published_' . self::$slug_plural => array(
 				'administrator',
 			),
-			'delete_private_' . self::$slug        => array(
+			'delete_private_' . self::$slug_plural   => array(
 				'administrator',
 			),
-			'edit_private_' . self::$slug          => array(
+			'edit_private_' . self::$slug_plural     => array(
 				'administrator',
 			),
-			'read_private_' . self::$slug_plural   => array(
+			'read_private_' . self::$slug_plural     => array(
 				'administrator',
 			),
-			'read_' . self::$slug                  => array(
+			'read_' . self::$slug                    => array(
 				'administrator',
 			),
 		);
@@ -289,10 +291,10 @@ class BadgePage {
 
 		$cmb->add_field(
 			array(
-				'id'      => 'badge_approval_type',
-				'name'    => __( 'Badge Request Form type', BF2_DATA['TextDomain'] ),
-				'type'    => 'select',
-				'options' => array(
+				'id'         => 'badge_approval_type',
+				'name'       => __( 'Badge Request Form type', BF2_DATA['TextDomain'] ),
+				'type'       => 'select',
+				'options'    => array(
 					''              => __( 'Select approval type', BF2_DATA['TextDomain'] ),
 					'approved'      => __( 'Approved', BF2_DATA['TextDomain'] ),
 					'auto-approved' => __( 'Auto-approved', BF2_DATA['TextDomain'] ),
@@ -446,15 +448,33 @@ class BadgePage {
 
 		/* Checks for single template by post type */
 		if ( $post->post_type === $slug ) {
-			$original_template = locate_template( "templates/badgefactor2/tpl.{$slug}.php" );
-			if ( ! $original_template ) {
-				$original_template = BF2_ABSPATH . "templates/tpl.{$slug}.php";
-			}
-			$single = $original_template;
+			$single = Template::locate( "tpl.{$slug}", $single );
 		}
 
 		return $single;
 	}
+
+
+	/**
+	 * Archive Template.
+	 *
+	 * @param string $archive_template Archive template.
+	 * @return string
+	 */
+	public static function archive_template( $archive_template ) {
+		global $post;
+
+		$slug = self::$slug_plural;
+
+		/* Checks for single template by post type */
+		if ( is_post_type_archive( self::$slug ) ) {
+			$archive_template = Template::locate( "tpl.{$slug}", $archive_template );
+		}
+
+		// Default template.
+		return $archive_template;
+	}
+
 
 	/**
 	 * Create badge pages from badges
@@ -492,31 +512,58 @@ class BadgePage {
 
 		foreach ( $badges as $badge_post_id => $badge_post ) {
 			// Create a post of post type badge-page.
-			$created_post_id = wp_insert_post( array(
-				'post_author' => 1,
-				'post_content' => $badge_post->post_content, // Reuse post_title.
-				'post_title' => $badge_post->post_title, // Reuse post_content.
-				'post_status' => 'publish',
-				'post_type' => 'badge-page',
-			));
+			$created_post_id = wp_insert_post(
+				array(
+					'post_author'  => 1,
+					'post_content' => $badge_post->post_content, // Reuse post_title.
+					'post_title'   => $badge_post->post_title, // Reuse post_content.
+					'post_status'  => 'publish',
+					'post_type'    => 'badge-page',
+				)
+			);
 
 			if ( 0 == $created_post_id ) {
 				return false;
 			}
 			// Add badgepage_badge meta with the associated badge class slug as its value.
-			update_post_meta( $created_post_id, 'badge', $badge_post->badge_class_slug);
+			update_post_meta( $created_post_id, 'badge', $badge_post->badge_class_slug );
 			// Add badge_page_request_form_type with value basic.
-			update_post_meta( $created_post_id, 'badge_page_request_form_type', 'basic');
+			update_post_meta( $created_post_id, 'badge_page_request_form_type', 'basic' );
 			// Add criteria as the value of badge_criteria.
-			update_post_meta( $created_post_id, 'badge_criteria', $badge_post->criteria);
+			update_post_meta( $created_post_id, 'badge_criteria', $badge_post->criteria );
 			// TODO: Add badge approval type under badge_approval_type as one of approved, auto-approved or given.
 
 			// Add badge category in badge-category taxonomy slug.
-			wp_set_object_terms( $created_post_id, $badge_post->badge_category, 'badge-category', true);
+			wp_set_object_terms( $created_post_id, $badge_post->badge_category, 'badge-category', true );
 
 			$count++;
 		}
 
 		return $count;
+	}
+
+
+	/**
+	 * Get associated courses.
+	 *
+	 * @param string $badgepage_id Badge Page ID.
+	 * @return array
+	 */
+	public static function get_course( $badgepage_id ) {
+		if ( is_plugin_active( sprintf( '%s/%s.php', 'bf2-courses', 'bf2-courses' ) ) ) {
+			$query = new \WP_Query(
+				array(
+					'post_type'    => 'course',
+					'meta_key'     => 'course_badge_page',
+					'meta_value'   => $badgepage_id,
+					'meta_compare' => '=',
+					'post_status'  => 'publish',
+				)
+			);
+			if ( $query->posts ) {
+				return $query->posts[0];
+			}
+		}
+		return array();
 	}
 }
