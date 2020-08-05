@@ -74,4 +74,25 @@ class BadgeFactor2_CLI extends WP_CLI_Command {
 			WP_CLI::success( 'Finished migrating badgees: ' . $count . ' badge pages created' );
 		}
 	}
+
+	/**
+	 * Undocumented function
+	 *
+	 * @param array $args Arguments.
+	 * @param array $assoc_args Associative arguments.
+	 * @return void
+	 */
+	public function create_courses_from_badges( $args, $assoc_args ) {
+		if ( count( $args ) !== 0 ) {
+			WP_CLI::error( 'Usage: create_courses_from_badges' );
+		}
+
+		$count = BadgePage::create_courses_from_badges();
+
+		if ( false === $count ) {
+			WP_CLI::error( 'Migrating courses failed' );
+		} else {
+			WP_CLI::success( 'Finished migrating courses: ' . $count . ' courses created' );
+		}
+	}
 }

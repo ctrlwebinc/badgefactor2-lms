@@ -486,11 +486,13 @@ class BadgePage {
 
 		// Get badges with a badgr_badge_class_slug meta where no badge-page with same meta exists.
 		$badges = $wpdb->get_results(
-			"SELECT b.*, bcs.meta_value AS badge_class_slug, c.meta_value AS criteria, t.slug AS badge_category FROM wp_posts as b
+			"SELECT b.*, bcs.meta_value AS badge_class_slug, c.meta_value AS criteria, t.slug AS badge_category, t.name AS badge_category_name, et.meta_value AS earning_type FROM wp_posts as b
 			JOIN wp_postmeta as bcs
 			ON b.ID = bcs.post_id
 			JOIN wp_postmeta AS c
 			ON b.ID = c.post_id
+			JOIN wp_postmeta AS et
+			ON b.ID = et.post_id
 			JOIN wp_term_relationships as tr
 			ON b.ID = tr.object_id 
 			JOIN wp_terms as t
@@ -498,13 +500,13 @@ class BadgePage {
 			WHERE post_type = 'badges' AND
 			bcs.meta_key = 'badgr_badge_class_slug' AND
 		    ( tr.term_taxonomy_id = 190 OR tr.term_taxonomy_id = 191 ) AND
-			c.meta_key = 'badge_criteria'
+			c.meta_key = 'badge_criteria' AND
+			et.meta_key = '_badgeos_earned_by'
 			AND NOT EXISTS (
 			SELECT bp.ID FROM wp_posts AS bp
 			JOIN wp_postmeta AS bpbcs
 			ON bp.ID = bpbcs.post_id
-			WHERE bp.post_type = 'badge-page' AND bpbcs.meta_key = 'badge' AND bcs.meta_value = bpbcs.meta_value);
-",
+			WHERE bp.post_type = 'badge-page' AND bpbcs.meta_key = 'badge' AND bcs.meta_value = bpbcs.meta_value);",
 			OBJECT_K
 		);
 
@@ -522,7 +524,7 @@ class BadgePage {
 				)
 			);
 
-			if ( 0 == $created_post_id ) {
+			if ( 0 === $created_post_id ) {
 				return false;
 			}
 			// Add badgepage_badge meta with the associated badge class slug as its value.
@@ -531,10 +533,137 @@ class BadgePage {
 			update_post_meta( $created_post_id, 'badge_page_request_form_type', 'basic' );
 			// Add criteria as the value of badge_criteria.
 			update_post_meta( $created_post_id, 'badge_criteria', $badge_post->criteria );
-			// TODO: Add badge approval type under badge_approval_type as one of approved, auto-approved or given.
-
+			// Add badge approval type under badge_approval_type as one of approved, auto-approved or given.
+			$approval_type = null;
+			switch ( $badge_post->earning_type ) {
+				case 'submission_auto':
+					$approval_type = 'auto-approved';
+					break;
+				case 'submission':
+					$approval_type = 'approved';
+					break;
+				default:
+			}
+			if ( null !== $approval_type ) {
+				update_post_meta( $created_post_id, 'badge_approval_type', $approval_type );
+			}
 			// Add badge category in badge-category taxonomy slug.
-			wp_set_object_terms( $created_post_id, $badge_post->badge_category, 'badge-category', true );
+			$new_term = wp_set_object_terms( $created_post_id, $badge_post->badge_category, 'badge-category', true );
+			// Enrich new term with full name.
+			wp_update_term( intval( $new_term[0] ), 'badge-category', array( 'name' => $badge_post->badge_category_name ) );
+
+			$count++;
+		}
+
+		return $count;
+	}
+
+	/**
+	 * Create badge pages from badges
+	 *
+	 * @return mixed
+	 */
+	public static function create_courses_from_badges() {
+		global $wpdb;
+
+		// Get badges with a badgr_badge_class_slug meta where no course with same meta exists.
+		$badges = $wpdb->get_results(
+			"SELECT b.*
+			, bcs.meta_value AS badge_class_slug
+			, ccp.post_content AS course_content
+			, ccp.post_title AS course_title
+			FROM wp_posts as b
+			JOIN wp_postmeta as bcs
+			ON b.ID = bcs.post_id
+			JOIN wp_postmeta AS ccm
+			ON b.ID = ccm.post_id
+			JOIN wp_posts AS ccp
+			ON ccm.meta_value = ccp.ID
+			WHERE b.post_type = 'badges'
+			AND	bcs.meta_key = 'badgr_badge_class_slug'
+			AND ccm.meta_key = 'badgefactor_page_id';",
+			OBJECT_K
+		);
+
+		$levels = $wpdb->get_results(
+			"SELECT b.ID, tt.taxonomy AS taxonomy, t.slug AS slug, t.name AS term_name, t.term_id AS term_id FROM wp_posts AS b
+			JOIN wp_term_relationships AS tr
+			ON b.ID = tr.object_id
+			JOIN wp_term_taxonomy AS tt
+			ON tr.term_taxonomy_id = tt.term_taxonomy_id AND tt.taxonomy = 'badges-level'
+			JOIN wp_terms AS t
+			ON tt.term_id = t.term_id
+			WHERE b.post_type = 'badges';",
+			OBJECT_K
+		);
+
+		$titles = $wpdb->get_results(
+			"SELECT b.ID, tt.taxonomy AS taxonomy, t.slug AS slug, t.name AS term_name, t.term_id AS term_id FROM wp_posts AS b
+			JOIN wp_term_relationships AS tr
+			ON b.ID = tr.object_id
+			JOIN wp_term_taxonomy AS tt
+			ON tr.term_taxonomy_id = tt.term_taxonomy_id AND tt.taxonomy = 'badges-title'
+			JOIN wp_terms AS t
+			ON tt.term_id = t.term_id
+			WHERE b.post_type = 'badges';",
+			OBJECT_K
+		);
+
+		$categories = $wpdb->get_results(
+			"SELECT b.ID, cm.meta_value AS badge_categories FROM wp_posts AS b
+			JOIN wp_postmeta AS cm
+			ON ( b.ID = cm.post_id AND cm.meta_key = 'category')
+			WHERE b.post_type = 'badges' AND cm.meta_value != '';",
+			OBJECT_K
+		);
+
+		$terms = $wpdb->get_results(
+			'SELECT t.term_id AS ID, t.slug AS slug, t.name AS term_name FROM wp_terms AS t;',
+			OBJECT_K
+		);
+
+		$count = 0;
+
+		foreach ( $badges as $badge_post_id => $badge_post ) {
+			// Create a post of post type course.
+			$created_post_id = wp_insert_post(
+				array(
+					'post_author'  => 1,
+					'post_content' => $badge_post->course_content, // Course content is from BF badgefactor_page_id meta.
+					'post_title'   => $badge_post->post_title, // Reuse post_title.
+					'post_status'  => 'publish',
+					'post_type'    => 'course',
+				)
+			);
+
+			if ( 0 === $created_post_id ) {
+				return false;
+			}
+			// Add badgepage_badge meta with the associated badge class slug as its value.
+			update_post_meta( $created_post_id, 'badgr_badge_class_slug', $badge_post->badge_class_slug );
+			// Badge category post category meta => serialized php array => points to id of terms => course-category.
+			if ( isset( $categories[ $badge_post->ID ] ) ) {
+				$term_ids = unserialize( $categories[ $badge_post->ID ]->badge_categories );
+
+				foreach ( $term_ids as $term_id ) {
+					$new_term = wp_set_object_terms( $created_post_id, $terms[ $term_id ]->slug, 'course-category', true );
+					// Enrich term with full name.
+					wp_update_term( intval( $new_term[0] ), 'course-category', array( 'name' => $terms[ $term_id ]->term_name ) );
+				}
+			}
+			// Course level badges-level => course-level.
+			if ( isset( $levels[ $badge_post->ID ] ) ) {
+				$new_term = wp_set_object_terms( $created_post_id, $levels[ $badge_post->ID ]->slug, 'course-level', true );
+				// Enrich new term with full name.
+				wp_update_term( intval( $new_term[0] ), 'course-level', array( 'name' => $levels[ $badge_post->ID ]->term_name ) );
+			}
+			// Course title badges-title => course-title.
+			if ( isset( $titles[ $badge_post->ID ] ) ) {
+				$new_term = wp_set_object_terms( $created_post_id, $titles[ $badge_post->ID ]->slug, 'course-title', true );
+				// Enrich term with full name.
+				wp_update_term( intval( $new_term[0] ), 'course-title', array( 'name' => $titles[ $badge_post->ID ]->term_name ) );
+
+			}
 
 			$count++;
 		}

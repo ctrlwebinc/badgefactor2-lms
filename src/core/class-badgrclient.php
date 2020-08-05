@@ -43,6 +43,7 @@ class BadgrClient {
 	const BADGR_IO_URL                    = 'https://api.badgr.io';
 	const REDIRECT_PATH_AFTER_AUTH        = '/wp-admin/admin.php?page=badgefactor2_badgr_settings';
 	const START_ADMIN_LINK_URL            = '/bf2/init';
+	const ADMIN_INIT_NONCE_ACTION         = 'init_admin_auth';
 	const DEFAULT_LOCAL_BADGR_SERVER_PORT = 8000;
 
 	// Password sources.
@@ -702,6 +703,9 @@ class BadgrClient {
 				self::handle_auth_return();
 			}
 			if ( 'init' === $bf2 ) {
+				// Check nonce: if fails, will termnate script with 403 error.
+				check_admin_referer( self::ADMIN_INIT_NONCE_ACTION );
+				// Launch admin auth linking.
 				self::setup_admin_code_authorization();
 			}
 			header( 'Content-Type: text/plain' );

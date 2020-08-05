@@ -4,4 +4,12 @@
 
 Badge Factor 2 is a [WordPress](https://wordpress.org/) plugin which issues and manages [Open Badges](https://openbadges.org/) with [Badgr Server](https://github.com/concentricsky/badgr-server).
 
-## Project structure
+## Templates
+
+### Badge Pages
+
+tpl.badge-page.php
+
+### Badge Requests
+
+### Courses
