@@ -917,6 +917,8 @@ class BadgrProvider {
 
 		return false;
 	}
+
+
 	/**
 	 * Undocumented function
 	 *
