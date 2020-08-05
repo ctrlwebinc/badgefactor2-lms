@@ -118,7 +118,7 @@ class Assertion implements Badgr_Entity {
 	 * @return WP_Post Virtual WP_Post representation of the entity.
 	 */
 	public static function get( $entity_id ) {
-		return BadgrProvider::get_assertion_by_assertion_slug( $entity_id );
+		return $entity_id ? BadgrProvider::get_assertion_by_assertion_slug( $entity_id ) : null;
 	}
 
 

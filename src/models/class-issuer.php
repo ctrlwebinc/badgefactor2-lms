@@ -142,7 +142,7 @@ class Issuer implements Badgr_Entity {
 	 * @return WP_Post Virtual WP_Post representation of the entity.
 	 */
 	public static function get( $entity_id ) {
-		return BadgrProvider::get_issuer_by_slug( $entity_id );
+		return $entity_id ? BadgrProvider::get_issuer_by_slug( $entity_id ) : null;
 	}
 
 
