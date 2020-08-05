@@ -22,6 +22,8 @@
 
 namespace BadgeFactor2;
 
+use BadgeFactor2\Helpers\Template;
+
 /**
  * Badge Factor 2 Admin Class.
  */
@@ -39,10 +41,13 @@ class BadgeFactor2_Public {
 		remove_action( 'register_new_user', 'wp_send_new_user_notifications' );
 		add_action( 'register_new_user', array( BadgeFactor2_Public::class, 'suppress_new_user_notifications' ), 10, 2 );
 		add_filter( 'query_vars', array( BadgeFactor2_Public::class, 'add_custom_query_vars' ) );
-		add_filter( 'template_include', array( BadgeFactor2_Public::class, 'add_badge_to_hierarchy' ) );
-		add_filter( 'template_include', array( BadgeFactor2_Public::class, 'add_assertion_to_hierarchy' ) );
 		add_action( 'wp_enqueue_scripts', array( BadgeFactor2_Public::class, 'load_resources' ) );
 
+		/*
+		 * TODO If we want to make a members list and page without buddypress.
+		 *
+		 * add_filter( 'template_include', array( BadgeFactor2_Public::class, 'add_members_to_hierarchy' ) );
+		 */
 	}
 
 
@@ -53,8 +58,13 @@ class BadgeFactor2_Public {
 	 */
 	public static function add_rewrite_tags() {
 		add_rewrite_tag( '%issuer%', '([^&]+)' );
-		add_rewrite_tag( '%badge%', '([^&]+)' );
-		add_rewrite_tag( '%assertion%', '([^&]+)' );
+		add_rewrite_tag( '%form%', '([^&]+)' );
+
+		/*
+		 * TODO If we want to make a members list and page without buddypress.
+		 *
+		 * add_rewrite_tag( '%member%', '([^&]+)' );
+		 */
 	}
 
 
@@ -64,9 +74,19 @@ class BadgeFactor2_Public {
 	 * @return void
 	 */
 	public static function add_rewrite_rules() {
-		add_rewrite_rule( '^issuers/([^/]*)/?', 'index.php?issuer=$matches[1]' );
-		add_rewrite_rule( '^badges/([^/]*)/?', 'index.php?badge=$matches[1]' );
-		add_rewrite_rule( '^assertions/([^/]*)/?', 'index.php?assertion=$matches[1]' );
+		$options     = get_option( 'badgefactor2' );
+
+		add_rewrite_rule( 'issuers/([^/]+)/?$', 'index.php?issuer=$matches[1]', 'top' );
+		$form_slug = isset( $options['bf2_form_slug'] ) ? $options['bf2_form_slug'] : 'form';
+		add_rewrite_rule( "badges/([^/]+)/{$form_slug}/?$", 'index.php?badge-page=$matches[1]&form=1', 'top' );
+
+		/*
+		 * TODO If we want to make a members list and page without buddypress.
+		 *
+		 * $member_slug = isset( $options['bf2_members_slug'] ) ? $options['bf2_members_slug'] : 'members';
+		 * add_rewrite_rule( "{$member_slug}/?$", 'index.php?member=all', 'top' );
+		 * add_rewrite_rule( "{$member_slug}/([^/]*)/?$", 'index.php?member=$matches[1]', 'top' );
+		 */
 	}
 
 
@@ -78,31 +98,31 @@ class BadgeFactor2_Public {
 	 */
 	public static function add_custom_query_vars( $vars ) {
 		$vars[] = 'issuer';
-		$vars[] = 'badge';
-		$vars[] = 'assertion';
+		$vars[] = 'form';
+
+		/*
+		 * TODO If we want to make a members list and page without buddypress.
+		 *
+		 * $vars[] = 'member';
+		 */
+
 		return $vars;
 	}
 
 
 	/**
-	 * Add badge to hierarchy.
+	 * Add members to hierarchy.
 	 *
 	 * @param string $original_template Original template.
 	 * @return string
 	 */
-	public static function add_badge_to_hierarchy( $original_template ) {
-		return static::add_to_hierarchy( $original_template, 'badge' );
-	}
-
-
-	/**
-	 * Add assertions to hierarchy.
-	 *
-	 * @param string $original_template Original template.
-	 * @return string
-	 */
-	public static function add_assertion_to_hierarchy( $original_template ) {
-		return static::add_to_hierarchy( $original_template, 'assertion' );
+	public static function add_members_to_hierarchy( $original_template ) {
+		/*
+		 * TODO If we want to make a members list and page without buddypress.
+		 *
+		 * return static::add_to_hierarchy( $original_template, 'member', 'members' );
+		 */
+		return $original_template;
 	}
 
 
@@ -137,14 +157,13 @@ class BadgeFactor2_Public {
 	 *
 	 * @param string $original_template Original template.
 	 * @param string $item Item.
+	 * @param string $archive Archive.
 	 * @return string
 	 */
-	private static function add_to_hierarchy( $original_template, $item ) {
+	private static function add_to_hierarchy( $original_template, $item, $archive = null ) {
 		if ( get_query_var( $item, false ) ) {
-			$original_template = locate_template( "templates/badgefactor2/tpl.{$item}.php" );
-			if ( ! $original_template ) {
-				$original_template = BF2_ABSPATH . "templates/tpl.{$item}.php";
-			}
+			$template          = $archive ?? $item;
+			$original_template = Template::locate( "tpl.{$template}", $original_template );
 		}
 		return $original_template;
 	}

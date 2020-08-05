@@ -128,7 +128,7 @@ class Badges {
 						esc_html__( $list_atts['badge-issuer-label-tag'], $tag ),
 						esc_html__( $list_atts['badge-issuer-tag'], $tag ),
 						$badge->issuer->name,
-						esc_html__( $list_atts['badge-issuer-tag'], $tag ),
+						esc_html__( $list_atts['badge-issuer-tag'], $tag )
 					);
 
 					// End Badge Issuer.

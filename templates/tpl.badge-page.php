@@ -23,6 +23,8 @@
  * @phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound
  */
 
+use BadgeFactor2\Helpers\Template;
+
 /*
  * You can override this template by copying it in your theme, in a
  * badgefactor2/ subdirectory, and modifying it there.
@@ -30,33 +32,50 @@
 
 get_header();
 
+$badge_page      = $post;
 $badge_entity_id = get_post_meta( $post->ID, 'badge', true );
 $badge           = BadgeFactor2\Models\BadgeClass::get( $badge_entity_id );
 $issuer          = BadgeFactor2\Models\Issuer::get( $badge->issuer );
+$course          = BadgeFactor2\Post_Types\BadgePage::get_course( $post->ID );
 ?>
+<?php if ( 1 === intval( get_query_var( 'form' ) ) ) : ?>
+	<?php include( Template::locate( 'partials/badge-request-form' ) ); ?>
+<?php else : ?>
 <section id="primary" class="content-area">
 	<main id="main" class="site-main">
 	<article id="badge-" <?php post_class(); ?>>
 		<div class="entry-content">
 		<div class="content">
-			<h1 class="badge__name"><?php echo $badge->name; ?></h1>
-			<div class="badge__container">
-				<div class="badge__badge">
+			<h1 class="badge_name"><?php echo $badge->name; ?></h1>
+			<div class="badge_container">
+				<div class="badge_badge">
 					<figure>
-						<img class="badge__image" src="<?php echo $badge->image; ?>" alt="<?php echo $badge->name; ?>">
+						<img class="badge_image" src="<?php echo $badge->image; ?>" alt="<?php echo $badge->name; ?>">
 					</figure>
-					<div class="badge__issued">
+					<div class="badge_issued">
 						<h3><?php echo __( 'Issued by', BF2_DATA['TextDomain'] ); ?></h3>
 						<a target="_blank" href="<?php echo $issuer->url; ?>"><?php echo $issuer->name; ?></a>
-					</div><!-- .badge__issued -->
-				</div><!-- .badge__badge -->
-				<div class="badge__description">
+					</div>
+				</div>
+				<div class="badge_description">
 					<?php echo $badge->description; ?>
-				</div><!-- .badge__description -->
-			</div><!-- .badge__container -->
-		</div><!-- .content -->
+				</div>
+				<div class="badge_actions">
+					<?php if ( $course ) : ?>
+						<?php if ( BadgeFactor2\Post_Types\Course::is_accessible() ) : ?>
+						<a href="<?php echo get_permalink( $course ); ?>"><?php echo __( 'Take this course', BF2_DATA['TextDomain'] ); ?></a>
+						<?php elseif ( BadgeFactor2\Post_Types\Course::is_purchasable() ) : ?>
+						<a href="<?php echo get_permalink( $course ); ?>"><?php echo __( 'Get this course', BF2_DATA['TextDomain'] ); ?></a>
+						<?php else : ?>
+							<?php echo __( 'This course is not currently accessible.', BF2_DATA['TextDomain'] ); ?>
+						<?php endif; ?>
+					<?php endif; ?>
+				</div>
+			</div>
+		</div>
 	</article>
-	</main><!-- #main -->
-</section><!-- #primary -->
+	</main>
+</section>
+<?php endif; ?>
 <?php
 get_footer();
