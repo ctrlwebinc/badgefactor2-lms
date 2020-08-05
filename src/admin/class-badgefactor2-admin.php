@@ -129,7 +129,7 @@ class BadgeFactor2_Admin {
 			'manage_options',
 			$menus[0][1],
 			array( BadgeFactor2_Admin::class, $menus[0][1] . '_page' ),
-			BF2_BASEURL . 'assets/images/badgr.svg',
+			BF2_BASEURL . 'assets/images/badgr.svg'
 		);
 
 		foreach ( $menus as $m ) {
@@ -390,6 +390,28 @@ class BadgeFactor2_Admin {
 				'desc' => __( 'Registration emails are managed by Badgr. If you enable this, users will receive two registration validations emails.', BF2_DATA['TextDomain'] ),
 				'id'   => 'bf2_send_new_user_notifications',
 				'type' => 'checkbox',
+			)
+		);
+
+		/*
+		$badgefactor2_settings->add_field(
+			array(
+				'name'    => __( 'Members slug', BF2_DATA['TextDomain'] ),
+				'desc'    => __( 'When you modify this, you need to flush your rewrite rules.', BF2_DATA['TextDomain'] ),
+				'id'      => 'bf2_members_slug',
+				'type'    => 'text',
+				'default' => 'members',
+			)
+		);
+		*/
+
+		$badgefactor2_settings->add_field(
+			array(
+				'name'    => __( 'Form slug', BF2_DATA['TextDomain'] ),
+				'desc'    => __( 'When you modify this, you need to flush your rewrite rules.', BF2_DATA['TextDomain'] ),
+				'id'      => 'bf2_form_slug',
+				'type'    => 'text',
+				'default' => 'form',
 			)
 		);
 
