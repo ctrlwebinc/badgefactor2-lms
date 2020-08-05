@@ -25,6 +25,7 @@
 namespace BadgeFactor2;
 
 use BadgeFactor2\Admin\CMB2_Field_Addons;
+use BadgeFactor2\Admin\Notices;
 
 /**
  * Badge Factor 2 Main Class.
@@ -117,6 +118,7 @@ class BadgeFactor2 {
 		if ( is_admin() || ( defined( 'WP_CLI' ) && WP_CLI ) ) {
 			BadgeFactor2_Admin::init_hooks();
 			CMB2_Field_Addons::init_hooks();
+			Notices::init_hooks();
 		}
 
 		self::$initialized = true;
@@ -142,6 +144,9 @@ class BadgeFactor2 {
 		// Interfaces.
 		require_once BF2_ABSPATH . 'src/core/interface-badgr-entity.php';
 
+		// Helpers.
+		require_once BF2_ABSPATH . 'src/helpers/class-template.php';
+
 		// Core Classes.
 		require_once BF2_ABSPATH . 'src/core/class-badgrclient.php';
 		require_once BF2_ABSPATH . 'src/core/class-badgrprovider.php';
@@ -166,6 +171,7 @@ class BadgeFactor2 {
 
 		// Admin / CLI classes.
 		if ( is_admin() || ( defined( 'WP_CLI' ) && WP_CLI ) ) {
+			require_once BF2_ABSPATH . 'src/admin/class-notices.php';
 			require_once BF2_ABSPATH . 'src/admin/class-badgefactor2-admin.php';
 			require_once BF2_ABSPATH . 'src/admin/class-badgr-list.php';
 			require_once BF2_ABSPATH . 'src/admin/class-cmb2-field-addons.php';

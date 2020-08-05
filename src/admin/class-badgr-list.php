@@ -432,16 +432,9 @@ class Badgr_List extends \WP_List_Table {
 	 */
 	public function notice_created() {
 		global $pagenow;
-		if ( 'admin.php' === $pagenow && isset( $_GET['page'] ) && isset( $_GET['notice'] ) && 'created' === $_GET['notice'] ) :
-			?>
-		<div class="updated settings-error notice is-dismissible"> 
-			<p><strong><?php echo __( 'Object created.', BF2_DATA['TextDomain'] ); ?></strong></p>
-			<button type="button" class="notice-dismiss">
-				<span class="screen-reader-text"><?php echo __( 'Dismiss this message.', BF2_DATA['TextDomain'] ); ?></span>
-			</button>
-		</div>
-			<?php
-		endif;
+		if ( 'admin.php' === $pagenow && isset( $_GET['page'] ) && isset( $_GET['notice'] ) && 'created' === $_GET['notice'] ) {
+			Notices::add( Notices::TYPE_SUCCESS, __( 'Object created.', BF2_DATA['TextDomain'] ) );
+		}
 	}
 
 
