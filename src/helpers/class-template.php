@@ -58,4 +58,17 @@ class Template {
 		return $template_fullpath;
 	}
 
+
+	/**
+	 * Allows you to include a template in a variable instead of outputing it right away.
+	 *
+	 * @param string $file Full file path to include.
+	 * @return string Output returned by the include.
+	 */
+	public static function include_to_var( $file ) {
+		ob_start();
+		require $file;
+		return ob_get_clean();
+	}
+
 }
