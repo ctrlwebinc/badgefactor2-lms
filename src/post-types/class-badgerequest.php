@@ -25,6 +25,8 @@
 
 namespace BadgeFactor2\Post_Types;
 
+use BadgeFactor2\Helpers\Template;
+
 /**
  * Badge Request post type.
  */
@@ -54,7 +56,7 @@ class BadgeRequest {
 		add_action( 'init', array( BadgeRequest::class, 'init' ), 10 );
 		add_action( 'admin_init', array( BadgeRequest::class, 'add_capabilities' ), 10 );
 		add_filter( 'post_updated_messages', array( BadgeRequest::class, 'updated_messages' ), 10 );
-		add_action( 'cmb2_admin_init', array( BadgeRequest::class, 'custom_meta_boxes' ), 10 );
+		add_action( 'cmb2_admin_init', array( BadgeRequest::class, 'register_cpt_metaboxes' ), 10 );
 	}
 
 
@@ -92,19 +94,22 @@ class BadgeRequest {
 					'parent_item_colon'     => __( 'Parent Badge Request:', BF2_DATA['TextDomain'] ),
 					'menu_name'             => __( 'Badge Requests', BF2_DATA['TextDomain'] ),
 				),
-				'public'            => true,
+				'public'            => false,
 				'hierarchical'      => false,
 				'show_ui'           => true,
 				'show_in_nav_menus' => true,
-				'supports'          => array( 'title', 'editor' ),
-				'has_archive'       => true,
+				'supports'          => array( 'title' ),
+				'has_archive'       => false,
 				'rewrite'           => true,
 				'query_var'         => true,
 				'menu_position'     => 52,
 				'menu_icon'         => 'dashicons-feedback',
 				'show_in_rest'      => false,
 				'capability_type'   => array( self::$slug, self::$slug_plural ),
-				'map_meta_cap'      => true,
+				'capabilities'      => array(
+					'create_posts' => 'do_not_allow',
+				),
+				'map_meta_cap'      => false,
 			)
 		);
 
@@ -207,8 +212,112 @@ class BadgeRequest {
 	 *
 	 * @return void
 	 */
-	public static function custom_meta_boxes() {
+	public static function register_cpt_metaboxes() {
 
+		// Badge Info.
+
+		$cmb = new_cmb2_box(
+			array(
+				'id'           => 'badgerequest_badge_info',
+				'title'        => __( 'Badge Info', BF2_DATA['TextDomain'] ),
+				'object_types' => array( self::$slug ),
+				'context'      => 'normal',
+				'priority'     => 'high',
+				'show_names'   => true,
+			)
+		);
+
+		$cmb->add_field(
+			array(
+				'id'   => 'badge',
+				'name' => __( 'Badge', BF2_DATA['TextDomain'] ),
+				'desc' => __( 'Badgr Badge associated with this Badge Page', BF2_DATA['TextDomain'] ),
+				'type' => 'badge',
+			)
+		);
+
+		$cmb->add_field(
+			array(
+				'id'   => 'recipient',
+				'name' => __( 'Recipient', BF2_DATA['TextDomain'] ),
+				'type' => 'recipient',
+			)
+		);
+
+		$cmb->add_field(
+			array(
+				'id'   => 'dates',
+				'name' => __( 'Dates', BF2_DATA['TextDomain'] ),
+				'type' => 'dates',
+			)
+		);
+
+		$cmb->add_field(
+			array(
+				'id'   => 'badge_request_content',
+				'name' => __( 'Content', BF2_DATA['TextDomain'] ),
+				'type' => 'badge_request_content',
+			)
+		);
+
+		$cmb->add_field(
+			array(
+				'id'      => 'status',
+				'name'    => __( 'Status', BF2_DATA['TextDomain'] ),
+				'type'    => 'select',
+				'options' => array(
+					'requested' => __( 'Requested', BF2_DATA['TextDomain'] ),
+					'granted'   => __( 'Granted', BF2_DATA['TextDomain'] ),
+					'rejected'  => __( 'Rejected', BF2_DATA['TextDomain'] ),
+				),
+			)
+		);
+	}
+
+
+	/**
+	 * Get the user who requested this badge.
+	 *
+	 * @param int $badge_request_id Badge Request ID.
+	 * @return WP_User|false
+	 */
+	public static function get_recipient( $badge_request_id ) {
+		if ( ! $badge_request_id ) {
+			return false;
+		}
+		$user_id = get_post_meta( $badge_request_id, 'recipient' );
+		if ( ! $user_id ) {
+			return false;
+		}
+		return get_user_by( 'ID', $user_id );
+	}
+
+
+	public static function all_by_badgeclass_for_user( $badgeclass_id, $user_id ) {
+		$args  = array(
+			'post_type'   => self::$slug,
+			'numberposts' => -1,
+			'post_status' => 'publish',
+			'meta_query'  => array(
+				array(
+					'key'     => 'recipient',
+					'value'   => $user_id,
+					'compare' => '=',
+				),
+				array(
+					'key'     => 'badge',
+					'value'   => $badgeclass_id,
+					'compare' => '=',
+				),
+			),
+		);
+		$posts = get_posts( $args );
+		return $posts;
+	}
+
+
+	public static function display( $badge_requests ) {
+		include( Template::locate( 'tpl.badge-requests' ) );
 	}
 
 }
