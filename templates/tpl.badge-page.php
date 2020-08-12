@@ -35,7 +35,7 @@ get_header();
 $badge_page      = $post;
 $badge_entity_id = get_post_meta( $post->ID, 'badge', true );
 $badge           = BadgeFactor2\Models\BadgeClass::get( $badge_entity_id );
-$issuer          = BadgeFactor2\Models\Issuer::get( $badge->issuer );
+$issuer          = $badge ? BadgeFactor2\Models\Issuer::get( $badge->issuer ) : null;
 $course          = BadgeFactor2\Post_Types\BadgePage::get_course( $post->ID );
 ?>
 <?php if ( 1 === intval( get_query_var( 'form' ) ) ) : ?>
