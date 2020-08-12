@@ -393,6 +393,22 @@ class BadgeFactor2_Admin {
 			)
 		);
 
+		$badgefactor2_settings->add_field(
+			array(
+				'name'       => __( 'Make issued badges public or private by default?', BF2_DATA['TextDomain'] ),
+				'desc'       => __( 'Changing this will not change the visibility of previously issued badges.', BF2_DATA['TextDomain'] ),
+				'id'         => 'bf2_assertion_visibility',
+				'type'       => 'radio',
+				'options'    => array(
+					'public'  => __( 'Public', BF2_DATA['TextDomain'] ),
+					'private' => __( 'Private', BF2_DATA['TextDomain'] ),
+				),
+				'attributes' => array(
+					'required' => 'required',
+				),
+			)
+		);
+
 		/*
 		$badgefactor2_settings->add_field(
 			array(
