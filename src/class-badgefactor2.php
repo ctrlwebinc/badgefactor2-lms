@@ -24,7 +24,11 @@
 
 namespace BadgeFactor2;
 
-use BadgeFactor2\Admin\CMB2_Field_Addons;
+use BadgeFactor2\Admin\CMB2_Fields\Addons;
+use BadgeFactor2\Admin\CMB2_Fields\Recipient;
+use BadgeFactor2\Admin\CMB2_Fields\Badge;
+use BadgeFactor2\Admin\CMB2_Fields\BadgeRequestContent;
+use BadgeFactor2\Admin\CMB2_Fields\Dates;
 use BadgeFactor2\Admin\Notices;
 
 /**
@@ -117,7 +121,11 @@ class BadgeFactor2 {
 		// Admin.
 		if ( is_admin() || ( defined( 'WP_CLI' ) && WP_CLI ) ) {
 			BadgeFactor2_Admin::init_hooks();
-			CMB2_Field_Addons::init_hooks();
+			Addons::init_hooks();
+			Badge::init_hooks();
+			BadgeRequestContent::init_hooks();
+			Dates::init_hooks();
+			Recipient::init_hooks();
 			Notices::init_hooks();
 		}
 
@@ -174,7 +182,11 @@ class BadgeFactor2 {
 			require_once BF2_ABSPATH . 'src/admin/class-notices.php';
 			require_once BF2_ABSPATH . 'src/admin/class-badgefactor2-admin.php';
 			require_once BF2_ABSPATH . 'src/admin/class-badgr-list.php';
-			require_once BF2_ABSPATH . 'src/admin/class-cmb2-field-addons.php';
+			require_once BF2_ABSPATH . 'src/admin/cmb2-fields/class-addons.php';
+			require_once BF2_ABSPATH . 'src/admin/cmb2-fields/class-badge.php';
+			require_once BF2_ABSPATH . 'src/admin/cmb2-fields/class-badge_request_content.php';
+			require_once BF2_ABSPATH . 'src/admin/cmb2-fields/class-dates.php';
+			require_once BF2_ABSPATH . 'src/admin/cmb2-fields/class-recipient.php';
 			require_once BF2_ABSPATH . 'src/admin/lists/class-issuers.php';
 			require_once BF2_ABSPATH . 'src/admin/lists/class-badges.php';
 			require_once BF2_ABSPATH . 'src/admin/lists/class-assertions.php';

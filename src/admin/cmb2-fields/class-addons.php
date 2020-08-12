@@ -22,12 +22,12 @@
  * @phpcs:disable WordPress.WP.I18n.NonSingularStringLiteralDomain
  */
 
-namespace BadgeFactor2\Admin;
+namespace BadgeFactor2\Admin\CMB2_Fields;
 
 /**
  * CMB2 Add-Ons Field.
  */
-class CMB2_Field_Addons {
+class Addons {
 
 	/**
 	 * Init Hooks.
