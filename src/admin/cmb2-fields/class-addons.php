@@ -55,6 +55,10 @@ class Addons {
 				'title' => __( 'BadgeFactor2 Courses', BF2_DATA['TextDomain'] ),
 				'url'   => 'https://github.com/ctrlwebinc/bf2-courses',
 			),
+			'bf2-gravityforms' => array(
+				'title' => __( 'BadgeFactor2 GravityForms', BF2_DATA['TextDomain'] ),
+				'url'   => 'https://github.com/ctrlwebinc/bf2-gravityforms',
+			),
 			'bf2-woocommerce' => array(
 				'title' => __( 'BadgeFactor2 WooCommerce', BF2_DATA['TextDomain'] ),
 				'url'   => 'https://github.com/ctrlwebinc/bf2-woocommerce',
