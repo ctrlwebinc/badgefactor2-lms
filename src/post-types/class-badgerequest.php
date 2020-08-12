@@ -293,7 +293,14 @@ class BadgeRequest {
 	}
 
 
-	public static function all_by_badgeclass_for_user( $badgeclass_id, $user_id ) {
+	/**
+	 * Return all Badge Requests for a specified BadgeClass and a specified User.
+	 *
+	 * @param string $badgeclass_id BadgeClass Entity ID.
+	 * @param int    $user_id User ID.
+	 * @return array
+	 */
+	public static function all_for_badgeclass_for_user( $badgeclass_id, $user_id ) {
 		$args  = array(
 			'post_type'   => self::$slug,
 			'numberposts' => -1,
@@ -316,6 +323,12 @@ class BadgeRequest {
 	}
 
 
+	/**
+	 * Display Badge Requests.
+	 *
+	 * @param array $badge_requests Badge Requests.
+	 * @return void
+	 */
 	public static function display( $badge_requests ) {
 		include( Template::locate( 'tpl.badge-requests' ) );
 	}
