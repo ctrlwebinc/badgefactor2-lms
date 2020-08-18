@@ -28,6 +28,7 @@ use BadgeFactor2\Admin\CMB2_Fields\Addons;
 use BadgeFactor2\Admin\CMB2_Fields\Recipient;
 use BadgeFactor2\Admin\CMB2_Fields\Badge;
 use BadgeFactor2\Admin\CMB2_Fields\BadgeRequestContent;
+use BadgeFactor2\Admin\CMB2_Fields\BadgeRequestType;
 use BadgeFactor2\Admin\CMB2_Fields\Dates;
 use BadgeFactor2\Admin\Notices;
 
@@ -124,6 +125,7 @@ class BadgeFactor2 {
 			Addons::init_hooks();
 			Badge::init_hooks();
 			BadgeRequestContent::init_hooks();
+			BadgeRequestType::init_hooks();
 			Dates::init_hooks();
 			Recipient::init_hooks();
 			Notices::init_hooks();
@@ -185,6 +187,7 @@ class BadgeFactor2 {
 			require_once BF2_ABSPATH . 'src/admin/cmb2-fields/class-addons.php';
 			require_once BF2_ABSPATH . 'src/admin/cmb2-fields/class-badge.php';
 			require_once BF2_ABSPATH . 'src/admin/cmb2-fields/class-badge_request_content.php';
+			require_once BF2_ABSPATH . 'src/admin/cmb2-fields/class-badge_request_type.php';
 			require_once BF2_ABSPATH . 'src/admin/cmb2-fields/class-dates.php';
 			require_once BF2_ABSPATH . 'src/admin/cmb2-fields/class-recipient.php';
 			require_once BF2_ABSPATH . 'src/admin/lists/class-issuers.php';
