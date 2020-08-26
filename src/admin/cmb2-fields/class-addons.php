@@ -22,12 +22,12 @@
  * @phpcs:disable WordPress.WP.I18n.NonSingularStringLiteralDomain
  */
 
-namespace BadgeFactor2\Admin;
+namespace BadgeFactor2\Admin\CMB2_Fields;
 
 /**
  * CMB2 Add-Ons Field.
  */
-class CMB2_Field_Addons {
+class Addons {
 
 	/**
 	 * Init Hooks.
@@ -54,6 +54,10 @@ class CMB2_Field_Addons {
 			'bf2-courses'     => array(
 				'title' => __( 'BadgeFactor2 Courses', BF2_DATA['TextDomain'] ),
 				'url'   => 'https://github.com/ctrlwebinc/bf2-courses',
+			),
+			'bf2-gravityforms' => array(
+				'title' => __( 'BadgeFactor2 GravityForms', BF2_DATA['TextDomain'] ),
+				'url'   => 'https://github.com/ctrlwebinc/bf2-gravityforms',
 			),
 			'bf2-woocommerce' => array(
 				'title' => __( 'BadgeFactor2 WooCommerce', BF2_DATA['TextDomain'] ),

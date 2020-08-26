@@ -366,7 +366,7 @@ class BadgePage {
 		$options = array(
 			'basic' => __( 'Basic form', BF2_DATA['TextDomain'] ),
 		);
-		if ( is_plugin_active( 'gravityforms/gravityforms.php' ) ) {
+		if ( is_plugin_active( 'bf2-gravityforms/bf2-gravityforms.php' ) ) {
 			$options = array( 'gravityforms' => __( 'Gravity Forms', BF2_DATA['TextDomain'] ) ) + $options;
 		}
 		return $options;
@@ -380,7 +380,7 @@ class BadgePage {
 	 */
 	public static function gf_form_select_options() {
 		$options = array();
-		if ( is_plugin_active( 'gravityforms/gravityforms.php' ) ) {
+		if ( is_plugin_active( 'bf2-gravityforms/bf2-gravityforms.php' ) ) {
 
 			$forms = \GFAPI::get_forms();
 			foreach ( $forms as $form ) {
