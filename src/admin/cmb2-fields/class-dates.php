@@ -60,6 +60,7 @@ class Dates {
 
 		foreach ( $dates as $label => $date ) {
 			echo sprintf( '<div style="margin-top: 6px"><strong>%s</strong>: %s</div>', $labels[ $label ], $date );
+			echo sprintf( '<input type="hidden" name="dates[%s]" value="%s">', $label, $date );
 		}
 	}
 }

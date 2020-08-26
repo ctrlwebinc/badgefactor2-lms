@@ -20,6 +20,7 @@
  * @package Badge_Factor_2
  *
  * @phpcs:disable WordPress.WP.I18n.NonSingularStringLiteralDomain
+ * @phpcs:disable WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
  */
 
 namespace BadgeFactor2\Admin\CMB2_Fields;
@@ -57,5 +58,6 @@ class Badge {
 		$badge = BadgeClass::get( $badge_id );
 
 		echo sprintf( '<div style="margin-top: 6px">%s</div>', $badge->name );
+		echo sprintf( '<input type="hidden" name="badge" value="%s">', $badge->entityId );
 	}
 }
