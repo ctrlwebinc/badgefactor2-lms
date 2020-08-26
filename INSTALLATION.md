@@ -237,3 +237,17 @@ apps/mainsite/urls.py
 
  # Test URLs to allow you to see these pages while DEBUG is True
 ```
+
+# Frontend dev
+
+## Requirements
+* Node >= 12 ; [Download Here](https://nodejs.org/)
+
+## Installation
+* Execute ```npm install``` in the root folder
+
+## Usage
+* Build for dev ``` npm run dev ```
+* Watch assets/css/public.scss file  ``` npm run watch ```
+* HMR ``` npm run hot ```
+* Build for production ``` npm run production ```

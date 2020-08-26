@@ -29,59 +29,106 @@
  */
 
 get_header();
+
+$customPostType 	  = 'badge-page';
+$customTaxonomy 	  = 'badge-category';
+$termsByBadgeCategory = get_terms($customTaxonomy);
+
 ?>
-<main id="site-content" role="main">
-	<header class="archive-header has-text-align-center header-footer-group">
-		<div class="archive-header-inner section-inner medium">
-			<h1 class="archive-title"><span class="color-accent"><?php echo __( 'Badges' ); ?></h1>
-		</div><!-- .archive-header-inner -->
-	</header><!-- .archive-header -->
 
-<?php
-if ( have_posts() ) :
-	while ( have_posts() ) :
-		the_post();
+<main <?php post_class(); ?> id="post-<?php the_ID(); ?> site-content" role="main">
+	<div class="badges-page">
+		
+		<header class="section-inner">
+			<h1 class="badges-title"><?php echo __( 'Badges' ); ?></h1>
+		</header>
 
-		$badge_entity_id = get_post_meta( $post->ID, 'badge', true );
-		$badge           = BadgeFactor2\Models\BadgeClass::get( $badge_entity_id );
-		$issuer          = BadgeFactor2\Models\Issuer::get( $badge->issuer );
-
-		?>
-		<article <?php post_class(); ?> id="post-<?php the_ID(); ?>">
-			<header class="badge-page-header">
-				<div class="badge-page-header-inner">
-					<?php the_title( '<h2 class="badge-page-title"><a href="' . esc_url( get_permalink() ) . '">', '</a></h2>' ); ?>
-				</div>
-			</header>
-			<div class="badge-page-inner">
-				<div class="badge">
-					<div class="badge-inner">
-						<figure>
-							<img src="<?php echo $badge->image; ?>" alt="<?php echo $badge->name; ?>">
-						</figure>
-						<div class="badge-issued">
-							<h3><?php echo __( 'Issued by', BF2_DATA['TextDomain'] ); ?></h3>
-							<a target="_blank" href="<?php echo $issuer->url; ?>"><?php echo $issuer->name; ?></a>
-						</div>
-					</div>
-				</div>
-				<div class="entry-content">
-					<?php the_excerpt(); ?>
-				</div>
-			</div>
-			<div class="section-inner">
-			<?php
-			edit_post_link();
-			?>
-			</div>
-		</article>
-			<?php if ( $wp_query->current_post + 1 !== $wp_query->post_count ) : ?>
-		<hr class="post-separator styled-separator is-style-wide section-inner" aria-hidden="true">
-		<?php endif; ?>
 		<?php
-	endwhile;
-endif;
-?>
+
+		foreach($termsByBadgeCategory as $custom_term) {
+
+			wp_reset_query();
+
+			$args = array('post_type' => $customPostType,
+				'tax_query' => array(
+					array(
+						'taxonomy' => $customTaxonomy,
+						'field'    => 'slug',
+						'terms'    => $custom_term->slug
+					)
+				)
+			);
+
+			$loop = new WP_Query($args);
+			
+			if($loop->have_posts()) { ?>
+				<section class="badges-category section-inner">
+					<h2 class="badges-category-title"><?php echo $custom_term->name; ?></h2>
+					<p class="badges-category-description">
+						<?php echo $custom_term->description;?>
+					</p>
+					<div class="badges-category-items">
+						
+						<?php
+						while($loop->have_posts()) : $loop->the_post();
+						
+							$badge_entity_id = get_post_meta( $post->ID, 'badge', true );
+							$badge           = BadgeFactor2\Models\BadgeClass::get( $badge_entity_id );
+							$issuer          = BadgeFactor2\Models\Issuer::get( $badge->issuer ); ?>
+							
+							<div class="badge">
+								<a href="<?php echo get_permalink($post->ID); ?>" class="badge-inner">
+									<img class="badge-image" src="<?php echo $badge->image; ?>" alt="<?php echo $badge->name; ?>">
+									<h3 class="badge-title"><?php echo $badge->name; ?></h3>
+								</a>
+							</div>
+
+							<div class="badge">
+								<a href="<?php echo get_permalink($post->ID); ?>" class="badge-inner">
+									<img class="badge-image" src="<?php echo $badge->image; ?>" alt="<?php echo $badge->name; ?>">
+									<h3 class="badge-title"><?php echo $badge->name; ?></h3>
+								</a>
+							</div>
+
+							<div class="badge">
+								<a href="<?php echo get_permalink($post->ID); ?>" class="badge-inner">
+									<img class="badge-image" src="<?php echo $badge->image; ?>" alt="<?php echo $badge->name; ?>">
+									<h3 class="badge-title"><?php echo $badge->name; ?></h3>
+								</a>
+							</div>
+
+							<div class="badge">
+								<a href="<?php echo get_permalink($post->ID); ?>" class="badge-inner">
+									<img class="badge-image" src="<?php echo $badge->image; ?>" alt="<?php echo $badge->name; ?>">
+									<h3 class="badge-title"><?php echo $badge->name; ?></h3>
+								</a>
+							</div>
+							
+							<div class="badge">
+								<a href="<?php echo get_permalink($post->ID); ?>" class="badge-inner">
+									<img class="badge-image" src="<?php echo $badge->image; ?>" alt="<?php echo $badge->name; ?>">
+									<h3 class="badge-title"><?php echo $badge->name; ?></h3>
+								</a>
+							</div>
+
+							<div class="badge">
+								<a href="<?php echo get_permalink($post->ID); ?>" class="badge-inner">
+									<img class="badge-image" src="<?php echo $badge->image; ?>" alt="<?php echo $badge->name; ?>">
+									<h3 class="badge-title"><?php echo $badge->name; ?></h3>
+								</a>
+							</div>
+						<?php
+						endwhile;
+						?>
+					</div>
+				</section>
+			<?php
+			}
+			?>
+		<?php
+		}
+		?>
+	</div>
 </main>
 <?php
 get_footer();

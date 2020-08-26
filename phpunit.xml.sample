@@ -13,7 +13,7 @@
 	</testsuites>
 	<php>
 	    <env name="BADGR_SERVER_PUBLIC_URL" value="http://badge-factor-2.test:8000"/>
-	    <env name="BADGR_SERVER_INTERNAL_URL" value="http://badgr:8000"/>
+	    <env name="BADGR_SERVER_INTERNAL_URL" value="http://badge-factor-2.test:8000"/>
 	    <env name="BADGR_SERVER_CLIENT_ID" value="QqumN23Zmk4LzxqP0Wlhr6cB69TxXINhEmNsn1TX"/>
 	    <env name="BADGR_SERVER_CLIENT_SECRET" value="hKxkkrJkUPmmzBpgg1oRuEwP8QvAFrwAbpVH2XWgtDWS9S9ouVbAtL8dbWndLCpfOa1id6R1U7rcYXUxiqlNMnh9ohZkaH3boGgBvwgZAhPvNnqxi0NeTmM9wqrVr3sv"/>
 	    <env name="BADGR_SERVER_ACCESS_TOKEN" value="LWOpgurZwmko5g9pfMaR6dwsrXLVv3"/>

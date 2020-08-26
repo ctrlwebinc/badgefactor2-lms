@@ -4,3 +4,4 @@ composer.lock
 .idea/*
 .idea
 phpunit.xml
+node_modules
