@@ -82,41 +82,6 @@ $termsByBadgeCategory = get_terms($customTaxonomy);
 									<h3 class="badge-title"><?php echo $badge->name; ?></h3>
 								</a>
 							</div>
-
-							<div class="badge">
-								<a href="<?php echo get_permalink($post->ID); ?>" class="badge-inner">
-									<img class="badge-image" src="<?php echo $badge->image; ?>" alt="<?php echo $badge->name; ?>">
-									<h3 class="badge-title"><?php echo $badge->name; ?></h3>
-								</a>
-							</div>
-
-							<div class="badge">
-								<a href="<?php echo get_permalink($post->ID); ?>" class="badge-inner">
-									<img class="badge-image" src="<?php echo $badge->image; ?>" alt="<?php echo $badge->name; ?>">
-									<h3 class="badge-title"><?php echo $badge->name; ?></h3>
-								</a>
-							</div>
-
-							<div class="badge">
-								<a href="<?php echo get_permalink($post->ID); ?>" class="badge-inner">
-									<img class="badge-image" src="<?php echo $badge->image; ?>" alt="<?php echo $badge->name; ?>">
-									<h3 class="badge-title"><?php echo $badge->name; ?></h3>
-								</a>
-							</div>
-							
-							<div class="badge">
-								<a href="<?php echo get_permalink($post->ID); ?>" class="badge-inner">
-									<img class="badge-image" src="<?php echo $badge->image; ?>" alt="<?php echo $badge->name; ?>">
-									<h3 class="badge-title"><?php echo $badge->name; ?></h3>
-								</a>
-							</div>
-
-							<div class="badge">
-								<a href="<?php echo get_permalink($post->ID); ?>" class="badge-inner">
-									<img class="badge-image" src="<?php echo $badge->image; ?>" alt="<?php echo $badge->name; ?>">
-									<h3 class="badge-title"><?php echo $badge->name; ?></h3>
-								</a>
-							</div>
 						<?php
 						endwhile;
 						?>
