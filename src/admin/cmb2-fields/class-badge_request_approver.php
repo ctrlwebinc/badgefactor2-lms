@@ -25,9 +25,9 @@
 namespace BadgeFactor2\Admin\CMB2_Fields;
 
 /**
- * CMB2 Dates Field.
+ * CMB2 Badge Request Approver Field.
  */
-class Dates {
+class BadgeRequestApprover {
 
 	/**
 	 * Init Hooks.
@@ -35,35 +35,32 @@ class Dates {
 	 * @return void
 	 */
 	public static function init_hooks() {
-		add_filter( 'cmb2_render_dates', array( self::class, 'render_badge_dates' ), 10, 5 );
+		add_filter( 'cmb2_render_badge_request_approver', array( self::class, 'render_badge_request_approver' ), 10, 5 );
 	}
 
 
 	/**
-	 * Render Dates.
+	 * Render Badge Request Approver.
 	 *
 	 * @param CMB2_Field $field Field.
-	 * @param array      $field_escaped_value Field escaped value.
+	 * @param string     $field_escaped_value Field escaped value.
 	 * @param string     $field_object_id Field object id.
 	 * @param string     $field_object_type Field object type.
 	 * @param CMB2_Types $field_type_object Field Type Object.
 	 * @return void
 	 */
-	public static function render_badge_dates( $field, $field_escaped_value, $field_object_id, $field_object_type, $field_type_object ) {
+	public static function render_badge_request_approver( $field, $field_escaped_value, $field_object_id, $field_object_type, $field_type_object ) {
+		$badge_request_approver = $field_escaped_value;
+		$approver               = get_user_by( 'ID', $badge_request_approver );
 
-		$dates = get_post_meta( $field_object_id, 'dates' );
+		if ( ! $badge_request_approver ) {
+			echo sprintf( '<div style="margin-top: 6px">%s</div>', __( 'Badge request not yet processed.' ) );
+		} else {
+			echo sprintf( '<div style="margin-top: 6px">%s</div>', $approver->user_nicename );
 
-		$labels = array(
-			'requested' => __( 'Requested', BF2_DATA['TextDomain'] ),
-			'granted'   => __( 'Granted', BF2_DATA['TextDomain'] ),
-			'rejected'  => __( 'Rejected', BF2_DATA['TextDomain'] ),
-		);
-
-		foreach ( $dates as $data ) {
-			foreach ( $data as $label => $date ) {
-				echo sprintf( '<div style="margin-top: 6px"><strong>%s</strong>: %s</div>', $labels[ $label ], $date );
-				echo sprintf( '<input type="hidden" name="dates[%s]" value="%s">', $label, $date );
-			}
 		}
+		echo sprintf( '<input type="hidden" name="approver" value="%s">', $badge_request_approver );
 	}
 }
+
+

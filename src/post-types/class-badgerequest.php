@@ -271,14 +271,17 @@ class BadgeRequest {
 
 		$cmb->add_field(
 			array(
-				'id'      => 'status',
-				'name'    => __( 'Status', BF2_DATA['TextDomain'] ),
-				'type'    => 'select',
-				'options' => array(
-					'requested' => __( 'Requested', BF2_DATA['TextDomain'] ),
-					'granted'   => __( 'Granted', BF2_DATA['TextDomain'] ),
-					'rejected'  => __( 'Rejected', BF2_DATA['TextDomain'] ),
-				),
+				'id'   => 'approver',
+				'name' => __( 'Approver', BF2_DATA['TextDomain'] ),
+				'type' => 'badge_request_approver',
+			)
+		);
+
+		$cmb->add_field(
+			array(
+				'id'   => 'status',
+				'name' => __( 'Status', BF2_DATA['TextDomain'] ),
+				'type' => 'badge_request_status',
 			)
 		);
 
@@ -286,11 +289,7 @@ class BadgeRequest {
 			array(
 				'id'         => 'rejection_reason',
 				'name'       => __( 'Rejection Reason', BF2_DATA['TextDomain'] ),
-				'type'       => 'text',
-				'attributes' => array(
-					'data-conditional-id'    => 'status',
-					'data-conditional-value' => 'rejected',
-				),
+				'type'       => 'badge_request_rejection_reason',
 			)
 		);
 	}
@@ -364,17 +363,16 @@ class BadgeRequest {
 			$status = get_post_meta( $post_id, 'status', true );
 			$reason = get_post_meta( $post_id, 'rejection_reason', true );
 			$dates  = get_post_meta( $post_id, 'dates' );
-			ksort( $dates );
+
+			$dates = array_reverse( $dates );
 
 			// Status change.
-			if ( array_key_first( $dates ) !== $status ) {
-				$dates[ $status ] = gmdate( 'Y-m-d H:i:s' );
-				update_post_meta( $post_id, 'dates', $dates );
+			if ( array_key_first( $dates[0] ) !== $status ) {
+				add_post_meta( $post_id, 'dates', array( $status => gmdate( 'Y-m-d H:i:s' ) ) );
 			}
-
-			//echo $status . ' '. $reason; die;
-
 		}
 	}
+
+	
 
 }

@@ -1,4 +1,7 @@
 jQuery(document).ready(function($) {
+  if ($('input[name="status"]').val() !== "rejected") {
+    $(".cmb-type-badge-request-rejection-reason").hide();
+  }
   function insertParam(key, value) {
     key = encodeURI(key);
     value = encodeURI(value);
@@ -39,11 +42,76 @@ jQuery(document).ready(function($) {
     return rtn;
   }
 
-  $("body").on("click", "button.notice-dismiss", function() {
-    var url = new URL(window.location.href);
-    url.searchParams.delete("notice");
-    window.history.pushState({}, "", url);
-  });
+  $("body")
+    .on("click", "button.notice-dismiss", function() {
+      var url = new URL(window.location.href);
+      url.searchParams.delete("notice");
+      window.history.pushState({}, "", url);
+    })
+    .on("click", "button#approve-badge", function(e) {
+      e.preventDefault();
+      var button = $(this);
+      var action_buttons = $(this)
+        .closest(".button-group")
+        .find("button");
+      var form = $(this).closest("form");
+      if (confirm(button.data("confirm"))) {
+        action_buttons.attr("disabled", true);
+        var recipient_id = form.find("input[name='recipient']").val(),
+          badge_entity_id = form.find("input[name='badge']").val(),
+          post_id = form.find("input#post_ID").val();
+
+        $.post(
+          ajaxurl,
+          {
+            action: "approve_badge_request",
+            recipient_id: recipient_id,
+            badge_entity_id: badge_entity_id,
+            badge_request_id: post_id
+          },
+          function(response) {
+            // FIXME Do something with the response.
+            console.log("The server responded: ", response);
+            location.reload();
+          }
+        );
+      }
+      return false;
+    })
+    .on("click", "button#start-badge-rejection", function(e) {
+      e.preventDefault();
+      $(".cmb-type-badge-request-rejection-reason").fadeIn();
+      return false;
+    })
+    .on("click", "button#reject-badge", function(e) {
+      e.preventDefault();
+      var button = $(this);
+      var action_buttons = $(this)
+        .closest(".button-group")
+        .find("button");
+      var form = $(this).closest("form");
+      if (confirm(button.data("confirm"))) {
+        action_buttons.attr("disabled", true);
+        var recipient_id = form.find("input[name='recipient']").val(),
+          badge_entity_id = form.find("input[name='badge']").val(),
+          post_id = form.find("input#post_ID").val();
+
+        $.post(
+          ajaxurl,
+          {
+            action: "reject_badge_request",
+            recipient_id: recipient_id,
+            badge_entity_id: badge_entity_id,
+            post_id: post_id
+          },
+          function(response) {
+            // FIXME Do something with the response.
+            console.log("The server responded: ", response);
+          }
+        );
+      }
+      return false;
+    });
   $(document).on(
     "change",
     "#bf2-admin-filter select[name='filter_type'], #bf2-admin-filter select[name='filter_value']",
