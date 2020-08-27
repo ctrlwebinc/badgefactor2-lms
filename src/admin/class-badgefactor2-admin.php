@@ -28,6 +28,7 @@ use BadgeFactor2\Admin\Lists\Assertions;
 use BadgeFactor2\Admin\Lists\Badges;
 use BadgeFactor2\Admin\Lists\Issuers;
 use BadgeFactor2\BadgrClient;
+use BadgeFactor2\Post_Types\BadgePage;
 
 /**
  * Badge Factor 2 Admin Class.
@@ -68,6 +69,8 @@ class BadgeFactor2_Admin {
 		add_action( 'admin_menu', array( BadgeFactor2_Admin::class, 'admin_menus' ) );
 		add_action( 'wp_ajax_bf2_filter_type', array( BadgeFactor2_Admin::class, 'ajax_filter_type' ) );
 		add_action( 'wp_ajax_bf2_filter_value', array( BadgeFactor2_Admin::class, 'ajax_filter_value' ) );
+		add_action( 'wp_ajax_approve_badge_request', array( BadgeFactor2_Admin::class, 'ajax_approve_badge_request' ) );
+		add_action( 'wp_ajax_reject_badge_request', array( BadgeFactor2_Admin::class, 'ajax_reject_badge_request' ) );
 		add_action( 'save_post_badge-page', array( BadgeFactor2_Admin::class, 'create_badge_chain' ), 10, 2 );
 		add_filter( 'pw_cmb2_field_select2_asset_path', array( BadgeFactor2_Admin::class, 'pw_cmb2_field_select2_asset_path' ), 10 );
 	}
@@ -567,7 +570,6 @@ class BadgeFactor2_Admin {
 	 * @return void
 	 */
 	public static function ajax_filter_type() {
-		header( 'Content-Type: application/json' );
 		$filter_type = stripslashes( $_POST['filter_type'] );
 		if ( ! $filter_type ) {
 			$response = array(
@@ -590,8 +592,7 @@ class BadgeFactor2_Admin {
 			$response['options'] = join( '', $response['options'] );
 		}
 
-		echo json_encode( $response );
-		wp_die();
+		wp_send_json( $response );
 	}
 
 
@@ -601,7 +602,6 @@ class BadgeFactor2_Admin {
 	 * @return void
 	 */
 	public static function ajax_filter_value() {
-		header( 'Content-Type: application/json' );
 		$filter_for   = stripslashes( $_POST['filter_for'] );
 		$filter_type  = stripslashes( $_POST['filter_type'] );
 		$filter_value = stripslashes( $_POST['filter_value'] );
@@ -630,8 +630,47 @@ class BadgeFactor2_Admin {
 			$response['options'] = join( '', $response['options'] );
 		}
 
-		echo json_encode( $response );
-		wp_die();
+		wp_send_json( $response );
+	}
+
+	public static function ajax_approve_badge_request() {
+		$response = array(
+			'status' => 'fail',
+		);
+
+		$current_user     = wp_get_current_user();
+		$badge_entity_id  = $_POST['badge_entity_id'];
+		$recipient_id     = $_POST['recipient_id'];
+		$recipient        = get_user_by( 'ID', $recipient_id );
+		$badge_request_id = $_POST['badge_request_id'];
+		$badge_page       = BadgePage::get_by_badgeclass_id( $badge_entity_id );
+		$approvers        = get_post_meta( $badge_page->ID, 'badge_request_approver' );
+
+		if ( ! in_array( 'approver', $current_user->roles ) && ! in_array( 'administrator', $current_user->roles ) ) {
+			$response['message'] = 'You are not an approver on this website.';
+		} elseif ( ! in_array( $current_user->ID, $approvers ) && ! in_array( 'administrator', $current_user->roles ) ) {
+			$response['message'] = 'You are not an approver for this badge.';
+		} else {
+			update_post_meta( $badge_request_id, 'status', 'granted' );
+			update_post_meta( $badge_request_id, 'approver', $current_user->ID );
+			add_post_meta( $badge_request_id, 'dates', array( 'granted' => gmdate( 'Y-m-d H:i:s' ) ) );
+			BadgrProvider::add_assertion( $badge_entity_id, $recipient->user_email );
+			$response = array(
+				'status'  => 'success',
+				'message' => 'The badge request has been approved!',
+			);
+		}
+		wp_send_json( $response );
+
+	}
+
+	public static function ajax_reject_badge_request() {
+		$response = array(
+			'status'  => 'success',
+			'message' => 'The badge request has been rejected.',
+		);
+		wp_send_json( $response );
+
 	}
 
 	/**
