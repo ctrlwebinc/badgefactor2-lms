@@ -18,11 +18,14 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  * @package Badge_Factor_2
+ *
+ * @phpcs:disable WordPress.WP.I18n.NonSingularStringLiteralDomain
  */
 
 namespace BadgeFactor2;
 
 use BadgeFactor2\Helpers\Template;
+use BadgeFactor2\Models\BadgeClass;
 
 /**
  * Badge Factor 2 Admin Class.
@@ -42,6 +45,7 @@ class BadgeFactor2_Public {
 		add_action( 'register_new_user', array( BadgeFactor2_Public::class, 'suppress_new_user_notifications' ), 10, 2 );
 		add_filter( 'query_vars', array( BadgeFactor2_Public::class, 'add_custom_query_vars' ) );
 		add_action( 'wp_enqueue_scripts', array( BadgeFactor2_Public::class, 'load_resources' ) );
+		add_action( 'wp_ajax_submit_badge_request_form', array( BadgeFactor2_Public::class, 'ajax_badge_request' ) );
 
 		/*
 		 * TODO If we want to make a members list and page without buddypress.
@@ -74,7 +78,7 @@ class BadgeFactor2_Public {
 	 * @return void
 	 */
 	public static function add_rewrite_rules() {
-		$options     = get_option( 'badgefactor2' );
+		$options = get_option( 'badgefactor2' );
 
 		add_rewrite_rule( 'issuers/([^/]+)/?$', 'index.php?issuer=$matches[1]', 'top' );
 		$form_slug = isset( $options['bf2_form_slug'] ) ? $options['bf2_form_slug'] : 'form';
@@ -149,6 +153,54 @@ class BadgeFactor2_Public {
 	public static function load_resources() {
 		wp_enqueue_style( 'badgefactor2-css', BF2_BASEURL . 'assets/css/public.css', array(), BF2_DATA['Version'], 'all' );
 		wp_enqueue_script( 'badgefactor2-js', BF2_BASEURL . 'assets/js/public.js', array( 'jquery' ), BF2_DATA['Version'], true );
+	}
+
+
+	/**
+	 * Manage ajax badge requests from basic forms.
+	 *
+	 * @return void
+	 */
+	public static function ajax_badge_request() {
+		$response     = array(
+			'success' => false,
+			'message' => __( 'Something went wrong...', BF2_DATA['TextDomain'] ),
+		);
+		$status_code  = 400;
+		$current_user = wp_get_current_user();
+		if ( $current_user ) {
+			$badge_id = $_POST['badge_id'];
+			$badge    = BadgeClass::get( $badge_id );
+			$content  = $_POST['content'];
+			$type     = $_POST['type'];
+
+			// Create a badge request.
+			$badge_request_id = wp_insert_post(
+				array(
+					'post_type'      => 'badge-request',
+					'post_title'     => sprintf( '%s - %s - %s', $current_user->user_nicename, $badge->name, gmdate( 'Y-m-d H:i:s' ) ),
+					'post_content'   => '',
+					'post_author'    => $current_user,
+					'post_status'    => 'publish',
+					'comment_status' => 'closed',
+					'ping_status'    => 'closed',
+				)
+			);
+			if ( $badge_request_id ) {
+				add_post_meta( $badge_request_id, 'badge', $badge_id );
+				add_post_meta( $badge_request_id, 'type', $type );
+				add_post_meta( $badge_request_id, 'content', $content );
+				add_post_meta( $badge_request_id, 'recipient', $current_user->ID );
+				add_post_meta( $badge_request_id, 'status', 'requested' );
+				add_post_meta( $badge_request_id, 'dates', array( 'requested' => gmdate( 'Y-m-d H:i:s' ) ) );
+				$status_code = 201;
+				$response    = array(
+					'success' => true,
+				);
+			}
+		}
+
+		wp_send_json( $response, $status_code );
 	}
 
 

@@ -18,7 +18,20 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  * @package Badge_Factor_2
+ *
+ * @phpcs:disable WordPress.WP.I18n.NonSingularStringLiteralDomain
+ * @phpcs:disable WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
  */
 
 ?>
-TODO
+<?php
+$current_user = wp_get_current_user();
+?>
+<form class="badge-request-form">
+	<input type="hidden" name="action" value="submit_badge_request_form">
+	<input type="hidden" name="badge_id" value="<?php echo $badge->entityId; ?>">
+	<input type="hidden" name="type" value="basic">
+	<label for="content"><?php echo __( 'Badge Request', BF2_DATA['TextDomain'] ); ?></label>
+	<input type="text" name="content" required>
+	<input type="submit">
+</form>

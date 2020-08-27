@@ -57,6 +57,7 @@ class BadgeRequest {
 		add_action( 'admin_init', array( BadgeRequest::class, 'add_capabilities' ), 10 );
 		add_filter( 'post_updated_messages', array( BadgeRequest::class, 'updated_messages' ), 10 );
 		add_action( 'cmb2_admin_init', array( BadgeRequest::class, 'register_cpt_metaboxes' ), 10 );
+		add_action( 'save_post_' . self::$slug, array( BadgeRequest::class, 'update_badge_request' ), 10, 3 );
 	}
 
 
@@ -254,7 +255,15 @@ class BadgeRequest {
 
 		$cmb->add_field(
 			array(
-				'id'   => 'badge_request_content',
+				'id'   => 'type',
+				'name' => __( 'Type', BF2_DATA['TextDomain'] ),
+				'type' => 'badge_request_type',
+			)
+		);
+
+		$cmb->add_field(
+			array(
+				'id'   => 'content',
 				'name' => __( 'Content', BF2_DATA['TextDomain'] ),
 				'type' => 'badge_request_content',
 			)
@@ -262,14 +271,25 @@ class BadgeRequest {
 
 		$cmb->add_field(
 			array(
-				'id'      => 'status',
-				'name'    => __( 'Status', BF2_DATA['TextDomain'] ),
-				'type'    => 'select',
-				'options' => array(
-					'requested' => __( 'Requested', BF2_DATA['TextDomain'] ),
-					'granted'   => __( 'Granted', BF2_DATA['TextDomain'] ),
-					'rejected'  => __( 'Rejected', BF2_DATA['TextDomain'] ),
-				),
+				'id'   => 'approver',
+				'name' => __( 'Approver', BF2_DATA['TextDomain'] ),
+				'type' => 'badge_request_approver',
+			)
+		);
+
+		$cmb->add_field(
+			array(
+				'id'   => 'status',
+				'name' => __( 'Status', BF2_DATA['TextDomain'] ),
+				'type' => 'badge_request_status',
+			)
+		);
+
+		$cmb->add_field(
+			array(
+				'id'         => 'rejection_reason',
+				'name'       => __( 'Rejection Reason', BF2_DATA['TextDomain'] ),
+				'type'       => 'badge_request_rejection_reason',
 			)
 		);
 	}
@@ -332,5 +352,27 @@ class BadgeRequest {
 	public static function display( $badge_requests ) {
 		include( Template::locate( 'tpl.badge-requests' ) );
 	}
+
+	public static function user_can_request_badgeclass( $badgeclass_id, $user_id ) {
+		// FIXME Must validate whether or not user can request a badge.
+		return true;
+	}
+
+	public static function update_badge_request( $post_id, $post, $update ) {
+		if ( $update ) {
+			$status = get_post_meta( $post_id, 'status', true );
+			$reason = get_post_meta( $post_id, 'rejection_reason', true );
+			$dates  = get_post_meta( $post_id, 'dates' );
+
+			$dates = array_reverse( $dates );
+
+			// Status change.
+			if ( array_key_first( $dates[0] ) !== $status ) {
+				add_post_meta( $post_id, 'dates', array( $status => gmdate( 'Y-m-d H:i:s' ) ) );
+			}
+		}
+	}
+
+	
 
 }

@@ -53,5 +53,6 @@ class BadgeRequestContent {
 		$badge_request_content = $field_escaped_value;
 
 		echo sprintf( '<div style="margin-top: 6px">%s</div>', $badge_request_content );
+		echo sprintf( '<input type="hidden" name="content" value="%s">', $badge_request_content );
 	}
 }

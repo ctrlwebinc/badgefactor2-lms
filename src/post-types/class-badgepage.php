@@ -695,4 +695,20 @@ class BadgePage {
 		}
 		return array();
 	}
+
+	public static function get_by_badgeclass_id( $entity_id ) {
+		$query = new \WP_Query(
+			array(
+				'post_type'    => self::$slug,
+				'meta_key'     => 'badge',
+				'meta_value'   => $entity_id,
+				'meta_compare' => '=',
+				'post_status'  => 'publish',
+			)
+		);
+		if ( $query->posts ) {
+			return $query->posts[0];
+		}
+		return false;
+	}
 }

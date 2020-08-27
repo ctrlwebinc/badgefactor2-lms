@@ -50,7 +50,8 @@ class Dates {
 	 * @return void
 	 */
 	public static function render_badge_dates( $field, $field_escaped_value, $field_object_id, $field_object_type, $field_type_object ) {
-		$dates = $field_escaped_value;
+
+		$dates = get_post_meta( $field_object_id, 'dates' );
 
 		$labels = array(
 			'requested' => __( 'Requested', BF2_DATA['TextDomain'] ),
@@ -58,8 +59,11 @@ class Dates {
 			'rejected'  => __( 'Rejected', BF2_DATA['TextDomain'] ),
 		);
 
-		foreach ( $dates as $label => $date ) {
-			echo sprintf( '<div style="margin-top: 6px"><strong>%s</strong>: %s</div>', $labels[ $label ], $date );
+		foreach ( $dates as $data ) {
+			foreach ( $data as $label => $date ) {
+				echo sprintf( '<div style="margin-top: 6px"><strong>%s</strong>: %s</div>', $labels[ $label ], $date );
+				echo sprintf( '<input type="hidden" name="dates[%s]" value="%s">', $label, $date );
+			}
 		}
 	}
 }

@@ -18,6 +18,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  * @package Badge_Factor_2
+ *
+ * @phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound
  */
 
 use BadgeFactor2\Helpers\Template;
@@ -26,13 +28,13 @@ $form_type = get_post_meta( $badge_page->ID, 'badge_request_form_type', true );
 
 switch ( $form_type ) {
 	case 'gravityforms':
-		$form_id = get_post_meta( $badge_page->ID, 'badge_request_form_id', true );
-		gravity_form( $form_id );
+		if ( is_plugin_active( 'bf2-gravityforms/bf2-gravityforms.php' ) ) {
+			$form_id = get_post_meta( $badge_page->ID, 'badge_request_form_id', true );
+			echo do_shortcode( sprintf( '[bf2-gf-badge-request gravityform_id="%s"]', $form_id ) );
+		}
 		break;
 	case 'basic':
 	default:
 		include( Template::locate( 'partials/basic-badge-request-form' ) );
 		break;
 }
-
-

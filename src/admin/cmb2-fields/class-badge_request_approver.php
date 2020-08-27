@@ -20,17 +20,14 @@
  * @package Badge_Factor_2
  *
  * @phpcs:disable WordPress.WP.I18n.NonSingularStringLiteralDomain
- * @phpcs:disable WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
  */
 
 namespace BadgeFactor2\Admin\CMB2_Fields;
 
-use BadgeFactor2\Models\BadgeClass;
-
 /**
- * CMB2 Badge Field.
+ * CMB2 Badge Request Approver Field.
  */
-class Badge {
+class BadgeRequestApprover {
 
 	/**
 	 * Init Hooks.
@@ -38,12 +35,12 @@ class Badge {
 	 * @return void
 	 */
 	public static function init_hooks() {
-		add_filter( 'cmb2_render_badge', array( self::class, 'render_badge' ), 10, 5 );
+		add_filter( 'cmb2_render_badge_request_approver', array( self::class, 'render_badge_request_approver' ), 10, 5 );
 	}
 
 
 	/**
-	 * Render Badge.
+	 * Render Badge Request Approver.
 	 *
 	 * @param CMB2_Field $field Field.
 	 * @param string     $field_escaped_value Field escaped value.
@@ -52,12 +49,18 @@ class Badge {
 	 * @param CMB2_Types $field_type_object Field Type Object.
 	 * @return void
 	 */
-	public static function render_badge( $field, $field_escaped_value, $field_object_id, $field_object_type, $field_type_object ) {
-		$badge_id = $field_escaped_value;
+	public static function render_badge_request_approver( $field, $field_escaped_value, $field_object_id, $field_object_type, $field_type_object ) {
+		$badge_request_approver = $field_escaped_value;
+		$approver               = get_user_by( 'ID', $badge_request_approver );
 
-		$badge = BadgeClass::get( $badge_id );
+		if ( ! $badge_request_approver ) {
+			echo sprintf( '<div style="margin-top: 6px">%s</div>', __( 'Badge request not yet processed.' ) );
+		} else {
+			echo sprintf( '<div style="margin-top: 6px">%s</div>', $approver->user_nicename );
 
-		echo sprintf( '<div style="margin-top: 6px">%s</div>', $badge->name );
-		echo sprintf( '<input type="hidden" name="badge" value="%s">', $badge->entityId );
+		}
+		echo sprintf( '<input type="hidden" name="approver" value="%s">', $badge_request_approver );
 	}
 }
+
+

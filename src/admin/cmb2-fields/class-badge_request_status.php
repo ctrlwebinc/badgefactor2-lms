@@ -20,17 +20,14 @@
  * @package Badge_Factor_2
  *
  * @phpcs:disable WordPress.WP.I18n.NonSingularStringLiteralDomain
- * @phpcs:disable WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
  */
 
 namespace BadgeFactor2\Admin\CMB2_Fields;
 
-use BadgeFactor2\Models\BadgeClass;
-
 /**
- * CMB2 Badge Field.
+ * CMB2 Badge Request Content Field.
  */
-class Badge {
+class BadgeRequestStatus {
 
 	/**
 	 * Init Hooks.
@@ -38,12 +35,12 @@ class Badge {
 	 * @return void
 	 */
 	public static function init_hooks() {
-		add_filter( 'cmb2_render_badge', array( self::class, 'render_badge' ), 10, 5 );
+		add_filter( 'cmb2_render_badge_request_status', array( self::class, 'render_badge_request_status' ), 10, 5 );
 	}
 
 
 	/**
-	 * Render Badge.
+	 * Render Badge Request Status.
 	 *
 	 * @param CMB2_Field $field Field.
 	 * @param string     $field_escaped_value Field escaped value.
@@ -52,12 +49,25 @@ class Badge {
 	 * @param CMB2_Types $field_type_object Field Type Object.
 	 * @return void
 	 */
-	public static function render_badge( $field, $field_escaped_value, $field_object_id, $field_object_type, $field_type_object ) {
-		$badge_id = $field_escaped_value;
+	public static function render_badge_request_status( $field, $field_escaped_value, $field_object_id, $field_object_type, $field_type_object ) {
+		$badge_request_status = $field_escaped_value;
 
-		$badge = BadgeClass::get( $badge_id );
+		$options = array(
+			'requested' => __( 'Requested', BF2_DATA['TextDomain'] ),
+			'granted'   => __( 'Granted', BF2_DATA['TextDomain'] ),
+			'rejected'  => __( 'Rejected', BF2_DATA['TextDomain'] ),
+		);
 
-		echo sprintf( '<div style="margin-top: 6px">%s</div>', $badge->name );
-		echo sprintf( '<input type="hidden" name="badge" value="%s">', $badge->entityId );
+		echo sprintf( '<div style="margin-top: 6px">%s</div>', $badge_request_status );
+		echo sprintf( '<input type="hidden" name="status" value="%s">', $badge_request_status );
+		if ( 'requested' === $badge_request_status ) {
+			echo '<span class="button-group" style="margin-top: 1rem">';
+			echo sprintf( '<button data-confirm="%s" class="button button-primary" id="approve-badge">%s</button>', __( 'Approve this badge request?', BF2_DATA['TextDomain'] ), __( 'Approve', BF2_DATA['TextDomain'] ) );
+			echo sprintf( '<button class="button button-secondary" id="start-badge-rejection">%s</button>', __( 'Reject', BF2_DATA['TextDomain'] ) );
+			echo '</span>';
+		}
+
 	}
 }
+
+
