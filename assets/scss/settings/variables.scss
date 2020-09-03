@@ -1,9 +1,11 @@
 .c-bf2 {
     --text-main-color: black;
-    --breakpoint-sm: 640px;
-    --breakpoint-md: 768px;
-    --breakpoint-lg: 1024px;
-    --breakpoint-xl: 1280px;
+}
+
+.c-bf2__list__item {
+    --items-per-line-mobile: 1;
+    --items-per-line-tablet: 4;
+    --items-per-line-desktop: 4;
 }
 
 .c-bf2__badge {
@@ -14,8 +16,12 @@
     --badge-text-color: black;
 }
 
-.c-bf2__list__item {
-    --item-by-line-dektop: 5;
-    --item-by-line-tablet: 4;
-    --item-by-line-mobile: 1;
+.c-bf2__btn {
+    --button-text-color: white;
+    --button-background: #ce3a52;
+}
+
+.c-bf2__single {
+    --sidebar-position-mobile: 1;
+    --sidebar-position-desktop: 2;
 }

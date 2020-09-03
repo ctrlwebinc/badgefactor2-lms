@@ -6,7 +6,15 @@
         }
         
         &__item {
-            flex-basis: calc(100% / var(--item-by-line-dektop));
+            flex-basis: calc(100% / var(--items-per-line-mobile));
+            
+            @media screen and (min-width: 768px) {
+                flex-basis: calc(100% / var(--items-per-line-tablet));
+            }
+
+            @media screen and (min-width: 1024px) {
+                flex-basis: calc(100% / var(--items-per-line-desktop));
+            }
         }
     }
 }
