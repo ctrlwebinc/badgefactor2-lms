@@ -26,15 +26,31 @@ use BadgeFactor2\Helpers\Template;
 
 $form_type = get_post_meta( $badge_page->ID, 'badge_request_form_type', true );
 
-switch ( $form_type ) {
-	case 'gravityforms':
-		if ( is_plugin_active( 'bf2-gravityforms/bf2-gravityforms.php' ) ) {
-			$form_id = get_post_meta( $badge_page->ID, 'badge_request_form_id', true );
-			echo do_shortcode( sprintf( '[bf2-gf-badge-request gravityform_id="%s"]', $form_id ) );
-		}
-		break;
-	case 'basic':
-	default:
-		include( Template::locate( 'partials/basic-badge-request-form' ) );
-		break;
-}
+?>
+<div class="c-bf2">
+	<div class="c-bf2__section c-bf2__request">
+		<header class="c-bf2__header">
+			<h1 class="c-bf2__title"><?php echo $badge->name; ?></h1>
+		</header>
+		<div class="c-bf2__body">
+			<?php
+			switch ( $form_type ) {
+				case 'gravityforms':
+					if ( is_plugin_active( 'bf2-gravityforms/bf2-gravityforms.php' ) ) {
+						$form_id = get_post_meta( $badge_page->ID, 'badge_request_form_id', true );
+						echo do_shortcode( sprintf( '[bf2-gf-badge-request gravityform_id="%s"]', $form_id ) );
+					}
+					break;
+				case 'basic':
+				default:
+				?>
+				<?php
+					include( Template::locate( 'partials/basic-badge-request-form' ) );
+					break;
+				?>
+				<?php
+			}
+			?>
+		</div>
+	</div>
+</div>

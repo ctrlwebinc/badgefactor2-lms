@@ -58,6 +58,10 @@
   margin: 0 0 1rem;
 }
 
+input[type=text].c-bf2__input {
+  margin-bottom: 2rem;
+}
+
 .c-bf2__btn {
   display: inline-block;
   padding: 10px 15px;

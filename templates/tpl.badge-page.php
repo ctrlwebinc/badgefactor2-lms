@@ -41,53 +41,50 @@ $course          = BadgeFactor2\Post_Types\BadgePage::get_course( $post->ID );
 
 ?>
 
-
-
-<?php if ( 1 === intval( get_query_var( 'form' ) ) ) : ?>
-	<?php include( Template::locate( 'partials/badge-request-form' ) ); ?>
-<?php else : ?>
-
 <main class="section-inner" <?php post_class(); ?> id="post-<?php the_ID(); ?>" role="main">
-	<article class="c-bf2__section c-bf2__single">
-		<header class="c-bf2__header">
-			<h1 class="c-bf2__title"><?php echo $badge->name; ?></h1>
-		</header>
-		<div class="c-bf2__body">
-			<h3 class="c-bf2__body__title"><?php echo __( 'Description', BF2_DATA['TextDomain'] ); ?></h3>
-			<p class="c-bf2__body__content">
-				<?php echo $badge_page->post_content; ?>
-			</p>
-			<h3 class="c-bf2__body__title"><?php echo __( "Critères d'obtentions", BF2_DATA['TextDomain'] ); ?></h3>
-			<p class="c-bf2__body__content">
-				<?php echo $badge_criteria ?>
-			</p>
-		</div>
-		<aside class="c-bf2__sidebar">
-			<div class="c-bf2__badge">
-				<div class="c-bf2__badge__inner">
-					<img class="c-bf2__badge__image" src="<?php echo $badge->image; ?>" alt="<?php echo $badge->name; ?>">
-					<h3 class="c-bf2__badge__title">
-						<?php echo __( 'Issued by', BF2_DATA['TextDomain'] ); ?>
-						<a target="_blank" href="<?php echo $issuer->url; ?>"><?php echo $issuer->name; ?></a>
-					</h3>
-					<div class="c-bf2__badge__actions">
-						<?php if ( $course ) : ?>
-							<div class="c-bf2__badge__action">
-								<?php if ( BadgeFactor2\Post_Types\Course::is_accessible() ) : ?>
-									<a class="c-bf2__btn" href="<?php echo get_permalink( $course ); ?>"><?php echo __( 'Take this course', BF2_DATA['TextDomain'] ); ?></a>
-								<?php elseif ( BadgeFactor2\Post_Types\Course::is_purchasable() ) : ?>
-									<a class="c-bf2__btn" href="<?php echo get_permalink( $course ); ?>"><?php echo __( 'Get this course', BF2_DATA['TextDomain'] ); ?></a>
-								<?php else : ?>
-									<?php //echo __( 'This course is not currently accessible.', BF2_DATA['TextDomain'] ); ?>
-								<?php endif; ?>
-							</div>
-						<?php endif; ?>
+	<?php if ( 1 === intval( get_query_var( 'form' ) ) ) : ?>
+		<?php include( Template::locate( 'partials/badge-request-form' ) ); ?>
+	<?php else : ?>
+		<article class="c-bf2__section c-bf2__single">
+			<header class="c-bf2__header">
+				<h1 class="c-bf2__title"><?php echo $badge->name; ?></h1>
+			</header>
+			<div class="c-bf2__body">
+				<h3 class="c-bf2__body__title"><?php echo __( 'Description', BF2_DATA['TextDomain'] ); ?></h3>
+				<p class="c-bf2__body__content">
+					<?php echo $badge_page->post_content; ?>
+				</p>
+				<h3 class="c-bf2__body__title"><?php echo __( "Critères d'obtentions", BF2_DATA['TextDomain'] ); ?></h3>
+				<p class="c-bf2__body__content">
+					<?php echo $badge_criteria ?>
+				</p>
+			</div>
+			<aside class="c-bf2__sidebar">
+				<div class="c-bf2__badge">
+					<div class="c-bf2__badge__inner">
+						<img class="c-bf2__badge__image" src="<?php echo $badge->image; ?>" alt="<?php echo $badge->name; ?>">
+						<h3 class="c-bf2__badge__title">
+							<?php echo __( 'Issued by', BF2_DATA['TextDomain'] ); ?>
+							<a target="_blank" href="<?php echo $issuer->url; ?>"><?php echo $issuer->name; ?></a>
+						</h3>
+						<div class="c-bf2__badge__actions">
+							<?php if ( $course ) : ?>
+								<div class="c-bf2__badge__action">
+									<?php if ( BadgeFactor2\Post_Types\Course::is_accessible() ) : ?>
+										<a class="c-bf2__btn" href="<?php echo get_permalink( $course ); ?>"><?php echo __( 'Take this course', BF2_DATA['TextDomain'] ); ?></a>
+									<?php elseif ( BadgeFactor2\Post_Types\Course::is_purchasable() ) : ?>
+										<a class="c-bf2__btn" href="<?php echo get_permalink( $course ); ?>"><?php echo __( 'Get this course', BF2_DATA['TextDomain'] ); ?></a>
+									<?php else : ?>
+										<?php //echo __( 'This course is not currently accessible.', BF2_DATA['TextDomain'] ); ?>
+									<?php endif; ?>
+								</div>
+							<?php endif; ?>
+						</div>
 					</div>
 				</div>
-			</div>
-		</aside>
-	</article>
+			</aside>
+		</article>
+	<?php endif; ?>
 </main>
-<?php endif; ?>
 <?php
 get_footer();
