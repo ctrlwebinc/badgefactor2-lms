@@ -1,5 +1,5 @@
 jQuery(document).ready(function($) {
-  $(document).on("submit", ".badge-request-form", function(e) {
+  $(document).on("submit", "#badge-request-form", function(e) {
     var $form = $(this);
     e.preventDefault();
     $.post(ajaxurl, $form.serialize(), function(response) {
