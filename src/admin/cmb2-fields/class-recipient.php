@@ -54,7 +54,12 @@ class Recipient {
 
 		$user = get_user_by( 'ID', $recipient_id );
 
-		echo sprintf( '<div style="margin-top: 6px">%s</div>', $user->user_nicename );
-		echo sprintf( '<input type="hidden" name="recipient" value="%s">', $recipient_id );
+		if ( $user ) {
+			echo sprintf( '<div style="margin-top: 6px"><a href="/wp-admin/user-edit.php?user_id=%d">%s</a></div>', $user->ID, $user->user_nicename );
+			echo sprintf( '<input type="hidden" name="recipient" value="%s">', $recipient_id );
+		} else {
+			echo __( 'User does not exist!', BF2_DATA['TextDomain'] );
+		}
+
 	}
 }

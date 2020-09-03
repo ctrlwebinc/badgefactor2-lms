@@ -51,15 +51,17 @@ class BadgeRequestApprover {
 	 */
 	public static function render_badge_request_approver( $field, $field_escaped_value, $field_object_id, $field_object_type, $field_type_object ) {
 		$badge_request_approver = $field_escaped_value;
-		$approver               = get_user_by( 'ID', $badge_request_approver );
-
 		if ( ! $badge_request_approver ) {
-			echo sprintf( '<div style="margin-top: 6px">%s</div>', __( 'Badge request not yet processed.' ) );
-		} else {
-			echo sprintf( '<div style="margin-top: 6px">%s</div>', $approver->user_nicename );
-
+			echo sprintf( '<div style="margin-top: 6px">%s</div>', __( 'Badge request not yet processed.', BF2_DATA['TextDomain'] ) );
 		}
-		echo sprintf( '<input type="hidden" name="approver" value="%s">', $badge_request_approver );
+		elseif ( 'auto-approved' === $badge_request_approver ) {
+			echo sprintf( '<div style="margin-top: 6px">%s</div>', __( 'auto-approved', BF2_DATA['TextDomain'] ) );
+			echo sprintf( '<input type="hidden" name="approver" value="%s">', $badge_request_approver );
+		} else {
+			$approver = get_user_by( 'ID', $badge_request_approver );
+			echo sprintf( '<div style="margin-top: 6px"><a href="/wp-admin/user-edit.php?user_id=%d">%s</a></div>', $approver->ID, $approver->user_nicename );
+			echo sprintf( '<input type="hidden" name="approver" value="%s">', $badge_request_approver );
+		}
 	}
 }
 

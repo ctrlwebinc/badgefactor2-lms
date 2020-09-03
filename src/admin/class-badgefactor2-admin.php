@@ -20,6 +20,7 @@
  * @package Badge_Factor_2
  *
  * @phpcs:disable WordPress.WP.I18n.NonSingularStringLiteralDomain
+ * @phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
  */
 
 namespace BadgeFactor2;
@@ -28,6 +29,7 @@ use BadgeFactor2\Admin\Lists\Assertions;
 use BadgeFactor2\Admin\Lists\Badges;
 use BadgeFactor2\Admin\Lists\Issuers;
 use BadgeFactor2\BadgrClient;
+use BadgeFactor2\Models\BadgeClass;
 use BadgeFactor2\Post_Types\BadgePage;
 
 /**
@@ -63,16 +65,27 @@ class BadgeFactor2_Admin {
 	 * @return void
 	 */
 	public static function init_hooks() {
+
+		// WordPress hooks.
 		add_filter( 'set-screen-option', array( BadgeFactor2_Admin::class, 'set_screen' ), 10, 3 );
 		add_action( 'cmb2_admin_init', array( BadgeFactor2_Admin::class, 'admin_init' ) );
 		add_action( 'admin_enqueue_scripts', array( BadgeFactor2_Admin::class, 'load_resources' ) );
 		add_action( 'admin_menu', array( BadgeFactor2_Admin::class, 'admin_menus' ) );
+		add_action( 'save_post_badge-page', array( BadgeFactor2_Admin::class, 'create_badge_chain' ), 10, 2 );
+		add_filter( 'pw_cmb2_field_select2_asset_path', array( BadgeFactor2_Admin::class, 'pw_cmb2_field_select2_asset_path' ), 10 );
+
+		// Ajax Hooks.
 		add_action( 'wp_ajax_bf2_filter_type', array( BadgeFactor2_Admin::class, 'ajax_filter_type' ) );
 		add_action( 'wp_ajax_bf2_filter_value', array( BadgeFactor2_Admin::class, 'ajax_filter_value' ) );
 		add_action( 'wp_ajax_approve_badge_request', array( BadgeFactor2_Admin::class, 'ajax_approve_badge_request' ) );
 		add_action( 'wp_ajax_reject_badge_request', array( BadgeFactor2_Admin::class, 'ajax_reject_badge_request' ) );
-		add_action( 'save_post_badge-page', array( BadgeFactor2_Admin::class, 'create_badge_chain' ), 10, 2 );
-		add_filter( 'pw_cmb2_field_select2_asset_path', array( BadgeFactor2_Admin::class, 'pw_cmb2_field_select2_asset_path' ), 10 );
+
+		// BadgeFactor2 Hooks.
+		add_action( 'auto_approve_badge_request', array( BadgeFactor2_Admin::class, 'auto_approve_badge_request' ), 10 );
+		add_action( 'approve_badge_request', array( BadgeFactor2_Admin::class, 'approve_badge_request' ), 10, 3 );
+		add_action( 'reject_badge_request', array( BadgeFactor2_Admin::class, 'reject_badge_request' ), 10, 4 );
+		add_action( 'badge_request_approval_confirmation_email', array( BadgeFactor2_Admin::class, 'badge_request_approval_confirmation_email' ), 10 );
+		add_action( 'badge_request_rejection_confirmation_email', array( BadgeFactor2_Admin::class, 'badge_request_rejection_confirmation_email' ), 10 );
 	}
 
 
@@ -435,6 +448,118 @@ class BadgeFactor2_Admin {
 		);
 
 		/**
+		 * Registers Emails settings page.
+		 */
+		$args = array(
+			'id'           => 'badgefactor2_emails_settings_page',
+			'menu_title'   => __( 'Emails', BF2_DATA['TextDomain'] ),
+			'object_types' => array( 'options-page' ),
+			'option_key'   => 'badgefactor2_emails_settings',
+			'parent_slug'  => 'badgefactor2',
+			'tab_group'    => 'badgefactor2',
+			'tab_title'    => __( 'Emails', BF2_DATA['TextDomain'] ),
+		);
+
+		// 'tab_group' property is supported in > 2.4.0.
+		if ( version_compare( CMB2_VERSION, '2.4.0' ) ) {
+			$args['display_cb'] = 'badgefactor2_options_display_with_tabs';
+		}
+
+		$emails_settings = new_cmb2_box( $args );
+
+		// Approver email - Badge Request.
+		$emails_settings->add_field(
+			array(
+				'name' => __( 'Badge Request - Email to approver', BF2_DATA['TextDomain'] ),
+				'desc' => __( 'This email will be sent to approvers when a user submits a badge request.', BF2_DATA['TextDomain'] ),
+				'id'   => 'badge_request_approver_email',
+				'type' => 'title',
+			)
+		);
+
+		$emails_settings->add_field(
+			array(
+				'name'    => __( 'Title', BF2_DATA['TextDomain'] ),
+				'id'      => 'badge_request_approver_email_subject',
+				'type'    => 'text',
+				'default' => 'A new badge request has been submitted.',
+			)
+		);
+
+		$emails_settings->add_field(
+			array(
+				'name'    => __( 'Body', BF2_DATA['TextDomain'] ),
+				'id'      => 'badge_request_approver_email_body',
+				'type'    => 'wysiwyg',
+				'default' => 'The badge $badge$ has been requested by user $user$. You can review it here: $link$.',
+			)
+		);
+
+		$emails_settings->add_field(
+			array(
+				'name' => __( 'Send auto-approved notifications?', BF2_DATA['TextDomain'] ),
+				'id'   => 'send_auto_approved_badge_request_approver_emails',
+				'type' => 'checkbox',
+			)
+		);
+
+		// Approval confirmation - Badge Request.
+		$emails_settings->add_field(
+			array(
+				'name' => __( 'Badge Request - Approval confirmation', BF2_DATA['TextDomain'] ),
+				'desc' => __( 'This email will be sent to a user when a badge request is approved.', BF2_DATA['TextDomain'] ),
+				'id'   => 'badge_request_approval_confirmation_email',
+				'type' => 'title',
+			)
+		);
+
+		$emails_settings->add_field(
+			array(
+				'name'    => __( 'Title', BF2_DATA['TextDomain'] ),
+				'id'      => 'badge_request_approval_confirmation_email_subject',
+				'type'    => 'text',
+				'default' => 'Your badge request has been approved !',
+			)
+		);
+
+		$emails_settings->add_field(
+			array(
+				'name'    => __( 'Body', BF2_DATA['TextDomain'] ),
+				'id'      => 'badge_request_approval_confirmation_email_body',
+				'type'    => 'wysiwyg',
+				'default' => 'Your request for the badge $badge$ has been approved. You can view it here: $link$.',
+			)
+		);
+
+		// Rejection confirmation - Badge Request.
+		$emails_settings->add_field(
+			array(
+				'name' => __( 'Badge Request - Rejection confirmation', BF2_DATA['TextDomain'] ),
+				'desc' => __( 'This email will be sent to a user when a badge request is rejected.', BF2_DATA['TextDomain'] ),
+				'id'   => 'badge_request_rejection_confirmation_email',
+				'type' => 'title',
+			)
+		);
+
+		$emails_settings->add_field(
+			array(
+				'name'    => __( 'Title', BF2_DATA['TextDomain'] ),
+				'id'      => 'badge_request_rejection_confirmation_email_subject',
+				'type'    => 'text',
+				'default' => 'Your badge request has been rejected.',
+			)
+		);
+
+		$emails_settings->add_field(
+			array(
+				'name'    => __( 'Body', BF2_DATA['TextDomain'] ),
+				'id'      => 'badge_request_rejection_confirmation_email_body',
+				'type'    => 'wysiwyg',
+				'default' => 'Your request for the badge $badge$ has been rejected. Here is the reason provided:<br/>$reason$<br/>You can resubmit a request here: $link$.',
+			)
+		);
+
+		/**
 		 * Registers Badgr settings page.
 		 */
 		$args = array(
@@ -565,6 +690,194 @@ class BadgeFactor2_Admin {
 
 
 	/**
+	 * Auto-approve badge request.
+	 *
+	 * @param int $badge_request_id Badge Request ID.
+	 * @return bool
+	 */
+	public static function auto_approve_badge_request( $badge_request_id ) {
+
+		$badge_request = get_post( $badge_request_id );
+		if ( ! $badge_request ) {
+			return false;
+		}
+
+		$badge_entity_id = get_post_meta( $badge_request_id, 'badge', true );
+		$badge_page      = BadgePage::get_by_badgeclass_id( $badge_entity_id );
+
+		if ( ! $badge_page ) {
+			return false;
+		}
+
+		$badge_approval_type = get_post_meta( $badge_page->ID, 'badge_approval_type', true );
+
+		if ( 'badge-request' === $badge_request->post_type &&
+			'auto-approved' === $badge_approval_type ) {
+
+			$recipient_id = get_post_meta( $badge_request_id, 'recipient', true );
+			$recipient    = get_user_by( 'ID', $recipient_id );
+
+			update_post_meta( $badge_request_id, 'status', 'granted' );
+			update_post_meta( $badge_request_id, 'approver', 'auto-approved' );
+			add_post_meta( $badge_request_id, 'dates', array( 'granted' => gmdate( 'Y-m-d H:i:s' ) ) );
+			BadgrProvider::add_assertion( $badge_entity_id, $recipient->user_email );
+
+			return true;
+		}
+		return false;
+	}
+
+
+	/**
+	 * Approve Badge Request
+	 *
+	 * @param WP_User $approver Approver user.
+	 * @param int     $badge_request_id Badge Request ID.
+	 * @param boolean $ajax Whether or not to return an ajax response.
+	 * @return bool|void
+	 */
+	public static function approve_badge_request( $approver, $badge_request_id, $ajax = false ) {
+
+		$response = array(
+			'status'  => 'fail',
+			'message' => '',
+		);
+
+		$badge_request = get_post( $badge_request_id );
+
+		if ( ! in_array( 'approver', $approver->roles, true ) && ! in_array( 'administrator', $approver->roles, true ) ) {
+			$response['message'] = __( 'You are not an approver on this website.', BF2_DATA['TextDomain'] );
+		} elseif ( ! $badge_request || 'badge-request' !== $badge_request->post_type ) {
+			$response['message'] = __( 'This request is invalid!', BF2_DATA['TextDomain'] );
+		} else {
+			$badge_entity_id = get_post_meta( $badge_request_id, 'badge', true );
+			$recipient_id    = get_post_meta( $badge_request_id, 'recipient', true );
+			$recipient       = get_user_by( 'ID', $recipient_id );
+
+			$badge_page = BadgePage::get_by_badgeclass_id( $badge_entity_id );
+			$approvers  = get_post_meta( $badge_page->ID, 'badge_request_approver', true );
+
+			if ( ! in_array( $approver->ID, $approvers, true ) && ! in_array( 'administrator', $approver->roles, true ) ) {
+				$response['message'] = __( 'You are not an approver for this badge.', BF2_DATA['TextDomain'] );
+			} else {
+				update_post_meta( $badge_request_id, 'status', 'granted' );
+				update_post_meta( $badge_request_id, 'approver', $approver->ID );
+				add_post_meta( $badge_request_id, 'dates', array( 'granted' => gmdate( 'Y-m-d H:i:s' ) ) );
+				BadgrProvider::add_assertion( $badge_entity_id, $recipient->user_email );
+				do_action( 'badge_request_approval_confirmation_email', $badge_request_id );
+				$response = array(
+					'status'  => 'success',
+					'message' => __( 'The badge request has been approved!', BF2_DATA['TextDomain'] ),
+				);
+			}
+		}
+
+		if ( $ajax ) {
+			wp_send_json( $response );
+		}
+		return 'success' === $response['status'];
+	}
+
+	/**
+	 * Reject Badge Request
+	 *
+	 * @param WP_User $approver Approver user.
+	 * @param int     $badge_request_id Badge Request ID.
+	 * @param string  $rejection_reason Rejection reason.
+	 * @param boolean $ajax Whether or not to return an ajax response.
+	 * @return bool|void
+	 */
+	public static function reject_badge_request( $approver, $badge_request_id, $rejection_reason = '', $ajax = false ) {
+		$response = array(
+			'status'  => 'fail',
+			'message' => '',
+		);
+
+		$badge_request = get_post( $badge_request_id );
+
+		if ( ! in_array( 'approver', $approver->roles, true ) && ! in_array( 'administrator', $approver->roles, true ) ) {
+			$response['message'] = __( 'You are not an approver on this website.', BF2_DATA['TextDomain'] );
+		} elseif ( ! $badge_request || 'badge-request' !== $badge_request->post_type ) {
+			$response['message'] = __( 'This request is invalid!', BF2_DATA['TextDomain'] );
+		} else {
+			$badge_entity_id = get_post_meta( $badge_request_id, 'badge', true );
+			$badge_page      = BadgePage::get_by_badgeclass_id( $badge_entity_id );
+			$approvers       = get_post_meta( $badge_page->ID, 'badge_request_approver', true );
+			if ( ! in_array( $approver->ID, $approvers, true ) && ! in_array( 'administrator', $approver->roles, true ) ) {
+				$response['message'] = __( 'You are not an approver for this badge.', BF2_DATA['TextDomain'] );
+			} else {
+				update_post_meta( $badge_request_id, 'status', 'rejected' );
+				update_post_meta( $badge_request_id, 'approver', $approver->ID );
+				update_post_meta( $badge_request_id, 'rejection_reason', $rejection_reason );
+				add_post_meta( $badge_request_id, 'dates', array( 'rejected' => gmdate( 'Y-m-d H:i:s' ) ) );
+				do_action( 'badge_request_rejection_confirmation_email', $badge_request_id );
+				$response = array(
+					'status'  => 'success',
+					'message' => __( 'The badge request has been rejected.', BF2_DATA['TextDomain'] ),
+				);
+			}
+		}
+		wp_send_json( $response );
+	}
+
+
+	public static function badge_request_approval_confirmation_email( $badge_request_id ) {
+		$badge_request = get_post( $badge_request_id );
+		if ( ! $badge_request ) {
+			return false;
+		}
+
+		$badge_entity_id = get_post_meta( $badge_request_id, 'badge', true );
+		$badge_page      = BadgePage::get_by_badgeclass_id( $badge_entity_id );
+		$badge           = BadgeClass::get( $badge_entity_id );
+
+		if ( ! $badge_page ) {
+			return false;
+		}
+
+		$recipient_id = get_post_meta( $badge_request_id, 'recipient', true );
+		$recipient    = get_user_by( 'ID', $recipient_id );
+
+		$email_subject = get_option( 'badge_request_approval_confirmation_email_subject', __( 'Your badge request has been approved !', BF2_DATA['TextDomain'] ) );
+		$email_body    = get_option( 'badge_request_approval_confirmation_email_body', __( 'Your request for the badge $badge$ has been approved. You can view it here: $link$.', BF2_DATA['TextDomain'] ) );
+		$email_body    = str_replace( '$badge$', $badge->name, $email_body );
+		$email_link    = get_site_url() . '#';
+		$email_body    = str_replace( '$link$', '<a href="' . $email_link . '">' . $email_link . '</a>', $email_body );
+
+		wp_mail( $recipient->user_email, $email_subject, $email_body, array( 'Content-Type: text/html; charset=UTF-8' ) );
+
+	}
+
+	public static function badge_request_rejection_confirmation_email( $badge_request_id ) {
+		$badge_request = get_post( $badge_request_id );
+		if ( ! $badge_request ) {
+			return false;
+		}
+
+		$badge_entity_id  = get_post_meta( $badge_request_id, 'badge', true );
+		$badge_page       = BadgePage::get_by_badgeclass_id( $badge_entity_id );
+		$badge            = BadgeClass::get( $badge_entity_id );
+		$rejection_reason = get_post_meta( $badge_request_id, 'rejection_reason', true );
+
+		if ( ! $badge_page ) {
+			return false;
+		}
+
+		$recipient_id = get_post_meta( $badge_request_id, 'recipient', true );
+		$recipient    = get_user_by( 'ID', $recipient_id );
+
+		$email_subject = get_option( 'badge_request_approval_confirmation_email_subject', __( 'Your badge request has been rejected.', BF2_DATA['TextDomain'] ) );
+		$email_body    = get_option( 'badge_request_approval_confirmation_email_body', __( 'Your request for the badge $badge$ has been rejected. Here is the reason provided:<br/>$reason$<br/>You can resubmit a request here: $link$.', BF2_DATA['TextDomain'] ) );
+		$email_body    = str_replace( '$badge$', $badge->name, $email_body );
+		$email_body    = str_replace( '$reason$', $rejection_reason, $email_body );
+		$email_link    = get_site_url() . '#';
+		$email_body    = str_replace( '$link$', '<a href="' . $email_link . '">' . $email_link . '</a>', $email_body );
+
+		wp_mail( $recipient->user_email, $email_subject, $email_body, array( 'Content-Type: text/html; charset=UTF-8' ) );
+	}
+
+
+	/**
 	 * Ajax filter type.
 	 *
 	 * @return void
@@ -633,45 +946,35 @@ class BadgeFactor2_Admin {
 		wp_send_json( $response );
 	}
 
+
+	/**
+	 * Receive Ajax badge request approval request.
+	 *
+	 * @return void
+	 */
 	public static function ajax_approve_badge_request() {
-		$response = array(
-			'status' => 'fail',
-		);
 
 		$current_user     = wp_get_current_user();
-		$badge_entity_id  = $_POST['badge_entity_id'];
-		$recipient_id     = $_POST['recipient_id'];
-		$recipient        = get_user_by( 'ID', $recipient_id );
 		$badge_request_id = $_POST['badge_request_id'];
-		$badge_page       = BadgePage::get_by_badgeclass_id( $badge_entity_id );
-		$approvers        = get_post_meta( $badge_page->ID, 'badge_request_approver' );
 
-		if ( ! in_array( 'approver', $current_user->roles ) && ! in_array( 'administrator', $current_user->roles ) ) {
-			$response['message'] = 'You are not an approver on this website.';
-		} elseif ( ! in_array( $current_user->ID, $approvers ) && ! in_array( 'administrator', $current_user->roles ) ) {
-			$response['message'] = 'You are not an approver for this badge.';
-		} else {
-			update_post_meta( $badge_request_id, 'status', 'granted' );
-			update_post_meta( $badge_request_id, 'approver', $current_user->ID );
-			add_post_meta( $badge_request_id, 'dates', array( 'granted' => gmdate( 'Y-m-d H:i:s' ) ) );
-			BadgrProvider::add_assertion( $badge_entity_id, $recipient->user_email );
-			$response = array(
-				'status'  => 'success',
-				'message' => 'The badge request has been approved!',
-			);
-		}
-		wp_send_json( $response );
-
+		do_action( 'approve_badge_request', $current_user, $badge_request_id, true );
 	}
 
+
+	/**
+	 * Receive Ajax badge request rejection request.
+	 *
+	 * @return void
+	 */
 	public static function ajax_reject_badge_request() {
-		$response = array(
-			'status'  => 'success',
-			'message' => 'The badge request has been rejected.',
-		);
-		wp_send_json( $response );
 
+		$current_user     = wp_get_current_user();
+		$badge_request_id = $_POST['badge_request_id'];
+		$rejection_reason = $_POST['rejection_reason'];
+
+		do_action( 'reject_badge_request', $current_user, $badge_request_id, $rejection_reason, true );
 	}
+
 
 	/**
 	 * CMB2 Select2 field asset path.

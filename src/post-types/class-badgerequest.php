@@ -21,11 +21,14 @@
  *
  * @phpcs:disable WordPress.WP.I18n.NonSingularStringLiteralDomain
  * @phpcs:disable WordPress.WP.I18n.NonSingularStringLiteralContext
+ * @phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
+ * @phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound
  */
 
 namespace BadgeFactor2\Post_Types;
 
 use BadgeFactor2\Helpers\Template;
+use BadgeFactor2\Models\BadgeClass;
 
 /**
  * Badge Request post type.
@@ -53,11 +56,20 @@ class BadgeRequest {
 	 * @return void
 	 */
 	public static function init_hooks() {
+
+		// WordPress Action Hooks.
 		add_action( 'init', array( BadgeRequest::class, 'init' ), 10 );
 		add_action( 'admin_init', array( BadgeRequest::class, 'add_capabilities' ), 10 );
-		add_filter( 'post_updated_messages', array( BadgeRequest::class, 'updated_messages' ), 10 );
 		add_action( 'cmb2_admin_init', array( BadgeRequest::class, 'register_cpt_metaboxes' ), 10 );
 		add_action( 'save_post_' . self::$slug, array( BadgeRequest::class, 'update_badge_request' ), 10, 3 );
+		add_action( 'manage_' . self::$slug . '_posts_custom_column', array( BadgeRequest::class, 'admin_columns' ), 10, 3 );
+
+		// WordPress Filter Hooks.
+		add_filter( 'manage_' . self::$slug . '_posts_columns', array( BadgeRequest::class, 'filter_admin_columns' ), 10 );
+		add_filter( 'post_updated_messages', array( BadgeRequest::class, 'updated_messages' ), 10 );
+
+		// Ajax Hooks.
+		add_action( 'wp_ajax_submit_badge_request_form', array( BadgeRequest::class, 'ajax_badge_request' ) );
 	}
 
 
@@ -287,11 +299,26 @@ class BadgeRequest {
 
 		$cmb->add_field(
 			array(
-				'id'         => 'rejection_reason',
-				'name'       => __( 'Rejection Reason', BF2_DATA['TextDomain'] ),
-				'type'       => 'badge_request_rejection_reason',
+				'id'   => 'rejection_reason',
+				'name' => __( 'Rejection Reason', BF2_DATA['TextDomain'] ),
+				'type' => 'badge_request_rejection_reason',
 			)
 		);
+	}
+
+	public static function filter_admin_columns( $columns ) {
+		unset( $columns['date'] );
+		$columns['status'] = __( 'Status', BF2_DATA['TextDomain'] );
+		$columns['date']   = __( 'Date', BF2_DATA['TextDomain'] );
+		return $columns;
+	}
+
+
+	public static function admin_columns( $column, $post_id ) {
+		if ( 'status' === $column ) {
+			$status = get_post_meta( $post_id, 'status', true );
+			echo $status;
+		}
 	}
 
 
@@ -316,14 +343,16 @@ class BadgeRequest {
 	/**
 	 * Return all Badge Requests for a specified BadgeClass and a specified User.
 	 *
-	 * @param string $badgeclass_id BadgeClass Entity ID.
-	 * @param int    $user_id User ID.
+	 * @param string      $badgeclass_id BadgeClass Entity ID.
+	 * @param int         $user_id User ID.
+	 * @param int         $nb Number of requests.
+	 * @param string|null $status Status or null if all statuses.
 	 * @return array
 	 */
-	public static function all_for_badgeclass_for_user( $badgeclass_id, $user_id ) {
-		$args  = array(
+	public static function get_for_badgeclass_for_user( $badgeclass_id, $user_id, $nb = 1, $status = null ) {
+		$args = array(
 			'post_type'   => self::$slug,
-			'numberposts' => -1,
+			'numberposts' => $nb,
 			'post_status' => 'publish',
 			'meta_query'  => array(
 				array(
@@ -338,8 +367,28 @@ class BadgeRequest {
 				),
 			),
 		);
+		if ( $status ) {
+			$args['meta_query'][] = array(
+				'key'     => 'status',
+				'value'   => $status,
+				'compare' => '=',
+			);
+		}
 		$posts = get_posts( $args );
 		return $posts;
+	}
+
+
+	/**
+	 * Return all Badge Requests for a specified BadgeClass and a specified User.
+	 *
+	 * @param string      $badgeclass_id BadgeClass Entity ID.
+	 * @param int         $user_id User ID.
+	 * @param string|null $status Status or null if all statuses.
+	 * @return array
+	 */
+	public static function all_for_badgeclass_for_user( $badgeclass_id, $user_id, $status = null ) {
+		return self::get_for_badgeclass_for_user( $badgeclass_id, $user_id, -1, $status );
 	}
 
 
@@ -353,15 +402,113 @@ class BadgeRequest {
 		include( Template::locate( 'tpl.badge-requests' ) );
 	}
 
-	public static function user_can_request_badgeclass( $badgeclass_id, $user_id ) {
-		// FIXME Must validate whether or not user can request a badge.
-		return true;
+
+	/**
+	 * Manage ajax badge requests from basic forms.
+	 *
+	 * @return void
+	 */
+	public static function ajax_badge_request() {
+		$response     = array(
+			'success' => false,
+			'message' => __( 'Something went wrong...', BF2_DATA['TextDomain'] ),
+		);
+		$status_code  = 400;
+		$current_user = wp_get_current_user();
+		$badge_id     = $_POST['badge_id'] ?? null;
+
+		if ( $badge_id && $current_user && self::user_can_request_badge( $badge_id, $current_user->ID ) ) {
+			$badge   = BadgeClass::get( $badge_id );
+			$content = $_POST['content'];
+			$type    = $_POST['type'];
+
+			if ( $badge ) {
+				// Create a badge request.
+
+				$approvers_emails = BadgePage::get_approvers_emails_by_badgeclass_id( $badge_id );
+
+				$badge_request_id = wp_insert_post(
+					array(
+						'post_type'      => 'badge-request',
+						'post_title'     => sprintf( '%s - %s - %s', $current_user->user_nicename, $badge->name, gmdate( 'Y-m-d H:i:s' ) ),
+						'post_content'   => '',
+						'post_author'    => $current_user,
+						'post_status'    => 'publish',
+						'comment_status' => 'closed',
+						'ping_status'    => 'closed',
+					)
+				);
+				if ( $badge_request_id ) {
+					add_post_meta( $badge_request_id, 'badge', $badge_id );
+					add_post_meta( $badge_request_id, 'type', $type );
+					add_post_meta( $badge_request_id, 'content', $content );
+					add_post_meta( $badge_request_id, 'recipient', $current_user->ID );
+					add_post_meta( $badge_request_id, 'status', 'requested' );
+					add_post_meta( $badge_request_id, 'dates', array( 'requested' => gmdate( 'Y-m-d H:i:s' ) ) );
+
+					$approvers_emails = BadgePage::get_approvers_emails_by_badgeclass_id( $badge_id );
+					$email_subject    = get_option( 'badge_request_approver_email_subject', __( 'A new badge request has been submitted.', BF2_DATA['TextDomain'] ) );
+					$email_body       = get_option( 'badge_request_approver_email_body', __( 'The badge $badge$ has been requested by user $user$. You can review it here: $link$.', BF2_DATA['TextDomain'] ) );
+					$email_body       = str_replace( '$badge$', $badge->name, $email_body );
+					$user_link        = get_site_url() . '/wp-admin/user-edit.php?user_id=' . $current_user->ID;
+					$email_body       = str_replace( '$user$', '<a href="' . $user_link . '">' . $current_user->user_nicename . '</a>', $email_body );
+					$email_link       = get_site_url() . '/wp-admin/post.php?post=' . $badge_request_id . '&action=edit';
+					$email_body       = str_replace( '$link$', '<a href="' . $email_link . '">' . $email_link . '</a>', $email_body );
+
+					if ( BadgePage::is_auto_approved( $badge_id ) ) {
+						do_action( 'auto_approve_badge_request', $badge_request_id );
+					}
+
+					$email_settings = get_option( 'badgefactor2_emails_settings' );
+					if ( ! BadgePage::is_auto_approved( $badge_id ) || (
+						isset( $email_settings['send_auto_approved_badge_request_approver_emails'] ) &&
+							'on' === $email_settings['send_auto_approved_badge_request_approver_emails']
+						)
+					) {
+						wp_mail( $approvers_emails, $email_subject, $email_body, array( 'Content-Type: text/html; charset=UTF-8' ) );
+					}
+
+					$status_code = 201;
+					$response    = array(
+						'success' => true,
+						'message' => __( 'Your request has been submitted!', BF2_DATA['TextDomain'] ),
+					);
+				}
+			}
+		}
+
+		wp_send_json( $response, $status_code );
 	}
 
+
+	/**
+	 * Check if user can request a badge.
+	 *
+	 * @param string $badgeclass_id BadgeClass Entity ID.
+	 * @param int    $user_id User ID.
+	 * @return bool
+	 */
+	public static function user_can_request_badge( $badgeclass_id, $user_id ) {
+		// FIXME Must validate whether or not user can request a badge.
+		$user       = get_user_by( 'ID', $user_id );
+		$badgeclass = BadgeClass::get( $badgeclass_id );
+		$can        = isset( $user->ID ) && $badgeclass;
+
+		return apply_filters( 'user_can_request_badge', $can, $user_id );
+	}
+
+
+	/**
+	 * Update Badge Request.
+	 *
+	 * @param int     $post_id Badge Request ID.
+	 * @param WP_Post $post Post.
+	 * @param bool    $update Whether or not this is an update.
+	 * @return void
+	 */
 	public static function update_badge_request( $post_id, $post, $update ) {
 		if ( $update ) {
 			$status = get_post_meta( $post_id, 'status', true );
-			$reason = get_post_meta( $post_id, 'rejection_reason', true );
 			$dates  = get_post_meta( $post_id, 'dates' );
 
 			$dates = array_reverse( $dates );
@@ -373,6 +520,23 @@ class BadgeRequest {
 		}
 	}
 
-	
 
+	public static function is_in_progress( $badgeclass_id ) {
+		$badgeclass   = BadgeClass::get( $badgeclass_id );
+		$current_user = wp_get_current_user();
+		return ! empty( self::get_for_badgeclass_for_user( $badgeclass_id, $current_user->ID, 1, 'requested' ) );
+	}
+
+
+	public static function is_granted( $badgeclass_id ) {
+		$badgeclass   = BadgeClass::get( $badgeclass_id );
+		$current_user = wp_get_current_user();
+		return ! empty( self::get_for_badgeclass_for_user( $badgeclass_id, $current_user->ID, 1, 'granted' ) );
+	}
+
+	public static function is_rejected( $badgeclass_id ) {
+		$badgeclass   = BadgeClass::get( $badgeclass_id );
+		$current_user = wp_get_current_user();
+		return ! empty( self::get_for_badgeclass_for_user( $badgeclass_id, $current_user->ID, 1, 'rejected' ) );
+	}
 }

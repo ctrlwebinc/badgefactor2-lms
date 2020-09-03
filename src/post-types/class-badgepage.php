@@ -696,6 +696,12 @@ class BadgePage {
 		return array();
 	}
 
+	/**
+	 * Get BadgePage by BadgeClass Entity ID.
+	 *
+	 * @param int $entity_id Entity ID.
+	 * @return WP_Post|bool
+	 */
 	public static function get_by_badgeclass_id( $entity_id ) {
 		$query = new \WP_Query(
 			array(
@@ -711,4 +717,45 @@ class BadgePage {
 		}
 		return false;
 	}
+
+
+	/**
+	 * Get Badge Approvers by BadgeClass Entity ID.
+	 *
+	 * @param string $entity_id Entity ID.
+	 * @return WP_Post|bool
+	 */
+	public static function get_approvers_emails_by_badgeclass_id( $entity_id ) {
+
+		$badge_page = self::get_by_badgeclass_id( $entity_id );
+		if ( $badge_page ) {
+			$approvers = get_post_meta( $badge_page->ID, 'badge_request_approver', true );
+			$emails    = array();
+
+			foreach ( $approvers as $approver ) {
+				$user                        = get_userdata( $approver );
+				$emails[ $user->user_email ] = $user->user_email;
+			}
+
+			return join( ',', array_values( $emails ) );
+		}
+		return false;
+
+	}
+
+
+	/**
+	 * Check whether or not a badge is auto-approved.
+	 *
+	 * @param string $entity_id Entity ID.
+	 * @return boolean|null
+	 */
+	public static function is_auto_approved( $entity_id ) {
+		$badge_page = self::get_by_badgeclass_id( $entity_id );
+		if ( $badge_page ) {
+			return 'auto-approved' === get_post_meta( $badge_page->ID, 'badge_approval_type', true );
+		}
+		return null;
+	}
+
 }

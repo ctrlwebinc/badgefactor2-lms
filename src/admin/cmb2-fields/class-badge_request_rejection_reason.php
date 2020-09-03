@@ -52,9 +52,12 @@ class BadgeRequestRejectionReason {
 	public static function render_badge_request_rejection_reason( $field, $field_escaped_value, $field_object_id, $field_object_type, $field_type_object ) {
 		$badge_request_rejection_reason = $field_escaped_value;
 
-		echo $field_type_object->input( array( 'type' => 'text' ) );
-		echo sprintf( '<button data-confirm="%s" class="button button-primary" id="reject-badge">%s</button>', __( 'Reject this badge request?', BF2_DATA['TextDomain'] ), __( 'Submit', BF2_DATA['TextDomain'] ) );
-		//echo sprintf( '<input type="hidden" name="status" value="%s">', $badge_request_rejection_reason );
+		if ( $field_escaped_value ) {
+			echo sprintf( '<div style="margin-top: 6px">%s</div>', $field_escaped_value );
+		} else {
+			echo $field_type_object->textarea();
+			echo sprintf( '<button data-confirm="%s" class="button button-primary" id="reject-badge">%s</button>', __( 'Reject this badge request?', BF2_DATA['TextDomain'] ), __( 'Submit', BF2_DATA['TextDomain'] ) );
+		}
 	}
 }
 

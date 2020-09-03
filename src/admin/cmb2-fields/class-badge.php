@@ -57,7 +57,11 @@ class Badge {
 
 		$badge = BadgeClass::get( $badge_id );
 
-		echo sprintf( '<div style="margin-top: 6px">%s</div>', $badge->name );
-		echo sprintf( '<input type="hidden" name="badge" value="%s">', $badge->entityId );
+		if ( $badge ) {
+			echo sprintf( '<div style="margin-top: 6px"><a href="/wp-admin/admin.php?page=badges&action=edit&entity_id=%s">%s</a></div>', $badge->entityId, $badge->name );
+			echo sprintf( '<input type="hidden" name="badge" value="%s">', $badge->entityId );
+		} else {
+			echo __( 'Badgr connection inactive!', BF2_DATA['TextDomain'] );
+		}
 	}
 }
