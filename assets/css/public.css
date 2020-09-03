@@ -17,32 +17,58 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-/*
- * Badge Factor 2
- * Copyright (C) 2019 ctrlweb
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
- */
+.c-bf2 {
+  --text-main-color: black;
+}
 
-.btn {
+.c-bf2__list__item {
+  --items-per-line-mobile: 1;
+  --items-per-line-tablet: 4;
+  --items-per-line-desktop: 4;
+}
+
+.c-bf2__badge {
+  --badge-shadow: 0 3px 3px -2px rgba(0,0,0,.2),0 3px 4px 0 rgba(0,0,0,.14),0 1px 8px 0 rgba(0,0,0,.12);
+  --badge-border: 1px solid #eaeaea;
+  --badge-border-radius: 5px;
+  --badge-background: white;
+  --badge-text-color: black;
+}
+
+.c-bf2__btn {
+  --button-text-color: white;
+  --button-background: #ce3a52;
+}
+
+.c-bf2__single {
+  --sidebar-position-mobile: 1;
+  --sidebar-position-desktop: 2;
+}
+
+.c-bf2__title {
+  margin-bottom: 2rem;
+}
+
+.c-bf2__section {
+  padding: 0rem 0 10rem;
+}
+
+.c-bf2__section__title {
+  padding: 0;
+  margin: 0 0 1rem;
+}
+
+input[type=text].c-bf2__input {
+  margin-bottom: 2rem;
+}
+
+.c-bf2__btn {
   display: inline-block;
   padding: 10px 15px;
   border-radius: 4px;
   color: black;
-  background-color: #ce3a52;
-  color: white;
+  background: var(--button-background);
+  color: var(--button-text-color);
   text-decoration: none;
   font-weight: bold;
   text-transform: uppercase;
@@ -51,7 +77,7 @@
           box-shadow: 0 3px 3px -2px rgba(0, 0, 0, 0), 0 3px 4px 0 rgba(0, 0, 0, 0), 0 1px 8px 0 rgba(0, 0, 0, 0);
 }
 
-.btn:hover {
+.c-bf2__btn:hover {
   -webkit-box-shadow: 0 3px 3px -2px rgba(0, 0, 0, 0.2), 0 3px 4px 0 rgba(0, 0, 0, 0.14), 0 1px 8px 0 rgba(0, 0, 0, 0.12);
           box-shadow: 0 3px 3px -2px rgba(0, 0, 0, 0.2), 0 3px 4px 0 rgba(0, 0, 0, 0.14), 0 1px 8px 0 rgba(0, 0, 0, 0.12);
   -webkit-transition: -webkit-box-shadow 0.5s ease-out;
@@ -61,57 +87,11 @@
   transition: box-shadow 0.5s ease-out, -webkit-box-shadow 0.5s ease-out;
 }
 
-/*
- * Badge Factor 2
- * Copyright (C) 2019 ctrlweb
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
- */
-
-.badges-page {
-  padding-bottom: 10rem;
-}
-
-.badges-page .badges-title {
-  margin-bottom: 20px;
-}
-
-.badges-page .badges-category {
-  padding: 0rem 0 10rem;
-}
-
-.badges-page .badges-category .badges-category-title {
-  padding: 0;
-  margin: 0 0 1rem;
-}
-
-.badges-page .badges-category .badges-category-items {
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -ms-flex-wrap: wrap;
-      flex-wrap: wrap;
-}
-
-.badges-page .badges-category .badges-category-items .badge {
+.c-bf2__badge {
   padding: 2rem;
-  -ms-flex-preferred-size: 20%;
-      flex-basis: 20%;
 }
 
-.badges-page .badges-category .badges-category-items .badge .badge-inner {
+.c-bf2__badge__inner {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -124,135 +104,104 @@
           align-items: center;
   height: 100%;
   width: 100%;
-  -webkit-box-shadow: 0 3px 3px -2px rgba(0, 0, 0, 0.2), 0 3px 4px 0 rgba(0, 0, 0, 0.14), 0 1px 8px 0 rgba(0, 0, 0, 0.12);
-          box-shadow: 0 3px 3px -2px rgba(0, 0, 0, 0.2), 0 3px 4px 0 rgba(0, 0, 0, 0.14), 0 1px 8px 0 rgba(0, 0, 0, 0.12);
-  border: 1px solid #eaeaea;
-  border-radius: 5px;
+  -webkit-box-shadow: var(--badge-shadow);
+          box-shadow: var(--badge-shadow);
+  border: var(--badge-border);
+  border-radius: var(--badge-border-radius);
   padding: 3rem 1.3rem;
-  background: white;
+  background: var(--badge-background);
   text-decoration: none;
 }
 
-.badges-page .badges-category .badges-category-items .badge .badge-inner:hover {
-  -webkit-box-shadow: 0 6px 7px -4px rgba(0, 0, 0, 0.2), 0 11px 15px 1px rgba(0, 0, 0, 0.14), 0 4px 20px 3px rgba(0, 0, 0, 0.12);
-          box-shadow: 0 6px 7px -4px rgba(0, 0, 0, 0.2), 0 11px 15px 1px rgba(0, 0, 0, 0.14), 0 4px 20px 3px rgba(0, 0, 0, 0.12);
-  -webkit-transition: -webkit-box-shadow 0.5s ease-out;
-  transition: -webkit-box-shadow 0.5s ease-out;
-  -o-transition: box-shadow 0.5s ease-out;
-  transition: box-shadow 0.5s ease-out;
-  transition: box-shadow 0.5s ease-out, -webkit-box-shadow 0.5s ease-out;
-}
-
-.badges-page .badges-category .badges-category-items .badge .badge-inner .badge-image {
+.c-bf2__badge__image {
   height: auto;
   max-width: 100%;
   margin-bottom: 0.9rem;
 }
 
-.badges-page .badges-category .badges-category-items .badge .badge-inner .badge-title {
+.c-bf2__badge__title {
   font-size: 1.8rem;
   margin: 0;
   text-align: center;
 }
 
-/*
- * Badge Factor 2
- * Copyright (C) 2019 ctrlweb
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
- */
+.c-bf2__badge__actions {
+  margin-top: 2rem;
+}
 
-.badge-page .badge,
-.course .badge {
+.c-bf2__list__items {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
 }
 
-.badge-page .badge .content,
-.course .badge .content {
-  -ms-flex-preferred-size: 70%;
-      flex-basis: 70%;
-  padding-right: 25px;
+.c-bf2__list__item {
+  -ms-flex-preferred-size: calc(100% / var(--items-per-line-mobile));
+      flex-basis: calc(100% / var(--items-per-line-mobile));
 }
 
-.badge-page .badge .content .badge-name,
-.course .badge .content .badge-name {
-  margin: 0;
+@media screen and (min-width: 768px) {
+  .c-bf2__list__item {
+    -ms-flex-preferred-size: calc(100% / var(--items-per-line-tablet));
+        flex-basis: calc(100% / var(--items-per-line-tablet));
+  }
+}
+
+@media screen and (min-width: 1024px) {
+  .c-bf2__list__item {
+    -ms-flex-preferred-size: calc(100% / var(--items-per-line-desktop));
+        flex-basis: calc(100% / var(--items-per-line-desktop));
+  }
+}
+
+.c-bf2__single {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
-  -webkit-box-orient: vertical;
-  -webkit-box-direction: normal;
-      -ms-flex-flow: column;
-          flex-flow: column;
-  margin-bottom: 20px;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
 }
 
-.badge-page .badge .content .badge-name .badge-pre-title,
-.course .badge .content .badge-name .badge-pre-title {
-  font-size: 3.2rem;
-  letter-spacing: normal;
+.c-bf2__single .c-bf2__header {
+  -ms-flex-preferred-size: 100%;
+      flex-basis: 100%;
 }
 
-.badge-page .badge .sidebar,
-.course .badge .sidebar {
-  min-width: 330px;
-  -ms-flex-preferred-size: 30%;
-      flex-basis: 30%;
-  padding-left: 25px;
+.c-bf2__single .c-bf2__body {
+  -ms-flex-preferred-size: 100%;
+      flex-basis: 100%;
+  -webkit-box-ordinal-group: var(--sidebar-position-desktop);
+      -ms-flex-order: var(--sidebar-position-desktop);
+          order: var(--sidebar-position-desktop);
 }
 
-.badge-page .badge .sidebar .badge-container,
-.course .badge .sidebar .badge-container {
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-orient: vertical;
-  -webkit-box-direction: normal;
-      -ms-flex-direction: column;
-          flex-direction: column;
-  -webkit-box-pack: center;
-      -ms-flex-pack: center;
-          justify-content: center;
-  -webkit-box-align: center;
-      -ms-flex-align: center;
-          align-items: center;
-  text-align: center;
-  -webkit-box-shadow: 0 3px 3px -2px rgba(0, 0, 0, 0.2), 0 3px 4px 0 rgba(0, 0, 0, 0.14), 0 1px 8px 0 rgba(0, 0, 0, 0.12);
-          box-shadow: 0 3px 3px -2px rgba(0, 0, 0, 0.2), 0 3px 4px 0 rgba(0, 0, 0, 0.14), 0 1px 8px 0 rgba(0, 0, 0, 0.12);
-  border: 1px solid #eaeaea;
-  border-radius: 15px;
-  padding: 4rem 3rem;
-  background: white;
-  margin-top: 35px;
+@media screen and (min-width: 1024px) {
+  .c-bf2__single .c-bf2__body {
+    -ms-flex-preferred-size: 70%;
+        flex-basis: 70%;
+    -webkit-box-ordinal-group: var(--sidebar-position-mobile);
+        -ms-flex-order: var(--sidebar-position-mobile);
+            order: var(--sidebar-position-mobile);
+  }
 }
 
-.badge-page .badge .sidebar .badge-container .badge-image,
-.course .badge .sidebar .badge-container .badge-image {
-  margin-bottom: 20px;
+.c-bf2__single .c-bf2__sidebar {
+  -ms-flex-preferred-size: 100%;
+      flex-basis: 100%;
+  -webkit-box-ordinal-group: var(--sidebar-position-mobile);
+      -ms-flex-order: var(--sidebar-position-mobile);
+          order: var(--sidebar-position-mobile);
 }
 
-.badge-page .badge .sidebar .badge-container .badge-issued-title,
-.course .badge .sidebar .badge-container .badge-issued-title {
-  font-size: 2.3rem;
-  margin: 0 0 30px;
-}
-
-.badge-page .badge .sidebar .badge-container .badge-issued-title a,
-.course .badge .sidebar .badge-container .badge-issued-title a {
-  text-decoration: none;
+@media screen and (min-width: 1024px) {
+  .c-bf2__single .c-bf2__sidebar {
+    -ms-flex-preferred-size: 30%;
+        flex-basis: 30%;
+    -webkit-box-ordinal-group: var(--sidebar-position-desktop);
+        -ms-flex-order: var(--sidebar-position-desktop);
+            order: var(--sidebar-position-desktop);
+  }
 }
 

@@ -1,0 +1,14 @@
+.c-bf2 {
+    &__title {
+        margin-bottom: 2rem;
+    }
+
+    &__section {
+        padding: 0rem 0 10rem;
+
+        &__title {
+            padding: 0;
+            margin: 0 0 1rem;
+        }
+    }
+}

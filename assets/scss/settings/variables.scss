@@ -1,0 +1,27 @@
+.c-bf2 {
+    --text-main-color: black;
+}
+
+.c-bf2__list__item {
+    --items-per-line-mobile: 1;
+    --items-per-line-tablet: 4;
+    --items-per-line-desktop: 4;
+}
+
+.c-bf2__badge {
+    --badge-shadow: 0 3px 3px -2px rgba(0,0,0,.2),0 3px 4px 0 rgba(0,0,0,.14),0 1px 8px 0 rgba(0,0,0,.12);
+    --badge-border: 1px solid #eaeaea;
+    --badge-border-radius: 5px;
+    --badge-background: white;
+    --badge-text-color: black;
+}
+
+.c-bf2__btn {
+    --button-text-color: white;
+    --button-background: #ce3a52;
+}
+
+.c-bf2__single {
+    --sidebar-position-mobile: 1;
+    --sidebar-position-desktop: 2;
+}

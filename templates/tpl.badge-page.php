@@ -41,60 +41,50 @@ $course          = BadgeFactor2\Post_Types\BadgePage::get_course( $post->ID );
 
 ?>
 
-
-
-<?php if ( 1 === intval( get_query_var( 'form' ) ) ) : ?>
-	<?php include( Template::locate( 'partials/badge-request-form' ) ); ?>
-<?php else : ?>
-
-<main <?php post_class(); ?> id="post-<?php the_ID(); ?> site-content" role="main">
-	<section id="primary" class="section-inner">
-		<div id="badge" class="badge">
-			<div class="content">
-				<h1 class="badge-name">
-					<span class="badge-pre-title"><?php echo $badge->entityType; ?></span>
-					<span class="badge-title"><?php echo $badge->name; ?></span>
-				</h1>
-				<div class="badge-container">
-					<h3>Description</h3>
-					<p class="badge-description">
-						<?php echo $badge_page->post_content; ?>
-					</p>
-					<h3>Critères d'obtentions</h3>
-					<p class="badge-criteria">
-						<?php echo $badge_criteria ?>
-					</p>
-				</div>
+<main class="section-inner" <?php post_class(); ?> id="post-<?php the_ID(); ?>" role="main">
+	<?php if ( 1 === intval( get_query_var( 'form' ) ) ) : ?>
+		<?php include( Template::locate( 'partials/badge-request-form' ) ); ?>
+	<?php else : ?>
+		<article class="c-bf2__section c-bf2__single">
+			<header class="c-bf2__header">
+				<h1 class="c-bf2__title"><?php echo $badge->name; ?></h1>
+			</header>
+			<div class="c-bf2__body">
+				<h3 class="c-bf2__body__title"><?php echo __( 'Description', BF2_DATA['TextDomain'] ); ?></h3>
+				<p class="c-bf2__body__content">
+					<?php echo $badge_page->post_content; ?>
+				</p>
+				<h3 class="c-bf2__body__title"><?php echo __( "Critères d'obtentions", BF2_DATA['TextDomain'] ); ?></h3>
+				<p class="c-bf2__body__content">
+					<?php echo $badge_criteria ?>
+				</p>
 			</div>
-			<div class="sidebar">
-				<div class="badge-container">
-					<img class="badge-image" src="<?php echo $badge->image; ?>" alt="<?php echo $badge->name; ?>">
-					<div class="badge-issued">
-						<h3 class="badge-issued-title">
+			<aside class="c-bf2__sidebar">
+				<div class="c-bf2__badge">
+					<div class="c-bf2__badge__inner">
+						<img class="c-bf2__badge__image" src="<?php echo $badge->image; ?>" alt="<?php echo $badge->name; ?>">
+						<h3 class="c-bf2__badge__title">
 							<?php echo __( 'Issued by', BF2_DATA['TextDomain'] ); ?>
 							<a target="_blank" href="<?php echo $issuer->url; ?>"><?php echo $issuer->name; ?></a>
 						</h3>
+						<div class="c-bf2__badge__actions">
+							<?php if ( $course ) : ?>
+								<div class="c-bf2__badge__action">
+									<?php if ( BadgeFactor2\Post_Types\Course::is_accessible() ) : ?>
+										<a class="c-bf2__btn" href="<?php echo get_permalink( $course ); ?>"><?php echo __( 'Take this course', BF2_DATA['TextDomain'] ); ?></a>
+									<?php elseif ( BadgeFactor2\Post_Types\Course::is_purchasable() ) : ?>
+										<a class="c-bf2__btn" href="<?php echo get_permalink( $course ); ?>"><?php echo __( 'Get this course', BF2_DATA['TextDomain'] ); ?></a>
+									<?php else : ?>
+										<?php //echo __( 'This course is not currently accessible.', BF2_DATA['TextDomain'] ); ?>
+									<?php endif; ?>
+								</div>
+							<?php endif; ?>
+						</div>
 					</div>
-					
-					<div class="badge-actions">
-						<?php if ( $course ) : ?>
-							<div class="badge-actions-course">
-								<?php if ( BadgeFactor2\Post_Types\Course::is_accessible() ) : ?>
-									<a class="btn" href="<?php echo get_permalink( $course ); ?>"><?php echo __( 'Take this course', BF2_DATA['TextDomain'] ); ?></a>
-								<?php elseif ( BadgeFactor2\Post_Types\Course::is_purchasable() ) : ?>
-									<a class="btn" href="<?php echo get_permalink( $course ); ?>"><?php echo __( 'Get this course', BF2_DATA['TextDomain'] ); ?></a>
-								<?php else : ?>
-									<?php //echo __( 'This course is not currently accessible.', BF2_DATA['TextDomain'] ); ?>
-								<?php endif; ?>
-							</div>
-						<?php endif; ?>
-					</div>
-					
 				</div>
-			</div>
-		</div>
-	</section>
+			</aside>
+		</article>
+	<?php endif; ?>
 </main>
-<?php endif; ?>
 <?php
 get_footer();

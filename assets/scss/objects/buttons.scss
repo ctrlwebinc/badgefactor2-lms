@@ -1,10 +1,10 @@
-.btn {
+.c-bf2__btn {
     display: inline-block;
     padding: 10px 15px;
     border-radius: 4px;
     color: black;
-    background-color: #ce3a52;
-    color: white;
+    background: var(--button-background);
+    color: var(--button-text-color);
     text-decoration: none;
     font-weight: bold;
     text-transform: uppercase;
@@ -15,5 +15,4 @@
         box-shadow: 0 3px 3px -2px rgba(0, 0, 0, 0.2), 0 3px 4px 0 rgba(0, 0, 0, 0.14), 0 1px 8px 0 rgba(0, 0, 0, 0.12);
         transition: box-shadow 0.5s ease-out;
     }
-
 }

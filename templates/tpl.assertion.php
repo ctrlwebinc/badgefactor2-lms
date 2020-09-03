@@ -37,7 +37,7 @@ $issuer    = BadgeFactor2\Models\Issuer::get( $assertion->issuer );
 ?>
 <section id="primary" class="content-area">
 	<main id="main" class="site-main">
-	<article id="badge-" <?php post_class(); ?>>
+	<article <?php post_class(); ?>>
 		<div class="entry-content">
 			<div class="content">
 				<h1 class="badge__name"><?php echo $badge->name; ?></h1>

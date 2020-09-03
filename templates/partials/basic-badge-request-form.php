@@ -27,18 +27,18 @@ use BadgeFactor2\Post_Types\BadgeRequest;
 
 $current_user = wp_get_current_user();
 ?>
-<h1><?php echo $badge->name; ?></h1>
+
 <?php if ( BadgeRequest::is_in_progress( $badge->entityId ) ) : ?>
 <p><?php echo __( 'A request has already been submitted.', BF2_DATA['TextDomain'] ); ?></p>
 <?php elseif ( BadgeRequest::is_granted( $badge->entityId ) ) : ?>
 <p><?php echo __( 'This badge has already been granted to you.', BF2_DATA['TextDomain'] ); ?></p>
 <?php else : ?>
-<form class="badge-request-form">
+<form class="c-bf2__form" id="badge-request-form">
+	<label class="c-bf2__label" for="content"><?php echo __( 'Badge Request', BF2_DATA['TextDomain'] ); ?></label>
+	<input class="c-bf2__input" type="text" name="content" required>
 	<input type="hidden" name="action" value="submit_badge_request_form">
 	<input type="hidden" name="badge_id" value="<?php echo $badge->entityId; ?>">
 	<input type="hidden" name="type" value="basic">
-	<label for="content"><?php echo __( 'Badge Request', BF2_DATA['TextDomain'] ); ?></label>
-	<input type="text" name="content" required>
-	<input type="submit">
+	<input class="c-bf2__submit" type="submit">
 </form>
 <?php endif; ?>
