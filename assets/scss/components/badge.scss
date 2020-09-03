@@ -1,0 +1,33 @@
+.c-bf2__badge {
+    padding: 2rem;
+
+    &__inner {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        height: 100%;
+        width: 100%;
+        box-shadow: var(--badge-shadow);
+        border: var(--badge-border);
+        border-radius: var(--badge-border-radius);
+        padding: 3rem 1.3rem;
+        background: var(--badge-background);
+        text-decoration: none;
+    }
+    
+    &__image {
+        height: auto;
+        max-width: 100%;
+        margin-bottom: 0.9rem;
+    }
+
+    &__title {
+        font-size: 1.8rem;
+        margin: 0;
+        text-align: center;
+    }
+
+    &__actions {
+        margin-top: 2rem;
+    }
+}

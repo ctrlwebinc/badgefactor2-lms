@@ -4,6 +4,8 @@ jQuery(document).ready(function($) {
     $.post(ajaxurl, $(this).serialize(), function(response) {
       // FIXME Do something with the response.
       console.log("The server responded: ", response);
+      // response["status"] = "success" ou "fail"
+      // response["message"] = string
     });
   });
 });

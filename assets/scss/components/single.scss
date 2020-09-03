@@ -1,0 +1,20 @@
+.c-bf2 {
+    &__single {
+        display: flex;
+        flex-wrap: wrap;
+
+        .c-bf2__header {
+            flex-basis: 100%;
+        }
+
+        .c-bf2__body {
+            flex-basis: 70%;
+        }
+
+        .c-bf2__sidebar {
+            flex-basis: 30%;
+            min-width: 30rem;
+        }
+        
+    }
+}

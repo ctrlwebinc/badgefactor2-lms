@@ -1,0 +1,12 @@
+.c-bf2 {
+    &__list {
+        &__items {
+            display: flex;
+            flex-wrap: wrap;
+        }
+        
+        &__item {
+            flex-basis: calc(100% / var(--item-by-line-dektop));
+        }
+    }
+}

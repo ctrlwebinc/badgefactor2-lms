@@ -17,8 +17,12 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
- @import 'global/variables';
- @import 'global/buttons';
+ @import 'settings/variables'; 
 
- @import 'template/badges-page';
- @import 'template/badge-page';
+ @import 'elements/titles';
+
+ @import 'objects/buttons';
+ 
+ @import 'components/badge';
+ @import 'components/list';
+ @import 'components/single';
