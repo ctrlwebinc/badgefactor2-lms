@@ -1,5 +1,7 @@
-input[type="text"].c-bf2__input {
+textarea.c-bf2__input {
     margin-bottom: 2rem;
+    min-height: 250px;
+    resize: none;
 }
 
 .c-bf2__submit {

@@ -23,7 +23,7 @@
 
 .c-bf2__list__item {
   --items-per-line-mobile: 1;
-  --items-per-line-tablet: 4;
+  --items-per-line-tablet: 3;
   --items-per-line-desktop: 4;
 }
 
@@ -58,8 +58,10 @@
   margin: 0 0 1rem;
 }
 
-input[type=text].c-bf2__input {
+textarea.c-bf2__input {
   margin-bottom: 2rem;
+  min-height: 250px;
+  resize: none;
 }
 
 .c-bf2__btn {
@@ -126,7 +128,11 @@ input[type=text].c-bf2__input {
 }
 
 .c-bf2__badge__actions {
-  margin-top: 2rem;
+  text-align: center;
+}
+
+.c-bf2__badge__action {
+  margin: 2rem 0;
 }
 
 .c-bf2__list__items {

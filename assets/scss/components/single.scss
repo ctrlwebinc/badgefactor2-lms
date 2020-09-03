@@ -10,7 +10,7 @@
         .c-bf2__body {
             flex-basis: 100%;
             order: var(--sidebar-position-desktop);
-
+            
             @media screen and (min-width: 1024px) {
                 flex-basis: 70%;
                 order: var(--sidebar-position-mobile);
