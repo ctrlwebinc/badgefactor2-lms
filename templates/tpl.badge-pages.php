@@ -70,7 +70,7 @@ $termsByBadgeCategory = get_terms($customTaxonomy);
 						<div class="c-bf2__list__items">
 							<?php
 							while($loop->have_posts()) : $loop->the_post();
-							
+								
 								$badge_entity_id = get_post_meta( $post->ID, 'badge', true );
 								$badge           = BadgeFactor2\Models\BadgeClass::get( $badge_entity_id );
 								$issuer          = BadgeFactor2\Models\Issuer::get( $badge->issuer ); ?>

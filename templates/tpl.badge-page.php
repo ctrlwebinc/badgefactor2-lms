@@ -53,11 +53,11 @@ $course          = BadgeFactor2\Post_Types\BadgePage::get_course( $post->ID );
 			<h1 class="c-bf2__title"><?php echo $badge->name; ?></h1>
 		</header>
 		<div class="c-bf2__body">
-			<h3 class="c-bf2__body__title">Description</h3>
+			<h3 class="c-bf2__body__title"><?php echo __( 'Description', BF2_DATA['TextDomain'] ); ?></h3>
 			<p class="c-bf2__body__content">
 				<?php echo $badge_page->post_content; ?>
 			</p>
-			<h3 class="c-bf2__body__title">Critères d'obtentions</h3>
+			<h3 class="c-bf2__body__title"><?php echo __( "Critères d'obtentions", BF2_DATA['TextDomain'] ); ?></h3>
 			<p class="c-bf2__body__content">
 				<?php echo $badge_criteria ?>
 			</p>
