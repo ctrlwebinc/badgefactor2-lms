@@ -79,6 +79,9 @@ $course          = BadgeFactor2\Post_Types\BadgePage::get_course( $post->ID );
 									<?php endif; ?>
 								</div>
 							<?php endif; ?>
+							<!-- <div class="c-bf2__badge__action">
+								<a class="c-bf2__btn" href="http://badge-factor-2.test/badges/coincoin-badge/formulaire">Request this badge</a>
+							</div> -->
 						</div>
 					</div>
 				</div>
