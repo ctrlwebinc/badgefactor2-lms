@@ -588,42 +588,55 @@ class BadgrClient {
 	 * @throws \BadMethodCallException Bad Method Call Exception.
 	 */
 	public function get_access_token_from_password_grant() {
-		$client = self::get_guzzle_client();
-		$args   = array(
-			'username'   => $this->username,
-			'password'   => $this->badgr_password,
-			'grant_type' => 'password',
-			'scope'      => $this->scopes,
-		);
-		if ( self::FLAVOR_BADGRIO_01 !== $this->badgr_server_flavor ) {
-			$args['client_id'] = $this->client_id;
-		}
-		$args = array( 'query' => $args );
+		$redirect_uri = site_url( self::$auth_redirect_uri );
 
-		// TODO: set client state prior to attemtping access token retreival.
+		$auth_provider = new GenericProvider(
+			array(
+				'clientId'                => $this->client_id,
+				'clientSecret'            => $this->client_secret,
+				'redirectUri'             => $redirect_uri,
+				'urlAuthorize'            => $this->badgr_server_public_url . '/o/authorize',
+				'urlAccessToken'          => $this->get_internal_or_external_server_url() . '/o/token',
+				'urlResourceOwnerDetails' => $this->get_internal_or_external_server_url() . '/o/resource',
+				'scopes'                  => $this->scopes,
+			)
+		);
+
+		$auth_provider->setHttpClient( self::get_guzzle_client() );
 
 		try {
-			$response = $client->request( 'POST', $this->get_internal_or_external_server_url() . '/o/token', $args );
-			// Check for 200 response.
-			if ( null !== $response && $response->getStatusCode() === 200 ) {
-				$response_info          = json_decode( $response->getBody() );
-				$this->access_token     = $response_info->access_token;
-				$this->refresh_token    = $response_info->refresh_token;
-				$this->token_expiration = time() + $response_info->expires_in;
+			$this->state = self::STATE_EXPECTING_ACCESS_TOKEN_FROM_PASSWORD;
+			$this->save();
 
-				$this->save();
-			}
+			// Try to get an access token using the authorization code grant.
+			$access_token = $auth_provider->getAccessToken(
+				'password',
+				array(
+					'username' => $this->username,
+					'password' => $this->badgr_password,
+				)
+			);
+
+			$this->access_token      = $access_token->getToken();
+			$this->refresh_token     = $access_token->getRefreshToken();
+			$this->token_expiration  = $access_token->getExpires();
+			$this->resource_owner_id = $access_token->getResourceOwnerId();
+
+			$this->state      = self::STATE_HAVE_ACCESS_TOKEN;
+			$this->needs_auth = false;
+			$this->save();
+
+		} catch ( IdentityProviderException $e ) {
+			$this->state = self::STATE_FAILED_GETTING_ACCESS_TOKEN;
+			$this->save();
+			throw new \BadMethodCallException( 'Idendity provider raised exception ' . $e->getMessage() );
+
 		} catch ( ConnectException $e ) {
 			$this->state = self::STATE_FAILED_GETTING_ACCESS_TOKEN;
 			$this->save();
 			throw new \BadMethodCallException( 'Connection exception ' . $e->getMessage() );
-		} catch ( GuzzleException $e ) {
-			if ( $e->getResponse()->getStatusCode() === 401 ) {
-				$this->needs_auth = true;
-			} else {
-				$this->save();
-				throw new \BadMethodCallException( 'Guzzle exception ' . $e->getMessage() );
-			}
+		} catch ( Exception $e ) {
+			throw new \BadMethodCallException( 'Connection exception ' . $e->getMessage() );
 		}
 
 	}
