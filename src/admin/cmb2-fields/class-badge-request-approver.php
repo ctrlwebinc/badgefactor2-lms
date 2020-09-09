@@ -25,9 +25,9 @@
 namespace BadgeFactor2\Admin\CMB2_Fields;
 
 /**
- * CMB2 Badge Request Type Field.
+ * CMB2 Badge Request Approver Field.
  */
-class BadgeRequestType {
+class Badge_Request_Approver {
 
 	/**
 	 * Init Hooks.
@@ -35,12 +35,12 @@ class BadgeRequestType {
 	 * @return void
 	 */
 	public static function init_hooks() {
-		add_filter( 'cmb2_render_badge_request_type', array( self::class, 'render_badge_request_type' ), 10, 5 );
+		add_filter( 'cmb2_render_badge_request_approver', array( self::class, 'render_badge_request_approver' ), 10, 5 );
 	}
 
 
 	/**
-	 * Render Badge Request Type.
+	 * Render Badge Request Approver.
 	 *
 	 * @param CMB2_Field $field Field.
 	 * @param string     $field_escaped_value Field escaped value.
@@ -49,10 +49,19 @@ class BadgeRequestType {
 	 * @param CMB2_Types $field_type_object Field Type Object.
 	 * @return void
 	 */
-	public static function render_badge_request_type( $field, $field_escaped_value, $field_object_id, $field_object_type, $field_type_object ) {
-		$badge_request_type = $field_escaped_value;
-
-		echo sprintf( '<div style="margin-top: 6px">%s</div>', $badge_request_type );
-		echo sprintf( '<input type="hidden" name="type" value="%s">', $badge_request_type );
+	public static function render_badge_request_approver( $field, $field_escaped_value, $field_object_id, $field_object_type, $field_type_object ) {
+		$badge_request_approver = $field_escaped_value;
+		if ( ! $badge_request_approver ) {
+			echo sprintf( '<div style="margin-top: 6px">%s</div>', __( 'Badge request not yet processed.', BF2_DATA['TextDomain'] ) );
+		} elseif ( 'auto-approved' === $badge_request_approver ) {
+			echo sprintf( '<div style="margin-top: 6px">%s</div>', __( 'auto-approved', BF2_DATA['TextDomain'] ) );
+			echo sprintf( '<input type="hidden" name="approver" value="%s">', $badge_request_approver );
+		} else {
+			$approver = get_user_by( 'ID', $badge_request_approver );
+			echo sprintf( '<div style="margin-top: 6px"><a href="/wp-admin/user-edit.php?user_id=%d">%s</a></div>', $approver->ID, $approver->user_nicename );
+			echo sprintf( '<input type="hidden" name="approver" value="%s">', $badge_request_approver );
+		}
 	}
 }
+
+

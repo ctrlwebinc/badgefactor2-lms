@@ -314,6 +314,13 @@ class BadgeRequest {
 		);
 	}
 
+
+	/**
+	 * Filter admin columns.
+	 *
+	 * @param array $columns Columns array.
+	 * @return array
+	 */
 	public static function filter_admin_columns( $columns ) {
 		unset( $columns['date'] );
 		$columns['status'] = __( 'Status', BF2_DATA['TextDomain'] );
@@ -322,6 +329,13 @@ class BadgeRequest {
 	}
 
 
+	/**
+	 * Custom admin columns content.
+	 *
+	 * @param string $column Column content.
+	 * @param int    $post_id Post ID.
+	 * @return void
+	 */
 	public static function admin_columns( $column, $post_id ) {
 		if ( 'status' === $column ) {
 			$status = get_post_meta( $post_id, 'status', true );

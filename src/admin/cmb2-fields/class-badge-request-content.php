@@ -27,7 +27,7 @@ namespace BadgeFactor2\Admin\CMB2_Fields;
 /**
  * CMB2 Badge Request Content Field.
  */
-class BadgeRequestRevisionReason {
+class Badge_Request_Content {
 
 	/**
 	 * Init Hooks.
@@ -35,12 +35,12 @@ class BadgeRequestRevisionReason {
 	 * @return void
 	 */
 	public static function init_hooks() {
-		add_filter( 'cmb2_render_badge_request_revision_reason', array( self::class, 'render_badge_request_revision_reason' ), 10, 5 );
+		add_filter( 'cmb2_render_badge_request_content', array( self::class, 'render_badge_request_content' ), 10, 5 );
 	}
 
 
 	/**
-	 * Render Badge Request Revision Reason.
+	 * Render Badge Request Content.
 	 *
 	 * @param CMB2_Field $field Field.
 	 * @param string     $field_escaped_value Field escaped value.
@@ -49,17 +49,11 @@ class BadgeRequestRevisionReason {
 	 * @param CMB2_Types $field_type_object Field Type Object.
 	 * @return void
 	 */
-	public static function render_badge_request_revision_reason( $field, $field_escaped_value, $field_object_id, $field_object_type, $field_type_object ) {
-		$badge_request_revision_reason = $field_escaped_value;
-		$status                        = get_post_meta( $field_object_id, 'status', true );
+	public static function render_badge_request_content( $field, $field_escaped_value, $field_object_id, $field_object_type, $field_type_object ) {
+		$content               = get_post_meta( $field_object_id, 'content' );
+		$badge_request_content = end( $content );
 
-		if ( $badge_request_revision_reason && 'requested' !== $status ) {
-			echo sprintf( '<div style="margin-top: 6px">%s</div>', $field_escaped_value );
-		} else {
-			echo $field_type_object->textarea();
-			echo sprintf( '<button data-confirm="%s" class="button button-primary" id="revise-badge">%s</button>', __( 'Request a revision of this badge request?', BF2_DATA['TextDomain'] ), __( 'Submit', BF2_DATA['TextDomain'] ) );
-		}
+		echo sprintf( '<div style="margin-top: 6px">%s</div>', $badge_request_content );
+		echo sprintf( '<input type="hidden" name="content" value="%s">', $badge_request_content );
 	}
 }
-
-

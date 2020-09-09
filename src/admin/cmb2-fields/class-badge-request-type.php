@@ -25,9 +25,9 @@
 namespace BadgeFactor2\Admin\CMB2_Fields;
 
 /**
- * CMB2 Badge Request Content Field.
+ * CMB2 Badge Request Type Field.
  */
-class BadgeRequestContent {
+class Badge_Request_Type {
 
 	/**
 	 * Init Hooks.
@@ -35,12 +35,12 @@ class BadgeRequestContent {
 	 * @return void
 	 */
 	public static function init_hooks() {
-		add_filter( 'cmb2_render_badge_request_content', array( self::class, 'render_badge_request_content' ), 10, 5 );
+		add_filter( 'cmb2_render_badge_request_type', array( self::class, 'render_badge_request_type' ), 10, 5 );
 	}
 
 
 	/**
-	 * Render Badge Request Content.
+	 * Render Badge Request Type.
 	 *
 	 * @param CMB2_Field $field Field.
 	 * @param string     $field_escaped_value Field escaped value.
@@ -49,11 +49,10 @@ class BadgeRequestContent {
 	 * @param CMB2_Types $field_type_object Field Type Object.
 	 * @return void
 	 */
-	public static function render_badge_request_content( $field, $field_escaped_value, $field_object_id, $field_object_type, $field_type_object ) {
-		$content = get_post_meta( $field_object_id, 'content' );
-		$badge_request_content = end( $content );
+	public static function render_badge_request_type( $field, $field_escaped_value, $field_object_id, $field_object_type, $field_type_object ) {
+		$badge_request_type = $field_escaped_value;
 
-		echo sprintf( '<div style="margin-top: 6px">%s</div>', $badge_request_content );
-		echo sprintf( '<input type="hidden" name="content" value="%s">', $badge_request_content );
+		echo sprintf( '<div style="margin-top: 6px">%s</div>', $badge_request_type );
+		echo sprintf( '<input type="hidden" name="type" value="%s">', $badge_request_type );
 	}
 }

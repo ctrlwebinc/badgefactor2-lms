@@ -24,6 +24,9 @@
 
 namespace BadgeFactor2\Admin;
 
+/**
+ * Notices.
+ */
 class Notices {
 
 	const TYPE_ALERT   = 'alert';

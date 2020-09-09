@@ -25,9 +25,9 @@
 namespace BadgeFactor2\Admin\CMB2_Fields;
 
 /**
- * CMB2 Badge Request Approver Field.
+ * CMB2 Badge Request Content Field.
  */
-class BadgeRequestApprover {
+class Badge_Request_Revision_Reason {
 
 	/**
 	 * Init Hooks.
@@ -35,12 +35,12 @@ class BadgeRequestApprover {
 	 * @return void
 	 */
 	public static function init_hooks() {
-		add_filter( 'cmb2_render_badge_request_approver', array( self::class, 'render_badge_request_approver' ), 10, 5 );
+		add_filter( 'cmb2_render_badge_request_revision_reason', array( self::class, 'render_badge_request_revision_reason' ), 10, 5 );
 	}
 
 
 	/**
-	 * Render Badge Request Approver.
+	 * Render Badge Request Revision Reason.
 	 *
 	 * @param CMB2_Field $field Field.
 	 * @param string     $field_escaped_value Field escaped value.
@@ -49,18 +49,15 @@ class BadgeRequestApprover {
 	 * @param CMB2_Types $field_type_object Field Type Object.
 	 * @return void
 	 */
-	public static function render_badge_request_approver( $field, $field_escaped_value, $field_object_id, $field_object_type, $field_type_object ) {
-		$badge_request_approver = $field_escaped_value;
-		if ( ! $badge_request_approver ) {
-			echo sprintf( '<div style="margin-top: 6px">%s</div>', __( 'Badge request not yet processed.', BF2_DATA['TextDomain'] ) );
-		}
-		elseif ( 'auto-approved' === $badge_request_approver ) {
-			echo sprintf( '<div style="margin-top: 6px">%s</div>', __( 'auto-approved', BF2_DATA['TextDomain'] ) );
-			echo sprintf( '<input type="hidden" name="approver" value="%s">', $badge_request_approver );
+	public static function render_badge_request_revision_reason( $field, $field_escaped_value, $field_object_id, $field_object_type, $field_type_object ) {
+		$badge_request_revision_reason = $field_escaped_value;
+		$status                        = get_post_meta( $field_object_id, 'status', true );
+
+		if ( $badge_request_revision_reason && 'requested' !== $status ) {
+			echo sprintf( '<div style="margin-top: 6px">%s</div>', $field_escaped_value );
 		} else {
-			$approver = get_user_by( 'ID', $badge_request_approver );
-			echo sprintf( '<div style="margin-top: 6px"><a href="/wp-admin/user-edit.php?user_id=%d">%s</a></div>', $approver->ID, $approver->user_nicename );
-			echo sprintf( '<input type="hidden" name="approver" value="%s">', $badge_request_approver );
+			echo $field_type_object->textarea();
+			echo sprintf( '<button data-confirm="%s" class="button button-primary" id="revise-badge">%s</button>', __( 'Request a revision of this badge request?', BF2_DATA['TextDomain'] ), __( 'Submit', BF2_DATA['TextDomain'] ) );
 		}
 	}
 }

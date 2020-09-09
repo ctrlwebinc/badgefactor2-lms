@@ -31,6 +31,9 @@ if ( ! class_exists( 'WP_List_Table' ) ) {
 	require_once( ABSPATH . 'wp-admin/includes/class-wp-list-table.php' );
 }
 
+/**
+ * Badges Badgr list.
+ */
 class Badges extends Badgr_List {
 
 	/**

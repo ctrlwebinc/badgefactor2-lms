@@ -33,6 +33,9 @@ if ( ! class_exists( 'WP_List_Table' ) ) {
 	require_once( ABSPATH . 'wp-admin/includes/class-wp-list-table.php' );
 }
 
+/**
+ * Assertions Badgr list.
+ */
 class Assertions extends Badgr_List {
 
 	/**

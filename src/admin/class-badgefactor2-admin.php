@@ -898,6 +898,12 @@ class BadgeFactor2_Admin {
 	}
 
 
+	/**
+	 * Sends a Badge Request approval confirmation email.
+	 *
+	 * @param int $badge_request_id Badge Request ID.
+	 * @return bool
+	 */
 	public static function badge_request_approval_confirmation_email( $badge_request_id ) {
 		$badge_request = get_post( $badge_request_id );
 		if ( ! $badge_request ) {
@@ -921,11 +927,16 @@ class BadgeFactor2_Admin {
 		$email_link    = get_site_url() . '#';
 		$email_body    = str_replace( '$link$', '<a href="' . $email_link . '">' . $email_link . '</a>', $email_body );
 
-		wp_mail( $recipient->user_email, $email_subject, $email_body, array( 'Content-Type: text/html; charset=UTF-8' ) );
-
+		return wp_mail( $recipient->user_email, $email_subject, $email_body, array( 'Content-Type: text/html; charset=UTF-8' ) );
 	}
 
 
+	/**
+	 * Sends a Badge Request rejection confirmation email.
+	 *
+	 * @param int $badge_request_id Badge Request ID.
+	 * @return bool
+	 */
 	public static function badge_request_rejection_confirmation_email( $badge_request_id ) {
 		$badge_request = get_post( $badge_request_id );
 		if ( ! $badge_request ) {
@@ -951,10 +962,16 @@ class BadgeFactor2_Admin {
 		$email_link    = get_site_url() . '#';
 		$email_body    = str_replace( '$link$', '<a href="' . $email_link . '">' . $email_link . '</a>', $email_body );
 
-		wp_mail( $recipient->user_email, $email_subject, $email_body, array( 'Content-Type: text/html; charset=UTF-8' ) );
+		return wp_mail( $recipient->user_email, $email_subject, $email_body, array( 'Content-Type: text/html; charset=UTF-8' ) );
 	}
 
 
+	/**
+	 * Sends a Badge Request revision request confirmation email.
+	 *
+	 * @param int $badge_request_id Badge Request ID.
+	 * @return bool
+	 */
 	public static function badge_request_revision_confirmation_email( $badge_request_id ) {
 		$badge_request = get_post( $badge_request_id );
 		if ( ! $badge_request ) {
@@ -980,7 +997,7 @@ class BadgeFactor2_Admin {
 		$email_link    = get_site_url() . '#';
 		$email_body    = str_replace( '$link$', '<a href="' . $email_link . '">' . $email_link . '</a>', $email_body );
 
-		wp_mail( $recipient->user_email, $email_subject, $email_body, array( 'Content-Type: text/html; charset=UTF-8' ) );
+		return wp_mail( $recipient->user_email, $email_subject, $email_body, array( 'Content-Type: text/html; charset=UTF-8' ) );
 	}
 
 

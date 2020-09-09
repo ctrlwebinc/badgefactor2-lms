@@ -27,7 +27,7 @@ namespace BadgeFactor2\Admin\CMB2_Fields;
 /**
  * CMB2 Badge Request Content Field.
  */
-class BadgeRequestStatus {
+class Badge_Request_Status {
 
 	/**
 	 * Init Hooks.
