@@ -162,13 +162,13 @@ class BadgrClientTest extends WP_UnitTestCase {
 		// Setup a completely configured client and check that we can get the profile info
 
 		$client_parameters = [
-			'username' => getenv('BADGR_ADMIN_USERNAME'),
+			'username' => getenv('BADGR_SERVER_PASSWORD_GRANT_USERNAME'),
 			'as_admin' => true,
 			'badgr_server_public_url' => getenv('BADGR_SERVER_PUBLIC_URL'),
 			'badgr_server_flavor' => BadgrClient::FLAVOR_LOCAL_R_JAMIROQUAI,
 			'badgr_server_internal_url'    => getenv('BADGR_SERVER_INTERNAL_URL'),
 			'client_id'     => getenv('BADGR_SERVER_PASSWORD_GRANT_CLIENT_ID'),
-			'badgr_password' => getenv('BADGR_ADMIN_PASSWORD'),
+			'badgr_password' => getenv('BADGR_SERVER_PASSWORD_GRANT_PASSWORD'),
 		];
 
 		$client = null;
