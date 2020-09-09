@@ -56,6 +56,7 @@ class BadgeRequestStatus {
 			'requested' => __( 'Requested', BF2_DATA['TextDomain'] ),
 			'granted'   => __( 'Granted', BF2_DATA['TextDomain'] ),
 			'rejected'  => __( 'Rejected', BF2_DATA['TextDomain'] ),
+			'revision'  => __( 'Revision requested', BF2_DATA['TextDomain'] ),
 		);
 
 		echo sprintf( '<div style="margin-top: 6px">%s</div>', $badge_request_status );
@@ -63,6 +64,7 @@ class BadgeRequestStatus {
 		if ( 'requested' === $badge_request_status ) {
 			echo '<span class="button-group" style="margin-top: 1rem">';
 			echo sprintf( '<button data-confirm="%s" class="button button-primary" id="approve-badge">%s</button>', __( 'Approve this badge request?', BF2_DATA['TextDomain'] ), __( 'Approve', BF2_DATA['TextDomain'] ) );
+			echo sprintf( '<button class="button button-secondary" id="start-badge-revision">%s</button>', __( 'Request Revision', BF2_DATA['TextDomain'] ) );
 			echo sprintf( '<button class="button button-secondary" id="start-badge-rejection">%s</button>', __( 'Reject', BF2_DATA['TextDomain'] ) );
 			echo '</span>';
 		}

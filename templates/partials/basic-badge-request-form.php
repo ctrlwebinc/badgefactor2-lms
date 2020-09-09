@@ -35,11 +35,11 @@ $current_user = wp_get_current_user();
 <?php else : ?>
 <form class="c-bf2__form" id="badge-request-form">
 	<label class="c-bf2__label" for="content"><?php echo __( 'Badge Request', BF2_DATA['TextDomain'] ); ?></label>
-	<!-- <input class="c-bf2__input" type="text" name="content" required> -->
-	<textarea class="c-bf2__input" name="content" required></textarea>
+	<textarea class="c-bf2__input" name="content" required><?php echo BadgeRequest::get_request_content( $badge->entityId ); ?></textarea>
 	<input type="hidden" name="action" value="submit_badge_request_form">
 	<input type="hidden" name="badge_id" value="<?php echo $badge->entityId; ?>">
 	<input type="hidden" name="type" value="basic">
+	<input type="hidden" name="badge_request_id" value="<?php echo BadgeRequest::get_request_id( $badge->entityId ); ?>">
 	<input class="c-bf2__submit" type="submit">
 </form>
 <?php endif; ?>

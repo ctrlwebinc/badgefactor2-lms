@@ -2,6 +2,7 @@ jQuery(document).ready(function($) {
   $(document).on("submit", "#badge-request-form", function(e) {
     var $form = $(this);
     e.preventDefault();
+    $("body").css("cursor", "progress");
     $.post(ajaxurl, $form.serialize(), function(response) {
       var message_class = "error";
       if (response.success === true) {
@@ -12,6 +13,7 @@ jQuery(document).ready(function($) {
         .replaceWith(
           "<p class='" + message_class + "'>" + response.message + "</p>"
         );
+      $("body").css("cursor", "default");
     });
   });
 });

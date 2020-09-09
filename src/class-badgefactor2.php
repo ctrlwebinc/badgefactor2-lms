@@ -30,6 +30,7 @@ use BadgeFactor2\Admin\CMB2_Fields\Badge;
 use BadgeFactor2\Admin\CMB2_Fields\BadgeRequestApprover;
 use BadgeFactor2\Admin\CMB2_Fields\BadgeRequestContent;
 use BadgeFactor2\Admin\CMB2_Fields\BadgeRequestRejectionReason;
+use BadgeFactor2\Admin\CMB2_Fields\BadgeRequestRevisionReason;
 use BadgeFactor2\Admin\CMB2_Fields\BadgeRequestStatus;
 use BadgeFactor2\Admin\CMB2_Fields\BadgeRequestType;
 use BadgeFactor2\Admin\CMB2_Fields\Dates;
@@ -130,6 +131,7 @@ class BadgeFactor2 {
 			BadgeRequestApprover::init_hooks();
 			BadgeRequestContent::init_hooks();
 			BadgeRequestRejectionReason::init_hooks();
+			BadgeRequestRevisionReason::init_hooks();
 			BadgeRequestStatus::init_hooks();
 			BadgeRequestType::init_hooks();
 			Dates::init_hooks();
@@ -195,6 +197,7 @@ class BadgeFactor2 {
 			require_once BF2_ABSPATH . 'src/admin/cmb2-fields/class-badge_request_approver.php';
 			require_once BF2_ABSPATH . 'src/admin/cmb2-fields/class-badge_request_content.php';
 			require_once BF2_ABSPATH . 'src/admin/cmb2-fields/class-badge_request_rejection_reason.php';
+			require_once BF2_ABSPATH . 'src/admin/cmb2-fields/class-badge_request_revision_reason.php';
 			require_once BF2_ABSPATH . 'src/admin/cmb2-fields/class-badge_request_status.php';
 			require_once BF2_ABSPATH . 'src/admin/cmb2-fields/class-badge_request_type.php';
 			require_once BF2_ABSPATH . 'src/admin/cmb2-fields/class-dates.php';

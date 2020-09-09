@@ -79,13 +79,16 @@ class BadgeFactor2_Admin {
 		add_action( 'wp_ajax_bf2_filter_value', array( BadgeFactor2_Admin::class, 'ajax_filter_value' ) );
 		add_action( 'wp_ajax_approve_badge_request', array( BadgeFactor2_Admin::class, 'ajax_approve_badge_request' ) );
 		add_action( 'wp_ajax_reject_badge_request', array( BadgeFactor2_Admin::class, 'ajax_reject_badge_request' ) );
+		add_action( 'wp_ajax_revise_badge_request', array( BadgeFactor2_Admin::class, 'ajax_revise_badge_request' ) );
 
 		// BadgeFactor2 Hooks.
 		add_action( 'auto_approve_badge_request', array( BadgeFactor2_Admin::class, 'auto_approve_badge_request' ), 10 );
 		add_action( 'approve_badge_request', array( BadgeFactor2_Admin::class, 'approve_badge_request' ), 10, 3 );
 		add_action( 'reject_badge_request', array( BadgeFactor2_Admin::class, 'reject_badge_request' ), 10, 4 );
+		add_action( 'revise_badge_request', array( BadgeFactor2_Admin::class, 'revise_badge_request' ), 10, 4 );
 		add_action( 'badge_request_approval_confirmation_email', array( BadgeFactor2_Admin::class, 'badge_request_approval_confirmation_email' ), 10 );
 		add_action( 'badge_request_rejection_confirmation_email', array( BadgeFactor2_Admin::class, 'badge_request_rejection_confirmation_email' ), 10 );
+		add_action( 'badge_request_revision_confirmation_email', array( BadgeFactor2_Admin::class, 'badge_request_revision_confirmation_email' ), 10 );
 	}
 
 
@@ -492,6 +495,7 @@ class BadgeFactor2_Admin {
 				'id'      => 'badge_request_approver_email_body',
 				'type'    => 'wysiwyg',
 				'default' => 'The badge $badge$ has been requested by user $user$. You can review it here: $link$.',
+				'desc'    => __( 'Available variables: $badge$ $user$ $link$', BF2_DATA['TextDomain'] ),
 			)
 		);
 
@@ -528,6 +532,7 @@ class BadgeFactor2_Admin {
 				'id'      => 'badge_request_approval_confirmation_email_body',
 				'type'    => 'wysiwyg',
 				'default' => 'Your request for the badge $badge$ has been approved. You can view it here: $link$.',
+				'desc'    => __( 'Available variables: $badge$ $link$', BF2_DATA['TextDomain'] ),
 			)
 		);
 
@@ -556,6 +561,35 @@ class BadgeFactor2_Admin {
 				'id'      => 'badge_request_rejection_confirmation_email_body',
 				'type'    => 'wysiwyg',
 				'default' => 'Your request for the badge $badge$ has been rejected. Here is the reason provided:<br/>$reason$<br/>You can resubmit a request here: $link$.',
+				'desc'    => __( 'Available variables: $badge$ $reason$ $link$', BF2_DATA['TextDomain'] ),
+			)
+		);
+
+		// Revision request confirmation - Badge Request.
+		$emails_settings->add_field(
+			array(
+				'name' => __( 'Badge Request - Revision confirmation', BF2_DATA['TextDomain'] ),
+				'desc' => __( 'This email will be sent to a user when a badge request needs to be revised.', BF2_DATA['TextDomain'] ),
+				'id'   => 'badge_request_revision_confirmation_email',
+				'type' => 'title',
+			)
+		);
+
+		$emails_settings->add_field(
+			array(
+				'name'    => __( 'Title', BF2_DATA['TextDomain'] ),
+				'id'      => 'badge_request_revision_confirmation_email_subject',
+				'type'    => 'text',
+				'default' => 'Your badge request must be revised.',
+			)
+		);
+
+		$emails_settings->add_field(
+			array(
+				'name'    => __( 'Body', BF2_DATA['TextDomain'] ),
+				'id'      => 'badge_request_revision_confirmation_email_body',
+				'type'    => 'wysiwyg',
+				'default' => 'You must revise and resubmit your badge request for the badge $badge$. Here is the reason provided:<br/>$reason$<br/>You can revise your request here: $link$.',
 			)
 		);
 
@@ -821,6 +855,49 @@ class BadgeFactor2_Admin {
 	}
 
 
+	/**
+	 * Revision Badge Request
+	 *
+	 * @param WP_User $approver Approver user.
+	 * @param int     $badge_request_id Badge Request ID.
+	 * @param string  $revision_reason Revision reason.
+	 * @param boolean $ajax Whether or not to return an ajax response.
+	 * @return bool|void
+	 */
+	public static function revise_badge_request( $approver, $badge_request_id, $revision_reason = '', $ajax = false ) {
+		$response = array(
+			'status'  => 'fail',
+			'message' => '',
+		);
+
+		$badge_request = get_post( $badge_request_id );
+
+		if ( ! in_array( 'approver', $approver->roles, true ) && ! in_array( 'administrator', $approver->roles, true ) ) {
+			$response['message'] = __( 'You are not an approver on this website.', BF2_DATA['TextDomain'] );
+		} elseif ( ! $badge_request || 'badge-request' !== $badge_request->post_type ) {
+			$response['message'] = __( 'This request is invalid!', BF2_DATA['TextDomain'] );
+		} else {
+			$badge_entity_id = get_post_meta( $badge_request_id, 'badge', true );
+			$badge_page      = BadgePage::get_by_badgeclass_id( $badge_entity_id );
+			$approvers       = get_post_meta( $badge_page->ID, 'badge_request_approver', true );
+			if ( ! in_array( $approver->ID, $approvers, true ) && ! in_array( 'administrator', $approver->roles, true ) ) {
+				$response['message'] = __( 'You are not an approver for this badge.', BF2_DATA['TextDomain'] );
+			} else {
+				update_post_meta( $badge_request_id, 'status', 'revision' );
+				update_post_meta( $badge_request_id, 'approver', $approver->ID );
+				update_post_meta( $badge_request_id, 'revision_reason', $revision_reason );
+				add_post_meta( $badge_request_id, 'dates', array( 'revision' => gmdate( 'Y-m-d H:i:s' ) ) );
+				do_action( 'badge_request_revision_confirmation_email', $badge_request_id );
+				$response = array(
+					'status'  => 'success',
+					'message' => __( 'The badge request has been sent back for revision.', BF2_DATA['TextDomain'] ),
+				);
+			}
+		}
+		wp_send_json( $response );
+	}
+
+
 	public static function badge_request_approval_confirmation_email( $badge_request_id ) {
 		$badge_request = get_post( $badge_request_id );
 		if ( ! $badge_request ) {
@@ -848,6 +925,7 @@ class BadgeFactor2_Admin {
 
 	}
 
+
 	public static function badge_request_rejection_confirmation_email( $badge_request_id ) {
 		$badge_request = get_post( $badge_request_id );
 		if ( ! $badge_request ) {
@@ -866,10 +944,39 @@ class BadgeFactor2_Admin {
 		$recipient_id = get_post_meta( $badge_request_id, 'recipient', true );
 		$recipient    = get_user_by( 'ID', $recipient_id );
 
-		$email_subject = get_option( 'badge_request_approval_confirmation_email_subject', __( 'Your badge request has been rejected.', BF2_DATA['TextDomain'] ) );
-		$email_body    = get_option( 'badge_request_approval_confirmation_email_body', __( 'Your request for the badge $badge$ has been rejected. Here is the reason provided:<br/>$reason$<br/>You can resubmit a request here: $link$.', BF2_DATA['TextDomain'] ) );
+		$email_subject = get_option( 'badge_request_rejection_confirmation_email_subject', __( 'Your badge request has been rejected.', BF2_DATA['TextDomain'] ) );
+		$email_body    = get_option( 'badge_request_rejection_confirmation_email_body', __( 'Your request for the badge $badge$ has been rejected. Here is the reason provided:<br/>$reason$<br/>You can resubmit a request here: $link$.', BF2_DATA['TextDomain'] ) );
 		$email_body    = str_replace( '$badge$', $badge->name, $email_body );
 		$email_body    = str_replace( '$reason$', $rejection_reason, $email_body );
+		$email_link    = get_site_url() . '#';
+		$email_body    = str_replace( '$link$', '<a href="' . $email_link . '">' . $email_link . '</a>', $email_body );
+
+		wp_mail( $recipient->user_email, $email_subject, $email_body, array( 'Content-Type: text/html; charset=UTF-8' ) );
+	}
+
+
+	public static function badge_request_revision_confirmation_email( $badge_request_id ) {
+		$badge_request = get_post( $badge_request_id );
+		if ( ! $badge_request ) {
+			return false;
+		}
+
+		$badge_entity_id = get_post_meta( $badge_request_id, 'badge', true );
+		$badge_page      = BadgePage::get_by_badgeclass_id( $badge_entity_id );
+		$badge           = BadgeClass::get( $badge_entity_id );
+		$revision_reason = get_post_meta( $badge_request_id, 'revision_reason', true );
+
+		if ( ! $badge_page ) {
+			return false;
+		}
+
+		$recipient_id = get_post_meta( $badge_request_id, 'recipient', true );
+		$recipient    = get_user_by( 'ID', $recipient_id );
+
+		$email_subject = get_option( 'badge_request_revision_confirmation_email_subject', __( 'Your badge request must be revised', BF2_DATA['TextDomain'] ) );
+		$email_body    = get_option( 'badge_request_revision_confirmation_email_body', __( 'You must revise and resubmit your badge request for the badge $badge$. Here is the reason provided:<br/>$reason$<br/>You can revise your request here: $link$.', BF2_DATA['TextDomain'] ) );
+		$email_body    = str_replace( '$badge$', $badge->name, $email_body );
+		$email_body    = str_replace( '$reason$', $revision_reason, $email_body );
 		$email_link    = get_site_url() . '#';
 		$email_body    = str_replace( '$link$', '<a href="' . $email_link . '">' . $email_link . '</a>', $email_body );
 
@@ -973,6 +1080,21 @@ class BadgeFactor2_Admin {
 		$rejection_reason = $_POST['rejection_reason'];
 
 		do_action( 'reject_badge_request', $current_user, $badge_request_id, $rejection_reason, true );
+	}
+
+
+	/**
+	 * Receive Ajax badge request revision request.
+	 *
+	 * @return void
+	 */
+	public static function ajax_revise_badge_request() {
+
+		$current_user     = wp_get_current_user();
+		$badge_request_id = $_POST['badge_request_id'];
+		$revision_reason  = $_POST['revision_reason'];
+
+		do_action( 'revise_badge_request', $current_user, $badge_request_id, $revision_reason, true );
 	}
 
 

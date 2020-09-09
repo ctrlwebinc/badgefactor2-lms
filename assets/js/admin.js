@@ -1,6 +1,8 @@
 jQuery(document).ready(function($) {
   if ($('input[name="status"]').val() !== "rejected") {
-    $(".cmb-type-badge-request-rejection-reason").hide();
+    $(
+      ".cmb-type-badge-request-rejection-reason, .cmb-type-badge-request-revision-reason"
+    ).hide();
   }
   function insertParam(key, value) {
     key = encodeURI(key);
@@ -77,7 +79,9 @@ jQuery(document).ready(function($) {
     })
     .on("click", "button#start-badge-rejection", function(e) {
       e.preventDefault();
-      $(".cmb-type-badge-request-rejection-reason").fadeIn();
+      $(".cmb-type-badge-request-revision-reason").fadeOut(function() {
+        $(".cmb-type-badge-request-rejection-reason").fadeIn();
+      });
       return false;
     })
     .on("click", "button#reject-badge", function(e) {
@@ -98,6 +102,39 @@ jQuery(document).ready(function($) {
             action: "reject_badge_request",
             badge_request_id: post_id,
             rejection_reason: rejection_reason
+          },
+          function(response) {
+            location.reload();
+          }
+        );
+      }
+      return false;
+    })
+    .on("click", "button#start-badge-revision", function(e) {
+      e.preventDefault();
+      $(".cmb-type-badge-request-rejection-reason").fadeOut(function() {
+        $(".cmb-type-badge-request-revision-reason").fadeIn();
+      });
+      return false;
+    })
+    .on("click", "button#revise-badge", function(e) {
+      e.preventDefault();
+      var button = $(this);
+      var action_buttons = $(this)
+        .closest(".button-group")
+        .find("button");
+      var form = $(this).closest("form");
+      if (confirm(button.data("confirm"))) {
+        action_buttons.attr("disabled", true);
+        var post_id = form.find("input#post_ID").val(),
+          revision_reason = form.find("#revision_reason").val();
+
+        $.post(
+          ajaxurl,
+          {
+            action: "revise_badge_request",
+            badge_request_id: post_id,
+            revision_reason: revision_reason
           },
           function(response) {
             location.reload();
