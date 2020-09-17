@@ -287,91 +287,6 @@ class BadgrClientTest extends WP_UnitTestCase {
 
 	}
 
-    /**
-     * @runInSeparateProcess
-     */
-/*     public function test_badgr_client_catches_401_but_throws_other_exceptions() {
-
-		// Setup mock Guzzle client
-		$mock = new MockHandler([
-			    new Response(401,[], '{
-    "status": {
-        "description": "no valid auth token found",
-        "success": false
-    },
-    "validationErrors": [],
-    "fieldErrors": {},
-    "result": []
-}'),
-    new Response(404,[], ''),
-    new Response(500,[], ''),
-		]);
-		$handlerStack = HandlerStack::create($mock);
-		$guzzle_client = new Client(['handler' => $handlerStack]);
-
-		// Setup a badgr client instance
-		$client_parameters = [
-			'username' => 'dev@ctrlweb.ca',
-			'as_admin' => false,
-			'badgr_server_public_url' => getenv('BADGR_SERVER_PUBLIC_URL'),
-			'badgr_server_flavor' => BadgrClient::FLAVOR_LOCAL_R_JAMIROQUAI,
-			'badgr_server_internal_url'    => getenv('BADGR_SERVER_INTERNAL_URL'),
-			'client_id'     => getenv('BADGR_SERVER_PASSWORD_GRANT_CLIENT_ID'),
-			'badgr_password' => getenv('BADGR_SERVER_PASSWORD_GRANT_PASSWORD'),
-		];
-
-		$client = null;
-
-		try {
-			$client = BadgrClient::make_instance($client_parameters);
-		} catch ( BadMethodCallException $e ) {
-			$this->fail('Unexpected exception at client creation.');
-		}
-
-		$this->assertNotNull($client);
-
-		// Setup our Guzzle client
-		$client::set_guzzle_client($guzzle_client);
-
-		// Make an api call, get a 401
-		try {
-			$response = $client->get('/v2/user/self');
-		}
-		catch (\Exception $e) {
-			// Shouldn't have an exception
-			$this->fail('Unexpected exception.');
-		}
-
-		// Make an api call, get a 404
-		try {
-			$response = $client->get('/v2/user/self');
-			// We shouldn't reach this far if an exception is thrown
-			$this->fail('Unexpected exception.');
-		}
-		catch ( GuzzleException $e) {
-			// Expect this specific exception
-			$this->assertTrue(true);
-		} catch ( Exception $e ) {
-			// We're not expecting any other type of exception
-			$this->fail('Unexpected exception.');
-		}
-
-		// Make an api call, get a 500
-		try {
-			$response = $client->get('/v2/user/self');
-			// We shouldn't reach this far if an exception is thrown
-			$this->fail('Unexpected exception.');
-		}
-		catch ( GuzzleException $e) {
-			// Expect this specific exception
-			$this->assertTrue(true);
-		} catch ( Exception $e ) {
-			// We're not expecting any other type of exception
-			$this->fail('Unexpected exception.');
-		}
-	} */
-
-
 	public function test_admin_reads_own_backpack () {
 		// Password grant admin client
 		$adminClientParameters = [
@@ -413,19 +328,6 @@ class BadgrClientTest extends WP_UnitTestCase {
 	}
 
 	public function test_password_client_has_proper_scopes () {
-
-/* 		// Setup Guzzle client
-		$container = [];
-		$history = Middleware::history($container);
-		
-		$handlerStack = HandlerStack::create();
-		// or $handlerStack = HandlerStack::create($mock); if using the Mock handler.
-		
-		// Add the history middleware to the handler stack.
-		$handlerStack->push($history);
-		
-		$guzzle_client = new Client(['handler' => $handlerStack]);
-		BadgrClient::set_guzzle_client($guzzle_client); */
 		
 		// Password grant admin client
 		$adminClientParameters = [
@@ -449,63 +351,7 @@ class BadgrClientTest extends WP_UnitTestCase {
 		} catch ( BadMethodCallException $e ) {
 			$this->fail('Exception thrown on client creation: ' . $e->getMessage());
 		} 
-
-/* 		// Count the number of transactions
-		//echo count($container);
-		//> 2
-
-		// Iterate over the requests and responses
-		foreach ($container as $transaction) {
-			echo 'method ' . $transaction['request']->getMethod();
-			var_dump($transaction['request']->getHeaders());
-			echo ' transaction request body ' . $transaction['request']->getBody();
-			//> GET, HEAD
-			if ($transaction['response']) {
-				echo ' transaction status code ' . $transaction['response']->getStatusCode();
-				echo ' transaction body ' . $transaction['response']->getBody();
-				//> 200, 200
-			} elseif ($transaction['error']) {
-				echo ' transaction error ' . $transaction['error'];
-				//> exception
-			}
-			//var_dump($transaction['options']);
-			//> dumps the request options of the sent request. 
-		} */
 	}
-
-/* 	public function test_make_client_from_old_style_options() {
-		// Set valid options
-		$options['badgr_server_public_url'] = getenv('BADGR_SERVER_PUBLIC_URL');
-		$options['badgr_server_internal_url'] = getenv('BADGR_SERVER_INTERNAL_URL');
-		$options['badgr_server_client_id'] = getenv('BADGR_SERVER_CLIENT_ID');
-		$options['badgr_server_client_secret'] = getenv('BADGR_SERVER_CLIENT_SECRET');
-		$options['badgr_server_access_token'] = getenv('BADGR_SERVER_ACCESS_TOKEN');
-		$options['badgr_server_refresh_token'] = getenv('BADGR_SERVER_REFRESH_TOKEN');
-		$options['badgr_server_token_expiration'] = getenv('BADGR_SERVER_TOKEN_EXPIRATION');
-
-		update_option( 'badgefactor2_badgr_settings', $options );
-
-		// Fetch and use client
-		$client = BadgrClient::make_client_from_saved_options();
-
-		// Make GET request to /v2/users/self.
-		$response = $client->get( '/v2/users/self' );
-
-		// Check response isn't null.
-		$this->assertNotNull($response);
-
-		// Check response has status code 200.
-		$this->assertEquals( 200, $response->getStatusCode() );
-
-		$response_info = json_decode( $response->getBody() );
-
-		// Check that entity id exists
-		$this->assertTrue( isset( $response_info->result[0]->entityId ) );
-
-		// Check that entityId isn't empty
-		$this->assertNotEmpty( $response_info->result[0]->entityId );
-		
-	} */
 
 	public function test_unconfigured_client_returns_null_response() {
 		$client = new BadgrClient();
