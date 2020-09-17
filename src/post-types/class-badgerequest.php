@@ -58,18 +58,18 @@ class BadgeRequest {
 	public static function init_hooks() {
 
 		// WordPress Action Hooks.
-		add_action( 'init', array( BadgeRequest::class, 'init' ), 10 );
-		add_action( 'admin_init', array( BadgeRequest::class, 'add_capabilities' ), 10 );
-		add_action( 'cmb2_admin_init', array( BadgeRequest::class, 'register_cpt_metaboxes' ), 10 );
-		add_action( 'save_post_' . self::$slug, array( BadgeRequest::class, 'update_badge_request' ), 10, 3 );
-		add_action( 'manage_' . self::$slug . '_posts_custom_column', array( BadgeRequest::class, 'admin_columns' ), 10, 3 );
+		add_action( 'init', array( self::class, 'init' ), 10 );
+		add_action( 'admin_init', array( self::class, 'add_capabilities' ), 10 );
+		add_action( 'cmb2_admin_init', array( self::class, 'register_cpt_metaboxes' ), 10 );
+		add_action( 'save_post_' . self::$slug, array( self::class, 'save_badge_request' ), 10, 3 );
+		add_action( 'manage_' . self::$slug . '_posts_custom_column', array( self::class, 'admin_columns' ), 10, 3 );
 
 		// WordPress Filter Hooks.
-		add_filter( 'manage_' . self::$slug . '_posts_columns', array( BadgeRequest::class, 'filter_admin_columns' ), 10 );
-		add_filter( 'post_updated_messages', array( BadgeRequest::class, 'updated_messages' ), 10 );
+		add_filter( 'manage_' . self::$slug . '_posts_columns', array( self::class, 'filter_admin_columns' ), 10 );
+		add_filter( 'post_updated_messages', array( self::class, 'updated_messages' ), 10 );
 
 		// Ajax Hooks.
-		add_action( 'wp_ajax_submit_badge_request_form', array( BadgeRequest::class, 'ajax_badge_request' ) );
+		add_action( 'wp_ajax_submit_badge_request_form', array( self::class, 'ajax_badge_request' ) );
 	}
 
 
@@ -526,14 +526,14 @@ class BadgeRequest {
 
 
 	/**
-	 * Update Badge Request.
+	 * Save (Create or Update) Badge Request.
 	 *
 	 * @param int     $post_id Badge Request ID.
 	 * @param WP_Post $post Post.
 	 * @param bool    $update Whether or not this is an update.
 	 * @return void
 	 */
-	public static function update_badge_request( $post_id, $post, $update ) {
+	public static function save_badge_request( $post_id, $post, $update ) {
 		if ( $update ) {
 			$status = get_post_meta( $post_id, 'status', true );
 			$dates  = get_post_meta( $post_id, 'dates' );
@@ -544,6 +544,9 @@ class BadgeRequest {
 			if ( array_key_first( $dates[0] ) !== $status ) {
 				add_post_meta( $post_id, 'dates', array( $status => gmdate( 'Y-m-d H:i:s' ) ) );
 			}
+			do_action( 'update_badge_request', $post );
+		} else {
+			do_action( 'create_badge_request', $post );
 		}
 	}
 
