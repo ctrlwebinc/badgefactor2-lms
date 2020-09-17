@@ -67,28 +67,28 @@ class BadgeFactor2_Admin {
 	public static function init_hooks() {
 
 		// WordPress hooks.
-		add_filter( 'set-screen-option', array( BadgeFactor2_Admin::class, 'set_screen' ), 10, 3 );
-		add_action( 'cmb2_admin_init', array( BadgeFactor2_Admin::class, 'admin_init' ) );
-		add_action( 'admin_enqueue_scripts', array( BadgeFactor2_Admin::class, 'load_resources' ) );
-		add_action( 'admin_menu', array( BadgeFactor2_Admin::class, 'admin_menus' ) );
-		add_action( 'save_post_badge-page', array( BadgeFactor2_Admin::class, 'create_badge_chain' ), 10, 2 );
-		add_filter( 'pw_cmb2_field_select2_asset_path', array( BadgeFactor2_Admin::class, 'pw_cmb2_field_select2_asset_path' ), 10 );
+		add_filter( 'set-screen-option', array( self::class, 'set_screen' ), 10, 3 );
+		add_action( 'cmb2_admin_init', array( self::class, 'admin_init' ) );
+		add_action( 'admin_enqueue_scripts', array( self::class, 'load_resources' ) );
+		add_action( 'admin_menu', array( self::class, 'admin_menus' ) );
+		add_action( 'save_post_badge-page', array( self::class, 'create_badge_chain' ), 10, 2 );
+		add_filter( 'pw_cmb2_field_select2_asset_path', array( self::class, 'pw_cmb2_field_select2_asset_path' ), 10 );
 
 		// Ajax Hooks.
-		add_action( 'wp_ajax_bf2_filter_type', array( BadgeFactor2_Admin::class, 'ajax_filter_type' ) );
-		add_action( 'wp_ajax_bf2_filter_value', array( BadgeFactor2_Admin::class, 'ajax_filter_value' ) );
-		add_action( 'wp_ajax_approve_badge_request', array( BadgeFactor2_Admin::class, 'ajax_approve_badge_request' ) );
-		add_action( 'wp_ajax_reject_badge_request', array( BadgeFactor2_Admin::class, 'ajax_reject_badge_request' ) );
-		add_action( 'wp_ajax_revise_badge_request', array( BadgeFactor2_Admin::class, 'ajax_revise_badge_request' ) );
+		add_action( 'wp_ajax_bf2_filter_type', array( self::class, 'ajax_filter_type' ) );
+		add_action( 'wp_ajax_bf2_filter_value', array( self::class, 'ajax_filter_value' ) );
+		add_action( 'wp_ajax_approve_badge_request', array( self::class, 'ajax_approve_badge_request' ) );
+		add_action( 'wp_ajax_reject_badge_request', array( self::class, 'ajax_reject_badge_request' ) );
+		add_action( 'wp_ajax_revise_badge_request', array( self::class, 'ajax_revise_badge_request' ) );
 
 		// BadgeFactor2 Hooks.
-		add_action( 'auto_approve_badge_request', array( BadgeFactor2_Admin::class, 'auto_approve_badge_request' ), 10 );
-		add_action( 'approve_badge_request', array( BadgeFactor2_Admin::class, 'approve_badge_request' ), 10, 3 );
-		add_action( 'reject_badge_request', array( BadgeFactor2_Admin::class, 'reject_badge_request' ), 10, 4 );
-		add_action( 'revise_badge_request', array( BadgeFactor2_Admin::class, 'revise_badge_request' ), 10, 4 );
-		add_action( 'badge_request_approval_confirmation_email', array( BadgeFactor2_Admin::class, 'badge_request_approval_confirmation_email' ), 10 );
-		add_action( 'badge_request_rejection_confirmation_email', array( BadgeFactor2_Admin::class, 'badge_request_rejection_confirmation_email' ), 10 );
-		add_action( 'badge_request_revision_confirmation_email', array( BadgeFactor2_Admin::class, 'badge_request_revision_confirmation_email' ), 10 );
+		add_action( 'auto_approve_badge_request', array( self::class, 'auto_approve_badge_request' ), 10 );
+		add_action( 'approve_badge_request', array( self::class, 'approve_badge_request' ), 10, 3 );
+		add_action( 'reject_badge_request', array( self::class, 'reject_badge_request' ), 10, 4 );
+		add_action( 'revise_badge_request', array( self::class, 'revise_badge_request' ), 10, 4 );
+		add_action( 'badge_request_approval_confirmation_email', array( self::class, 'badge_request_approval_confirmation_email' ), 10 );
+		add_action( 'badge_request_rejection_confirmation_email', array( self::class, 'badge_request_rejection_confirmation_email' ), 10 );
+		add_action( 'badge_request_revision_confirmation_email', array( self::class, 'badge_request_revision_confirmation_email' ), 10 );
 	}
 
 
@@ -147,7 +147,7 @@ class BadgeFactor2_Admin {
 			'Badgr',
 			'manage_options',
 			$menus[0][1],
-			array( BadgeFactor2_Admin::class, $menus[0][1] . '_page' ),
+			array( self::class, $menus[0][1] . '_page' ),
 			BF2_BASEURL . 'assets/images/badgr.svg'
 		);
 
@@ -158,12 +158,12 @@ class BadgeFactor2_Admin {
 				$m[0],
 				'manage_options',
 				$m[1],
-				array( BadgeFactor2_Admin::class, $m[1] . '_page' )
+				array( self::class, $m[1] . '_page' )
 			);
 
 			add_action(
 				"load-$hook",
-				array( BadgeFactor2_Admin::class, $m[1] . '_options' )
+				array( self::class, $m[1] . '_options' )
 			);
 		}
 

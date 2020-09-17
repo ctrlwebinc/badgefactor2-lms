@@ -39,7 +39,7 @@ class Badges {
 	 * @return void
 	 */
 	public static function init_hooks() {
-		add_action( 'init', array( Badges::class, 'init' ) );
+		add_action( 'init', array( self::class, 'init' ) );
 	}
 
 	/**
@@ -48,7 +48,7 @@ class Badges {
 	 * @return void
 	 */
 	public static function init() {
-		add_shortcode( 'bf2-badges', array( Badges::class, 'list' ) );
+		add_shortcode( 'bf2-badges', array( self::class, 'list' ) );
 	}
 
 

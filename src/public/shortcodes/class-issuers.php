@@ -38,7 +38,7 @@ class Issuers {
 	 * @return void
 	 */
 	public static function init_hooks() {
-		add_action( 'init', array( Issuers::class, 'init' ) );
+		add_action( 'init', array( self::class, 'init' ) );
 	}
 
 
@@ -48,7 +48,7 @@ class Issuers {
 	 * @return void
 	 */
 	public static function init() {
-		add_shortcode( 'bf2-issuers', array( Issuers::class, 'list' ) );
+		add_shortcode( 'bf2-issuers', array( self::class, 'list' ) );
 	}
 
 

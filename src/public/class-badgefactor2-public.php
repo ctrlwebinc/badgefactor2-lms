@@ -39,17 +39,17 @@ class BadgeFactor2_Public {
 	 * @return void
 	 */
 	public static function init_hooks() {
-		add_action( 'init', array( BadgeFactor2_Public::class, 'add_rewrite_tags' ), 10, 0 );
-		add_action( 'init', array( BadgeFactor2_Public::class, 'add_rewrite_rules' ), 10, 0 );
+		add_action( 'init', array( self::class, 'add_rewrite_tags' ), 10, 0 );
+		add_action( 'init', array( self::class, 'add_rewrite_rules' ), 10, 0 );
 		remove_action( 'register_new_user', 'wp_send_new_user_notifications' );
-		add_action( 'register_new_user', array( BadgeFactor2_Public::class, 'suppress_new_user_notifications' ), 10, 2 );
-		add_filter( 'query_vars', array( BadgeFactor2_Public::class, 'add_custom_query_vars' ) );
-		add_action( 'wp_enqueue_scripts', array( BadgeFactor2_Public::class, 'load_resources' ) );
+		add_action( 'register_new_user', array( self::class, 'suppress_new_user_notifications' ), 10, 2 );
+		add_filter( 'query_vars', array( self::class, 'add_custom_query_vars' ) );
+		add_action( 'wp_enqueue_scripts', array( self::class, 'load_resources' ) );
 
 		/*
 		 * TODO If we want to make a members list and page without buddypress.
 		 *
-		 * add_filter( 'template_include', array( BadgeFactor2_Public::class, 'add_members_to_hierarchy' ) );
+		 * add_filter( 'template_include', array( self::class, 'add_members_to_hierarchy' ) );
 		 */
 	}
 

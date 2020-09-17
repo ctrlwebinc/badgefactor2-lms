@@ -276,7 +276,7 @@ class BadgePage {
 				'id'         => 'badge_request_form_type',
 				'name'       => __( 'Badge Request Form type', BF2_DATA['TextDomain'] ),
 				'type'       => 'select',
-				'options_cb' => array( BadgePage::class, 'form_type_select_options' ),
+				'options_cb' => array( self::class, 'form_type_select_options' ),
 			)
 		);
 
