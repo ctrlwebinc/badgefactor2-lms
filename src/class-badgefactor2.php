@@ -35,6 +35,7 @@ use BadgeFactor2\Admin\CMB2_Fields\Badge_Request_Status;
 use BadgeFactor2\Admin\CMB2_Fields\Badge_Request_Type;
 use BadgeFactor2\Admin\CMB2_Fields\Dates;
 use BadgeFactor2\Admin\Notices;
+use BadgeFactor2\Helpers\Constant;
 
 /**
  * Badge Factor 2 Main Class.
@@ -154,6 +155,9 @@ class BadgeFactor2 {
 		require_once BF2_ABSPATH . 'lib/cmb-field-select2/cmb-field-select2.php';
 		require_once 'phar://' . BF2_ABSPATH . 'lib/league-oauth2-client.phar/vendor/autoload.php';
 
+		// Helpers.
+		require_once BF2_ABSPATH . 'src/helpers/class-template.php';
+
 		// Traits.
 		require_once BF2_ABSPATH . 'src/core/trait-singleton.php';
 		require_once BF2_ABSPATH . 'src/core/trait-paginatable.php';
@@ -161,9 +165,6 @@ class BadgeFactor2 {
 
 		// Interfaces.
 		require_once BF2_ABSPATH . 'src/core/interface-badgr-entity.php';
-
-		// Helpers.
-		require_once BF2_ABSPATH . 'src/helpers/class-template.php';
 
 		// Core Classes.
 		require_once BF2_ABSPATH . 'src/core/class-badgrclient.php';
@@ -231,31 +232,19 @@ class BadgeFactor2 {
 	 * @return void
 	 */
 	private function define_constants() {
+		require_once dirname( BF2_FILE ) . '/src/helpers/class-constant.php';
+
 		$upload_dir = wp_upload_dir( null, false );
 
-		$this->define( 'BF2_ABSPATH', dirname( BF2_FILE ) . '/' );
-		$this->define( 'BF2_BASEURL', plugin_dir_url( BF2_FILE ) );
-		$this->define( 'BF2_PLUGIN_BASENAME', plugin_basename( BF2_FILE ) );
-		$this->define( 'BF2_VERSION', $this->version );
-		$this->define( 'BF2_LOG_DIR', $upload_dir['basedir'] . '/bf2-logs/' );
+		Constant::define( 'BF2_ABSPATH', dirname( BF2_FILE ) . '/' );
+		Constant::define( 'BF2_BASEURL', plugin_dir_url( BF2_FILE ) );
+		Constant::define( 'BF2_PLUGIN_BASENAME', plugin_basename( BF2_FILE ) );
+		Constant::define( 'BF2_VERSION', $this->version );
+		Constant::define( 'BF2_LOG_DIR', $upload_dir['basedir'] . '/bf2-logs/' );
 
 		if ( ! function_exists( 'get_plugin_data' ) ) {
 			require_once( ABSPATH . 'wp-admin/includes/plugin.php' );
 		}
-		$this->define( 'BF2_DATA', get_plugin_data( BF2_FILE ) );
+		Constant::define( 'BF2_DATA', get_plugin_data( BF2_FILE ) );
 	}
-
-	/**
-	 * Define constant if not already set.
-	 *
-	 * @param string      $name Constant name.
-	 * @param string|bool $value Constant value.
-	 * @return void
-	 */
-	private function define( $name, $value ) {
-		if ( ! defined( $name ) ) {
-			define( $name, $value );
-		}
-	}
-
 }
