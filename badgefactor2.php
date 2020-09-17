@@ -42,7 +42,7 @@ if ( ! defined( 'BF2_FILE' ) ) {
 	define( 'BF2_FILE', __FILE__ );
 }
 
-// Include the main WooCommerce class.
+// Include the main BadgeFactor2 class.
 if ( ! class_exists( 'BadgeFactor2' ) ) {
 	require_once dirname( __FILE__ ) . '/src/class-badgefactor2.php';
 }
