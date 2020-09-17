@@ -21,6 +21,7 @@
  *
  * @phpcs:disable WordPress.WP.I18n.NonSingularStringLiteralDomain
  * @phpcs:disable WordPress.WP.I18n.NonSingularStringLiteralContext
+ * @phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
  */
 
 namespace BadgeFactor2\Post_Types;
@@ -56,13 +57,16 @@ class BadgePage {
 	 * @return void
 	 */
 	public static function init_hooks() {
-		add_action( 'init', array( BadgePage::class, 'init' ), 10 );
-		add_action( 'init', array( BadgePage::class, 'register_taxonomies' ), 10 );
-		add_action( 'admin_init', array( BadgePage::class, 'add_capabilities' ), 10 );
-		add_filter( 'post_updated_messages', array( BadgePage::class, 'updated_messages' ), 10 );
-		add_action( 'cmb2_admin_init', array( BadgePage::class, 'register_cpt_metaboxes' ), 10 );
-		add_action( 'single_template', array( BadgePage::class, 'single_template' ), 10 );
-		add_filter( 'archive_template', array( BadgePage::class, 'archive_template' ), 10 );
+		add_action( 'init', array( self::class, 'init' ), 10 );
+		add_action( 'init', array( self::class, 'register_taxonomies' ), 10 );
+		add_action( 'admin_init', array( self::class, 'add_capabilities' ), 10 );
+		add_filter( 'post_updated_messages', array( self::class, 'updated_messages' ), 10 );
+		add_action( 'cmb2_admin_init', array( self::class, 'register_cpt_metaboxes' ), 10 );
+		add_action( 'save_post_' . self::$slug, array( self::class, 'save_badge_page' ), 10, 3 );
+		add_action( 'single_template', array( self::class, 'single_template' ), 10 );
+		add_filter( 'archive_template', array( self::class, 'archive_template' ), 10 );
+		add_action( 'update_badge_page', array( self::class, 'update_badge_page' ) );
+		add_action( 'create_badge_page', array( self::class, 'create_badge_page' ) );
 	}
 
 
@@ -281,7 +285,7 @@ class BadgePage {
 				'id'         => 'badge_request_form_id',
 				'name'       => __( 'Form', BF2_DATA['TextDomain'] ),
 				'type'       => 'pw_select',
-				'options_cb' => array( BadgePage::class, 'gf_form_select_options' ),
+				'options_cb' => array( self::class, 'gf_form_select_options' ),
 				'attributes' => array(
 					'data-conditional-id'    => 'badge_request_form_type',
 					'data-conditional-value' => 'gravityforms',
@@ -318,7 +322,6 @@ class BadgePage {
 				),
 			)
 		);
-
 	}
 
 
@@ -382,7 +385,8 @@ class BadgePage {
 		$options = array();
 		if ( is_plugin_active( 'bf2-gravityforms/bf2-gravityforms.php' ) ) {
 
-			$forms = \GFAPI::get_forms();
+			$options[0] = __( 'Generate new Gravity Form', BF2_DATA['TextDomain'] );
+			$forms      = \GFAPI::get_forms();
 			foreach ( $forms as $form ) {
 				$options[ $form['id'] ] = $form['title'];
 			}
@@ -757,5 +761,42 @@ class BadgePage {
 		}
 		return null;
 	}
+
+
+	/**
+	 * Save (Create or Update) Badge Page.
+	 *
+	 * @param int     $post_id Badge Page ID.
+	 * @param WP_Post $post Post.
+	 * @param bool    $update Whether or not this is an update.
+	 * @return void
+	 */
+	public static function save_badge_page( $post_id, $post, $update ) {
+		if ( $update ) {
+			do_action( 'update_badge_page', $post );
+		} else {
+			do_action( 'create_badge_page', $post );
+		}
+	}
+
+	/**
+	 * Update Badge Page.
+	 *
+	 * @param WP_Post $post Badge Page.
+	 * @return void
+	 */
+	public static function update_badge_page( $post ) {
+	}
+
+	/**
+	 * Create Badge Page.
+	 *
+	 * @param WP_Post $post Badge Page.
+	 * @return void
+	 */
+	public static function create_badge_page( $post ) {
+
+	}
+
 
 }
