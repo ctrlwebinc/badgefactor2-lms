@@ -580,8 +580,8 @@ class BadgrProvider {
 
 		$image_data = null;
 
-		if ( null !== $image ) {
-			$image_data = self::handle_image_data( $image );
+		if ( null !== $image && isset( $image['image']['tmp_name'] ) ) {
+			$image_data = self::handle_image_data( $image['image']['tmp_name'] );
 
 			if ( false === $image_data ) {
 				return false;
