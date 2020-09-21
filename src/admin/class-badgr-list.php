@@ -380,7 +380,7 @@ class Badgr_List extends \WP_List_Table {
 						}
 
 						if ( 'POST' === $_SERVER['REQUEST_METHOD'] ) {
-							$entity_id      = $this->model::update( $_GET['entity_id'], $_POST );
+							$entity_id      = $this->model::update( $_GET['entity_id'], $_POST, $_FILES );
 							$_GET['notice'] = 'updated';
 						}
 

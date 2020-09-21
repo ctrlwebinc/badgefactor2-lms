@@ -129,10 +129,11 @@ class BadgeClass implements Badgr_Entity {
 	 *
 	 * @param string $entity_id Badge ID.
 	 * @param array  $values Associative array of values to change.
+	 * @param array  $files Files.
 	 *
 	 * @return boolean Whether or not update has succeeded.
 	 */
-	public static function update( $entity_id, $values ) {
+	public static function update( $entity_id, $values, $files = null ) {
 
 		$badge = BadgeClass::get( $entity_id );
 
@@ -141,7 +142,7 @@ class BadgeClass implements Badgr_Entity {
 				$values['image'] = null;
 			}
 
-			return BadgrProvider::update_badge_class( $entity_id, $values['name'], $values['description'], $values['image'] );
+			return BadgrProvider::update_badge_class( $entity_id, $values['name'], $values['description'], $files['image']['tmp_name'] );
 		}
 		return false;
 
