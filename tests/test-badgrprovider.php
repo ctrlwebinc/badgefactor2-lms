@@ -49,9 +49,232 @@ class BadgrProviderTest extends WP_UnitTestCase {
 	    return $randomString;
 	}
 
+
+
     /**
-     * @backupStaticAttributes enabled
-	 * @runInSeparateProcess
+     */
+ 	public function test_provider_can_fetch_a_client_from_old_style_options() {
+
+		// Setup a completely client and check that we can get the profile info
+		$client_parameters = [
+			'username' => getenv('BADGR_ADMIN_USERNAME'),
+			'as_admin' => true,
+			'badgr_server_public_url' => getenv('BADGR_SERVER_PUBLIC_URL'),
+			'badgr_server_flavor' => BadgrClient::FLAVOR_LOCAL_R_JAMIROQUAI,
+			'badgr_server_internal_url'    => getenv('BADGR_SERVER_INTERNAL_URL'),
+			'client_id'     => getenv('BADGR_SERVER_CLIENT_ID'),
+			'client_secret' => getenv('BADGR_SERVER_CLIENT_SECRET'),
+			'access_token' => getenv('BADGR_SERVER_ACCESS_TOKEN'),
+			'refresh_token' => getenv('BADGR_SERVER_REFRESH_TOKEN'),
+			'token_expiration' => getenv('BADGR_SERVER_TOKEN_EXPIRATION'),
+		];
+
+		$client = BadgrClient::make_instance( $client_parameters );
+
+		BadgrProvider::set_client( $client );
+
+		// Check that we can retreive information on the authorized user
+		// Make GET request to /v2/users/self.
+		$response = $client->get( '/v2/users/self' );
+
+		// Check response isn't null.
+		$this->assertNotNull($response);
+
+		// Check response has status code 200.
+		$this->assertEquals( 200, $response->getStatusCode() );
+
+		$response_info = json_decode( $response->getBody() );
+
+		// Check that entity id exists
+		$this->assertTrue( isset( $response_info->result[0]->entityId ) );
+
+		// Setup a random string to avoid data collisions
+		$random = $this->generateRandomString(5);
+
+		// Create issuer
+		$issuer_slug = BadgrProvider::add_issuer( 'TestIssuer' . $random, 'issuer' . $random . '@example.net' , 'http://' . $random . 'example.net', 'A Description for ' . $random );
+
+		$this->assertTrue( false !== $issuer_slug );
+		$this->assertNotEmpty( $issuer_slug);
+
+		// Add a badge class
+		$badge_class_slug = BadgrProvider::add_badge_class( 'BadgeClass' . $random, $issuer_slug, 'Description for ' . $random, dirname(__FILE__).'/resources/test_badge_image.svg' );
+
+		$this->assertTrue( false !== $badge_class_slug );
+		$this->assertNotEmpty( $badge_class_slug);
+
+		// Issue a badge
+		$assertion_slug = BadgrProvider::add_assertion( $badge_class_slug, 'recipient' . $random . '@example.net');
+
+		$this->assertTrue( false !== $assertion_slug );
+		$this->assertNotEmpty( $assertion_slug);
+
+	}
+
+    /**
+     */
+	public function test_issuer_to_new_user_assertion_flow() {
+
+		// Setup a completely client and check that we can get the profile info
+		$client_parameters = [
+			'username' => getenv('BADGR_ADMIN_USERNAME'),
+			'as_admin' => true,
+			'badgr_server_public_url' => getenv('BADGR_SERVER_PUBLIC_URL'),
+			'badgr_server_flavor' => BadgrClient::FLAVOR_LOCAL_R_JAMIROQUAI,
+			'badgr_server_internal_url'    => getenv('BADGR_SERVER_INTERNAL_URL'),
+			'client_id'     => getenv('BADGR_SERVER_CLIENT_ID'),
+			'client_secret' => getenv('BADGR_SERVER_CLIENT_SECRET'),
+			'access_token' => getenv('BADGR_SERVER_ACCESS_TOKEN'),
+			'refresh_token' => getenv('BADGR_SERVER_REFRESH_TOKEN'),
+			'token_expiration' => getenv('BADGR_SERVER_TOKEN_EXPIRATION'),
+		];
+
+		$client = BadgrClient::make_instance( $client_parameters );
+
+		BadgrProvider::set_client( $client );
+
+		// Check that we can retreive information on the authorized user
+		// Make GET request to /v2/users/self.
+		$response = $client->get( '/v2/users/self' );
+
+		// Check response isn't null.
+		$this->assertNotNull($response);
+
+		// Check response has status code 200.
+		$this->assertEquals( 200, $response->getStatusCode() );
+
+		$response_info = json_decode( $response->getBody() );
+
+		// Check that entity id exists
+		$this->assertTrue( isset( $response_info->result[0]->entityId ) );
+
+		// Setup a random string to avoid data collisions
+		$random = $this->generateRandomString(5);
+
+		// Create a user
+		$firstname = 'Zeus' . $random;
+		$lastname = 'God';
+		$email = 'zeus.god.' . $random . '@example.net';
+		$password = 'pass456PASS';
+
+		$request_body = array(
+			'first_name'           => $firstname,
+			'last_name'            => $lastname,
+			'email'                => $email,
+			'url'                  => '',
+			'telephone'            => '',
+			'slug'                 => '',
+			'agreed_terms_version' => 1,
+			'marketing_opt_in'     => false,
+			'has_password_set'     => false,
+			'source'               => 'bf2',
+			'password'             => $password,
+		);
+
+		// Make POST request to /v1/user/profile.
+		$response = $client->post( '/v1/user/profile', $request_body );
+
+		$newUserSlug = null;
+
+		// Check for 201 response.
+		if ( null !== $response && $response->getStatusCode() == 201 ) {
+			// Return slug-entity_id or false if unsucessful.
+			$response_info = json_decode( $response->getBody() );
+			if ( isset( $response_info->slug ) && strlen( $response_info->slug ) > 0 ) {
+				$newUserSlug =  $response_info->slug;
+			}
+		}
+
+		// Create issuer
+		$issuer_slug = BadgrProvider::add_issuer( 'TestIssuer' . $random, 'issuer' . $random . '@example.net' , 'http://' . $random . 'example.net', 'A Description for ' . $random );
+
+		$this->assertTrue( false !== $issuer_slug );
+		$this->assertNotEmpty( $issuer_slug);
+
+		// Add a badge class
+		$badge_class_slug = BadgrProvider::add_badge_class( 'BadgeClass' . $random, $issuer_slug, 'Description for ' . $random, dirname(__FILE__).'/resources/test_badge_image.svg' );
+
+		$this->assertTrue( false !== $badge_class_slug );
+		$this->assertNotEmpty( $badge_class_slug);
+
+		// Issue a badge
+		$assertion_slug = BadgrProvider::add_assertion( $badge_class_slug, $email);
+
+		$this->assertTrue( false !== $assertion_slug );
+		$this->assertNotEmpty( $assertion_slug);
+
+	}
+
+	    /**
+     */
+	public function test_badge_class_create_then_update() {
+
+		// Setup a completely client and check that we can get the profile info
+		$client_parameters = [
+			'username' => getenv('BADGR_ADMIN_USERNAME'),
+			'as_admin' => true,
+			'badgr_server_public_url' => getenv('BADGR_SERVER_PUBLIC_URL'),
+			'badgr_server_flavor' => BadgrClient::FLAVOR_LOCAL_R_JAMIROQUAI,
+			'badgr_server_internal_url'    => getenv('BADGR_SERVER_INTERNAL_URL'),
+			'client_id'     => getenv('BADGR_SERVER_CLIENT_ID'),
+			'client_secret' => getenv('BADGR_SERVER_CLIENT_SECRET'),
+			'access_token' => getenv('BADGR_SERVER_ACCESS_TOKEN'),
+			'refresh_token' => getenv('BADGR_SERVER_REFRESH_TOKEN'),
+			'token_expiration' => getenv('BADGR_SERVER_TOKEN_EXPIRATION'),
+		];
+
+		$client = BadgrClient::make_instance( $client_parameters );
+
+		BadgrProvider::set_client( $client );
+
+		// Check that we can retreive information on the authorized user
+		// Make GET request to /v2/users/self.
+		$response = $client->get( '/v2/users/self' );
+
+		// Check response isn't null.
+		$this->assertNotNull($response);
+
+		// Check response has status code 200.
+		$this->assertEquals( 200, $response->getStatusCode() );
+
+		$response_info = json_decode( $response->getBody() );
+
+		// Check that entity id exists
+		$this->assertTrue( isset( $response_info->result[0]->entityId ) );
+
+		// Setup a random string to avoid data collisions
+		$random = $this->generateRandomString(5);
+
+		// Create issuer
+		$issuer_slug = BadgrProvider::add_issuer( 'TestIssuer' . $random, 'issuer' . $random . '@example.net' , 'http://' . $random . 'example.net', 'A Description for ' . $random );
+
+		$this->assertTrue( false !== $issuer_slug );
+		$this->assertNotEmpty( $issuer_slug);
+
+		// Add a badge class
+		$badge_class_slug = BadgrProvider::add_badge_class( 'BadgeClass' . $random, $issuer_slug, 'Description for ' . $random, dirname(__FILE__).'/resources/test_badge_image.svg' );
+
+		$this->assertTrue( false !== $badge_class_slug );
+		$this->assertNotEmpty( $badge_class_slug);
+
+		// Fetch badge class and check description
+		$badge_class = BadgrProvider::get_badge_class_by_badge_class_slug( $badge_class_slug );
+		$this->assertTrue( false !== $badge_class );
+		$this->assertEquals( 'Description for ' . $random, $badge_class->description);
+
+		// Update description, refetch and recheck
+		$new_description = 'A new description';
+		$update_operation_success = BadgrProvider::update_badge_class( $badge_class_slug, $badge_class->name, $new_description );
+		$this->assertTrue( $update_operation_success );
+		$badge_class = BadgrProvider::get_badge_class_by_badge_class_slug( $badge_class_slug );
+		$this->assertTrue( false !== $badge_class );
+		$this->assertEquals( $new_description, $badge_class->description);
+
+
+
+	}
+	
+	    /**
      */
 	public function test_badgr_provider_returns_count() {
 
@@ -178,162 +401,5 @@ class BadgrProviderTest extends WP_UnitTestCase {
 		$this->assertEquals( 2, $result_count );
 		$this->assertEquals( $result_count, $direct_count );
 	}
-
-    /**
-     * @backupStaticAttributes enabled
-	 * @runInSeparateProcess
-     */
-/* 	public function test_provider_can_fetch_a_client_from_old_style_options() {
-
-		// Setup a completely client and check that we can get the profile info
-		$client_parameters = [
-			'username' => getenv('BADGR_ADMIN_USERNAME'),
-			'as_admin' => true,
-			'badgr_server_public_url' => getenv('BADGR_SERVER_PUBLIC_URL'),
-			'badgr_server_flavor' => BadgrClient::FLAVOR_LOCAL_R_JAMIROQUAI,
-			'badgr_server_internal_url'    => getenv('BADGR_SERVER_INTERNAL_URL'),
-			'client_id'     => getenv('BADGR_SERVER_CLIENT_ID'),
-			'client_secret' => getenv('BADGR_SERVER_CLIENT_SECRET'),
-			'access_token' => getenv('BADGR_SERVER_ACCESS_TOKEN'),
-			'refresh_token' => getenv('BADGR_SERVER_REFRESH_TOKEN'),
-			'token_expiration' => getenv('BADGR_SERVER_TOKEN_EXPIRATION'),
-		];
-
-		$client = BadgrClient::make_instance( $client_parameters );
-
-		BadgrProvider::set_client( $client );
-
-		// Check that we can retreive information on the authorized user
-		// Make GET request to /v2/users/self.
-		$response = $client->get( '/v2/users/self' );
-
-		// Check response isn't null.
-		$this->assertNotNull($response);
-
-		// Check response has status code 200.
-		$this->assertEquals( 200, $response->getStatusCode() );
-
-		$response_info = json_decode( $response->getBody() );
-
-		// Check that entity id exists
-		$this->assertTrue( isset( $response_info->result[0]->entityId ) );
-
-		// Setup a random string to avoid data collisions
-		$random = $this->generateRandomString(5);
-
-		// Create issuer
-		$issuer_slug = BadgrProvider::add_issuer( 'TestIssuer' . $random, 'issuer' . $random . '@example.net' , 'http://' . $random . 'example.net', 'A Description for ' . $random );
-
-		$this->assertTrue( false !== $issuer_slug );
-		$this->assertNotEmpty( $issuer_slug);
-
-		// Add a badge class
-		$badge_class_slug = BadgrProvider::add_badge_class( 'BadgeClass' . $random, $issuer_slug, 'Description for ' . $random, dirname(__FILE__).'/resources/test_badge_image.svg' );
-
-		$this->assertTrue( false !== $badge_class_slug );
-		$this->assertNotEmpty( $badge_class_slug);
-
-		// Issue a badge
-		$assertion_slug = BadgrProvider::add_assertion( $badge_class_slug, 'recipient' . $random . '@example.net');
-
-		$this->assertTrue( false !== $assertion_slug );
-		$this->assertNotEmpty( $assertion_slug);
-
-	}*/
-    /**
-     * @backupStaticAttributes enabled
-	 * @runInSeparateProcess
-     */
-	/* public function test_issuer_to_new_user_assertion_flow() {
-
-		// Setup a completely client and check that we can get the profile info
-		$client_parameters = [
-			'username' => getenv('BADGR_ADMIN_USERNAME'),
-			'as_admin' => true,
-			'badgr_server_public_url' => getenv('BADGR_SERVER_PUBLIC_URL'),
-			'badgr_server_flavor' => BadgrClient::FLAVOR_LOCAL_R_JAMIROQUAI,
-			'badgr_server_internal_url'    => getenv('BADGR_SERVER_INTERNAL_URL'),
-			'client_id'     => getenv('BADGR_SERVER_CLIENT_ID'),
-			'client_secret' => getenv('BADGR_SERVER_CLIENT_SECRET'),
-			'access_token' => getenv('BADGR_SERVER_ACCESS_TOKEN'),
-			'refresh_token' => getenv('BADGR_SERVER_REFRESH_TOKEN'),
-			'token_expiration' => getenv('BADGR_SERVER_TOKEN_EXPIRATION'),
-		];
-
-		$client = BadgrClient::make_instance( $client_parameters );
-
-		BadgrProvider::set_client( $client );
-
-		// Check that we can retreive information on the authorized user
-		// Make GET request to /v2/users/self.
-		$response = $client->get( '/v2/users/self' );
-
-		// Check response isn't null.
-		$this->assertNotNull($response);
-
-		// Check response has status code 200.
-		$this->assertEquals( 200, $response->getStatusCode() );
-
-		$response_info = json_decode( $response->getBody() );
-
-		// Check that entity id exists
-		$this->assertTrue( isset( $response_info->result[0]->entityId ) );
-
-		// Setup a random string to avoid data collisions
-		$random = $this->generateRandomString(5);
-
-		// Create a user
-		$firstname = 'Zeus' . $random;
-		$lastname = 'God';
-		$email = 'zeus.god.' . $random . '@example.net';
-		$password = 'pass456PASS';
-
-		$request_body = array(
-			'first_name'           => $firstname,
-			'last_name'            => $lastname,
-			'email'                => $email,
-			'url'                  => '',
-			'telephone'            => '',
-			'slug'                 => '',
-			'agreed_terms_version' => 1,
-			'marketing_opt_in'     => false,
-			'has_password_set'     => false,
-			'source'               => 'bf2',
-			'password'             => $password,
-		);
-
-		// Make POST request to /v1/user/profile.
-		$response = $client->post( '/v1/user/profile', $request_body );
-
-		$newUserSlug = null;
-
-		// Check for 201 response.
-		if ( null !== $response && $response->getStatusCode() == 201 ) {
-			// Return slug-entity_id or false if unsucessful.
-			$response_info = json_decode( $response->getBody() );
-			if ( isset( $response_info->slug ) && strlen( $response_info->slug ) > 0 ) {
-				$newUserSlug =  $response_info->slug;
-			}
-		}
-
-		// Create issuer
-		$issuer_slug = BadgrProvider::add_issuer( 'TestIssuer' . $random, 'issuer' . $random . '@example.net' , 'http://' . $random . 'example.net', 'A Description for ' . $random );
-
-		$this->assertTrue( false !== $issuer_slug );
-		$this->assertNotEmpty( $issuer_slug);
-
-		// Add a badge class
-		$badge_class_slug = BadgrProvider::add_badge_class( 'BadgeClass' . $random, $issuer_slug, 'Description for ' . $random, dirname(__FILE__).'/resources/test_badge_image.svg' );
-
-		$this->assertTrue( false !== $badge_class_slug );
-		$this->assertNotEmpty( $badge_class_slug);
-
-		// Issue a badge
-		$assertion_slug = BadgrProvider::add_assertion( $badge_class_slug, $email);
-
-		$this->assertTrue( false !== $assertion_slug );
-		$this->assertNotEmpty( $assertion_slug);
-
-    } */
     
 }
