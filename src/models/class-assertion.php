@@ -143,10 +143,11 @@ class Assertion implements Badgr_Entity {
 	 *
 	 * @param string $entity_id Issuer ID.
 	 * @param array  $values Associative array of values to change.
+	 * @param array  $files Files.
 	 *
 	 * @return boolean Whether or not update has succeeded.
 	 */
-	public static function update( $entity_id, $values ) {
+	public static function update( $entity_id, $values, $files = null ) {
 		// Assertion updating is unauthorized.
 		return false;
 	}
