@@ -323,60 +323,6 @@ class BadgeFactor2_Admin {
 		wp_enqueue_script( 'badgefactor2-admin-js', BF2_BASEURL . 'assets/js/admin.js', array( 'jquery' ), BF2_DATA['Version'], true );
 	}
 
-	/**
-	 * Undocumented function.
-	 *
-	 * @param int     $id Post ID.
-	 * @param WP_Post $post Post Object.
-	 * @return void
-	 */
-	public static function create_badge_chain( $id, $post ) {
-		// Check if it's the right post type.
-		if ( 'badge-page' === $post->post_type ) {
-
-			// Check if it's a published post.
-			if ( 'publish' === $post->post_status ) {
-
-			}
-
-			/*
-			Commented.
-			if ( get_post_meta( $ID, 'badgefactor_form_id', true ) == '' ) {
-				if ( $this->check_gravity_forms() ) {
-					$form_id = $this->create_badge_submission_form( $post );
-					if ( ! is_wp_error( $form_id ) ) {
-						update_post_meta( $ID, 'badgefactor_form_id', $form_id );
-
-						if ( get_post_meta( $ID, 'badgefactor_form_page_id', true ) == '' ) {
-							$form_page_id = $this->create_badge_form_page( $post->post_title, $form_id );
-							if ( ! is_wp_error( $form_page_id ) ) {
-								update_post_meta( $ID, 'badgefactor_form_page_id', $form_page_id );
-							}
-						}
-					}
-				}
-			}
-
-			do_action( 'badgefactor_woocommerce_create_badge', $ID, $post );
-
-			if ( get_post_meta( $ID, 'badgefactor_page_id', true ) == '' ) {
-				$page_id = $this->create_course_page( $post, '<a href="' . get_permalink( $form_page_id ) . '">' . __( 'Get this badge', 'badgefactor' ) . '</a>' );
-				if ( ! is_wp_error( $page_id ) ) {
-					update_post_meta( $ID, 'badgefactor_page_id', $page_id );
-				}
-				wp_update_post(
-					array(
-						'ID'          => $form_page_id,
-						'post_parent' => $page_id,
-					)
-				);
-			}
-
-			return true;
-			*/
-		}
-	}
-
 
 	/**
 	 * Registers Settings Metabox.
