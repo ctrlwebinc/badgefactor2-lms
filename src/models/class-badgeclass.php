@@ -138,10 +138,9 @@ class BadgeClass implements Badgr_Entity {
 		$badge = BadgeClass::get( $entity_id );
 
 		if ( $badge && self::validate( $values ) ) {
-			if ( ! isset( $values['image'] ) ) {
-				$values['image'] = null;
+			if ( ! isset( $files['image'] ) ) {
+				return BadgrProvider::update_badge_class( $entity_id, $values['name'], $values['description'], null );
 			}
-
 			return BadgrProvider::update_badge_class( $entity_id, $values['name'], $values['description'], $files['image']['tmp_name'] );
 		}
 		return false;
