@@ -34,7 +34,7 @@ get_header();
 
 $badge_page      = $post;
 $badge_entity_id = get_post_meta( $post->ID, 'badge', true );
-$badge_criteria  = get_post_meta($post->ID, 'badge_criteria', true);
+$badge_criteria  = get_post_meta( $post->ID, 'badge_criteria', true );
 $badge           = BadgeFactor2\Models\BadgeClass::get( $badge_entity_id );
 $issuer          = $badge ? BadgeFactor2\Models\Issuer::get( $badge->issuer ) : null;
 $course          = BadgeFactor2\Post_Types\BadgePage::get_course( $post->ID );
@@ -54,9 +54,9 @@ $course          = BadgeFactor2\Post_Types\BadgePage::get_course( $post->ID );
 				<p class="c-bf2__body__content">
 					<?php echo $badge_page->post_content; ?>
 				</p>
-				<h3 class="c-bf2__body__title"><?php echo __( "Critères d'obtentions", BF2_DATA['TextDomain'] ); ?></h3>
+				<h3 class="c-bf2__body__title"><?php echo __( 'Criteria', BF2_DATA['TextDomain'] ); ?></h3>
 				<p class="c-bf2__body__content">
-					<?php echo $badge_criteria ?>
+					<?php echo $badge_criteria; ?>
 				</p>
 			</div>
 			<aside class="c-bf2__sidebar">
@@ -75,7 +75,7 @@ $course          = BadgeFactor2\Post_Types\BadgePage::get_course( $post->ID );
 									<?php elseif ( BadgeFactor2\Post_Types\Course::is_purchasable() ) : ?>
 										<a class="c-bf2__btn" href="<?php echo get_permalink( $course ); ?>"><?php echo __( 'Get this course', BF2_DATA['TextDomain'] ); ?></a>
 									<?php else : ?>
-										<?php //echo __( 'This course is not currently accessible.', BF2_DATA['TextDomain'] ); ?>
+										<?php echo __( 'This course is not currently available.', BF2_DATA['TextDomain'] ); ?>
 									<?php endif; ?>
 								</div>
 							<?php endif; ?>
