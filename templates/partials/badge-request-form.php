@@ -23,6 +23,7 @@
  */
 
 use BadgeFactor2\Helpers\Template;
+use BadgeFactor2\Post_Types\BadgeRequest;
 
 $form_type = get_post_meta( $badge_page->ID, 'badge_request_form_type', true );
 
@@ -37,18 +38,20 @@ $form_type = get_post_meta( $badge_page->ID, 'badge_request_form_type', true );
 			switch ( $form_type ) {
 				case 'gravityforms':
 					if ( is_plugin_active( 'bf2-gravityforms/bf2-gravityforms.php' ) ) {
-						$form_id = get_post_meta( $badge_page->ID, 'badge_request_form_id', true );
-						echo do_shortcode( sprintf( '[bf2-gf-badge-request gravityform_id="%s"]', $form_id ) );
+						if ( BadgeRequest::is_in_progress( $badge->entityId ) ) {
+							echo sprintf( '<p>%s</p>', __( 'A request has already been submitted.', BF2_DATA['TextDomain'] ) );
+						} elseif ( BadgeRequest::is_granted( $badge->entityId ) ) {
+							echo sprintf( '<p>%s</p>', __( 'This badge has already been granted to you.', BF2_DATA['TextDomain'] ) );
+						} else {
+							$form_id = get_post_meta( $badge_page->ID, 'badge_request_form_id', true );
+							echo do_shortcode( sprintf( '[bf2-gf-badge-request gravityform_id="%s"]', $form_id ) );
+						}
 					}
 					break;
 				case 'basic':
 				default:
-				?>
-				<?php
 					include( Template::locate( 'partials/basic-badge-request-form' ) );
 					break;
-				?>
-				<?php
 			}
 			?>
 		</div>
