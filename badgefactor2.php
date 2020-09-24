@@ -37,6 +37,8 @@ namespace BadgeFactor2;
 
 defined( 'ABSPATH' ) || exit;
 
+load_plugin_textdomain( 'badgefactor2', false, basename( dirname( __FILE__ ) ) . '/languages' );
+
 // Define BF2_FILE.
 if ( ! defined( 'BF2_FILE' ) ) {
 	define( 'BF2_FILE', __FILE__ );

@@ -112,7 +112,6 @@ class BadgeFactor2_Admin {
 	 * @return void
 	 */
 	public static function admin_init() {
-		load_plugin_textdomain( BF2_DATA['TextDomain'], false, basename( dirname( __FILE__, 3 ) ) . '/languages/' );
 		self::register_settings_metaboxes();
 	}
 
