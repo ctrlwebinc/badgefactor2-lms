@@ -71,7 +71,6 @@ class BadgeFactor2_Admin {
 		add_action( 'cmb2_admin_init', array( self::class, 'admin_init' ) );
 		add_action( 'admin_enqueue_scripts', array( self::class, 'load_resources' ) );
 		add_action( 'admin_menu', array( self::class, 'admin_menus' ) );
-		add_action( 'save_post_badge-page', array( self::class, 'create_badge_chain' ), 10, 2 );
 		add_filter( 'pw_cmb2_field_select2_asset_path', array( self::class, 'pw_cmb2_field_select2_asset_path' ), 10 );
 
 		// Ajax Hooks.
