@@ -20,6 +20,7 @@
  * @package Badge_Factor_2
  *
  * @phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound
+ * @phpcs:disable WordPress.WP.I18n.NonSingularStringLiteralDomain
  */
 
 use BadgeFactor2\Helpers\Template;
