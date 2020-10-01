@@ -30,6 +30,26 @@ use BadgeFactor2\Helpers\Template;
  * badgefactor2/ subdirectory, and modifying it there.
  */
 
+// The Courses add-on and the WooCommerce add-on are installed.
+if ( 1 === intval( get_query_var( 'form' ) ) &&
+	class_exists( 'BadgeFactor2\BF2_Courses' ) &&
+	class_exists( 'BadgeFactor2\BF2_WooCommerce' ) ) {
+
+	// A Course is linked to the badge page.
+	$course_id = get_post_meta( $post->ID, 'course', true );
+	if ( $course_id ) {
+		// A product is linked to the course.
+		$product_id = get_post_meta( $course_id, 'course_product', true );
+		if ( $product_id ) {
+			// The client has not purchased this product, redirect to the product page.
+			if ( ! wc_customer_bought_product( $current_user->user_email, $current_user->ID, $product_id ) ) {
+				wp_redirect( get_permalink( $product_id ) );
+				exit;
+			}
+		}
+	}
+}
+
 get_header();
 
 $badge_page      = $post;
