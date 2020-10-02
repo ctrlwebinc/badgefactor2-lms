@@ -430,6 +430,7 @@ class BadgrClient {
 		try {
 			$client = self::make_client_from_saved_options();
 		} catch ( BadMethodCallException $e ) {
+			// FIXME This is an error, $this->fail() is undefined.
 			$this->fail( 'Exception thrown on client creation: ' . $e->getMessage() );
 		}
 
@@ -813,6 +814,7 @@ class BadgrClient {
 			$this->save();
 
 			// Try to get an access token using the refresh token.
+			// FIXME This is an error, $provider is undefined.
 			$access_token = $provider->getAccessToken(
 				'refresh_token',
 				array(
