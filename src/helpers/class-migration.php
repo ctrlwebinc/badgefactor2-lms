@@ -102,7 +102,7 @@ class Migration {
 	 *
 	 * @return int
 	 */
-	public static function badge_classes() {
+	public static function migrate_badge_classes() {
 		// Get badges posts without badgr slug enriched with organisation issuer slug.
 		global $wpdb;
 
@@ -160,7 +160,7 @@ class Migration {
 	 * @param boolean $only_published Migrate only published.
 	 * @return int
 	 */
-	public static function issuers( $only_published = false ) {
+	public static function migrate_issuers( $only_published = false ) {
 		// Get all posts of organisation type.
 		$query = new WP_Query(
 			array(

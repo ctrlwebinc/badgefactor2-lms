@@ -684,7 +684,7 @@ class Badgr_CLI extends WP_CLI_Command {
 
 		$only_published = WP_CLI\Utils\get_flag_value( $assoc_args, 'restrict-to-published', $default = false );
 
-		$count = Migration::issuers( $only_published );
+		$count = Migration::migrate_issuers( $only_published );
 
 		if ( false === $count ) {
 			WP_CLI::error( 'Migrating issuers failed' );
