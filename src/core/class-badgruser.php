@@ -350,5 +350,4 @@ class BadgrUser {
 
 		return false;
 	}
-	
 }
