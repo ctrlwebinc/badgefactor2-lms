@@ -209,21 +209,6 @@ class BadgrProvider {
 		return false;
 	}
 
-	/**
-	 * Generates a random password.
-	 *
-	 * @return string Randomly generated password.
-	 */
-	protected static function generate_random_password() {
-		$alphabet        = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
-		$pass            = array( 'p' ); // Start with a letter.
-		$alpha_max_index = strlen( $alphabet ) - 1;
-		for ( $i = 0; $i < 11; $i++ ) {
-			$n      = rand( 0, $alpha_max_index );
-			$pass[] = $alphabet[ $n ];
-		}
-		return implode( $pass );
-	}
 
 	/**
 	 * Get all issuers from Badgr Server.
