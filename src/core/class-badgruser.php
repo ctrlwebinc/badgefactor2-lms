@@ -23,6 +23,7 @@
 namespace BadgeFactor2;
 
 use BadgeFactor2\BadgrClient;
+use BadgeFactor2\Helpers\Text;
 use \WP_User;
 
 /**
@@ -295,7 +296,7 @@ class BadgrUser {
 
 		// Add user to badgr.
 		$user_data          = get_userdata( $user_id );
-		$temporary_password = self::generate_random_password();
+		$temporary_password = Text::generate_random_password();
 		$slug               = BadgrProvider::add_user( $user_data->first_name, $user_data->last_name, $user_data->user_email, $temporary_password );
 
 		// If successful set badgr user state to 'created' and save slug and save previous password.
@@ -349,113 +350,5 @@ class BadgrUser {
 
 		return false;
 	}
-
-	/**
-	 * Generates a random password.
-	 *
-	 * @return string Randomly generated password.
-	 */
-	protected static function generate_random_password() {
-		$alphabet        = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
-		$pass            = array( 'p' ); // Start with a letter.
-		$alpha_max_index = strlen( $alphabet ) - 1;
-		for ( $i = 0; $i < 11; $i++ ) {
-			$n      = rand( 0, $alpha_max_index );
-			$pass[] = $alphabet[ $n ];
-		}
-		return implode( $pass );
-	}
-	/**
-	 * Undocumented function
-	 *
-	 * @return object
-	 */
-	public static function mark_existing_users_for_migration() {
-		// Query for users withtout a badgr_user_state <meta class="">
-		// Set to 'to_be_created'.
-		global $wpdb;
-
-		return $wpdb->query(
-			"INSERT INTO wp_usermeta (user_id,meta_key,meta_value)
-		SELECT u.id, 'badgr_user_state', 'to_be_created' FROM wp_users AS u
-		WHERE NOT EXISTS
-		(SELECT m.umeta_id FROM wp_usermeta as m
-		WHERE m.`meta_key` = 'badgr_user_state' AND u.id = m.user_id) AND u.id != 1;"
-		);
-
-	}
-	/**
-	 * Undocumented function
-	 *
-	 * @param boolean $mark_as_verified Set to true to mark users as verified as they are processed.
-	 * @return int|boolean
-	 */
-	public static function migrate_users_and_mark_as_verified( $mark_as_verified = false ) {
-		$count                = 0;
-		$consecutive_failures = 0;
-
-		// Get users in a 'to_be_created' state.
-		$users_to_process = get_users(
-			array(
-				'meta_key'   => self::$meta_key_for_user_state,
-				'meta_value' => 'to_be_created',
-				'number'     => 50,
-				'paged'      => 1,
-			)
-		);
-
-		$user_to_process_count = count( $users_to_process );
-		while ( 0 < $user_to_process_count ) {
-
-			foreach ( $users_to_process as $user_to_process ) {
-				// Skip admin user.
-				if ( 1 === $user_to_process->ID ) {
-					continue;
-				}
-
-				// Create user and mark as created.
-				$temporary_password = self::generate_random_password();
-				$slug               = BadgrProvider::add_user( $user_to_process->first_name, $user_to_process->last_name, $user_to_process->user_email, $temporary_password );
-
-				// If successful set badgr user state to 'created' and save slug and save previous password.
-				if ( false !== $slug ) {
-					update_user_meta( $user_to_process->ID, self::$meta_key_for_badgr_user_slug, $slug );
-					update_user_meta( $user_to_process->ID, self::$meta_key_for_user_state, 'created' );
-					update_user_meta( $user_to_process->ID, 'badgr_password', $temporary_password );
-					$consecutive_failures = 0;
-				} else {
-					update_user_meta( $user_to_process->ID, self::$meta_key_for_user_state, 'failed_to_create' );
-
-					if ( $consecutive_failures > 2 ) {
-						return false;
-					}
-					// Sleep to avoid Badgr throttling us.
-					sleep( 15 * ( $consecutive_failures + 1 ) );
-
-					$consecutive_failures++;
-				}
-
-				// Add role if mark as verified flag is set.
-				if ( $mark_as_verified ) {
-					$user_to_process->add_cap( 'badgefactor2_use_badgr' );
-				}
-
-				$count++;
-
-				$users_to_process = get_users(
-					array(
-						'meta_key'   => self::$meta_key_for_user_state,
-						'meta_value' => 'to_be_created',
-						'number'     => 50,
-						'paged'      => 1,
-					)
-				);
-
-				$user_to_process_count = count( $users_to_process );
-
-			}
-		}
-
-		return $count;
-	}
+	
 }

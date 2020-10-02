@@ -22,6 +22,7 @@
 
 namespace BadgeFactor2;
 
+use BadgeFactor2\Helpers\Migration;
 use WP_CLI;
 use WP_CLI_Command;
 use BadgeFactor2\Models\Issuer;
@@ -638,7 +639,7 @@ class Badgr_CLI extends WP_CLI_Command {
 			WP_CLI::error( 'Usage: mark_existing_users_for_migration' );
 		}
 
-		$count = BadgrUser::mark_existing_users_for_migration();
+		$count = Migration::mark_users_for_migration();
 		if ( false === $count ) {
 			WP_CLI::error( 'Marking users for migration failed' );
 		} else {
@@ -659,7 +660,7 @@ class Badgr_CLI extends WP_CLI_Command {
 			WP_CLI::error( 'Usage: migrate_users_and_mark_as_verified' );
 		}
 
-		$count = BadgrUser::migrate_users_and_mark_as_verified( true );
+		$count = Migration::migrate_users( true );
 
 		if ( false === $count ) {
 			WP_CLI::error( 'Migrating marked users failed' );
@@ -683,7 +684,7 @@ class Badgr_CLI extends WP_CLI_Command {
 
 		$only_published = WP_CLI\Utils\get_flag_value( $assoc_args, 'restrict-to-published', $default = false );
 
-		$count = Issuer::migrate_issuers( $only_published );
+		$count = Migration::issuers( $only_published );
 
 		if ( false === $count ) {
 			WP_CLI::error( 'Migrating issuers failed' );
@@ -705,7 +706,7 @@ class Badgr_CLI extends WP_CLI_Command {
 			WP_CLI::error( 'Usage: migrate_badge_classes' );
 		}
 
-		$count = BadgeClass::migrate_badge_classes();
+		$count = Migration::migrate_badge_classes();
 
 		if ( false === $count ) {
 			WP_CLI::error( 'Migrating badge classes failed' );
@@ -727,7 +728,7 @@ class Badgr_CLI extends WP_CLI_Command {
 			WP_CLI::error( 'Usage: migrate_badge_assertions' );
 		}
 
-		$count = Assertion::migrate_badge_assertions();
+		$count = Migration::migrate_badge_assertions();
 
 		if ( false === $count ) {
 			WP_CLI::error( 'Migrating badge assertions failed' );
