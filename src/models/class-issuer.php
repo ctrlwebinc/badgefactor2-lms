@@ -276,7 +276,4 @@ class Issuer implements Badgr_Entity {
 
 		return $post_options;
 	}
-
-
-	
 }

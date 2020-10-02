@@ -18,6 +18,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  * @package Badge_Factor_2
+ *
+ * @phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.VariableConstantNameFound
  */
 
 namespace BadgeFactor2\Helpers;

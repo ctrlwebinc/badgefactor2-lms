@@ -614,7 +614,7 @@ class BadgrClient {
 				array(
 					'username' => $this->username,
 					'password' => $this->badgr_password,
-					'scope' => $this->scopes,
+					'scope'    => $this->scopes,
 				)
 			);
 
