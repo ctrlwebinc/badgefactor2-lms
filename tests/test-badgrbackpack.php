@@ -18,39 +18,40 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  * @package Badge_Factor_2
+ *
+ * @phpcs:disable WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
  */
 
 use BadgeFactor2\BadgrClient;
 use BadgeFactor2\BadgrUser;
 use BadgeFactor2\BadgrProvider;
-use GuzzleHttp\Client;
-use GuzzleHttp\Handler\MockHandler;
-use GuzzleHttp\HandlerStack;
-use GuzzleHttp\Psr7\Response;
-use GuzzleHttp\Psr7\Request;
-use GuzzleHttp\Exception\RequestException;
-use GuzzleHttp\Exception\GuzzleException;
-use GuzzleHttp\Middleware;
 
 /**
  * Badgr Client Test.
  */
 class BadgrBackpackTest extends WP_UnitTestCase {
 
-	private function generateRandomString($length = 10) {
-	    $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-	    $charactersLength = strlen($characters);
-	    $randomString = 'l';
-	    for ($i = 0; $i < $length; $i++) {
-	        $randomString .= $characters[rand(0, $charactersLength - 1)];
-	    }
-	    return $randomString;
+	/**
+	 * Generate Random String. FIXME should be in a helper.
+	 *
+	 * @param integer $length Length of wanted string.
+	 * @return string
+	 */
+	private function generateRandomString( $length = 10 ) {
+		$characters        = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+		$characters_length = strlen( $characters );
+		$random_string     = 'l';
+		for ( $i = 0; $i < $length; $i++ ) {
+			$random_string .= $characters[ rand( 0, $characters_length - 1 ) ];
+		}
+		return $random_string;
 	}
 
-	
-/*	 	public function test_admin_creates_user_awards_a_badge_and_checks_user_backpack () {
+
+	/*
+	public function test_admin_creates_user_awards_a_badge_and_checks_user_backpack () {
 		// Password grant admin client
-		$adminClientParameters = [
+		$admin_client_parameters = [
 			'username' => getenv('BADGR_ADMIN_USERNAME'),
 			'as_admin' => true,
 			'badgr_server_public_url' => getenv('BADGR_SERVER_PUBLIC_URL'),
@@ -60,16 +61,16 @@ class BadgrBackpackTest extends WP_UnitTestCase {
 			'client_id'     => getenv('BADGR_SERVER_PASSWORD_GRANT_CLIENT_ID'),
 		];
 
-		$adminClient = null;
+		$admin_client = null;
 
 		try {
-			$adminClient = BadgrClient::make_instance($adminClientParameters);
-			$adminClient->get_access_token_from_password_grant();
+			$admin_client = BadgrClient::make_instance($admin_client_parameters);
+			$admin_client->get_access_token_from_password_grant();
 		} catch ( BadMethodCallException $e ) {
 			$this->fail('Exception thrown on client creation: ' . $e->getMessage());
 		}
 
-		BadgrProvider::set_client( $adminClient);
+		BadgrProvider::set_client( $admin_client);
 
 		$random_suffix = $this->generateRandomString();
 		// New user creation
@@ -132,265 +133,281 @@ class BadgrBackpackTest extends WP_UnitTestCase {
 
 		// Check our slug matches
 		$this->assertEquals( $newUserSlug, $response_info->result[0]->entityId);
-	} */
+	}
+	*/
 
- 	public function test_admin_awards_own_badge_and_checks_own_backpack () {
+	/**
+	 * Undocumented function.
+	 *
+	 * @return void
+	 */
+	public function test_admin_awards_own_badge_and_checks_own_backpack() {
 
-		 $badgr_user = BadgrUser::make_from_user_id(1);
-		 $badgr_recipient = getenv('BADGR_ADMIN_USERNAME');
+		$badgr_user      = BadgrUser::make_from_user_id( 1 );
+		$badgr_recipient = getenv( 'BADGR_ADMIN_USERNAME' );
 
-		// Password grant admin client
-		$adminClientParameters = [
-			'username' => $badgr_recipient,
-			'as_admin' => true,
-			'badgr_server_public_url' => getenv('BADGR_SERVER_PUBLIC_URL'),
-			'badgr_server_internal_url' => getenv('BADGR_SERVER_INTERNAL_URL'),
-			'badgr_server_flavor' => BadgrClient::FLAVOR_LOCAL_R_JAMIROQUAI,
-			'badgr_password' => getenv('BADGR_ADMIN_PASSWORD'),
-			'client_id'     => getenv('BADGR_SERVER_PASSWORD_GRANT_CLIENT_ID'),
-			'badgr_user' => $badgr_user,
-		];
+		// Password grant admin client.
+		$admin_client_parameters = array(
+			'username'                  => $badgr_recipient,
+			'as_admin'                  => true,
+			'badgr_server_public_url'   => getenv( 'BADGR_SERVER_PUBLIC_URL' ),
+			'badgr_server_internal_url' => getenv( 'BADGR_SERVER_INTERNAL_URL' ),
+			'badgr_server_flavor'       => BadgrClient::FLAVOR_LOCAL_R_JAMIROQUAI,
+			'badgr_password'            => getenv( 'BADGR_ADMIN_PASSWORD' ),
+			'client_id'                 => getenv( 'BADGR_SERVER_PASSWORD_GRANT_CLIENT_ID' ),
+			'badgr_user'                => $badgr_user,
+		);
 
-		$adminClient = null;
+		$admin_client = null;
 
 		try {
-			$adminClient = BadgrClient::make_instance($adminClientParameters);
-			$adminClient->get_access_token_from_password_grant();
+			$admin_client = BadgrClient::make_instance( $admin_client_parameters );
+			$admin_client->get_access_token_from_password_grant();
 		} catch ( BadMethodCallException $e ) {
-			$this->fail('Exception thrown on client creation: ' . $e->getMessage());
+			$this->fail( 'Exception thrown on client creation: ' . $e->getMessage() );
 		}
 
-		// Get existing backpack
+		// Get existing backpack.
 		$existing_backpack = BadgrProvider::get_all_assertions_from_user_backpack( $badgr_user );
 
-		// Now award a new badge
-		BadgrProvider::set_client( $adminClient);
+		// Now award a new badge.
+		BadgrProvider::set_client( $admin_client );
 
-		// Setup a random string to avoid data collisions
-		$random = $this->generateRandomString(5);
+		// Setup a random string to avoid data collisions.
+		$random = $this->generateRandomString( 5 );
 
-		// Create issuer
-		$issuer_slug = BadgrProvider::add_issuer( 'TestIssuer' . $random, 'issuer' . $random . '@example.net' , 'http://' . $random . 'example.net', 'A Description for ' . $random );
+		// Create issuer.
+		$issuer_slug = BadgrProvider::add_issuer( 'TestIssuer' . $random, 'issuer' . $random . '@example.net', 'http://' . $random . 'example.net', 'A Description for ' . $random );
 
 		$this->assertTrue( false !== $issuer_slug );
-		$this->assertNotEmpty( $issuer_slug);
+		$this->assertNotEmpty( $issuer_slug );
 
-		// Add a badge class
-		$badge_class_slug = BadgrProvider::add_badge_class( 'BadgeClass' . $random, $issuer_slug, 'Description for ' . $random, dirname(__FILE__).'/resources/test_badge_image.svg' );
+		// Add a badge class.
+		$badge_class_slug = BadgrProvider::add_badge_class( 'BadgeClass' . $random, $issuer_slug, 'Description for ' . $random, dirname( __FILE__ ) . '/resources/test_badge_image.svg' );
 
 		$this->assertTrue( false !== $badge_class_slug );
-		$this->assertNotEmpty( $badge_class_slug);
+		$this->assertNotEmpty( $badge_class_slug );
 
-		// Issue a badge
-		$assertion_slug = BadgrProvider::add_assertion( $badge_class_slug, $badgr_recipient);
+		// Issue a badge.
+		$assertion_slug = BadgrProvider::add_assertion( $badge_class_slug, $badgr_recipient );
 
 		$this->assertTrue( false !== $assertion_slug );
-		$this->assertNotEmpty( $assertion_slug);
+		$this->assertNotEmpty( $assertion_slug );
 
-		// Fetch new backpack and compare with previous
+		// Fetch new backpack and compare with previous.
 		$updated_backpack = BadgrProvider::get_all_assertions_from_user_backpack( $badgr_user );
 
 		$assertion_absent_from_existing = false;
 
-		foreach ( $existing_backpack as $assertion) {
-			if ( $assertion->entityId == $assertion_slug ) {
+		foreach ( $existing_backpack as $assertion ) {
+			if ( $assertion->entityId === $assertion_slug ) {
 				$assertion_absent_from_existing = true;
 				break;
 			}
 		}
 
-		$this->assertFalse($assertion_absent_from_existing);
+		$this->assertFalse( $assertion_absent_from_existing );
 
 		$assertion_present_in_updated = false;
 
-		foreach ( $updated_backpack as $assertion) {
-			if ( $assertion->entityId == $assertion_slug ) {
+		foreach ( $updated_backpack as $assertion ) {
+			if ( $assertion->entityId === $assertion_slug ) {
 				$assertion_present_in_updated = true;
 				break;
 			}
 		}
 
-		$this->assertTrue($assertion_present_in_updated);
+		$this->assertTrue( $assertion_present_in_updated );
 	}
 
+	/**
+	 * Undocumented function.
+	 *
+	 * @return void
+	 */
 	public function test_user_can_accept_new_assertions() {
-		$badgr_user = BadgrUser::make_from_user_id(1);
-		$badgr_recipient = getenv('BADGR_ADMIN_USERNAME');
+		$badgr_user      = BadgrUser::make_from_user_id( 1 );
+		$badgr_recipient = getenv( 'BADGR_ADMIN_USERNAME' );
 
-	   // Password grant admin client
-	   $adminClientParameters = [
-		   'username' => $badgr_recipient,
-		   'as_admin' => true,
-		   'badgr_server_public_url' => getenv('BADGR_SERVER_PUBLIC_URL'),
-		   'badgr_server_internal_url' => getenv('BADGR_SERVER_INTERNAL_URL'),
-		   'badgr_server_flavor' => BadgrClient::FLAVOR_LOCAL_R_JAMIROQUAI,
-		   'badgr_password' => getenv('BADGR_ADMIN_PASSWORD'),
-		   'client_id'     => getenv('BADGR_SERVER_PASSWORD_GRANT_CLIENT_ID'),
-		   'badgr_user' => $badgr_user,
-	   ];
+		// Password grant admin client.
+		$admin_client_parameters = array(
+			'username'                  => $badgr_recipient,
+			'as_admin'                  => true,
+			'badgr_server_public_url'   => getenv( 'BADGR_SERVER_PUBLIC_URL' ),
+			'badgr_server_internal_url' => getenv( 'BADGR_SERVER_INTERNAL_URL' ),
+			'badgr_server_flavor'       => BadgrClient::FLAVOR_LOCAL_R_JAMIROQUAI,
+			'badgr_password'            => getenv( 'BADGR_ADMIN_PASSWORD' ),
+			'client_id'                 => getenv( 'BADGR_SERVER_PASSWORD_GRANT_CLIENT_ID' ),
+			'badgr_user'                => $badgr_user,
+		);
 
-	   $adminClient = null;
+		$admin_client = null;
 
-	   try {
-		   $adminClient = BadgrClient::make_instance($adminClientParameters);
-		   $adminClient->get_access_token_from_password_grant();
-	   } catch ( BadMethodCallException $e ) {
-		   $this->fail('Exception thrown on client creation: ' . $e->getMessage());
-	   }
+		try {
+			$admin_client = BadgrClient::make_instance( $admin_client_parameters );
+			$admin_client->get_access_token_from_password_grant();
+		} catch ( BadMethodCallException $e ) {
+			$this->fail( 'Exception thrown on client creation: ' . $e->getMessage() );
+		}
 
-	   // Now award 2 new badges
-	   BadgrProvider::set_client( $adminClient);
+		// Now award 2 new badges.
+		BadgrProvider::set_client( $admin_client );
 
-	   $random = $this->generateRandomString(5);
+		$random = $this->generateRandomString( 5 );
 
-	   // Create issuer
-	   $issuer_slug = BadgrProvider::add_issuer( 'TestIssuer' . $random, 'issuer' . $random . '@example.net' , 'http://' . $random . 'example.net', 'A Description for ' . $random );
+		// Create issuer.
+		$issuer_slug = BadgrProvider::add_issuer( 'TestIssuer' . $random, 'issuer' . $random . '@example.net', 'http://' . $random . 'example.net', 'A Description for ' . $random );
 
-	   $this->assertTrue( false !== $issuer_slug );
-	   $this->assertNotEmpty( $issuer_slug);
+		$this->assertTrue( false !== $issuer_slug );
+		$this->assertNotEmpty( $issuer_slug );
 
-	   $assertion_slugs = array( );
+		$assertion_slugs = array();
 
-	   for ( $i=0;$i<2;$i++ ) {
-		   // Setup a random string to avoid data collisions
-		   $random = $this->generateRandomString(5);
+		for ( $i = 0;$i < 2;$i++ ) {
+			// Setup a random string to avoid data collisions.
+			$random = $this->generateRandomString( 5 );
 
-		   // Add a badge class
-		   $badge_class_slug = BadgrProvider::add_badge_class( 'BadgeClass' . $random, $issuer_slug, 'Description for ' . $random, dirname(__FILE__).'/resources/test_badge_image.svg' );
+			// Add a badge class.
+			$badge_class_slug = BadgrProvider::add_badge_class( 'BadgeClass' . $random, $issuer_slug, 'Description for ' . $random, dirname( __FILE__ ) . '/resources/test_badge_image.svg' );
 
-		   $this->assertTrue( false !== $badge_class_slug );
-		   $this->assertNotEmpty( $badge_class_slug);
+			$this->assertTrue( false !== $badge_class_slug );
+			$this->assertNotEmpty( $badge_class_slug );
 
-		   // Issue a badge
-		   $assertion_slug = BadgrProvider::add_assertion( $badge_class_slug, $badgr_recipient);
+			// Issue a badge.
+			$assertion_slug = BadgrProvider::add_assertion( $badge_class_slug, $badgr_recipient );
 
-		   $this->assertTrue( false !== $assertion_slug );
-		   $this->assertNotEmpty( $assertion_slug);
+			$this->assertTrue( false !== $assertion_slug );
+			$this->assertNotEmpty( $assertion_slug );
 
-		   $assertion_slugs[] = $assertion_slug;
-	   }
+			$assertion_slugs[] = $assertion_slug;
+		}
 
-	   // Fetch each new assertion and confirm Unaccepted status
+		// Fetch each new assertion and confirm Unaccepted status.
 
-	   foreach ( $assertion_slugs as $slug) {
-		   $fetched_assertion = BadgrProvider::get_assertion_details_from_user_backpack( $badgr_user, $slug);
-		   $this->assertTrue( false !== $fetched_assertion );
-		   $this->assertEquals('Unaccepted', $fetched_assertion->acceptance);
-	   }
+		foreach ( $assertion_slugs as $slug ) {
+			$fetched_assertion = BadgrProvider::get_assertion_details_from_user_backpack( $badgr_user, $slug );
+			$this->assertTrue( false !== $fetched_assertion );
+			$this->assertEquals( 'Unaccepted', $fetched_assertion->acceptance );
+		}
 
-	   // Accept assertion and confirm result
-	   $accepted_assertion_slug = $assertion_slugs[0];
-	   $this->assertTrue( BadgrProvider::accept_assertion_in_user_backpack( $badgr_user, $accepted_assertion_slug));
-	   $fetched_assertion = BadgrProvider::get_assertion_details_from_user_backpack( $badgr_user, $accepted_assertion_slug);
-	   $this->assertTrue( false !== $fetched_assertion );
-	   $this->assertEquals('Accepted', $fetched_assertion->acceptance);
+		// Accept assertion and confirm result.
+		$accepted_assertion_slug = $assertion_slugs[0];
+		$this->assertTrue( BadgrProvider::accept_assertion_in_user_backpack( $badgr_user, $accepted_assertion_slug ) );
+		$fetched_assertion = BadgrProvider::get_assertion_details_from_user_backpack( $badgr_user, $accepted_assertion_slug );
+		$this->assertTrue( false !== $fetched_assertion );
+		$this->assertEquals( 'Accepted', $fetched_assertion->acceptance );
 
 	}
 
+	/**
+	 * Undocumented function.
+	 *
+	 * @return void
+	 */
 	public function test_can_exclude_unaccepted_and_rejected_assertions_from_backpack_list() {
-		$badgr_user = BadgrUser::make_from_user_id(1);
-		$badgr_recipient = getenv('BADGR_ADMIN_USERNAME');
+		$badgr_user      = BadgrUser::make_from_user_id( 1 );
+		$badgr_recipient = getenv( 'BADGR_ADMIN_USERNAME' );
 
-	   // Password grant admin client
-	   $adminClientParameters = [
-		   'username' => $badgr_recipient,
-		   'as_admin' => true,
-		   'badgr_server_public_url' => getenv('BADGR_SERVER_PUBLIC_URL'),
-		   'badgr_server_internal_url' => getenv('BADGR_SERVER_INTERNAL_URL'),
-		   'badgr_server_flavor' => BadgrClient::FLAVOR_LOCAL_R_JAMIROQUAI,
-		   'badgr_password' => getenv('BADGR_ADMIN_PASSWORD'),
-		   'client_id'     => getenv('BADGR_SERVER_PASSWORD_GRANT_CLIENT_ID'),
-		   'badgr_user' => $badgr_user,
-	   ];
+		// Password grant admin client.
+		$admin_client_parameters = array(
+			'username'                  => $badgr_recipient,
+			'as_admin'                  => true,
+			'badgr_server_public_url'   => getenv( 'BADGR_SERVER_PUBLIC_URL' ),
+			'badgr_server_internal_url' => getenv( 'BADGR_SERVER_INTERNAL_URL' ),
+			'badgr_server_flavor'       => BadgrClient::FLAVOR_LOCAL_R_JAMIROQUAI,
+			'badgr_password'            => getenv( 'BADGR_ADMIN_PASSWORD' ),
+			'client_id'                 => getenv( 'BADGR_SERVER_PASSWORD_GRANT_CLIENT_ID' ),
+			'badgr_user'                => $badgr_user,
+		);
 
-	   $adminClient = null;
+		$admin_client = null;
 
-	   try {
-		   $adminClient = BadgrClient::make_instance($adminClientParameters);
-		   $adminClient->get_access_token_from_password_grant();
-	   } catch ( BadMethodCallException $e ) {
-		   $this->fail('Exception thrown on client creation: ' . $e->getMessage());
-	   }
+		try {
+			$admin_client = BadgrClient::make_instance( $admin_client_parameters );
+			$admin_client->get_access_token_from_password_grant();
+		} catch ( BadMethodCallException $e ) {
+			$this->fail( 'Exception thrown on client creation: ' . $e->getMessage() );
+		}
 
-	   // Now award a new badge: it will be by default Unaccepted
-	   BadgrProvider::set_client( $adminClient);
+		// Now award a new badge: it will be by default Unaccepted.
+		BadgrProvider::set_client( $admin_client );
 
-	   // Setup a random string to avoid data collisions
-	   $random = $this->generateRandomString(5);
+		// Setup a random string to avoid data collisions.
+		$random = $this->generateRandomString( 5 );
 
-	   // Create issuer
-	   $issuer_slug = BadgrProvider::add_issuer( 'TestIssuer' . $random, 'issuer' . $random . '@example.net' , 'http://' . $random . 'example.net', 'A Description for ' . $random );
+		// Create issuer.
+		$issuer_slug = BadgrProvider::add_issuer( 'TestIssuer' . $random, 'issuer' . $random . '@example.net', 'http://' . $random . 'example.net', 'A Description for ' . $random );
 
-	   $this->assertTrue( false !== $issuer_slug );
-	   $this->assertNotEmpty( $issuer_slug);
+		$this->assertTrue( false !== $issuer_slug );
+		$this->assertNotEmpty( $issuer_slug );
 
-	   // Add a badge class
-	   $badge_class_slug = BadgrProvider::add_badge_class( 'BadgeClass' . $random, $issuer_slug, 'Description for ' . $random, dirname(__FILE__).'/resources/test_badge_image.svg' );
+		// Add a badge class.
+		$badge_class_slug = BadgrProvider::add_badge_class( 'BadgeClass' . $random, $issuer_slug, 'Description for ' . $random, dirname( __FILE__ ) . '/resources/test_badge_image.svg' );
 
-	   $this->assertTrue( false !== $badge_class_slug );
-	   $this->assertNotEmpty( $badge_class_slug);
+		$this->assertTrue( false !== $badge_class_slug );
+		$this->assertNotEmpty( $badge_class_slug );
 
-	   // Issue a badge
-	   $assertion_slug = BadgrProvider::add_assertion( $badge_class_slug, $badgr_recipient);
+		// Issue a badge.
+		$assertion_slug = BadgrProvider::add_assertion( $badge_class_slug, $badgr_recipient );
 
-	   $this->assertTrue( false !== $assertion_slug );
-	   $this->assertNotEmpty( $assertion_slug);
+		$this->assertTrue( false !== $assertion_slug );
+		$this->assertNotEmpty( $assertion_slug );
 
-	   // Fetch backpack without filtering and confirm new assertion is present
-	   $updated_backpack = BadgrProvider::get_all_assertions_from_user_backpack( $badgr_user );
+		// Fetch backpack without filtering and confirm new assertion is present.
+		$updated_backpack = BadgrProvider::get_all_assertions_from_user_backpack( $badgr_user );
 
-	   $assertion_present = false;
+		$assertion_present = false;
 
-	   foreach ( $updated_backpack as $assertion) {
-		   if ( $assertion->entityId == $assertion_slug ) {
-			   $assertion_present = true;
-			   break;
-		   }
-	   }
+		foreach ( $updated_backpack as $assertion ) {
+			if ( $assertion->entityId === $assertion_slug ) {
+				$assertion_present = true;
+				break;
+			}
+		}
 
-	   $this->assertTrue($assertion_present);
+		$this->assertTrue( $assertion_present );
 
-	   // Fetch backpack with filtering and confirm unaccepted assertion is absent
-	   $filtered_backpack = BadgrProvider::get_all_assertions_from_user_backpack( $badgr_user , true);
+		// Fetch backpack with filtering and confirm unaccepted assertion is absent.
+		$filtered_backpack = BadgrProvider::get_all_assertions_from_user_backpack( $badgr_user, true );
 
-	   $assertion_absent = true;
+		$assertion_absent = true;
 
-	   foreach ( $filtered_backpack as $assertion) {
-		   if ( $assertion->entityId == $assertion_slug ) {
-			   $assertion_absent = false;
-			   break;
-		   }
-	   }
+		foreach ( $filtered_backpack as $assertion ) {
+			if ( $assertion->entityId === $assertion_slug ) {
+				$assertion_absent = false;
+				break;
+			}
+		}
 
-	   $this->assertTrue($assertion_absent);
+		$this->assertTrue( $assertion_absent );
 
-	   // Accept the assertion and confirm now present in filtered list
-	   $this->assertTrue( BadgrProvider::accept_assertion_in_user_backpack( $badgr_user, $assertion_slug));
-	   $filtered_backpack = BadgrProvider::get_all_assertions_from_user_backpack( $badgr_user , true);
+		// Accept the assertion and confirm now present in filtered list.
+		$this->assertTrue( BadgrProvider::accept_assertion_in_user_backpack( $badgr_user, $assertion_slug ) );
+		$filtered_backpack = BadgrProvider::get_all_assertions_from_user_backpack( $badgr_user, true );
 
-	   $assertion_present = false;
+		$assertion_present = false;
 
-	   foreach ( $filtered_backpack as $assertion) {
-		   if ( $assertion->entityId == $assertion_slug ) {
-			   $assertion_present = true;
-			   break;
-		   }
-	   }
+		foreach ( $filtered_backpack as $assertion ) {
+			if ( $assertion->entityId === $assertion_slug ) {
+				$assertion_present = true;
+				break;
+			}
+		}
 
-	   $this->assertTrue($assertion_present);
+		$this->assertTrue( $assertion_present );
 
-	   // Make sure all assertions in filtered list are 'Accepted'
-	   // Since we can't reject an assertion, its the only way to catch 'Rejected' assertion from going into the filtered list
-	   // The presence of 'Rejected' assertions in the backpack is not guaranteed
-	   $no_unaccepted_assertions = true;
+		// Make sure all assertions in filtered list are 'Accepted'.
+		// Since we can't reject an assertion, its the only way to catch 'Rejected' assertion from going into the filtered list.
+		// The presence of 'Rejected' assertions in the backpack is not guaranteed.
+		$no_unaccepted_assertions = true;
 
-	   foreach ( $filtered_backpack as $assertion) {
-		   if ( $assertion->acceptance != 'Accepted' ) {
-			   $no_unaccepted_assertions = false;
-			   break;
-		   }
-	   }
+		foreach ( $filtered_backpack as $assertion ) {
+			if ( 'Accepted' !== $assertion->acceptance ) {
+				$no_unaccepted_assertions = false;
+				break;
+			}
+		}
 
-	   $this->assertTrue($no_unaccepted_assertions);
+		$this->assertTrue( $no_unaccepted_assertions );
 	}
 }

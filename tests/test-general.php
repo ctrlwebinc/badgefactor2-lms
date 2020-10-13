@@ -22,14 +22,19 @@
 
 use \BadgeFactor2\Exceptions\ExitException;
 
+/**
+ * General Test.
+ */
 class BadgeFactor2GeneralTest extends WP_UnitTestCase {
 
-    /**
+	/**
+	 * Undocumented function.
+	 *
 	 * @runInSeparateProcess
-     */
-    public function test_can_redirect() {
+	 */
+	public function test_can_redirect() {
 		header( 'Location: http://example.net' );
-		$this->assertTrue(true);
+		$this->assertTrue( true );
 	}
-	
+
 }
