@@ -439,6 +439,27 @@ class BadgeRequest {
 		$current_user = wp_get_current_user();
 		$badge_id     = $_POST['badge_id'] ?? null;
 
+		// The Courses add-on and the WooCommerce add-on are installed.
+		if ( class_exists( 'BadgeFactor2\BF2_Courses' ) &&
+			class_exists( 'BadgeFactor2\BF2_WooCommerce' ) ) {
+
+			// A Course is linked to the badge page.
+			$badge_page = BadgePage::get_by_badgeclass_id( $badge_id );
+			$course_id  = get_post_meta( $badge_page, 'course', true );
+			if ( $course_id ) {
+				// A product is linked to the course.
+				$product_id = get_post_meta( $course_id, 'course_product', true );
+				if ( $product_id ) {
+					// The client has not purchased this product, redirect to the product page.
+					if ( ! wc_customer_bought_product( $current_user->user_email, $current_user->ID, $product_id ) ) {
+						$status_code = 402;
+						$response['message'] = __( 'You must purchase this product before you can access it.', BF2_DATA['TextDomain'] );
+						wp_send_json( $response, $status_code );
+					}
+				}
+			}
+		}
+
 		if ( $badge_id && $current_user && self::user_can_request_badge( $badge_id, $current_user->ID ) ) {
 			$badge            = BadgeClass::get( $badge_id );
 			$content          = $_POST['content'];
