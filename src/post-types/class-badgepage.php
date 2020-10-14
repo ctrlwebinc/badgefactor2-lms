@@ -490,7 +490,7 @@ class BadgePage {
 
 		// Get badges with a badgr_badge_class_slug meta where no badge-page with same meta exists.
 		$badges = $wpdb->get_results(
-			"SELECT b.*, bcs.meta_value AS badge_class_slug, c.meta_value AS criteria, t.slug AS badge_category, t.name AS badge_category_name, et.meta_value AS earning_type FROM wp_posts as b
+			"SELECT b.*, bcs.meta_value AS badge_class_slug, c.meta_value AS criteria, t.slug AS badge_category, t.name AS badge_category_name, et.meta_value AS earning_type, f.meta_value AS gf_id FROM wp_posts as b
 			JOIN wp_postmeta as bcs
 			ON b.ID = bcs.post_id
 			JOIN wp_postmeta AS c
@@ -501,11 +501,14 @@ class BadgePage {
 			ON b.ID = tr.object_id 
 			JOIN wp_terms as t
 			ON tr.term_taxonomy_id = t.term_id
+			JOIN wp_postmeta AS f
+			ON f.post_id = b.ID
 			WHERE post_type = 'badges' AND
 			bcs.meta_key = 'badgr_badge_class_slug' AND
 		    ( tr.term_taxonomy_id = 190 OR tr.term_taxonomy_id = 191 ) AND
 			c.meta_key = 'badge_criteria' AND
-			et.meta_key = '_badgeos_earned_by'
+			et.meta_key = '_badgeos_earned_by' AND
+			f.meta_key = 'badgefactor_form_id'
 			AND NOT EXISTS (
 			SELECT bp.ID FROM wp_posts AS bp
 			JOIN wp_postmeta AS bpbcs
@@ -517,6 +520,7 @@ class BadgePage {
 		$count = 0;
 
 		foreach ( $badges as $badge_post_id => $badge_post ) {
+
 			// Create a post of post type badge-page.
 			$created_post_id = wp_insert_post(
 				array(
@@ -525,6 +529,15 @@ class BadgePage {
 					'post_title'   => $badge_post->post_title, // Reuse post_content.
 					'post_status'  => 'publish',
 					'post_type'    => 'badge-page',
+					'meta_input' => array (
+						'badge' => $badge_post->badge_class_slug,
+						'badge_page_request_form_type' => 'basic',
+						'badge_criteria' => $badge_post->criteria,
+						//'badge_approval_type' => ,
+						// 'badge_endorsed_by' => ,
+						'badge_request_form_type' => 'gravityforms',
+						'badge_request_form_id' => $badge_post->gf_id,
+					),
 				)
 			);
 
@@ -532,11 +545,11 @@ class BadgePage {
 				return false;
 			}
 			// Add badgepage_badge meta with the associated badge class slug as its value.
-			update_post_meta( $created_post_id, 'badge', $badge_post->badge_class_slug );
+			//update_post_meta( $created_post_id, 'badge', $badge_post->badge_class_slug );
 			// Add badge_page_request_form_type with value basic.
-			update_post_meta( $created_post_id, 'badge_page_request_form_type', 'basic' );
+			//update_post_meta( $created_post_id, 'badge_page_request_form_type', 'basic' );
 			// Add criteria as the value of badge_criteria.
-			update_post_meta( $created_post_id, 'badge_criteria', $badge_post->criteria );
+			//update_post_meta( $created_post_id, 'badge_criteria', $badge_post->criteria );
 			// Add badge approval type under badge_approval_type as one of approved, auto-approved or given.
 			$approval_type = null;
 			switch ( $badge_post->earning_type ) {
