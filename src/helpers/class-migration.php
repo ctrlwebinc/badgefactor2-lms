@@ -300,4 +300,38 @@ class Migration {
 
 		return $count;
 	}
+
+	/**
+	 * Link badge pages and courses
+	 *
+	 * @return mixed
+	 */
+	public static function link_badge_pages_and_courses() {
+		global $wpdb;
+
+		$badge_pages_and_courses_pairs = $wpdb->get_results(
+		"SELECT badge_page.ID AS badge_page_id, course.ID AS course_id FROM wp_posts AS badge_page
+		JOIN wp_postmeta AS badge_page_badge_class_slug
+		ON badge_page_badge_class_slug.post_id = badge_page.`ID`
+		JOIN wp_posts AS course
+		JOIN wp_postmeta AS course_badge_class_slug
+		ON course_badge_class_slug.post_id = course.ID
+		WHERE badge_page.post_type = 'badge-page'
+		AND badge_page_badge_class_slug.meta_key = 'badge'
+		AND course.post_type = 'course'
+		AND course_badge_class_slug.meta_key = 'badgr_badge_class_slug'
+		AND badge_page_badge_class_slug.meta_value = course_badge_class_slug.meta_value;");
+
+		$count = 0;
+
+		foreach ( $badge_pages_and_courses_pairs as $badge_pages_and_courses_pair ) {
+			// Add course_badge_page meta with the associated badge page id as its value
+			update_post_meta( $badge_pages_and_courses_pair->course_id, 'course_badge_page', $badge_pages_and_courses_pair->badge_page_id );
+
+			$count++;
+		}
+
+		return $count;
+	}
+
 }

@@ -22,6 +22,7 @@
 
 namespace BadgeFactor2;
 
+use BadgeFactor2\Helpers\Migration;
 use WP_CLI;
 use WP_CLI_Command;
 use BadgeFactor2\BadgrUser;
@@ -95,4 +96,26 @@ class BadgeFactor2_CLI extends WP_CLI_Command {
 			WP_CLI::success( 'Finished migrating courses: ' . $count . ' courses created' );
 		}
 	}
+
+	/**
+	 * Undocumented function
+	 *
+	 * @param array $args Arguments.
+	 * @param array $assoc_args Associative arguments.
+	 * @return void
+	 */
+	public function link_badge_pages_and_courses( $args, $assoc_args ) {
+		if ( count( $args ) !== 0 ) {
+			WP_CLI::error( 'Usage: link_badge_pages_and_courses' );
+		}
+
+		$count = Migration::link_badge_pages_and_courses();
+
+		if ( false === $count ) {
+			WP_CLI::error( 'Linking badge pages and courses failed' );
+		} else {
+			WP_CLI::success( 'Finished linking badge pages and courses: ' . $count . ' courses and badge pages linked' );
+		}
+	}
+
 }
