@@ -596,9 +596,14 @@ class BadgePage {
 			ON b.ID = ccm.post_id
 			JOIN wp_posts AS ccp
 			ON ccm.meta_value = ccp.ID
+			JOIN wp_term_relationships as tr
+			ON b.ID = tr.object_id 
+			JOIN wp_terms as t
+			ON tr.term_taxonomy_id = t.term_id
 			WHERE b.post_type = 'badges'
 			AND	bcs.meta_key = 'badgr_badge_class_slug'
-			AND ccm.meta_key = 'badgefactor_page_id';",
+			AND ccm.meta_key = 'badgefactor_page_id'
+			AND tr.term_taxonomy_id = 190",
 			OBJECT_K
 		);
 
