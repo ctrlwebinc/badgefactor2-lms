@@ -22,8 +22,11 @@
 
 namespace BadgeFactor2\Helpers;
 
+use WP_Post;
+use WP_Query;
 use BadgeFactor2\BadgrUser;
 use BadgeFactor2\Models\Issuer;
+use BadgeFactor2\BadgrProvider;
 
 /**
  * Migration helper class.
@@ -41,7 +44,7 @@ class Migration {
 
 		// Get posts of type submission with status approved.
 		$assertions = $wpdb->get_results(
-			"SELECT ap.*, bcs.meta_value AS badge_class_slug, u.user_email AS recipient, eu.meta_value as evidence_url FROM wp_posts AS ap
+			"SELECT ap.*, bcs.meta_value AS badge_class_slug, u.user_email AS recipient, eu.meta_value as evidence_url, u.ID AS recipient_id, u.display_name AS requester_name FROM wp_posts AS ap
 			JOIN wp_postmeta AS apm
 			ON ap.ID = apm.post_id
 			JOIN wp_users AS u
@@ -90,6 +93,32 @@ class Migration {
 
 			// Save slug in post meta.
 			update_post_meta( $assertion_post_id, 'badgr_assertion_slug', $assertion_slug );
+
+			// Create approved badge request
+			// Prepare the post title and post name
+			$request_name_and_title = $assertion_post->requester_name . ' - ' . $assertion_post->post_title;
+
+			// Insert the badge request post
+			$created_post_id = wp_insert_post(
+				array(
+					'post_author'  => 1,
+					'post_title'   => $request_name_and_title,
+					'post_name'   => $request_name_and_title,
+					'post_status'  => 'publish',
+					'post_type'    => 'badge-request',
+					'post_date'    => $issued_on,
+					'meta_input' => array (
+						'badge' => $assertion_slug,
+						'type' => 'gravityforms',
+						'recipient' => $assertion_post->recipient_id,
+						'status' => 'approved',
+						'dates' => array ( 'requested' => $issued_on ),
+						'content' => "<a href='/pdf/5f74f2acb286d/5' target='_blank'>Formulaire soumis</a>", // FIXME: create proper content
+					),
+				)
+			);
+
+
 			$count++;
 		}
 
@@ -336,5 +365,4 @@ class Migration {
 
 		return $count;
 	}
-
 }
