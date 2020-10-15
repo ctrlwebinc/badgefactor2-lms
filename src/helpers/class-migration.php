@@ -328,6 +328,9 @@ class Migration {
 			// Add course_badge_page meta with the associated badge page id as its value
 			update_post_meta( $badge_pages_and_courses_pair->course_id, 'course_badge_page', $badge_pages_and_courses_pair->badge_page_id );
 
+			// Add course meta with the associated course id as its value
+			update_post_meta( $badge_pages_and_courses_pair->badge_page_id, 'course', $badge_pages_and_courses_pair->course_id );
+
 			$count++;
 		}
 
