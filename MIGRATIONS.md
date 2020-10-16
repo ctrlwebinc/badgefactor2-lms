@@ -145,7 +145,7 @@ Posts of type 'badges' without a 'badgr_badge_class_slug' meta will be migrated.
 
 ## Assertions
 
-Assertion migration is a one-step process where posts of type 'submission' are created as assertions in Badgr.
+Assertion migration is a one-step process where posts of type 'submission' are created as assertions in Badgr with a coresponding approved badge request posts.
 
 Badges classes ( and issuers ) must already be migrated before attempting to migrate assertions.
 
@@ -177,4 +177,14 @@ To created courses from badges, make sure that the Badges classes migrations hav
 
 ```bash
 wp bf2 create_courses_from_badges
+```
+
+## Linking badge pages and courses
+
+Badge pages and courses are linked in BadgeFactor2
+
+To link badge pages and course, mamke sure that badge pages and courses migrations have already run successfully and then use the command:
+
+```bash
+wp bf2 link_badge_pages_and_courses
 ```
