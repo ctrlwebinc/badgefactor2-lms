@@ -367,7 +367,7 @@ class Migration {
 	}
 
 	/**
-	 * Remove hard coded links from courses
+	 * Mark hard coded links from courses
 	 *
 	 * @return mixed
 	 */
@@ -466,6 +466,32 @@ class Migration {
 					$count++;
 					continue;
 				}
+			}
+
+			return $count;
+	}
+
+	/**
+	 * Remove marked links from courses
+	 *
+	 * @return mixed
+	 */
+	public static function removed_marked_links_from_courses() {
+		global $wpdb;
+
+		$courses = $wpdb->get_results(
+			"SELECT p.ID, p.post_content FROM wp_posts AS p
+			WHERE p.post_type = 'course' AND p.post_content LIKE '%div class=\"to-remove%';");
+
+			$count = 0;
+
+			foreach ( $courses as $course ) {
+				$updated_post_content = preg_replace( '/<div class="to-remove.*>(.|\s)*<\/div>/', '', $course->post_content);
+				wp_update_post( array (
+					'ID' => $course->ID,
+					'post_content' => $updated_post_content,
+				));
+				$count++;
 			}
 
 			return $count;
