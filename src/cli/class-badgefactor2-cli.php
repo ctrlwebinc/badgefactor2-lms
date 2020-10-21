@@ -118,4 +118,25 @@ class BadgeFactor2_CLI extends WP_CLI_Command {
 		}
 	}
 
+	/**
+	 * Undocumented function
+	 *
+	 * @param array $args Arguments.
+	 * @param array $assoc_args Associative arguments.
+	 * @return void
+	 */
+	public function mark_links_to_remove_from_courses( $args, $assoc_args ) {
+		if ( count( $args ) !== 0 ) {
+			WP_CLI::error( 'Usage: mark_links_to_remove_from_courses' );
+		}
+
+		$count = Migration::mark_links_to_remove_from_courses();
+
+		if ( false === $count ) {
+			WP_CLI::error( 'Link marking failed' );
+		} else {
+			WP_CLI::success( 'Finished marking links from courses: ' . $count . ' links marked' );
+		}
+	}
+
 }

@@ -365,4 +365,109 @@ class Migration {
 
 		return $count;
 	}
+
+	/**
+	 * Remove hard coded links from courses
+	 *
+	 * @return mixed
+	 */
+	public static function mark_links_to_remove_from_courses() {
+		global $wpdb;
+
+		$courses = $wpdb->get_results(
+			"SELECT p.ID, p.post_content FROM wp_posts AS p
+			WHERE p.post_type = 'course';");
+
+			$count = 0;
+
+			foreach ( $courses as $course ) {
+				// if we already have a div with class to-remove, skip
+				if ( true == preg_match( '/<div class="to-remove"/', $course->post_content ) ) {
+					continue;
+				}
+
+				if ( true == preg_match('/\[vc_row\]\[vc_column\]\[vc_column_text\]\s*<h2><a.*>.*quiz.*<\/a><\/h2>\s*.*$/', $course->post_content) ) {
+					$updated_post_content = preg_replace( '/(\[vc_row\]\[vc_column\]\[vc_column_text\]\s*<h2><a.*>.*quiz.*<\/a><\/h2>\s*.*$)/', '<div class="to-remove match1" style="background:yellow;">$1</div>', $course->post_content);
+					wp_update_post( array (
+						'ID' => $course->ID,
+						'post_content' => $updated_post_content,
+					));
+					$count++;
+					continue;
+				}
+
+				if ( true == preg_match('/\[vc_row\]\[vc_column\]\[vc_column_text\]\s*<h3><strong><a.*>.*quiz.*<\/a><\/strong><\/h3>\s*.*$/', $course->post_content) ) {
+					$updated_post_content = preg_replace( '/(\[vc_row\]\[vc_column\]\[vc_column_text\]\s*<h3><strong><a.*>.*quiz.*<\/a><\/strong><\/h3>\s*.*$)/', '<div class="to-remove match2" style="background:yellow;">$1</div>', $course->post_content);
+					wp_update_post( array (
+						'ID' => $course->ID,
+						'post_content' => $updated_post_content,
+					));
+					$count++;
+					continue;
+				}
+
+				if ( true == preg_match('/\[vc_row\]\[vc_column width="1\/4"\]\[vc_single_image.*\]\[\/vc_column\]\[vc_column width="3\/4"\]\[vc_column_text\]\s*<h2><a.*>.*emande.*<\/a><\/h2>\s*.*$/', $course->post_content) ) {
+					$updated_post_content = preg_replace( '/(\[vc_row\]\[vc_column width="1\/4"\]\[vc_single_image.*\]\[\/vc_column\]\[vc_column width="3\/4"\]\[vc_column_text\]\s*<h2><a.*>.*emande.*<\/a><\/h2>\s*.*$)/', '<div class="to-remove match3" style="background:yellow;">$1</div>', $course->post_content);
+					wp_update_post( array (
+						'ID' => $course->ID,
+						'post_content' => $updated_post_content,
+					));
+					$count++;
+					continue;
+				}
+
+				if ( true == preg_match('/(\[\/vc_column_text\])(\[vc_column_text\]\s*<h2><a.*>.*quiz.*<\/a><\/h2>\s*\[\/vc_column_text\])(\[\/vc_column\]\[\/vc_row\]$)/', $course->post_content, $matches) ) {
+					$updated_post_content = preg_replace( '/(\[\/vc_column_text\])(\[vc_column_text\]\s*<h2><a.*>.*quiz.*<\/a><\/h2>\s*\[\/vc_column_text\])(\[\/vc_column\]\[\/vc_row\]$)/', '$1<div class="to-remove match4" style="background:yellow;">$2</div>$3', $course->post_content);
+					wp_update_post( array (
+						'ID' => $course->ID,
+						'post_content' => $updated_post_content,
+					));
+					$count++;
+					continue;
+				}
+
+				if ( true == preg_match('/(\[\/vc_column_text\]\[\/vc_column.*\])(\[vc_column.*\]\[vc_column_text\]\s*<h2><a.*>.*emande.*<\/a><\/h2>\s*\[\/vc_column_text\]\[\/vc_column\])(\[\/vc_row\]$)/', $course->post_content, $matches) ) {
+					$updated_post_content = preg_replace( '/(\[\/vc_column_text\]\[\/vc_column.*\])(\[vc_column.*\]\[vc_column_text\]\s*<h2><a.*>.*emande.*<\/a><\/h2>\s*\[\/vc_column_text\]\[\/vc_column\])(\[\/vc_row\]$)/', '$1<div class="to-remove match5" style="background:yellow;">$2</div>$3', $course->post_content);
+					//var_dump($updated_post_content);die();
+					wp_update_post( array (
+						'ID' => $course->ID,
+						'post_content' => $updated_post_content,
+					));
+					$count++;
+					continue;
+				}
+
+				if ( true == preg_match('/(\[vc_row\]\[vc_column\]\[vc_column_text\]\s*<h2><a.*>.*emande.*<\/a><\/h2>\s*.*$)/', $course->post_content) ) {
+					$updated_post_content = preg_replace( '/(\[vc_row\]\[vc_column\]\[vc_column_text\]\s*<h2><a.*>.*emande.*<\/a><\/h2>\s*.*$)/', '<div class="to-remove match6" style="background:yellow;">$1</div>', $course->post_content);
+					wp_update_post( array (
+						'ID' => $course->ID,
+						'post_content' => $updated_post_content,
+					));
+					$count++;
+					continue;
+				}
+
+				if ( true == preg_match('/(\[\/vc_column_text\])(\[vc_column_text\]\s*<h2><a.*>.*emande.*<\/a><\/h2>\s*\[\/vc_column_text\]\[\/vc_column\]\[\/vc_row\]\[vc_row\]\[vc_column\]\[vc_column_text\]\s*.*\s*\[\/vc_column_text\])(\[\/vc_column\]\[\/vc_row\]$)/', $course->post_content) ) {
+					$updated_post_content = preg_replace( '/(\[\/vc_column_text\])(\[vc_column_text\]\s*<h2><a.*>.*emande.*<\/a><\/h2>\s*\[\/vc_column_text\]\[\/vc_column\]\[\/vc_row\]\[vc_row\]\[vc_column\]\[vc_column_text\]\s*.*\s*\[\/vc_column_text\])(\[\/vc_column\]\[\/vc_row\]$)/', '$1<div class="to-remove match7" style="background:yellow;">$2</div>$3', $course->post_content);
+					wp_update_post( array (
+						'ID' => $course->ID,
+						'post_content' => $updated_post_content,
+					));
+					$count++;
+					continue;
+				}
+
+				if ( true == preg_match('/(\[vc_row\]\[vc_column width="1\/4"\]\[vc_single_image.*\]\[\/vc_column\]\[vc_column width="3\/4"\]\[vc_column_text\]\s*<h2><a.*>.*emande.*<\/a><\/h2>\s*\[\/vc_column_text\]\[\/vc_column\]\[\/vc_row\]\[vc_row\]\[vc_column\]\[vc_column_text\]\s*.*\s*\[\/vc_column_text\]\[\/vc_column\]\[\/vc_row\]$)/', $course->post_content) ) {
+					$updated_post_content = preg_replace( '/(\[vc_row\]\[vc_column width="1\/4"\]\[vc_single_image.*\]\[\/vc_column\]\[vc_column width="3\/4"\]\[vc_column_text\]\s*<h2><a.*>.*emande.*<\/a><\/h2>\s*\[\/vc_column_text\]\[\/vc_column\]\[\/vc_row\]\[vc_row\]\[vc_column\]\[vc_column_text\]\s*.*\s*\[\/vc_column_text\]\[\/vc_column\]\[\/vc_row\]$)/', '<div class="to-remove match8" style="background:yellow;">$1</div>', $course->post_content);
+					wp_update_post( array (
+						'ID' => $course->ID,
+						'post_content' => $updated_post_content,
+					));
+					$count++;
+					continue;
+				}
+			}
+
+			return $count;
+	}
 }
