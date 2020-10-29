@@ -702,7 +702,7 @@ class BadgePage {
 			update_post_meta( $created_post_id, 'course_product', $product_id );
 			update_post_meta( $created_post_id, 'is_product', 'on' );
 			update_post_meta( $created_post_id, 'price', $product_price );
-var_dump([$created_post_id, $product_id]); die();
+
 			$count++;
 		}
 
