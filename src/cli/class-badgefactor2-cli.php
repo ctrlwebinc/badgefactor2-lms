@@ -160,4 +160,26 @@ class BadgeFactor2_CLI extends WP_CLI_Command {
 		}
 	}
 
+	/**
+	 * Undocumented function
+	 *
+	 * @param array $args Arguments.
+	 * @param array $assoc_args Associative arguments.
+	 * @return void
+	 */
+	public function test_product_category_change( $args, $assoc_args ) {
+		if ( count( $args ) !== 0 ) {
+			WP_CLI::error( 'Usage: test_product_category_change' );
+		}
+		$product_id = 245379;
+		wp_remove_object_terms( $product_id, 'simple', 'product_type' );
+		wp_set_object_terms( $product_id, 'course', 'product_type', true );
+
+		$product_id = 1888;
+		wp_remove_object_terms( $product_id, 'badge', 'product_type' );
+		wp_set_object_terms( $product_id, 'course', 'product_type', true );
+
+		WP_CLI::success( 'Finished removing marked links from courses: ' . $count . ' links removed' );
+	}
+
 }
