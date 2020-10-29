@@ -696,7 +696,7 @@ class BadgePage {
 			wp_set_object_terms( $product_id, 'course', 'product_type', true );
 	
 			// Get product price
-			$product_price = get_post_meta( $product_id, '_price');
+			$product_price = get_post_meta( $product_id, '_price', true);
 
 			// Create course metas course_product id is_product on and price $
 			update_post_meta( $created_post_id, 'course_product', $product_id );
