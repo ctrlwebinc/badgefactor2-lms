@@ -171,6 +171,8 @@ class BadgeFactor2_CLI extends WP_CLI_Command {
 		if ( count( $args ) !== 0 ) {
 			WP_CLI::error( 'Usage: test_product_category_change' );
 		}
+		// meta badgefactor_product_id post_type badges > course_product post_type course
+		// course also needs metas is_product => on and price => $123,00
 		$product_id = 245379;
 		wp_remove_object_terms( $product_id, 'simple', 'product_type' );
 		wp_set_object_terms( $product_id, 'course', 'product_type', true );
@@ -179,7 +181,7 @@ class BadgeFactor2_CLI extends WP_CLI_Command {
 		wp_remove_object_terms( $product_id, 'badge', 'product_type' );
 		wp_set_object_terms( $product_id, 'course', 'product_type', true );
 
-		WP_CLI::success( 'Finished removing marked links from courses: ' . $count . ' links removed' );
+		WP_CLI::success( 'Category change test completed.' );
 	}
 
 }
