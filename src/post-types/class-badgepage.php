@@ -687,6 +687,22 @@ class BadgePage {
 
 			}
 
+			// Link products and chnage their type
+			// Get the the product ID from badges
+			$product_id = get_post_meta( $badge_post_id, 'badgefactor_product_id', true);
+
+			// Replace product terms to change its type
+			wp_remove_object_terms( $product_id, 'badge', 'product_type' );
+			wp_set_object_terms( $product_id, 'course', 'product_type', true );
+	
+			// Get product price
+			$product_price = get_post_meta( $product_id, '_price');
+
+			// Create course metas course_product id is_product on and price $
+			update_post_meta( $created_post_id, 'course_product', $product_id );
+			update_post_meta( $created_post_id, 'is_product', 'on' );
+			update_post_meta( $created_post_id, 'price', $product_price );
+var_dump([$created_post_id, $product_id]); die();
 			$count++;
 		}
 
