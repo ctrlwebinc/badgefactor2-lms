@@ -695,7 +695,8 @@ class BadgeFactor2_Admin {
 			update_post_meta( $badge_request_id, 'status', 'granted' );
 			update_post_meta( $badge_request_id, 'approver', 'auto-approved' );
 			add_post_meta( $badge_request_id, 'dates', array( 'granted' => gmdate( 'Y-m-d H:i:s' ) ) );
-			BadgrProvider::add_assertion( $badge_entity_id, $recipient->user_email );
+			$assertion_entity_id = BadgrProvider::add_assertion( $badge_entity_id, $recipient->user_email );
+			add_post_meta( $badge_request_id, 'assertion', $assertion_entity_id );
 
 			return true;
 		}
@@ -738,7 +739,8 @@ class BadgeFactor2_Admin {
 				update_post_meta( $badge_request_id, 'status', 'granted' );
 				update_post_meta( $badge_request_id, 'approver', $approver->ID );
 				add_post_meta( $badge_request_id, 'dates', array( 'granted' => gmdate( 'Y-m-d H:i:s' ) ) );
-				BadgrProvider::add_assertion( $badge_entity_id, $recipient->user_email );
+				$assertion_entity_id = BadgrProvider::add_assertion( $badge_entity_id, $recipient->user_email );
+				add_post_meta( $badge_request_id, 'assertion', $assertion_entity_id );
 				do_action( 'badge_request_approval_confirmation_email', $badge_request_id );
 				$response = array(
 					'status'  => 'success',
