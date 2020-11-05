@@ -57,3 +57,8 @@
 .addon > .addon-status.inactive {
   color: #cd2f23;
 }
+
+.select2-container, .cmb2_select {
+  min-width: 50%;
+  max-width: 100%;
+}

@@ -23,9 +23,9 @@
 
 ?>
 <main class="section-inner" <?php post_class(); ?> id="post-<?php the_ID(); ?>" role="main">
-    <ul>
-        <?php foreach ( $badge_requests as $badge_request ) : ?>
-            <li><?php echo $badge_request->post_name; ?></li>
-        <?php endforeach; ?>
-    </ul>
+	<ul>
+		<?php foreach ( $badge_requests as $badge_request ) : ?>
+			<li><?php echo $badge_request->post_name; ?></li>
+		<?php endforeach; ?>
+	</ul>
 </main>

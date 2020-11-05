@@ -63,7 +63,11 @@ $course          = BadgeFactor2\Post_Types\BadgePage::get_course( $post->ID );
 
 <main class="section-inner" <?php post_class(); ?> id="post-<?php the_ID(); ?>" role="main">
 	<?php if ( 1 === intval( get_query_var( 'form' ) ) ) : ?>
-		<?php include( Template::locate( 'partials/badge-request-form' ) ); ?>
+		<?php if ( 1 === intval( get_query_var( 'autoevaluation' ) ) ) : ?>
+			<?php include( Template::locate( 'partials/autoevaluation-form' ) ); ?>
+		<?php else : ?>
+			<?php include( Template::locate( 'partials/badge-request-form' ) ); ?>
+		<?php endif; ?>
 	<?php else : ?>
 		<article class="c-bf2__section c-bf2__single">
 			<header class="c-bf2__header">

@@ -372,18 +372,6 @@ class BadgeFactor2_Admin {
 			)
 		);
 
-		/*
-		$badgefactor2_settings->add_field(
-			array(
-				'name'    => __( 'Members slug', BF2_DATA['TextDomain'] ),
-				'desc'    => __( 'When you modify this, you need to flush your rewrite rules.', BF2_DATA['TextDomain'] ),
-				'id'      => 'bf2_members_slug',
-				'type'    => 'text',
-				'default' => 'members',
-			)
-		);
-		*/
-
 		$badgefactor2_settings->add_field(
 			array(
 				'name'    => __( 'Form slug', BF2_DATA['TextDomain'] ),
@@ -391,6 +379,15 @@ class BadgeFactor2_Admin {
 				'id'      => 'bf2_form_slug',
 				'type'    => 'text',
 				'default' => 'form',
+			)
+		);
+
+		$badgefactor2_settings->add_field(
+			array(
+				'name'    => __( 'Activate self-evaluation form?', BF2_DATA['TextDomain'] ),
+				'id'      => 'bf2_autoevaluation_form',
+				'type'    => 'checkbox',
+				'default' => false,
 			)
 		);
 

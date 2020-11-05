@@ -80,9 +80,10 @@ class BadgeFactor2_Public {
 		$options = get_option( 'badgefactor2' );
 
 		add_rewrite_rule( 'issuers/([^/]+)/?$', 'index.php?issuer=$matches[1]', 'top' );
-		$form_slug = isset( $options['bf2_form_slug'] ) ? $options['bf2_form_slug'] : 'form';
+		$form_slug                = ! empty( $options['bf2_form_slug'] ) ? $options['bf2_form_slug'] : 'form';
+		$autoevaluation_form_slug = ! empty( $options['bf2_autoevaluation_form_slug'] ) ? $options['bf2_autoevaluation_form_slug'] : 'autoevaluation';
 		add_rewrite_rule( "badges/([^/]+)/{$form_slug}/?$", 'index.php?badge-page=$matches[1]&form=1', 'top' );
-
+		add_rewrite_rule( "badges/([^/]+)/{$autoevaluation_form_slug}/{$form_slug}/?$", 'index.php?badge-page=$matches[1]&form=1&autoevaluation=1', 'top' );
 		/*
 		 * TODO If we want to make a members list and page without buddypress.
 		 *
@@ -102,6 +103,7 @@ class BadgeFactor2_Public {
 	public static function add_custom_query_vars( $vars ) {
 		$vars[] = 'issuer';
 		$vars[] = 'form';
+		$vars[] = 'autoevaluation';
 
 		/*
 		 * TODO If we want to make a members list and page without buddypress.

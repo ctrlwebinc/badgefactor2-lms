@@ -273,8 +273,72 @@ class BadgePage {
 
 		$cmb->add_field(
 			array(
+				'id'         => 'badge_request_approver',
+				'name'       => __( 'Approvers', BF2_DATA['TextDomain'] ),
+				'type'       => 'pw_multiselect',
+				'options_cb' => array( Approver::class, 'select_options' ),
+				'attributes' => array(
+					'data-conditional-id'    => 'badge_approval_type',
+					'data-conditional-value' => 'approved',
+				),
+			)
+		);
+
+		$badgefactor2_options = get_option( 'badgefactor2' );
+
+		if ( is_plugin_active( 'bf2-gravityforms/bf2-gravityforms.php' ) &&
+			isset( $badgefactor2_options['bf2_autoevaluation_form'] ) &&
+			'on' === $badgefactor2_options['bf2_autoevaluation_form'] ) {
+
+			$cmb = new_cmb2_box(
+				array(
+					'id'           => 'badgepage_autoevaluation_info',
+					'title'        => __( 'Autoevaluation', BF2_DATA['TextDomain'] ),
+					'object_types' => array( self::$slug ),
+					'context'      => 'normal',
+					'priority'     => 'high',
+					'show_names'   => true,
+				)
+			);
+
+			$cmb->add_field(
+				array(
+					'id'         => 'autoevaluation_form_type',
+					'name'       => __( 'Form type', BF2_DATA['TextDomain'] ),
+					'type'       => 'select',
+					'options_cb' => array( self::class, 'autoevaluation_form_type_select_options' ),
+				)
+			);
+
+			$cmb->add_field(
+				array(
+					'id'         => 'autoevaluation_form_id',
+					'name'       => __( 'Form', BF2_DATA['TextDomain'] ),
+					'type'       => 'pw_select',
+					'options_cb' => array( self::class, 'gf_form_select_options' ),
+					'attributes' => array(
+						'data-conditional-id'    => 'autoevaluation_form_type',
+						'data-conditional-value' => 'gravityforms',
+					),
+				)
+			);
+		}
+
+		$cmb = new_cmb2_box(
+			array(
+				'id'           => 'badgepage_badge_request_info',
+				'title'        => __( 'Badge Request', BF2_DATA['TextDomain'] ),
+				'object_types' => array( self::$slug ),
+				'context'      => 'normal',
+				'priority'     => 'high',
+				'show_names'   => true,
+			)
+		);
+
+		$cmb->add_field(
+			array(
 				'id'         => 'badge_request_form_type',
-				'name'       => __( 'Badge Request Form type', BF2_DATA['TextDomain'] ),
+				'name'       => __( 'Form type', BF2_DATA['TextDomain'] ),
 				'type'       => 'select',
 				'options_cb' => array( self::class, 'form_type_select_options' ),
 			)
@@ -306,19 +370,6 @@ class BadgePage {
 				),
 				'attributes' => array(
 					'required' => 'required',
-				),
-			)
-		);
-
-		$cmb->add_field(
-			array(
-				'id'         => 'badge_request_approver',
-				'name'       => __( 'Approvers', BF2_DATA['TextDomain'] ),
-				'type'       => 'pw_multiselect',
-				'options_cb' => array( Approver::class, 'select_options' ),
-				'attributes' => array(
-					'data-conditional-id'    => 'badge_approval_type',
-					'data-conditional-value' => 'approved',
 				),
 			)
 		);
@@ -361,7 +412,7 @@ class BadgePage {
 
 
 	/**
-	 * Get select-formatted form type options.
+	 * Get select-formatted badge request form type options.
 	 *
 	 * @return array Options.
 	 */
@@ -371,6 +422,22 @@ class BadgePage {
 		);
 		if ( is_plugin_active( 'bf2-gravityforms/bf2-gravityforms.php' ) ) {
 			$options = array( 'gravityforms' => __( 'Gravity Forms', BF2_DATA['TextDomain'] ) ) + $options;
+		}
+		return $options;
+	}
+
+
+	/**
+	 * Get select-formatted autoevaluation form type options.
+	 *
+	 * @return array Options.
+	 */
+	public static function autoevaluation_form_type_select_options() {
+		$options = array(
+			'none' => __( 'None', BF2_DATA['TextDomain'] ),
+		);
+		if ( is_plugin_active( 'bf2-gravityforms/bf2-gravityforms.php' ) ) {
+			$options['gravityforms'] = __( 'Gravity Forms', BF2_DATA['TextDomain'] );
 		}
 		return $options;
 	}
@@ -529,14 +596,14 @@ class BadgePage {
 					'post_title'   => $badge_post->post_title, // Reuse post_content.
 					'post_status'  => 'publish',
 					'post_type'    => 'badge-page',
-					'meta_input' => array (
-						'badge' => $badge_post->badge_class_slug,
+					'meta_input'   => array(
+						'badge'                        => $badge_post->badge_class_slug,
 						'badge_page_request_form_type' => 'basic',
-						'badge_criteria' => $badge_post->criteria,
-						//'badge_approval_type' => ,
+						'badge_criteria'               => $badge_post->criteria,
+						// 'badge_approval_type' => ,
 						// 'badge_endorsed_by' => ,
-						'badge_request_form_type' => 'gravityforms',
-						'badge_request_form_id' => $badge_post->gf_id,
+						'badge_request_form_type'      => 'gravityforms',
+						'badge_request_form_id'        => $badge_post->gf_id,
 					),
 				)
 			);
@@ -689,14 +756,14 @@ class BadgePage {
 
 			// Link products and chnage their type
 			// Get the the product ID from badges
-			$product_id = get_post_meta( $badge_post_id, 'badgefactor_product_id', true);
+			$product_id = get_post_meta( $badge_post_id, 'badgefactor_product_id', true );
 
 			// Replace product terms to change its type
 			wp_remove_object_terms( $product_id, 'badge', 'product_type' );
 			wp_set_object_terms( $product_id, 'course', 'product_type', true );
-	
+
 			// Get product price
-			$product_price = get_post_meta( $product_id, '_price', true);
+			$product_price = get_post_meta( $product_id, '_price', true );
 
 			// Create course metas course_product id is_product on and price $
 			update_post_meta( $created_post_id, 'course_product', $product_id );
