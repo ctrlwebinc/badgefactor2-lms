@@ -108,7 +108,8 @@ class Migration {
 					'post_type'    => 'badge-request',
 					'post_date'    => $issued_on,
 					'meta_input' => array (
-						'badge' => $assertion_slug,
+						'assertion' => $assertion_slug,
+						'badge' => $assertion_post->badge_class_slug,
 						'type' => 'gravityforms',
 						'recipient' => $assertion_post->recipient_id,
 						'status' => 'approved',
