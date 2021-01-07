@@ -626,6 +626,14 @@ class BadgeFactor2_Admin {
 				'name'      => __( 'Client Secret', BF2_DATA['TextDomain'] ),
 				'id'        => 'badgr_server_client_secret',
 				'type'      => 'text',
+			)
+		);
+
+		$badgr_settings->add_field(
+			array(
+				'name' => __( 'Password Grant Client ID', BF2_DATA['TextDomain'] ),
+				'id'   => 'badgr_server_password_grant_client_id',
+				'type' => 'text',
 				'after_row' => function ( $field_args, $field ) {
 					include BF2_ABSPATH . 'templates/admin/tpl.badgr-server-status.php';
 					include BF2_ABSPATH . 'templates/admin/tpl.badgr-server-link-admin.php';
