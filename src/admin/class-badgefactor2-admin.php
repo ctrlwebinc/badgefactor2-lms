@@ -391,6 +391,20 @@ class BadgeFactor2_Admin {
 			)
 		);
 
+		$badgefactor2_settings->add_field(
+			array(
+				'name'       => __( 'Autoevaluation form slug', BF2_DATA['TextDomain'] ),
+				'desc'       => __( 'When you modify this, you need to flush your rewrite rules.', BF2_DATA['TextDomain'] ),
+				'id'         => 'bf2_autoevaluation_form_slug',
+				'type'       => 'text',
+				'default'    => 'autoevaluation',
+				'attributes' => array(
+					'data-conditional-id'    => 'bf2_autoevaluation_form',
+					'data-conditional-value' => true,
+				),
+			)
+		);
+
 		/**
 		 * Registers Emails settings page.
 		 */

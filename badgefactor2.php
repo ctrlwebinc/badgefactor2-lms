@@ -21,7 +21,7 @@
  *
  * Plugin Name: Badge Factor 2
  * Plugin URI: https://github.com/ctrlwebinc/badgefactor2
- * GitHub Plugin URI: https://ctrlwebinc/badgefactor2
+ * GitHub Plugin URI: https://github.com/ctrlwebinc/badgefactor2
  * Description: Issues and manages Open Badges with Badgr server
  * Author: ctrlweb
  * Version: 1.0.0
