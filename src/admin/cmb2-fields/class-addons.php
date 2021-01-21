@@ -51,6 +51,10 @@ class Addons {
 	 */
 	public static function render_addons( $field, $field_escaped_value, $field_object_id, $field_object_type, $field_type_object ) {
 		$addons = array(
+			'bf2-certificates' => array(
+				'title' => __( 'BadgeFactor2 Certificates', BF2_DATA['TextDomain'] ),
+				'url'   => 'https://github.com/ctrlwebinc/bf2-certificates',
+			),
 			'bf2-courses'      => array(
 				'title' => __( 'BadgeFactor2 Courses', BF2_DATA['TextDomain'] ),
 				'url'   => 'https://github.com/ctrlwebinc/bf2-courses',
