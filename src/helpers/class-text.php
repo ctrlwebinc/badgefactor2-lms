@@ -53,4 +53,18 @@ class Text {
 		return $random_string;
 
 	}
+
+	/**
+	 * Generate html options string from array.
+	 *
+	 * @param array $options_array Options array.
+	 * @return string html options.
+	 */
+	public static function html_options_from_array( $options_array ) {
+		$options = '';
+		foreach ( $options_array as $id => $text ) {
+			$options .= sprintf( '<option value="%s">%s</option>', $id, $text );
+		}
+		return $options;
+	}
 }
