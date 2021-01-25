@@ -58,12 +58,17 @@ class Text {
 	 * Generate html options string from array.
 	 *
 	 * @param array $options_array Options array.
+	 * @param string $selected_value Selected value.
 	 * @return string html options.
 	 */
-	public static function html_options_from_array( $options_array ) {
+	public static function html_options_from_array( $options_array, $selected_value = null ) {
 		$options = '';
 		foreach ( $options_array as $id => $text ) {
-			$options .= sprintf( '<option value="%s">%s</option>', $id, $text );
+			if ( ! empty( $selected_value ) && $id === $selected_value ) {
+				$options .= sprintf( '<option value="%s" selected>%s</option>', $id, $text );
+			} else {
+				$options .= sprintf( '<option value="%s">%s</option>', $id, $text );
+			}
 		}
 		return $options;
 	}
