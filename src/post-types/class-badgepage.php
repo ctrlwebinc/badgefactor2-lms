@@ -781,9 +781,9 @@ class BadgePage {
 	 * Get associated courses.
 	 *
 	 * @param string $badgepage_id Badge Page ID.
-	 * @return array
+	 * @return array Courses array.
 	 */
-	public static function get_course( $badgepage_id ) {
+	public static function get_courses( $badgepage_id ) {
 		if ( is_plugin_active( sprintf( '%s/%s.php', 'bf2-courses', 'bf2-courses' ) ) ) {
 			$query = new \WP_Query(
 				array(
@@ -795,7 +795,7 @@ class BadgePage {
 				)
 			);
 			if ( $query->posts ) {
-				return $query->posts[0];
+				return $query->posts;
 			}
 		}
 		return array();

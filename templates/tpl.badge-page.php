@@ -57,7 +57,7 @@ $badge_entity_id = get_post_meta( $post->ID, 'badge', true );
 $badge_criteria  = get_post_meta( $post->ID, 'badge_criteria', true );
 $badge           = BadgeFactor2\Models\BadgeClass::get( $badge_entity_id );
 $issuer          = $badge ? BadgeFactor2\Models\Issuer::get( $badge->issuer ) : null;
-$course          = BadgeFactor2\Post_Types\BadgePage::get_course( $post->ID );
+$courses         = BadgeFactor2\Post_Types\BadgePage::get_courses( $post->ID );
 
 ?>
 
@@ -92,7 +92,8 @@ $course          = BadgeFactor2\Post_Types\BadgePage::get_course( $post->ID );
 							<a target="_blank" href="<?php echo $issuer->url; ?>"><?php echo $issuer->name; ?></a>
 						</h3>
 						<div class="c-bf2__badge__actions">
-							<?php if ( $course ) : ?>
+							<?php if ( $courses ) : ?>
+								<?php foreach ( $courses as $course ) : ?>
 								<div class="c-bf2__badge__action">
 									<?php if ( BadgeFactor2\Post_Types\Course::is_accessible() ) : ?>
 										<a class="c-bf2__btn" href="<?php echo get_permalink( $course ); ?>"><?php echo __( 'Take this course', BF2_DATA['TextDomain'] ); ?></a>
@@ -102,6 +103,7 @@ $course          = BadgeFactor2\Post_Types\BadgePage::get_course( $post->ID );
 										<?php echo __( 'This course is not currently available.', BF2_DATA['TextDomain'] ); ?>
 									<?php endif; ?>
 								</div>
+								<?php endforeach; ?>
 							<?php endif; ?>
 							<!-- <div class="c-bf2__badge__action">
 								<a class="c-bf2__btn" href="http://badge-factor-2.test/badges/coincoin-badge/formulaire">Request this badge</a>
