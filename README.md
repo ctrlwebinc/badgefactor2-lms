@@ -6,9 +6,10 @@ Badge Factor 2 is a [WordPress](https://wordpress.org/) plugin which issues and 
 
 ## Templates
 
-### Badge Pages
+### Badges
 
-tpl.badge-page.php
+tpl.badges.php
+tpl.badge.php
 
 ### Badge Requests
 

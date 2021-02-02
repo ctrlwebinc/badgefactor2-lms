@@ -24,6 +24,9 @@
  * @phpcs:disable WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
  */
 
+use BadgeFactor2\Models\Assertion;
+use BadgeFactor2\Post_Types\BadgePage;
+
 /*
  * You can override this template by copying it in your theme, in a
  * badgefactor2/ subdirectory, and modifying it there.
@@ -31,7 +34,16 @@
 
 get_header();
 
-$assertion = BadgeFactor2\Models\Assertion::get( $assertion );
+$user = get_user_by( 'slug', get_query_var( 'member' ) );
+
+$assertions = Assertion::all_for_user( $user );
+foreach ( $assertions as $a ) {
+	$badgepage = BadgePage::get_by_badgeclass_id( $a->badgeclass );
+	if ( get_query_var( 'badge' ) === $badgepage->post_name ) {
+		$assertion = $a;
+		break;
+	}
+}
 $badge     = BadgeFactor2\Models\BadgeClass::get( $assertion->badgeclass );
 $issuer    = BadgeFactor2\Models\Issuer::get( $assertion->issuer );
 ?>
@@ -67,6 +79,9 @@ $issuer    = BadgeFactor2\Models\Issuer::get( $assertion->issuer );
 						<?php echo $badge->description; ?>
 						</div>
 					</div><!-- .badge__description -->
+					<div class="badge__links">
+						
+					</div><!-- .badge_links -->
 				</div><!-- .badge__container -->
 			</div><!-- .content -->
 		</div><!-- .entry-content --> 

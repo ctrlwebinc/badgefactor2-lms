@@ -490,6 +490,29 @@ class BadgePage {
 		return $posts;
 	}
 
+	public static function get( $slug ) {
+		$args  = array(
+			'post_type'   => self::$slug,
+			'numberposts' => 1,
+			'post_status' => 'publish',
+			'name'        => $slug,
+		);
+		$posts = get_posts( $args );
+
+		foreach ( $posts as $i => $post ) {
+			$badge_entity_id    = get_post_meta( $post->ID, 'badgr_badge', true );
+			$badge              = BadgeClass::get( $badge_entity_id );
+			$posts[ $i ]->badge = $badge;
+
+			if ( $badge ) {
+				$issuer_entity_id           = $badge->issuer;
+				$issuer                     = Issuer::get( $issuer_entity_id );
+				$posts[ $i ]->badge->issuer = $issuer;
+			}
+			return $posts[ $i ];
+		}
+	}
+
 
 	/**
 	 * Get select-formatted options.

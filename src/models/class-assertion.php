@@ -26,7 +26,9 @@ namespace BadgeFactor2\Models;
 
 use BadgeFactor2\Badgr_Entity;
 use BadgeFactor2\BadgrProvider;
+use BadgeFactor2\BadgrUser;
 use BadgeFactor2\WP_Sortable;
+use WP_User;
 
 /**
  * Assertion Class.
@@ -89,6 +91,18 @@ class Assertion implements Badgr_Entity {
 		}
 
 		return $assertions;
+	}
+
+
+	/**
+	 * Retrieve a specified user's assertions from Badgr provider.
+	 *
+	 * @param WP_User $user User.
+	 * @return array Assertions.
+	 */
+	public static function all_for_user( WP_User $user ) {
+		$badgr_user = new BadgrUser( $user );
+		return BadgrProvider::get_all_assertions_from_user_backpack( $badgr_user );
 	}
 
 
