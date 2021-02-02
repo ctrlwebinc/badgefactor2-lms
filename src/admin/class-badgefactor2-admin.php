@@ -31,6 +31,7 @@ use BadgeFactor2\Admin\Lists\Issuers;
 use BadgeFactor2\BadgrClient;
 use BadgeFactor2\Models\BadgeClass;
 use BadgeFactor2\Post_Types\BadgePage;
+use CMB2_Field;
 
 /**
  * Badge Factor 2 Admin Class.
@@ -66,28 +67,34 @@ class BadgeFactor2_Admin {
 	 */
 	public static function init_hooks() {
 
-		// WordPress hooks.
-		add_filter( 'set-screen-option', array( self::class, 'set_screen' ), 10, 3 );
-		add_action( 'cmb2_admin_init', array( self::class, 'admin_init' ) );
-		add_action( 'admin_enqueue_scripts', array( self::class, 'load_resources' ) );
-		add_action( 'admin_menu', array( self::class, 'admin_menus' ) );
-		add_filter( 'pw_cmb2_field_select2_asset_path', array( self::class, 'pw_cmb2_field_select2_asset_path' ), 10 );
-
 		// Ajax Hooks.
+		add_filter( 'set-screen-option', array( self::class, 'set_screen' ), 10, 3 );
+		add_action( 'wp_ajax_approve_badge_request', array( self::class, 'ajax_approve_badge_request' ) );
 		add_action( 'wp_ajax_bf2_filter_type', array( self::class, 'ajax_filter_type' ) );
 		add_action( 'wp_ajax_bf2_filter_value', array( self::class, 'ajax_filter_value' ) );
-		add_action( 'wp_ajax_approve_badge_request', array( self::class, 'ajax_approve_badge_request' ) );
 		add_action( 'wp_ajax_reject_badge_request', array( self::class, 'ajax_reject_badge_request' ) );
 		add_action( 'wp_ajax_revise_badge_request', array( self::class, 'ajax_revise_badge_request' ) );
 
 		// BadgeFactor2 Hooks.
-		add_action( 'auto_approve_badge_request', array( self::class, 'auto_approve_badge_request' ), 10 );
 		add_action( 'approve_badge_request', array( self::class, 'approve_badge_request' ), 10, 3 );
-		add_action( 'reject_badge_request', array( self::class, 'reject_badge_request' ), 10, 4 );
-		add_action( 'revise_badge_request', array( self::class, 'revise_badge_request' ), 10, 4 );
+		add_action( 'auto_approve_badge_request', array( self::class, 'auto_approve_badge_request' ), 10 );
 		add_action( 'badge_request_approval_confirmation_email', array( self::class, 'badge_request_approval_confirmation_email' ), 10 );
 		add_action( 'badge_request_rejection_confirmation_email', array( self::class, 'badge_request_rejection_confirmation_email' ), 10 );
 		add_action( 'badge_request_revision_confirmation_email', array( self::class, 'badge_request_revision_confirmation_email' ), 10 );
+		add_action( 'reject_badge_request', array( self::class, 'reject_badge_request' ), 10, 4 );
+		add_action( 'revise_badge_request', array( self::class, 'revise_badge_request' ), 10, 4 );
+
+		// CMB2 Hooks.
+		add_action( 'cmb2_admin_init', array( self::class, 'admin_init' ) );
+		add_action( 'cmb2_save_field_bf2_form_slug', array( self::class, 'save_form_slug' ), 99, 3 );
+		add_action( 'cmb2_save_field_bf2_autoevaluation_form_slug', array( self::class, 'save_autoevaluation_form_slug' ), 99, 3 );
+
+		// WordPress Hooks.
+		add_action( 'admin_enqueue_scripts', array( self::class, 'load_resources' ) );
+		add_action( 'admin_menu', array( self::class, 'admin_menus' ) );
+		add_action( 'init', array( self::class, 'flush_form_slug'), 10 );
+		add_action( 'init', array( self::class, 'flush_autoevaluation_form_slug'), 10 );
+		add_filter( 'pw_cmb2_field_select2_asset_path', array( self::class, 'pw_cmb2_field_select2_asset_path' ), 10 );	
 	}
 
 
@@ -375,7 +382,6 @@ class BadgeFactor2_Admin {
 		$badgefactor2_settings->add_field(
 			array(
 				'name'    => __( 'Form slug', BF2_DATA['TextDomain'] ),
-				'desc'    => __( 'When you modify this, you need to flush your rewrite rules.', BF2_DATA['TextDomain'] ),
 				'id'      => 'bf2_form_slug',
 				'type'    => 'text',
 				'default' => 'form',
@@ -394,7 +400,6 @@ class BadgeFactor2_Admin {
 		$badgefactor2_settings->add_field(
 			array(
 				'name'       => __( 'Autoevaluation form slug', BF2_DATA['TextDomain'] ),
-				'desc'       => __( 'When you modify this, you need to flush your rewrite rules.', BF2_DATA['TextDomain'] ),
 				'id'         => 'bf2_autoevaluation_form_slug',
 				'type'       => 'text',
 				'default'    => 'autoevaluation',
@@ -1079,5 +1084,55 @@ class BadgeFactor2_Admin {
 	 */
 	public static function pw_cmb2_field_select2_asset_path() {
 		return BF2_BASEURL . '/lib/cmb-field-select2';
+	}
+
+
+	/**
+	 * Hook called on form_slug field save.
+	 *
+	 * @param boolean $updated Updated.
+	 * @param string $action Action.
+	 * @param CMB2_Field $instance Field instance.
+	 * @return void
+	 */
+	public static function save_form_slug( bool $updated, string $action, CMB2_Field $instance ) {
+		set_transient( 'flush_form_slug', true );
+	}
+
+
+	/**
+	 * Hook called to verify if rewrite rules flush is required.
+	 *
+	 * @return void
+	 */
+	public static function flush_form_slug() {
+		if ( delete_transient( 'flush_form_slug' ) ) {
+			flush_rewrite_rules();
+		}
+	}
+
+
+	/**
+	 * Hook called on form_slug field save.
+	 *
+	 * @param boolean $updated Updated.
+	 * @param string $action Action.
+	 * @param CMB2_Field $instance Field instance.
+	 * @return void
+	 */
+	public static function save_autoevaluation_form_slug( bool $updated, string $action, CMB2_Field $instance ) {
+		set_transient( 'flush_autoevaluation_form_slug', true );
+	}
+
+
+	/**
+	 * Hook called to verify if rewrite rules flush is required.
+	 *
+	 * @return void
+	 */
+	public static function flush_autoevaluation_form_slug() {
+		if ( delete_transient( 'flush_autoevaluation_form_slug' ) ) {
+			flush_rewrite_rules();
+		}
 	}
 }
