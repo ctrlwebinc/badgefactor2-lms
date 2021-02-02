@@ -36,6 +36,7 @@ use BadgeFactor2\Admin\CMB2_Fields\Badge_Request_Type;
 use BadgeFactor2\Admin\CMB2_Fields\Dates;
 use BadgeFactor2\Admin\Notices;
 use BadgeFactor2\Helpers\Constant;
+use BadgeFactor2\Widgets\User_Assertions_Widget;
 
 /**
  * Badge Factor 2 Main Class.
@@ -113,6 +114,9 @@ class BadgeFactor2 {
 		// Shortcodes.
 		Shortcodes\Badges::init_hooks();
 
+		// Widgets.
+		User_Assertions_Widget::init_hooks();
+
 		// Badgr.
 		BadgrClient::init_hooks();
 		BadgrUser::init_hooks();
@@ -127,6 +131,7 @@ class BadgeFactor2 {
 		// Admin.
 		if ( is_admin() || ( defined( 'WP_CLI' ) && WP_CLI ) ) {
 			BadgeFactor2_Admin::init_hooks();
+			BuddyPress::init_hooks();
 			Addons::init_hooks();
 			Badge::init_hooks();
 			Badge_Request_Approver::init_hooks();
@@ -156,6 +161,7 @@ class BadgeFactor2 {
 		require_once 'phar://' . BF2_ABSPATH . 'lib/league-oauth2-client.phar/vendor/autoload.php';
 
 		// Helpers.
+		require_once BF2_ABSPATH . 'src/helpers/class-buddypress.php';
 		require_once BF2_ABSPATH . 'src/helpers/class-migration.php';
 		require_once BF2_ABSPATH . 'src/helpers/class-template.php';
 		require_once BF2_ABSPATH . 'src/helpers/class-text.php';
@@ -182,6 +188,9 @@ class BadgeFactor2 {
 		require_once BF2_ABSPATH . 'src/public/shortcodes/class-badges.php';
 		require_once BF2_ABSPATH . 'src/public/shortcodes/class-issuers.php';
 
+		// Widgets.
+		require_once BF2_ABSPATH . 'src/public/widgets/class-user-assertions-widget.php';
+
 		// Post Types.
 		require_once BF2_ABSPATH . 'src/roles/class-approver.php';
 		require_once BF2_ABSPATH . 'src/post-types/class-badgepage.php';
@@ -195,6 +204,7 @@ class BadgeFactor2 {
 			require_once BF2_ABSPATH . 'src/admin/class-notices.php';
 			require_once BF2_ABSPATH . 'src/admin/class-badgefactor2-admin.php';
 			require_once BF2_ABSPATH . 'src/admin/class-badgr-list.php';
+			require_once BF2_ABSPATH . 'src/admin/buddypress/class-buddypress.php';
 			require_once BF2_ABSPATH . 'src/admin/cmb2-fields/class-addons.php';
 			require_once BF2_ABSPATH . 'src/admin/cmb2-fields/class-badge.php';
 			require_once BF2_ABSPATH . 'src/admin/cmb2-fields/class-badge-request-approver.php';
