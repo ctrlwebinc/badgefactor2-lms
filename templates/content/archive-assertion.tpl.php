@@ -45,7 +45,7 @@ global $bf2_template;
 					<div class="c-bf2__badge c-bf2__list__item">
 						<a class="c-bf2__badge__inner" href="badges/<?php echo $assertion->badgepage->post_name; ?>">
 							<img class="c-bf2__badge__image" src="<?php echo $assertion->image; ?>" alt="<?php echo $assertion->name; ?>">
-							<h3 class="c-bf2__badge__title"><?php echo $badge->name; ?></h3>
+							<h3 class="c-bf2__badge__title"><?php echo $assertion->badge->name; ?></h3>
 						</a>
 					</div>
 				<?php endforeach; ?>
