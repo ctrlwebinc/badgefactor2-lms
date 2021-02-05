@@ -40,7 +40,7 @@ Some official Badge Factor 2 add-ons also provide templates in the same manner a
 
 ##### Certificates
 
-- Uses the templating engine, but returns a generated PDF, and therefore does not provide a template.
+Uses the templating engine, but returns a generated PDF, and therefore does not provide a template.
 
 ##### Courses
 
