@@ -91,5 +91,4 @@ class Template {
 		require $file;
 		return ob_get_clean();
 	}
-
 }

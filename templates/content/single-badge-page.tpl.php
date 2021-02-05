@@ -50,8 +50,6 @@ if ( 1 === intval( get_query_var( 'form' ) ) &&
 	}
 }
 
-get_header();
-
 $badge_page      = $post;
 $badge_entity_id = get_post_meta( $post->ID, 'badge', true );
 $badge_criteria  = get_post_meta( $post->ID, 'badge_criteria', true );
@@ -115,5 +113,3 @@ $courses         = BadgeFactor2\Post_Types\BadgePage::get_courses( $post->ID );
 		</article>
 	<?php endif; ?>
 </main>
-<?php
-get_footer();

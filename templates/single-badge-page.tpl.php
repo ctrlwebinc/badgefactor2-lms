@@ -21,13 +21,9 @@
  *
  * @phpcs:disable WordPress.WP.I18n.NonSingularStringLiteralDomain
  * @phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound
- * @phpcs:disable WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
  */
 
-use BadgeFactor2\Models\Assertion;
-use BadgeFactor2\Post_Types\BadgePage;
-
-global $bf2_template;
+use BadgeFactor2\Helpers\Template;
 
 /*
  * You can override this template by copying it in your theme, in a
@@ -36,6 +32,6 @@ global $bf2_template;
 
 get_header();
 
-include __DIR__ . '/content/single-assertion.tpl.php';
+include __DIR__ . '/content/single-badge-page.tpl.php';
 
 get_footer();

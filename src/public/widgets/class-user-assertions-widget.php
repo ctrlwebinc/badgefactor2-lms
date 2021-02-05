@@ -77,11 +77,7 @@ class User_Assertions_Widget extends \WP_Widget {
 
 		// Before and after widget arguments are defined by themes.
 		echo $args['before_widget'];
-
-		// FIXME Use controllers.
-
 		echo Template::include_to_var( Assertion_Controller::archive( true ) );
-
 		echo $args['after_widget'];
 	}
 

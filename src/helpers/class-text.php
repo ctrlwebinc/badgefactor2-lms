@@ -57,7 +57,7 @@ class Text {
 	/**
 	 * Generate html options string from array.
 	 *
-	 * @param array $options_array Options array.
+	 * @param array  $options_array Options array.
 	 * @param string $selected_value Selected value.
 	 * @return string html options.
 	 */
