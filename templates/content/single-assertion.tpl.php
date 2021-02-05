@@ -24,14 +24,11 @@
  * @phpcs:disable WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
  */
 
-use BadgeFactor2\Models\Assertion;
-use BadgeFactor2\Post_Types\BadgePage;
-
 global $bf2_template;
 
 /*
- * You can override this template by copying it in your theme, in a
- * badgefactor2/ subdirectory, and modifying it there.
+ * You can override this template by copying it in your theme.
+ * See README for details.
  */
 ?>
 <article <?php post_class(); ?>>

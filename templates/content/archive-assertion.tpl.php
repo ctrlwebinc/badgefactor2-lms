@@ -23,13 +23,13 @@
  * @phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound
  */
 
+/*
+ * You can override this template by copying it in your theme.
+ * See README for details.
+ */
+
 use BadgeFactor2\Models\Assertion;
 use BadgeFactor2\Post_Types\BadgePage;
-
-/*
- * You can override this template by copying it in your theme, in a
- * badgefactor2/ subdirectory, and modifying it there.
- */
 
 global $bp;
 $user = get_user_by( 'id', $bp->displayed_user->id );

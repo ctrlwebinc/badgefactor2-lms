@@ -18,20 +18,11 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  * @package Badge_Factor_2
- *
- * @phpcs:disable WordPress.WP.I18n.NonSingularStringLiteralDomain
- * @phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound
- * @phpcs:disable WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
  */
 
-use BadgeFactor2\Models\Assertion;
-use BadgeFactor2\Post_Types\BadgePage;
-
-global $bf2_template;
-
 /*
- * You can override this template by copying it in your theme, in a
- * badgefactor2/ subdirectory, and modifying it there.
+ * You can override this template by copying it in your theme.
+ * See README for details.
  */
 
 get_header();

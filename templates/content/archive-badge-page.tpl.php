@@ -24,8 +24,8 @@
  */
 
 /*
- * You can override this template by copying it in your theme, in a
- * badgefactor2/ subdirectory, and modifying it there.
+ * You can override this template by copying it in your theme.
+ * See README for details.
  */
 
 $custom_post_type        = 'badge-page';

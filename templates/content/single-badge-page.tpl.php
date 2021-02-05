@@ -23,12 +23,12 @@
  * @phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound
  */
 
-use BadgeFactor2\Helpers\Template;
-
 /*
- * You can override this template by copying it in your theme, in a
- * badgefactor2/ subdirectory, and modifying it there.
+ * You can override this template by copying it in your theme.
+ * See README for details.
  */
+
+use BadgeFactor2\Helpers\Template;
 
 // The Courses add-on and the WooCommerce add-on are installed.
 if ( 1 === intval( get_query_var( 'form' ) ) &&

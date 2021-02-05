@@ -18,22 +18,15 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  * @package Badge_Factor_2
- *
- * @phpcs:disable WordPress.WP.I18n.NonSingularStringLiteralDomain
- * @phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound
  */
 
 /*
- * You can override this template by copying it in your theme, in a
- * badgefactor2/ subdirectory, and modifying it there.
+ * You can override this template by copying it in your theme.
+ * See README for details.
  */
 
 get_header();
 
-$custom_post_type        = 'badge-page';
-$custom_taxonomy         = 'badge-category';
-$terms_by_badge_category = get_terms( $custom_taxonomy );
-
-include __DIR__ . '/content/archive-badge-page.tpl.php'; ?>
+include __DIR__ . '/content/archive-badge-page.tpl.php';
 
 get_footer();
