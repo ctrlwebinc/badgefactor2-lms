@@ -50,7 +50,8 @@ class Page_Controller implements Page_Controller_Interface {
 			return $default_template;
 		}
 		global $post;
-		if ( static::$post_type === $post->post_type ) {
+		// Added check for true === $default_template to allow template return for custom templates.
+		if ( true === $default_template || static::$post_type === $post->post_type ) {
 			if ( $default_template ) {
 				status_header( 200 );
 				return $template;
@@ -78,7 +79,8 @@ class Page_Controller implements Page_Controller_Interface {
 			return $default_template;
 		}
 		global $post;
-		if ( static::$post_type === $post->post_type ) {
+		// Added check for true === $default_template to allow template return for custom templates.
+		if ( true === $default_template || static::$post_type === $post->post_type ) {
 			if ( $default_template ) {
 				status_header( 200 );
 				return $template;

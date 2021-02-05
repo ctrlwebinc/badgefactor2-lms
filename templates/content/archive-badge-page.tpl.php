@@ -24,16 +24,12 @@
  */
 
 /*
- * You can override this template by copying it in your theme.
- * See README for details.
+ * You can override this template by copying it in your theme, in a
+ * badgefactor2/ subdirectory, and modifying it there.
  */
 
-$custom_post_type        = 'badge-page';
-$custom_taxonomy         = 'badge-category';
-$terms_by_badge_category = get_terms( $custom_taxonomy );
-
+global $bf2_template;
 ?>
-
 <main class="section-inner" <?php post_class(); ?> id="post-<?php the_ID(); ?>" role="main">
 	<div class="c-bf2">
 
@@ -42,58 +38,24 @@ $terms_by_badge_category = get_terms( $custom_taxonomy );
 		</header>
 
 		<div class="c-bf2__body">
-			<?php
-			foreach ( $terms_by_badge_category as $custom_term ) {
-
-				wp_reset_query();
-
-				$args = array(
-					'post_type' => $custom_post_type,
-					'tax_query' => array(
-						array(
-							'taxonomy' => $custom_taxonomy,
-							'field'    => 'slug',
-							'terms'    => $custom_term->slug,
-						),
-					),
-				);
-
-				$loop = new WP_Query( $args );
-
-				if ( $loop->have_posts() ) {
-					?>
-					<section class="c-bf2__section">
-						<h2 class="c-bf2__section__title"><?php echo $custom_term->name; ?></h2>
-						<p class="c-bf2__section__description">
-							<?php echo $custom_term->description; ?>
-						</p>
-						<div class="c-bf2__list__items">
-							<?php
-							while ( $loop->have_posts() ) :
-								$loop->the_post();
-
-								$badge_entity_id = get_post_meta( $post->ID, 'badge', true );
-								$badge           = BadgeFactor2\Models\BadgeClass::get( $badge_entity_id );
-								$issuer          = BadgeFactor2\Models\Issuer::get( $badge->issuer );
-								?>
-
-								<div class="c-bf2__badge c-bf2__list__item">
-									<a class="c-bf2__badge__inner" href="<?php echo get_permalink( $post->ID ); ?>">
-										<img class="c-bf2__badge__image" src="<?php echo $badge->image; ?>" alt="<?php echo $badge->name; ?>">
-										<h3 class="c-bf2__badge__title"><?php echo $badge->name; ?></h3>
-									</a>
-								</div>
-								<?php
-							endwhile;
-							?>
-						</div>
-					</section>
-					<?php
-				}
-				?>
-				<?php
-			}
-			?>
+			<?php foreach ( $bf2_template->fields['badgepages']['by_category'] as $category ): ?>
+			<section class="c-bf2__section">
+				<h2 class="c-bf2__section__title"><?php echo $category['term']->name; ?></h2>
+				<p class="c-bf2__section__description">
+					<?php echo $category['term']->description; ?>
+				</p>
+				<div class="c-bf2__list__items">
+					<?php foreach ( $category['badgepages'] as $badgepage ): ?>
+					<div class="c-bf2__badge c-bf2__list__item">
+						<a class="c-bf2__badge__inner" href="<?php echo get_permalink( $badgepage->ID ); ?>">
+							<img class="c-bf2__badge__image" src="<?php echo $badgepage->badge->image; ?>" alt="<?php echo $badgepage->badge->name; ?>">
+							<h3 class="c-bf2__badge__title"><?php echo $badgepage->badge->name; ?></h3>
+						</a>
+					</div>
+					<?php endforeach; ?>
+				</div>
+			</section>
+			<?php endforeach; ?>
 		</div>
 	</div>
 </main>

@@ -49,7 +49,7 @@ class BadgeFactor2_Public {
 		if ( ! BuddyPress::is_active() ) {
 			add_filter( 'template_include', array( self::class, 'member_template' ) );
 		}
-		add_filter( 'single_template', array( Assertion_Controller::class, 'single' ), 20 );
+		add_filter( 'template_include', array( Assertion_Controller::class, 'single' ), 20 );
 		add_filter( 'document_title_parts', array( Assertion_Controller::class, 'title' ), 20 );
 	}
 

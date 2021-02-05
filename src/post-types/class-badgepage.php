@@ -778,9 +778,8 @@ class BadgePage {
 					'post_status'  => 'publish',
 				)
 			);
-			if ( $query->posts ) {
-				return $query->posts;
-			}
+			$posts = $query->get_posts();
+			return $posts;
 		}
 		return array();
 	}

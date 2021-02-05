@@ -28,15 +28,8 @@
  * See README for details.
  */
 
-use BadgeFactor2\Models\Assertion;
-use BadgeFactor2\Post_Types\BadgePage;
-
-global $bp;
-$user = get_user_by( 'id', $bp->displayed_user->id );
-$assertions = Assertion::all_for_user( $user );
-
+global $bf2_template;
 ?>
-
 <main class="section-inner" role="main">
 	<div class="c-bf2">
 
@@ -47,15 +40,10 @@ $assertions = Assertion::all_for_user( $user );
 		<div class="c-bf2__body">
 			<section class="c-bf2__section">
 				<div class="c-bf2__list__items">
-				<?php foreach ( $assertions as $assertion ) : ?>
-					<?php
-					$badge     = BadgeFactor2\Models\BadgeClass::get( $assertion->badgeclass );
-					$issuer    = BadgeFactor2\Models\Issuer::get( $badge->issuer );
-					$badgepage = BadgePage::get_by_badgeclass_id( $assertion->badgeclass );
-					?>
+				<?php foreach ( $bf2_template->fields['assertions'] as $assertion ) : ?>
 
 					<div class="c-bf2__badge c-bf2__list__item">
-						<a class="c-bf2__badge__inner" href="badges/<?php echo $badgepage->post_name; ?>">
+						<a class="c-bf2__badge__inner" href="badges/<?php echo $assertion->badgepage->post_name; ?>">
 							<img class="c-bf2__badge__image" src="<?php echo $assertion->image; ?>" alt="<?php echo $assertion->name; ?>">
 							<h3 class="c-bf2__badge__title"><?php echo $badge->name; ?></h3>
 						</a>

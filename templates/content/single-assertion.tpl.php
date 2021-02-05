@@ -24,12 +24,12 @@
  * @phpcs:disable WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
  */
 
-global $bf2_template;
-
 /*
  * You can override this template by copying it in your theme.
  * See README for details.
  */
+
+global $bf2_template;
 ?>
 <article <?php post_class(); ?>>
 	<div class="entry-content">

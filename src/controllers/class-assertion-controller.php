@@ -52,7 +52,26 @@ class Assertion_Controller extends Page_Controller {
 	 * @return void|string
 	 */
 	public static function archive( $default_template = null ) {
-		return parent::archive( $default_template );
+		if ( bp_is_user() ) {
+			global $bp;
+			$fields               = array();
+			$fields['user']       = get_user_by( 'id', $bp->displayed_user->id );
+			$fields['assertions'] = Assertion::all_for_user( $fields['user'] );
+
+			foreach ( $fields['assertions'] as $i => $assertion ) {
+				$fields['assertions'][ $i ]->badge     = BadgeClass::get( $assertion->badgeclass );
+				$fields['assertions'][ $i ]->issuer    = Issuer::get( $fields['assertions'][ $i ]->badge->issuer );
+				$fields['assertions'][ $i ]->badgepage = BadgePage::get_by_badgeclass_id( $assertion->badgeclass );
+			}
+			global $bf2_template;
+			$bf2_template         = new stdClass();
+			$bf2_template->fields = $fields;
+
+			return parent::archive( $default_template );
+		}
+		if ( $default_template ) {
+			return parent::archive( $default_template );
+		}
 	}
 
 
@@ -80,7 +99,7 @@ class Assertion_Controller extends Page_Controller {
 			global $bf2_template;
 			$bf2_template         = new stdClass();
 			$bf2_template->fields = $fields;
-			return parent::single( $default_template );
+			return parent::single( true );
 		}
 		if ( $default_template ) {
 			return $default_template;
