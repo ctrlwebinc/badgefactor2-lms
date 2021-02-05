@@ -19,32 +19,48 @@
  *
  * @package Badge_Factor_2
  *
- * @phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.VariableConstantNameFound
+ * @phpcs:disable WordPress.WP.I18n.NonSingularStringLiteralDomain
  */
 
-namespace BadgeFactor2\Helpers;
+namespace BadgeFactor2;
 
 /**
- * BuddyPress helper class.
+ * Base Page Controller Interface.
  */
-class BuddyPress {
-
+interface Page_Controller_Interface {
 
 	/**
-	 * Checks whether or not BuddyPress is active.
+	 * Returns or outputs archive template with $fields array.
 	 *
-	 * @return boolean
+	 * @param string $default_template Default template (for filter hook).
+	 * @return void|string
 	 */
-	public static function is_active() {
-		return function_exists( 'bp_is_active' );
-	}
+	public static function archive( $default_template = null );
+
 
 	/**
-	 * Returns Member page name.
+	 * Returns or outputs single template with $fields array.
+	 *
+	 * @param string $default_template Default template (for filter hook).
+	 * @return void|string
+	 */
+	public static function single( $default_template = null );
+
+
+	/**
+	 * Returns the post type managed by this controller.
 	 *
 	 * @return string
 	 */
-	public static function get_members_page_name() {
-		return bp_core_get_directory_pages()->members->name;
-	}
+	public static function get_post_type();
+
+
+	/**
+	 * Returns custom title for template.
+	 *
+	 * @param array $titles Titles array.
+	 * @return string
+	 */
+	public static function title( $titles = array() );
+
 }

@@ -24,11 +24,9 @@
 
 namespace BadgeFactor2;
 
+use BadgeFactor2\Controllers\Assertion_Controller;
 use BadgeFactor2\Helpers\BuddyPress;
 use BadgeFactor2\Helpers\Template;
-use BadgeFactor2\Models\Assertion;
-use BadgeFactor2\Post_Types\BadgePage;
-use BadgeFactor2\Post_Types\Course;
 
 /**
  * Badge Factor 2 Admin Class.
@@ -51,8 +49,8 @@ class BadgeFactor2_Public {
 		if ( ! BuddyPress::is_active() ) {
 			add_filter( 'template_include', array( self::class, 'member_template' ) );
 		}
-		add_filter( 'template_include', array( self::class, 'member_assertion_template' ) );
-		add_filter( 'template_include', array( self::class, 'member_assertion_certificate_template' ) );
+		add_filter( 'single_template', array( Assertion_Controller::class, 'single' ), 20 );
+		add_filter( 'document_title_parts', array( Assertion_Controller::class, 'title' ), 20 );
 	}
 
 
@@ -86,19 +84,18 @@ class BadgeFactor2_Public {
 		if ( BuddyPress::is_active() ) {
 			// Members page managed by BuddyPress.
 			$members_page = BuddyPress::get_members_page_name();
-
-			// Add Badge Portolio and Certificates endpoints.
-			add_rewrite_rule( "{$members_page}/([^/]+)/badges/([^/]+)/?$", 'index.php?member=$matches[1]&badge=$matches[2]', 'top' );
 		} else {
 			// TODO Manage Members page without BuddyPress.
+			$members_page = 'members';
 		}
 
 		$form_slug                = ! empty( $options['bf2_form_slug'] ) ? $options['bf2_form_slug'] : 'form';
 		$autoevaluation_form_slug = ! empty( $options['bf2_autoevaluation_form_slug'] ) ? $options['bf2_autoevaluation_form_slug'] : 'autoevaluation';
 
-		add_rewrite_rule( 'issuers/([^/]+)/?$', 'index.php?issuer=$matches[1]', 'top' );
 		add_rewrite_rule( "badges/([^/]+)/{$form_slug}/?$", 'index.php?badge-page=$matches[1]&form=1', 'top' );
 		add_rewrite_rule( "badges/([^/]+)/{$autoevaluation_form_slug}/?$", 'index.php?badge-page=$matches[1]&form=1&autoevaluation=1', 'top' );
+		add_rewrite_rule( "{$members_page}/([^/]+)/badges/([^/]+)/?$", 'index.php?member=$matches[1]&badge=$matches[2]', 'top' );
+		add_rewrite_rule( 'issuers/([^/]+)/?$', 'index.php?issuer=$matches[1]', 'top' );
 	}
 
 
@@ -131,44 +128,6 @@ class BadgeFactor2_Public {
 		return $original_template;
 	}
 
-	/**
-	 * Add member assertion template to hierarchy.
-	 *
-	 * @param string $original_template Original template.
-	 * @return string
-	 */
-	public static function member_assertion_template( $original_template ) {
-		if ( get_query_var( 'member' ) && get_query_var( 'badge' ) ) {
-			return Template::locate( 'tpl.assertion', $original_template );
-		}
-		return $original_template;
-	}
-
-
-	/**
-	 * Add member assertion certification template (PDF) to hierarchy.
-	 *
-	 * @param string $original_template Original template.
-	 * @return string
-	 */
-	public static function member_assertion_certificate_template( $original_template ) {
-		if ( get_query_var( 'member' ) && get_query_var( 'badge' ) && get_query_var( 'certificate' ) ) {
-			$user = get_user_by( 'slug', get_query_var( 'member' ) );
-
-			$course = Course::get_by_badge_slug( get_query_var( 'badge' ) );
-
-			$assertions = Assertion::all_for_user( $user );
-			foreach ( $assertions as $a ) {
-				$badgepage = BadgePage::get_by_badgeclass_id( $a->badgeclass );
-				if ( get_query_var( 'badge' ) === $badgepage->post_name ) {
-					Certificates_Public::generate( $course, $a );
-					die;
-				}
-			}
-		}
-		return $original_template;
-	}
-
 
 	/**
 	 * Suppress new user notifications.
@@ -193,22 +152,5 @@ class BadgeFactor2_Public {
 	public static function load_resources() {
 		wp_enqueue_style( 'badgefactor2-css', BF2_BASEURL . 'assets/css/public.css', array(), BF2_DATA['Version'], 'all' );
 		wp_enqueue_script( 'badgefactor2-js', BF2_BASEURL . 'assets/js/public.js', array( 'jquery' ), BF2_DATA['Version'], true );
-	}
-
-
-	/**
-	 * Add item to hierarchy.
-	 *
-	 * @param string $original_template Original template.
-	 * @param string $item Item.
-	 * @param string $archive Archive.
-	 * @return string
-	 */
-	private static function add_to_hierarchy( $original_template, $item, $archive = null ) {
-		if ( get_query_var( $item, false ) ) {
-			$template          = $archive ?? $item;
-			$original_template = Template::locate( "tpl.{$template}", $original_template );
-		}
-		return $original_template;
 	}
 }

@@ -24,6 +24,9 @@
 
 namespace BadgeFactor2\Widgets;
 
+use BadgeFactor2\Controllers\Assertion_Controller;
+use BadgeFactor2\Helpers\Template;
+
 /**
  * User Assertions Widget.
  */
@@ -76,7 +79,8 @@ class User_Assertions_Widget extends \WP_Widget {
 		echo $args['before_widget'];
 
 		// FIXME Use controllers.
-		include BF2_ABSPATH . 'templates/content/tpl.assertions.php';
+
+		echo Template::include_to_var( Assertion_Controller::archive( true ) );
 
 		echo $args['after_widget'];
 	}

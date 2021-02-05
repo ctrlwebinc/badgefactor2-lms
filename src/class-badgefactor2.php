@@ -173,16 +173,23 @@ class BadgeFactor2 {
 
 		// Interfaces.
 		require_once BF2_ABSPATH . 'src/core/interface-badgr-entity.php';
+		require_once BF2_ABSPATH . 'src/core/interface-page-controller.php';
 
 		// Core Classes.
 		require_once BF2_ABSPATH . 'src/core/class-badgrclient.php';
 		require_once BF2_ABSPATH . 'src/core/class-badgrprovider.php';
 		require_once BF2_ABSPATH . 'src/core/class-badgruser.php';
+		require_once BF2_ABSPATH . 'src/core/class-page-controller.php';
 
 		// Models.
 		require_once BF2_ABSPATH . 'src/models/class-issuer.php';
 		require_once BF2_ABSPATH . 'src/models/class-badgeclass.php';
 		require_once BF2_ABSPATH . 'src/models/class-assertion.php';
+
+		// Controllers.
+		require_once BF2_ABSPATH . 'src/controllers/class-assertion-controller.php';
+		require_once BF2_ABSPATH . 'src/controllers/class-badgepage-controller.php';
+		require_once BF2_ABSPATH . 'src/controllers/class-badgerequest-controller.php';
 
 		// Shortcodes.
 		require_once BF2_ABSPATH . 'src/public/shortcodes/class-badges.php';

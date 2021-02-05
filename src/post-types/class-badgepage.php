@@ -26,6 +26,7 @@
 
 namespace BadgeFactor2\Post_Types;
 
+use BadgeFactor2\Controllers\BadgePage_Controller;
 use BadgeFactor2\Models\BadgeClass;
 use BadgeFactor2\Models\Issuer;
 use BadgeFactor2\Roles\Approver;
@@ -63,8 +64,8 @@ class BadgePage {
 		add_filter( 'post_updated_messages', array( self::class, 'updated_messages' ), 10 );
 		add_action( 'cmb2_admin_init', array( self::class, 'register_cpt_metaboxes' ), 10 );
 		add_action( 'save_post_' . self::$slug, array( self::class, 'save_badge_page' ), 10, 3 );
-		add_action( 'single_template', array( self::class, 'single_template' ), 10 );
-		add_filter( 'archive_template', array( self::class, 'archive_template' ), 10 );
+		add_filter( 'single_template', array( BadgePage_Controller::class, 'single' ) );
+		add_filter( 'archive_template', array( BadgePage_Controller::class, 'archive' ) );
 		add_action( 'update_badge_page', array( self::class, 'update_badge_page' ) );
 		add_action( 'create_badge_page', array( self::class, 'create_badge_page' ) );
 	}
@@ -529,46 +530,6 @@ class BadgePage {
 		return $post_options;
 	}
 
-	/**
-	 * Single Template.
-	 *
-	 * @param string $single Single.
-	 * @return string
-	 */
-	public static function single_template( $single ) {
-		global $post;
-
-		$slug = self::$slug;
-
-		/* Checks for single template by post type */
-		if ( $post->post_type === $slug ) {
-			$single = Template::locate( "tpl.{$slug}", $single );
-		}
-
-		return $single;
-	}
-
-
-	/**
-	 * Archive Template.
-	 *
-	 * @param string $archive_template Archive template.
-	 * @return string
-	 */
-	public static function archive_template( $archive_template ) {
-		global $post;
-
-		$slug = self::$slug_plural;
-
-		/* Checks for single template by post type */
-		if ( is_post_type_archive( self::$slug ) ) {
-			$archive_template = Template::locate( "tpl.{$slug}", $archive_template );
-		}
-
-		// Default template.
-		return $archive_template;
-	}
-
 
 	/**
 	 * Create badge pages from badges
@@ -635,11 +596,11 @@ class BadgePage {
 				return false;
 			}
 			// Add badgepage_badge meta with the associated badge class slug as its value.
-			//update_post_meta( $created_post_id, 'badge', $badge_post->badge_class_slug );
+			// update_post_meta( $created_post_id, 'badge', $badge_post->badge_class_slug );
 			// Add badge_page_request_form_type with value basic.
-			//update_post_meta( $created_post_id, 'badge_page_request_form_type', 'basic' );
+			// update_post_meta( $created_post_id, 'badge_page_request_form_type', 'basic' );
 			// Add criteria as the value of badge_criteria.
-			//update_post_meta( $created_post_id, 'badge_criteria', $badge_post->criteria );
+			// update_post_meta( $created_post_id, 'badge_criteria', $badge_post->criteria );
 			// Add badge approval type under badge_approval_type as one of approved, auto-approved or given.
 			$approval_type = null;
 			switch ( $badge_post->earning_type ) {
@@ -777,18 +738,18 @@ class BadgePage {
 
 			}
 
-			// Link products and chnage their type
-			// Get the the product ID from badges
+			// Link products and chnage their type.
+			// Get the the product ID from badges.
 			$product_id = get_post_meta( $badge_post_id, 'badgefactor_product_id', true );
 
-			// Replace product terms to change its type
+			// Replace product terms to change its type.
 			wp_remove_object_terms( $product_id, 'badge', 'product_type' );
 			wp_set_object_terms( $product_id, 'course', 'product_type', true );
 
-			// Get product price
+			// Get product price.
 			$product_price = get_post_meta( $product_id, '_price', true );
 
-			// Create course metas course_product id is_product on and price $
+			// Create course metas course_product id is_product on and price $.
 			update_post_meta( $created_post_id, 'course_product', $product_id );
 			update_post_meta( $created_post_id, 'is_product', 'on' );
 			update_post_meta( $created_post_id, 'price', $product_price );

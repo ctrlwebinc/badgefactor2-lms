@@ -92,9 +92,9 @@ class BadgeFactor2_Admin {
 		// WordPress Hooks.
 		add_action( 'admin_enqueue_scripts', array( self::class, 'load_resources' ) );
 		add_action( 'admin_menu', array( self::class, 'admin_menus' ) );
-		add_action( 'init', array( self::class, 'flush_form_slug'), 10 );
-		add_action( 'init', array( self::class, 'flush_autoevaluation_form_slug'), 10 );
-		add_filter( 'pw_cmb2_field_select2_asset_path', array( self::class, 'pw_cmb2_field_select2_asset_path' ), 10 );	
+		add_action( 'init', array( self::class, 'flush_form_slug' ), 10 );
+		add_action( 'init', array( self::class, 'flush_autoevaluation_form_slug' ), 10 );
+		add_filter( 'pw_cmb2_field_select2_asset_path', array( self::class, 'pw_cmb2_field_select2_asset_path' ), 10 );
 	}
 
 
@@ -1090,8 +1090,8 @@ class BadgeFactor2_Admin {
 	/**
 	 * Hook called on form_slug field save.
 	 *
-	 * @param boolean $updated Updated.
-	 * @param string $action Action.
+	 * @param boolean    $updated Updated.
+	 * @param string     $action Action.
 	 * @param CMB2_Field $instance Field instance.
 	 * @return void
 	 */
@@ -1115,8 +1115,8 @@ class BadgeFactor2_Admin {
 	/**
 	 * Hook called on form_slug field save.
 	 *
-	 * @param boolean $updated Updated.
-	 * @param string $action Action.
+	 * @param boolean    $updated Updated.
+	 * @param string     $action Action.
 	 * @param CMB2_Field $instance Field instance.
 	 * @return void
 	 */

@@ -35,7 +35,6 @@ use BadgeFactor2\Models\BadgeClass;
  */
 class BadgeRequest {
 
-
 	/**
 	 * Custom post type's slug.
 	 *
