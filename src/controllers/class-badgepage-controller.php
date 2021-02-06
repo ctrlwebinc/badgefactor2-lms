@@ -19,8 +19,9 @@
  *
  * @package Badge_Factor_2
  *
- * @phpcs:disable WordPress.WP.I18n.NonSingularStringLiteralDomain
+ * @phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedClassFound
  * @phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound
+ * @phpcs:disable WordPress.WP.I18n.NonSingularStringLiteralDomain
  */
 
 namespace BadgeFactor2\Controllers;
@@ -44,6 +45,7 @@ class BadgePage_Controller extends Page_Controller {
 	 * @var string
 	 */
 	protected static $post_type = 'badge-page';
+
 
 	/**
 	 * Returns or outputs archive template with $fields array.
@@ -170,5 +172,4 @@ class BadgePage_Controller extends Page_Controller {
 
 		return parent::single( $default_template );
 	}
-
 }

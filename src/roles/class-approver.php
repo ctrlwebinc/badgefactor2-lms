@@ -19,6 +19,7 @@
  *
  * @package Badge_Factor_2
  *
+ * @phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedClassFound
  * @phpcs:disable WordPress.WP.I18n.NonSingularStringLiteralDomain
  */
 
@@ -28,7 +29,6 @@ namespace BadgeFactor2\Roles;
  * Approver user helper functions.
  */
 class Approver {
-
 
 	/**
 	 * Init hooks.

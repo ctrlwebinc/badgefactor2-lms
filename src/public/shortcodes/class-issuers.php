@@ -19,6 +19,7 @@
  *
  * @package Badge_Factor_2
  *
+ * @phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedClassFound
  * @phpcs:disable WordPress.WP.I18n.NonSingularStringLiteralDomain
  */
 
@@ -30,7 +31,6 @@ use BadgeFactor2\Models\Issuer;
  * Shortcodes Class.
  */
 class Issuers {
-
 
 	/**
 	 * Issuers Shortcode Init.

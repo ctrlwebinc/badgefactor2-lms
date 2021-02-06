@@ -19,10 +19,11 @@
  *
  * @package Badge_Factor_2
  *
- * @phpcs:disable WordPress.WP.I18n.NonSingularStringLiteralDomain
- * @phpcs:disable WordPress.WP.I18n.NonSingularStringLiteralContext
+ * @phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedClassFound
  * @phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
  * @phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound
+ * @phpcs:disable WordPress.WP.I18n.NonSingularStringLiteralContext
+ * @phpcs:disable WordPress.WP.I18n.NonSingularStringLiteralDomain
  */
 
 namespace BadgeFactor2\Post_Types;

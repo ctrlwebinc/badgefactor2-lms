@@ -6,7 +6,7 @@ Badge Factor 2 is a [WordPress](https://wordpress.org/) plugin which issues and 
 
 ## Templates
 
-Badge Factor 2 uses a custom templating engine which uses Controllers to define all the fields required to display the template, which are assigned to a global `$bf2_fields` variable.
+Badge Factor 2 uses a custom templating engine which uses Controllers to define all the fields required to display the template, which are assigned to a global `$bf2_template` variable.
 
 If templates have not been overriden in the theme, Badge Factor 2 falls back to the templates provided in its plugin or add-ons.  The template structure is as follows:
 

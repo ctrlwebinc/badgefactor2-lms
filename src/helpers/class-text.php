@@ -18,6 +18,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  * @package Badge_Factor_2
+ *
+ * @phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedClassFound
  */
 
 namespace BadgeFactor2\Helpers;
@@ -36,6 +38,7 @@ class Text {
 		return self::generate_random_string( 11, 'p' );
 	}
 
+
 	/**
 	 * Generate random string.
 	 *
@@ -53,6 +56,7 @@ class Text {
 		return $random_string;
 
 	}
+
 
 	/**
 	 * Generate html options string from array.

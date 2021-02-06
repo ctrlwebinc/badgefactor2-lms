@@ -253,8 +253,8 @@ class BadgrClient {
 
 		foreach ( $key_parameters as $key_parameter ) {
 			if ( ! array_key_exists( $key_parameter, $parameters ) ) {
-				// Return an unconfigured client since some key paramaters are missing
-				$client = new self();
+				// Return an unconfigured client since some key paramaters are missing.
+				$client        = new self();
 				$client->state = self::STATE_NEW_AND_UNCONFIGURED;
 				return $client;
 			}

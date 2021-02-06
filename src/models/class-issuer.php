@@ -19,14 +19,14 @@
  *
  * @package Badge_Factor_2
  *
- * @phpcs:disable WordPress.WP.I18n.NonSingularStringLiteralDomain
+ * @phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedClassFound
  * @phpcs:disable WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+ * @phpcs:disable WordPress.WP.I18n.NonSingularStringLiteralDomain
  */
 
 namespace BadgeFactor2\Models;
 
 use WP_Post;
-use WP_Query;
 use BadgeFactor2\Badgr_Entity;
 use BadgeFactor2\BadgrProvider;
 use BadgeFactor2\WP_Sortable;

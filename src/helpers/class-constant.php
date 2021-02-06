@@ -19,6 +19,7 @@
  *
  * @package Badge_Factor_2
  *
+ * @phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedClassFound
  * @phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.VariableConstantNameFound
  */
 
@@ -41,5 +42,4 @@ class Constant {
 			define( $name, $value );
 		}
 	}
-
 }

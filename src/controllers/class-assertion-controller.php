@@ -19,8 +19,9 @@
  *
  * @package Badge_Factor_2
  *
- * @phpcs:disable WordPress.WP.I18n.NonSingularStringLiteralDomain
+ * @phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedClassFound
  * @phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound
+ * @phpcs:disable WordPress.WP.I18n.NonSingularStringLiteralDomain
  */
 
 namespace BadgeFactor2\Controllers;
@@ -120,5 +121,4 @@ class Assertion_Controller extends Page_Controller {
 		}
 		return $titles;
 	}
-
 }

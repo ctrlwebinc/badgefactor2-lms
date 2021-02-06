@@ -19,6 +19,7 @@
  *
  * @package Badge_Factor_2
  *
+ * @phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedClassFound
  * @phpcs:disable WordPress.WP.I18n.NonSingularStringLiteralDomain
  */
 
@@ -38,11 +39,11 @@ class BadgeRequest_Controller extends Page_Controller {
 	 */
 	protected static $post_type = 'badge-request';
 
+
 	/**
 	 * Returns or outputs archive template with $fields array.
 	 *
 	 * @param string $default_template Default template (for filter hook).
-	 * @param string $plugin Plugin name.
 	 * @return void|string
 	 */
 	public static function archive( $default_template = null ) {
@@ -61,5 +62,4 @@ class BadgeRequest_Controller extends Page_Controller {
 
 		return parent::single( $default_template );
 	}
-
 }
