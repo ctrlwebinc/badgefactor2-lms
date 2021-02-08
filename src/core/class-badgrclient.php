@@ -824,6 +824,8 @@ class BadgrClient {
 	 * @throws \BadMethodCallException Bad Method Call Exception.
 	 */
 	public function refresh_token() {
+		self::refresh_config();
+		
 		$redirect_uri = site_url( self::$auth_redirect_uri );
 
 		$auth_provider = new GenericProvider(
