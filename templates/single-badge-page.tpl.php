@@ -18,16 +18,15 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  * @package Badge_Factor_2
- *
- * @phpcs:disable WordPress.WP.I18n.NonSingularStringLiteralDomain
- * @phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound
  */
 
 /*
- * You can override this template by copying it in your theme, in a
- * badgefactor2/ subdirectory, and modifying it there.
+ * You can override this template by copying it in your theme.
+ * See README for details.
  */
 
-/*
- * If we want to eventually make a member page without buddypress, here's where we'd do it.
- */
+get_header();
+
+include __DIR__ . '/content/single-badge-page.tpl.php';
+
+get_footer();

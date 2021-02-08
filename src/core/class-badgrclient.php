@@ -260,6 +260,30 @@ class BadgrClient {
 			'as_admin',
 			'badgr_server_public_url',
 			'badgr_server_flavor',
+		);
+
+		foreach ( $key_parameters as $key_parameter ) {
+			if ( ! array_key_exists( $key_parameter, $parameters ) ) {
+				// Return an unconfigured client since some key paramaters are missing.
+				$client        = new self();
+				$client->state = self::STATE_NEW_AND_UNCONFIGURED;
+				return $client;
+			}
+		}
+
+		// TODO: perform checks on types and values of key parameters.
+
+		$client                          = new self();
+		$client->username                = $parameters['username'];
+		$client->as_admin                = $parameters['as_admin'];
+		$client->badgr_server_public_url = $parameters['badgr_server_public_url'];
+		$client->badgr_server_flavor     = $parameters['badgr_server_flavor'];
+
+		// TODO: check validity of optionnal parameters.
+
+		// TODO: save optionnal parameters in new instance.
+
+		$optionnal_parameters = array(
 			'badgr_server_internal_url',
 			'scopes',
 			'badgr_password',

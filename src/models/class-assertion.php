@@ -19,16 +19,17 @@
  *
  * @package Badge_Factor_2
  *
+ * @phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedClassFound 
  * @phpcs:disable WordPress.WP.I18n.NonSingularStringLiteralDomain
  */
 
 namespace BadgeFactor2\Models;
 
-use BadgeFactor2\Admin\Lists\Badges;
-use BadgeFactor2\Admin\Lists\Issuers;
 use BadgeFactor2\Badgr_Entity;
 use BadgeFactor2\BadgrProvider;
+use BadgeFactor2\BadgrUser;
 use BadgeFactor2\WP_Sortable;
+use WP_User;
 
 /**
  * Assertion Class.
@@ -46,7 +47,7 @@ class Assertion implements Badgr_Entity {
 
 
 	/**
-	 * Retrieve all issuers from Badgr provider.
+	 * Retrieve all assertions from Badgr provider.
 	 *
 	 * @param int   $elements_per_page Elements per page.
 	 * @param int   $paged Page number.
@@ -65,6 +66,11 @@ class Assertion implements Badgr_Entity {
 		if ( isset( $_GET['filter_type'] ) && isset( $_GET['filter_value'] ) ) {
 			$filter_type  = $_GET['filter_type'];
 			$filter_value = $_GET['filter_value'];
+		} elseif ( isset( $filter['filter_type'] ) && isset( $filter['filter_value'] ) ) {
+			$filter_type  = $filter['filter_type'];
+			$filter_value = $filter['filter_value'];
+		}
+		if ( isset( $filter_type ) && isset( $filter_value ) ) {
 			if ( 'Issuers' === $filter_type ) {
 				$assertions = BadgrProvider::get_all_assertions_by_issuer_slug(
 					$filter_value,
@@ -82,11 +88,22 @@ class Assertion implements Badgr_Entity {
 					)
 				);
 			}
-
 			WP_Sortable::sort( $assertions, array( 'recipient' => 'plaintextIdentity' ) );
 		}
 
 		return $assertions;
+	}
+
+
+	/**
+	 * Retrieve a specified user's assertions from Badgr provider.
+	 *
+	 * @param WP_User $user User.
+	 * @return array Assertions.
+	 */
+	public static function all_for_user( WP_User $user ) {
+		$badgr_user = new BadgrUser( $user );
+		return BadgrProvider::get_all_assertions_from_user_backpack( $badgr_user );
 	}
 
 

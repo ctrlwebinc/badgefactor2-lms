@@ -1,7 +1,7 @@
 <?php
 /**
  * Badge Factor 2
- * Copyright (C) 2019 ctrlweb
+ * Copyright (C) 2021 ctrlweb
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -19,14 +19,33 @@
  *
  * @package Badge_Factor_2
  *
- * @phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedClassFound
+ * @phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedClassFound 
+ * @phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.VariableConstantNameFound
  */
 
-namespace BadgeFactor2\Exceptions;
-
-use BadgeFactor2\Exceptions\ConfigurationException;
+namespace BadgeFactor2\Helpers;
 
 /**
- * Site Configuration Exception class.
+ * BuddyPress helper class.
  */
-class SiteConfigurationException extends ConfigurationException {}
+class BuddyPress {
+
+	/**
+	 * Checks whether or not BuddyPress is active.
+	 *
+	 * @return boolean
+	 */
+	public static function is_active() {
+		return function_exists( 'bp_is_active' );
+	}
+
+
+	/**
+	 * Returns Member page name.
+	 *
+	 * @return string
+	 */
+	public static function get_members_page_name() {
+		return bp_core_get_directory_pages()->members->name;
+	}
+}

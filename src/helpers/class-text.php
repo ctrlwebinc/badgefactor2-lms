@@ -18,6 +18,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  * @package Badge_Factor_2
+ *
+ * @phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedClassFound
  */
 
 namespace BadgeFactor2\Helpers;
@@ -36,6 +38,7 @@ class Text {
 		return self::generate_random_string( 11, 'p' );
 	}
 
+
 	/**
 	 * Generate random string.
 	 *
@@ -52,5 +55,25 @@ class Text {
 		}
 		return $random_string;
 
+	}
+
+
+	/**
+	 * Generate html options string from array.
+	 *
+	 * @param array  $options_array Options array.
+	 * @param string $selected_value Selected value.
+	 * @return string html options.
+	 */
+	public static function html_options_from_array( $options_array, $selected_value = null ) {
+		$options = '';
+		foreach ( $options_array as $id => $text ) {
+			if ( ! empty( $selected_value ) && $id === $selected_value ) {
+				$options .= sprintf( '<option value="%s" selected>%s</option>', $id, $text );
+			} else {
+				$options .= sprintf( '<option value="%s">%s</option>', $id, $text );
+			}
+		}
+		return $options;
 	}
 }

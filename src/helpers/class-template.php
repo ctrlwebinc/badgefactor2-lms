@@ -18,6 +18,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  * @package Badge_Factor_2
+ *
+ * @phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedClassFound
  */
 
 namespace BadgeFactor2\Helpers;
@@ -27,34 +29,54 @@ namespace BadgeFactor2\Helpers;
  */
 class Template {
 
-
 	/**
 	 * Locates a template.
 	 *
 	 * @param string $template_filename Template filename.
 	 * @param string $default Default template, or null if none.
-	 * @param string $plugin Plugin name.
 	 * @param string $extension Filename extension.
 	 * @return string
 	 */
-	public static function locate( $template_filename, $default = null, $plugin = 'badgefactor2', $extension = '.php' ) {
+	public static function locate( $template_filename, $default = null, $extension = '.tpl.php' ) {
 
 		// Add extension if absent.
 		if ( substr( $template_filename, -strlen( $extension ) ) !== $extension ) {
 			$template_filename .= $extension;
 		}
 
-		// If in theme, use it.
-		$template_fullpath = locate_template( "templates/{$plugin}/{$template_filename}" );
+		$plugins = array(
+			'badgefactor2',
+			'bf2-certificates',
+			'bf2-courses',
+			'bf2-gravityforms',
+			'bf2-woocommerce',
+		);
 
-		// Else, if in plugin, use it.
-		if ( ! $template_fullpath ) {
-			$template_fullpath = WP_PLUGIN_DIR . "/{$plugin}/templates/{$template_filename}";
-			if ( ! file_exists( $template_fullpath ) ) {
-				$template_fullpath = $default;
+		$template_fullpath = null;
+
+		foreach ( $plugins as $plugin ) {
+			if ( ! $template_fullpath ) {
+				// If in theme, use it.
+				$template_fullpath = locate_template( "templates/{$plugin}/{$template_filename}" );
+
+				if ( ! $template_fullpath ) {
+					$template_fullpath = locate_template( "templates/{$plugin}/content/{$template_filename}" );
+				}
+				// Else, if in plugin, use it.
+				if ( ! $template_fullpath ) {
+					$template_fullpath = WP_PLUGIN_DIR . "/{$plugin}/templates/{$template_filename}";
+					if ( ! file_exists( $template_fullpath ) ) {
+						$template_fullpath = WP_PLUGIN_DIR . "/{$plugin}/templates/content/{$template_filename}";
+					}
+					if ( ! file_exists( $template_fullpath ) ) {
+						$template_fullpath = null;
+					}
+				}
 			}
 		}
-
+		if ( ! file_exists( $template_fullpath ) ) {
+			$template_fullpath = $default;
+		}
 		return $template_fullpath;
 	}
 
@@ -70,5 +92,4 @@ class Template {
 		require $file;
 		return ob_get_clean();
 	}
-
 }

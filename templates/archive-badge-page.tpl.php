@@ -18,15 +18,15 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  * @package Badge_Factor_2
- *
- * @phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedClassFound
  */
 
-namespace BadgeFactor2\Exceptions;
-
-use BadgeFactor2\Exceptions\ConfigurationException;
-
-/**
- * Site Configuration Exception class.
+/*
+ * You can override this template by copying it in your theme.
+ * See README for details.
  */
-class SiteConfigurationException extends ConfigurationException {}
+
+get_header();
+
+include __DIR__ . '/content/archive-badge-page.tpl.php';
+
+get_footer();

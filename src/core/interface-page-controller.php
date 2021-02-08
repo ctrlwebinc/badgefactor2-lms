@@ -1,7 +1,7 @@
 <?php
 /**
  * Badge Factor 2
- * Copyright (C) 2019 ctrlweb
+ * Copyright (C) 2021 ctrlweb
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -19,55 +19,48 @@
  *
  * @package Badge_Factor_2
  *
- * @phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedClassFound
  * @phpcs:disable WordPress.WP.I18n.NonSingularStringLiteralDomain
  */
 
-namespace BadgeFactor2\Shortcodes;
-
-use BadgeFactor2\Models\Issuer;
+namespace BadgeFactor2;
 
 /**
- * Shortcodes Class.
+ * Base Page Controller Interface.
  */
-class Issuers {
+interface Page_Controller_Interface {
 
 	/**
-	 * Issuers Shortcode Init.
+	 * Returns or outputs archive template with $fields array.
 	 *
-	 * @return void
+	 * @param string $default_template Default template (for filter hook).
+	 * @return void|string
 	 */
-	public static function init_hooks() {
-		add_action( 'init', array( self::class, 'init' ) );
-	}
-
-
-	/**
-	 * Init hook.
-	 *
-	 * @return void
-	 */
-	public static function init() {
-		add_shortcode( 'bf2-issuers', array( self::class, 'list' ) );
-	}
+	public static function archive( $default_template = null );
 
 
 	/**
-	 * List.
+	 * Returns or outputs single template with $fields array.
 	 *
-	 * @param array  $atts Attributes.
-	 * @param string $content Content.
-	 * @param string $tag Tag.
-	 * @return void
+	 * @param string $default_template Default template (for filter hook).
+	 * @return void|string
 	 */
-	public function list( $atts = array(), $content = null, $tag = '' ) {
-		$issuers = Issuer::all( -1 );
-		if ( $issuers ) {
-			foreach ( $issuers as $issuer ) {
-				echo $issuer->name;
-			}
-		} else {
-			echo __( 'No issuer for the moment.', BF2_DATA['TextDomain'] );
-		}
-	}
+	public static function single( $default_template = null );
+
+
+	/**
+	 * Returns the post type managed by this controller.
+	 *
+	 * @return string
+	 */
+	public static function get_post_type();
+
+
+	/**
+	 * Returns custom title for template.
+	 *
+	 * @param array $titles Titles array.
+	 * @return string
+	 */
+	public static function title( $titles = array() );
+
 }

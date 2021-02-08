@@ -24,14 +24,14 @@
 
 namespace BadgeFactor2;
 
+use BadgeFactor2\Controllers\Assertion_Controller;
+use BadgeFactor2\Helpers\BuddyPress;
 use BadgeFactor2\Helpers\Template;
-use BadgeFactor2\Models\BadgeClass;
 
 /**
  * Badge Factor 2 Admin Class.
  */
 class BadgeFactor2_Public {
-
 
 	/**
 	 * Init Hooks.
@@ -46,11 +46,11 @@ class BadgeFactor2_Public {
 		add_filter( 'query_vars', array( self::class, 'add_custom_query_vars' ) );
 		add_action( 'wp_enqueue_scripts', array( self::class, 'load_resources' ) );
 
-		/*
-		 * TODO If we want to make a members list and page without buddypress.
-		 *
-		 * add_filter( 'template_include', array( self::class, 'add_members_to_hierarchy' ) );
-		 */
+		if ( ! BuddyPress::is_active() ) {
+			add_filter( 'template_include', array( self::class, 'member_template' ) );
+		}
+		add_filter( 'template_include', array( Assertion_Controller::class, 'single' ), 20 );
+		add_filter( 'document_title_parts', array( Assertion_Controller::class, 'title' ), 20 );
 	}
 
 
@@ -62,6 +62,8 @@ class BadgeFactor2_Public {
 	public static function add_rewrite_tags() {
 		add_rewrite_tag( '%issuer%', '([^&]+)' );
 		add_rewrite_tag( '%form%', '([^&]+)' );
+		add_rewrite_tag( '%member%', '([^&]+)' );
+		add_rewrite_tag( '%badge%', '([^&]+)' );
 
 		/*
 		 * TODO If we want to make a members list and page without buddypress.
@@ -79,18 +81,21 @@ class BadgeFactor2_Public {
 	public static function add_rewrite_rules() {
 		$options = get_option( 'badgefactor2' );
 
-		add_rewrite_rule( 'issuers/([^/]+)/?$', 'index.php?issuer=$matches[1]', 'top' );
+		if ( BuddyPress::is_active() ) {
+			// Members page managed by BuddyPress.
+			$members_page = BuddyPress::get_members_page_name();
+		} else {
+			// TODO Manage Members page without BuddyPress.
+			$members_page = 'members';
+		}
+
 		$form_slug                = ! empty( $options['bf2_form_slug'] ) ? $options['bf2_form_slug'] : 'form';
 		$autoevaluation_form_slug = ! empty( $options['bf2_autoevaluation_form_slug'] ) ? $options['bf2_autoevaluation_form_slug'] : 'autoevaluation';
+
 		add_rewrite_rule( "badges/([^/]+)/{$form_slug}/?$", 'index.php?badge-page=$matches[1]&form=1', 'top' );
-		add_rewrite_rule( "badges/([^/]+)/{$autoevaluation_form_slug}/{$form_slug}/?$", 'index.php?badge-page=$matches[1]&form=1&autoevaluation=1', 'top' );
-		/*
-		 * TODO If we want to make a members list and page without buddypress.
-		 *
-		 * $member_slug = isset( $options['bf2_members_slug'] ) ? $options['bf2_members_slug'] : 'members';
-		 * add_rewrite_rule( "{$member_slug}/?$", 'index.php?member=all', 'top' );
-		 * add_rewrite_rule( "{$member_slug}/([^/]*)/?$", 'index.php?member=$matches[1]', 'top' );
-		 */
+		add_rewrite_rule( "badges/([^/]+)/{$autoevaluation_form_slug}/?$", 'index.php?badge-page=$matches[1]&form=1&autoevaluation=1', 'top' );
+		add_rewrite_rule( "{$members_page}/([^/]+)/badges/([^/]+)/?$", 'index.php?member=$matches[1]&badge=$matches[2]', 'top' );
+		add_rewrite_rule( 'issuers/([^/]+)/?$', 'index.php?issuer=$matches[1]', 'top' );
 	}
 
 
@@ -104,29 +109,22 @@ class BadgeFactor2_Public {
 		$vars[] = 'issuer';
 		$vars[] = 'form';
 		$vars[] = 'autoevaluation';
-
-		/*
-		 * TODO If we want to make a members list and page without buddypress.
-		 *
-		 * $vars[] = 'member';
-		 */
+		$vars[] = 'member';
+		$vars[] = 'badge';
+		$vars[] = 'certificate';
 
 		return $vars;
 	}
 
 
 	/**
-	 * Add members to hierarchy.
+	 * Add member template to hierarchy.
 	 *
 	 * @param string $original_template Original template.
 	 * @return string
 	 */
-	public static function add_members_to_hierarchy( $original_template ) {
-		/*
-		 * TODO If we want to make a members list and page without buddypress.
-		 *
-		 * return static::add_to_hierarchy( $original_template, 'member', 'members' );
-		 */
+	public static function member_template( $original_template ) {
+		// TODO Add member page template.
 		return $original_template;
 	}
 
@@ -154,22 +152,5 @@ class BadgeFactor2_Public {
 	public static function load_resources() {
 		wp_enqueue_style( 'badgefactor2-css', BF2_BASEURL . 'assets/css/public.css', array(), BF2_DATA['Version'], 'all' );
 		wp_enqueue_script( 'badgefactor2-js', BF2_BASEURL . 'assets/js/public.js', array( 'jquery' ), BF2_DATA['Version'], true );
-	}
-
-
-	/**
-	 * Add item to hierarchy.
-	 *
-	 * @param string $original_template Original template.
-	 * @param string $item Item.
-	 * @param string $archive Archive.
-	 * @return string
-	 */
-	private static function add_to_hierarchy( $original_template, $item, $archive = null ) {
-		if ( get_query_var( $item, false ) ) {
-			$template          = $archive ?? $item;
-			$original_template = Template::locate( "tpl.{$template}", $original_template );
-		}
-		return $original_template;
 	}
 }

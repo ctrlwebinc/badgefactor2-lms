@@ -25,7 +25,6 @@ namespace BadgeFactor2;
 use BadgeFactor2\Helpers\Migration;
 use WP_CLI;
 use WP_CLI_Command;
-use BadgeFactor2\BadgrUser;
 use BadgeFactor2\Post_Types\BadgePage;
 
 WP_CLI::add_command( 'bf2', BadgeFactor2_CLI::class );

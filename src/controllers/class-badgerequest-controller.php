@@ -1,7 +1,7 @@
 <?php
 /**
  * Badge Factor 2
- * Copyright (C) 2019 ctrlweb
+ * Copyright (C) 2021 ctrlweb
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -20,26 +20,46 @@
  * @package Badge_Factor_2
  *
  * @phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedClassFound
- * @phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.VariableConstantNameFound
+ * @phpcs:disable WordPress.WP.I18n.NonSingularStringLiteralDomain
  */
 
-namespace BadgeFactor2\Helpers;
+namespace BadgeFactor2\Controllers;
+
+use BadgeFactor2\Page_Controller;
 
 /**
- * Constant helper class.
+ * Badge Request Controller Class.
  */
-class Constant {
+class BadgeRequest_Controller extends Page_Controller {
 
 	/**
-	 * Define constant if not already set.
+	 * Post Type.
 	 *
-	 * @param string      $name Constant name.
-	 * @param string|bool $value Constant value.
-	 * @return void
+	 * @var string
 	 */
-	public static function define( $name, $value ) {
-		if ( ! defined( $name ) ) {
-			define( $name, $value );
-		}
+	protected static $post_type = 'badge-request';
+
+
+	/**
+	 * Returns or outputs archive template with $fields array.
+	 *
+	 * @param string $default_template Default template (for filter hook).
+	 * @return void|string
+	 */
+	public static function archive( $default_template = null ) {
+
+		parent::archive( $default_template );
+	}
+
+
+	/**
+	 * Outputs single template with $fields array.
+	 *
+	 * @param string $default_template Default template (for filter hook).
+	 * @return void|string
+	 */
+	public static function single( $default_template = null ) {
+
+		return parent::single( $default_template );
 	}
 }
