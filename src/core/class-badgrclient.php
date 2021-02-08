@@ -842,8 +842,7 @@ class BadgrClient {
 			$this->save();
 
 			// Try to get an access token using the refresh token.
-			// FIXME This is an error, $provider is undefined.
-			$access_token = $provider->getAccessToken(
+			$access_token = $auth_provider->getAccessToken(
 				'refresh_token',
 				array(
 					'refresh_token' => $this->refresh_token,
@@ -896,51 +895,69 @@ class BadgrClient {
 			return null;
 		}
 
+		$done = false;
+		$refresh = false;
+
 		// Fetch configuration options
 		self::refresh_config();
-//var_dump($this);die();
-		$client = self::get_guzzle_client();
-		$method = strtoupper( $method );
-		if ( ! in_array( $method, array( 'GET', 'PUT', 'POST', 'DELETE' ), true ) ) {
-			throw new \BadMethodCallException( 'Method not supported' );
-		}
 
-		if ( ! empty( $args ) ) {
-			switch ( $method ) {
-				case 'GET':
-					$args = array( 'query' => $args );
-					break;
-				case 'POST':
-					$args = array( 'json' => $args );
-					break;
-				case 'PUT':
-					$args = array( 'json' => $args );
-					break;
-				case 'DELETE':
-					$args = array( 'json' => $args );
+		do {
+			// Refresh token if requested
+			if ( true == $refresh ) {
+				try {
+					$this->refresh_token();
+				} catch ( \Exception $e) {
+					return null;
+				}
 			}
-		}
-		$args = array_merge(
-			$args,
-			array(
-				'headers' => array(
-					'Authorization' => 'Bearer ' . $this->access_token,
-					'Accept'        => 'application/json',
-				),
-			)
-		);
-		try {
-			$response = $client->request( $method, self::get_internal_or_external_server_url() . $path, $args );
 
-			return $response;
+			$client = self::get_guzzle_client();
+			$method = strtoupper( $method );
+			if ( ! in_array( $method, array( 'GET', 'PUT', 'POST', 'DELETE' ), true ) ) {
+				throw new \BadMethodCallException( 'Method not supported' );
+			}
 
-		} catch ( ConnectException $e ) { // TODO catch and treat 403s as an expired token. try to refresh and retry before failing.
-			// TODO: potentially change client state.
-			return null;
-		} catch ( GuzzleException $e ) {
-			// TODO: potentially change client state.
-			return null;
-		}
+			if ( ! empty( $args ) ) {
+				switch ( $method ) {
+					case 'GET':
+						$args = array( 'query' => $args );
+						break;
+					case 'POST':
+						$args = array( 'json' => $args );
+						break;
+					case 'PUT':
+						$args = array( 'json' => $args );
+						break;
+					case 'DELETE':
+						$args = array( 'json' => $args );
+				}
+			}
+			$args = array_merge(
+				$args,
+				array(
+					'headers' => array(
+						'Authorization' => 'Bearer ' . $this->access_token,
+						'Accept'        => 'application/json',
+					),
+				)
+			);
+			try {
+				$response = $client->request( $method, self::get_internal_or_external_server_url() . $path, $args );
+
+				return $response;
+
+			} catch ( ConnectException $e ) {
+				return null;
+			} catch ( GuzzleException $e ) {
+				// If we aren't in a refresh cycle, treat 401 as an expired token
+				if ( $refresh == false && $e->getCode() == 401) {
+					$refresh = true;
+				} else {
+					return null;
+				}
+			}
+		} while ( $done == false );
+
 	}
 
 	/**
