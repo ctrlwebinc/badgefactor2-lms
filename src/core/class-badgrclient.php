@@ -158,6 +158,9 @@ class BadgrClient {
 	 */
 	private $client_secret = null;
 
+	private $password_grant_client_id = null;
+	private $password_grant_client_secret = null;
+
 	/**
 	 * Undocumented variable
 	 *
@@ -465,8 +468,8 @@ class BadgrClient {
 
 		$auth_provider = new GenericProvider(
 			array(
-				'clientId'                => $this->client_id,
-				'clientSecret'            => $this->client_secret,
+				'clientId'                => $this->get_parameter( 'client_id' ),
+				'clientSecret'            => $this->get_parameter( 'client_secret' ),
 				'redirectUri'             => $redirect_uri,
 				'urlAuthorize'            => $this->get_internal_or_external_server_url( true ) . '/o/authorize',
 				'urlAccessToken'          => $this->get_internal_or_external_server_url() . '/o/token',
@@ -552,8 +555,8 @@ class BadgrClient {
 
 		$auth_provider = new GenericProvider(
 			array(
-				'clientId'                => $this->client_id,
-				'clientSecret'            => $this->client_secret,
+				'clientId'                => $this->get_parameter( 'client_id'),
+				'clientSecret'            => $this->get_parameter( 'client_secret'),
 				'redirectUri'             => $redirect_uri,
 				'urlAuthorize'            => $this->get_internal_or_external_server_url( true ) . '/o/authorize',
 				'urlAccessToken'          => $this->get_internal_or_external_server_url() . '/o/token',
@@ -611,8 +614,8 @@ class BadgrClient {
 
 		$auth_provider = new GenericProvider(
 			array(
-				'clientId'                => $this->client_id,
-				'clientSecret'            => $this->client_secret,
+				'clientId'                => $this->get_parameter( 'password_grant_client_id'),
+				'clientSecret'            => $this->get_parameter( 'password_grant_client_secret'),
 				'redirectUri'             => $redirect_uri,
 				'urlAuthorize'            => $this->get_internal_or_external_server_url( true ) . '/o/authorize',
 				'urlAccessToken'          => $this->get_internal_or_external_server_url() . '/o/token',
@@ -825,8 +828,8 @@ class BadgrClient {
 
 		$auth_provider = new GenericProvider(
 			array(
-				'clientId'                => $this->client_id,
-				'clientSecret'            => $this->client_secret,
+				'clientId'                => $this->as_admin ? $this->get_parameter('client_id') : $this->get_parameter('password_grant_client_id'),
+				'clientSecret'            => $this->as_admin ? $this->get_parameter('client_secret') : $this->get_parameter('password_grant_client_secret'),
 				'redirectUri'             => $redirect_uri,
 				'urlAuthorize'            => $this->badgr_server_public_url . '/o/authorize',
 				'urlAccessToken'          => $this->get_internal_or_external_server_url() . '/o/token',
@@ -876,6 +879,11 @@ class BadgrClient {
 			return $this->{$parameter_name};
 		} else {
 			// Fetch from configuration
+			if ( true === isset(self::$configuration['badgr_server_' . $parameter_name])) {
+				return self::$configuration['badgr_server_' . $parameter_name];
+			} else {
+				return null;
+			}
 		}
 	}
 
