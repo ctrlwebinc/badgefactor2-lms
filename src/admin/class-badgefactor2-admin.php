@@ -584,26 +584,9 @@ class BadgeFactor2_Admin {
 				'default'          => 'local',
 				'options'          => array(
 					'local'    => __( 'Local Badgr', BF2_DATA['TextDomain'] ),
-					'badgr_io' => __( 'Badgr.io', BF2_DATA['TextDomain'] ),
 					'custom'   => __( 'Custom', BF2_DATA['TextDomain'] ),
 				),
 
-			)
-		);
-
-		// Badgr server quick select.
-		$badgr_settings->add_field(
-			array(
-				'name'             => __( 'Authorization type', BF2_DATA['TextDomain'] ),
-				'desc'             => __( 'Choose how to exchange credentials with Badgr', BF2_DATA['TextDomain'] ),
-				'id'               => 'badgr_authentication_process_select',
-				'type'             => 'radio',
-				'show_option_none' => false,
-				'default'          => BadgrClient::GRANT_CODE,
-				'options'          => array(
-					BadgrClient::GRANT_PASSWORD => __( 'Use passwords', BF2_DATA['TextDomain'] ),
-					BadgrClient::GRANT_CODE     => __( 'Redirect to server', BF2_DATA['TextDomain'] ),
-				),
 			)
 		);
 
@@ -652,6 +635,14 @@ class BadgeFactor2_Admin {
 			array(
 				'name' => __( 'Password Grant Client ID', BF2_DATA['TextDomain'] ),
 				'id'   => 'badgr_server_password_grant_client_id',
+				'type' => 'text',
+			)
+		);
+
+		$badgr_settings->add_field(
+			array(
+				'name' => __( 'Password Grant Client Secret', BF2_DATA['TextDomain'] ),
+				'id'   => 'badgr_server_password_grant_client_secret',
 				'type' => 'text',
 				'after_row' => function ( $field_args, $field ) {
 					include BF2_ABSPATH . 'templates/admin/badgr/server-status.tpl.php';
