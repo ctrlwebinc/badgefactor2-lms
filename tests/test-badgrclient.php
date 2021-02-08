@@ -58,7 +58,7 @@ class BadgrClientTest extends WP_UnitTestCase {
 	 *
 	 * @return void
 	 */
-	public function test_creation_missing_key_params_generates_exception() {
+	public function test_creation_missing_key_params_generates_unconfigured_client() {
 
 		// Needs userName, isAdmin, Badgr server public url and badgrServerFlavor.
 		$basic_parameters = array(
@@ -74,14 +74,8 @@ class BadgrClientTest extends WP_UnitTestCase {
 			$incomplete_parameters = $basic_parameters;
 			unset( $incomplete_parameters[ $key ] );
 
-			try {
-				$client = BadgrClient::make_instance( $incomplete_parameters );
-
-				// We shouldn't make it to the next line if exceptions are generated.
-				$this->fail( 'Exception not thrown' );
-			} catch ( BadMethodCallException $e ) {
-				$this->assertTrue( true );
-			}
+			$client = BadgrClient::make_instance( $incomplete_parameters );
+			$this->assertEquals(BadgrClient::STATE_NEW_AND_UNCONFIGURED, $client->get_state());
 		}
 	}
 
