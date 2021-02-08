@@ -646,8 +646,8 @@ class BadgeFactor2_Admin {
 				'id'        => 'badgr_server_client_secret',
 				'type'      => 'text',
 				'after_row' => function ( $field_args, $field ) {
-					include BF2_ABSPATH . 'templates/admin/tpl.badgr-server-status.php';
-					include BF2_ABSPATH . 'templates/admin/tpl.badgr-server-link-admin.php';
+					include BF2_ABSPATH . 'templates/admin/badgr/server-status.tpl.php';
+					include BF2_ABSPATH . 'templates/admin/badgr/server-link.tpl.php';
 				},
 			)
 		);

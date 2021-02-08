@@ -366,7 +366,7 @@ class Badgr_List extends \WP_List_Table {
 						}
 					}
 				}
-				include BF2_ABSPATH . 'templates/admin/tpl.edit-' . $this->slug . '.php';
+				include BF2_ABSPATH . 'templates/admin/badgr/edit-' . $this->slug . '.tpl.php';
 				break;
 			case 'edit':
 				if ( ! isset( $_GET['entity_id'] ) ) {
@@ -386,7 +386,7 @@ class Badgr_List extends \WP_List_Table {
 							$_GET['notice'] = 'updated';
 						}
 
-						include BF2_ABSPATH . 'templates/admin/tpl.edit-' . $this->slug . '.php';
+						include BF2_ABSPATH . 'templates/admin/badgr/edit-' . $this->slug . '.tpl.php';
 
 					} catch ( ClientException $e ) {
 						if ( 404 === $e->getResponse()->getStatusCode() ) {
@@ -420,7 +420,7 @@ class Badgr_List extends \WP_List_Table {
 							$_GET['notice'] = 'revoked';
 						}
 					}
-					include BF2_ABSPATH . 'templates/admin/tpl.revoke-' . $this->slug . '.php';
+					include BF2_ABSPATH . 'templates/admin/badgr/revoke-' . $this->slug . '.tpl.php';
 				}
 				break;
 		}

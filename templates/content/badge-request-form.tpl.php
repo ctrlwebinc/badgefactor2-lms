@@ -52,7 +52,7 @@ $form_type = get_post_meta( $badge_page->ID, 'badge_request_form_type', true );
 					break;
 				case 'basic':
 				default:
-					include( Template::locate( 'partials/basic-badge-request-form' ) );
+					include( Template::locate( 'basic-badge-request-form' ) );
 					break;
 			}
 			?>

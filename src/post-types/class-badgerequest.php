@@ -421,7 +421,7 @@ class BadgeRequest {
 	 * @return void
 	 */
 	public static function display( $badge_requests ) {
-		include( Template::locate( 'tpl.badge-requests' ) );
+		include( Template::locate( 'badge-requests' ) );
 	}
 
 
