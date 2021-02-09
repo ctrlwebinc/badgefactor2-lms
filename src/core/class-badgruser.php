@@ -179,7 +179,6 @@ class BadgrUser {
 	 *
 	 * @param WP_User $wp_user WordPress user.
 	 * @return BadgrClient
-	 * @throws \Exception Throws exception if can't determine the user for client creation.
 	 */
 	public static function get_or_make_user_client( WP_User $wp_user = null ) {
 
@@ -187,23 +186,22 @@ class BadgrUser {
 		if ( null === $wp_user ) {
 			$wp_user = wp_get_current_user();
 			if ( 0 === $wp_user->ID ) {
-				throw new \Exception( 'Can\'t determine user for client creation' );
+				// No current user, we need the admin client
+				$wp_user = get_user_by( 'ID', 1 );
 			}
 		}
 		// Look in user metas for existing client.
-		// TODO Transfer responsibility of user client fetching to BadgrUser.
 		$client = get_user_meta( $wp_user->ID, self::$user_meta_key_for_client, true );
 
 		if ( null !== $client && '' !== $client ) {
 			return $client;
 		}
 
-		// Make client.
-		$client = BadgrClient::make_client_from_saved_options();
-
-		// Set user.
-		$badgr_user = new BadgrUser( $wp_user );
-		$badgr_user->set_client( $client );
+		$client = BadgrClient::make_instance( array(
+			'username'   => $wp_user->user_email,
+			'as_admin'   => ( 1 === $wp_user->ID ),
+			'badgr_user' => new BadgrUser( $wp_user ),
+		));
 
 		return $client;
 
