@@ -570,6 +570,29 @@ class Badgr_CLI extends WP_CLI_Command {
 		}
 	}
 
+	public function list_user_backpack( $args, $assoc_args ) {
+		if ( count( $args ) !== 1 ) {
+			WP_CLI::error( 'Usage: list_user_backpack wp_user_id' );
+		}
+
+		$user = get_userdata( $args[0] );
+
+		if ( false === $user ) {
+			WP_CLI::error( 'No such user ' . $args[0] );
+		}
+
+		$badgr_user = new BadgrUser( $user );
+
+		$backpack = BadgrProvider::get_all_assertions_from_user_backpack( $badgr_user );
+
+		if ( false === $backpack ) {
+			WP_CLI::error( 'Getting backpack for user  ' . $args[0] . ' failed.' );
+		}
+
+		WP_CLI::success( 'Backpack for user ' . $args[0] . ' successfully retrieved : ' . json_encode( $backpack ) );
+
+	}
+
 
 	/**
 	 * Force Auth.

@@ -61,6 +61,9 @@ class BadgrUser {
 	 *
 	 * @var [type]
 	 */
+
+	public static $meta_key_for_badgr_password = 'badgr_password';
+
 	protected $wp_user = null;
 	/**
 	 * Undocumented variable
@@ -76,9 +79,6 @@ class BadgrUser {
 	 */
 	public function __construct( WP_User $wp_user ) {
 		$this->wp_user = $wp_user;
-		$this->get_client_from_user_meta();
-
-		// TODO considering making if no client in user meta.
 	}
 
 	/**
@@ -157,7 +157,12 @@ class BadgrUser {
 	 * @return null|BadgrClient
 	 */
 	public function get_client() {
-		return $this->user_client;
+
+		if ( null !== $this->user_client ) {
+			return $this->user_client;
+		}
+
+		return self::get_or_make_user_client( $this->wp_user );
 	}
 
 	/**
@@ -197,11 +202,24 @@ class BadgrUser {
 			return $client;
 		}
 
-		$client = BadgrClient::make_instance( array(
+		$client_parameters = array(
 			'username'   => $wp_user->user_email,
-			'as_admin'   => ( 1 === $wp_user->ID ),
 			'badgr_user' => new BadgrUser( $wp_user ),
-		));
+		);
+
+		if (1 === $wp_user->ID ) {
+			$client_parameters[ 'as_admin' ] = true;
+		} else {
+			$client_parameters[ 'as_admin' ] = false;
+
+			$badgr_password = get_user_meta( $wp_user->ID, self::$meta_key_for_badgr_password, true );
+
+			if ( null !== $badgr_password && '' !== $badgr_password ) {
+				$client_parameters['badgr_password'] = $badgr_password;
+			}
+		}
+
+		$client = BadgrClient::make_instance( $client_parameters );
 
 		return $client;
 

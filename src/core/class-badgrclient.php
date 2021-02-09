@@ -888,6 +888,15 @@ class BadgrClient {
 		// Fetch configuration options
 		self::refresh_config();
 
+		// If it's a password client with configuration, try to get accesstoken
+		if ( false === $this->as_admin && self::STATE_CONFIGURED === $this->state ) {
+			try {
+				$this->get_access_token_from_password_grant();
+			} catch (\Exception $e ) {
+				return null;
+			}
+		}
+
 		do {
 			// Refresh token if requested
 			if ( true == $refresh ) {
