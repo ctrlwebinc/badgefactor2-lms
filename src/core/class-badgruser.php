@@ -224,6 +224,7 @@ class BadgrUser {
 	 */
 	public static function init() {
 		add_action( 'user_register', array( self::class, 'new_user_registers' ), 9966 );
+		add_action( 'profile_update', array( self::class, 'update_user' ), 9966 );
 	}
 
 	/**
