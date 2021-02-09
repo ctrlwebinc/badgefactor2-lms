@@ -258,7 +258,7 @@ class BadgrClient {
 		$client->state = self::STATE_NEW_AND_UNCONFIGURED;
 
 		// Set parameters passed to function
-		$available_parameters = array(
+		$key_parameters = array(
 			'username',
 			'as_admin',
 			'badgr_server_public_url',
@@ -300,9 +300,9 @@ class BadgrClient {
 			'auth_type',
 		);
 
-		foreach ( $available_parameters as $available_parameter ) {
-			if ( isset( $parameters[ $available_parameter ] ) ) {
-				$client->{$available_parameter} = $parameters[ $available_parameter ];
+		foreach ( $optionnal_parameters as $optionnal_parameter ) {
+			if ( isset( $parameters[ $optionnal_parameter ] ) ) {
+				$client->{$optionnal_parameter} = $parameters[ $optionnal_parameter ];
 			}
 		}
 
