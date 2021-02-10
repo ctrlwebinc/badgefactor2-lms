@@ -612,7 +612,7 @@ class BadgrClient {
 				'password',
 				array(
 					'username' => $this->username,
-					'password' => $this->badgr_password,
+					'password' => BadgrUser::encrypt_decrypt( 'decrypt', $this->badgr_password ),
 					'scope'    => $this->scopes,
 				)
 			);

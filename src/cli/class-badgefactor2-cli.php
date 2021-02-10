@@ -183,4 +183,21 @@ class BadgeFactor2_CLI extends WP_CLI_Command {
 		WP_CLI::success( 'Category change test completed.' );
 	}
 
+	public function encrypt( $args, $assoc_args ) {
+		if ( count( $args ) !== 1 ) {
+			WP_CLI::error( 'Usage: encrypt "clear text to encrypt"' );
+		}
+
+		WP_CLI::success( BadgrUser::encrypt_decrypt( 'encrypt', $args[0]) );
+
+	}
+
+	public function decrypt( $args, $assoc_args ) {
+		if ( count( $args ) !== 1 ) {
+			WP_CLI::error( 'Usage: decrypt "base64 cypher text to decode"' );
+		}
+
+		WP_CLI::success( BadgrUser::encrypt_decrypt( 'decrypt', $args[0]) );
+
+	}
 }

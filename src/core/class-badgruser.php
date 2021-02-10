@@ -72,6 +72,10 @@ class BadgrUser {
 	 */
 	protected $user_client = null;
 
+	private static $configuration_key_encryption_alogorithm = 'BF2_ENCRYPTION_ALGORITHM';
+	private static $configuration_key_encryption_secret_key = 'BF2_SECRET_KEY';
+	private static $configuration_key_encryption_secret_iv = 'BF2_SECRET_IV';
+
 	/**
 	 * Undocumented function
 	 *
@@ -79,6 +83,28 @@ class BadgrUser {
 	 */
 	public function __construct( WP_User $wp_user ) {
 		$this->wp_user = $wp_user;
+	}
+
+	public static function encrypt_decrypt( $action, $payload) {
+		$output = false;
+
+		$encrypt_method = constant( self::$configuration_key_encryption_alogorithm );
+		$secret_key = constant( self::$configuration_key_encryption_secret_key );
+		$secret_iv = constant( self::$configuration_key_encryption_secret_iv );
+	
+		// hash
+		$key = hash('sha256', $secret_key);
+		
+		// iv - encrypt method AES-256-CBC expects 16 bytes - else you will get a warning
+		$iv = substr(hash('sha256', $secret_iv), 0, 16);
+	
+		if ( $action == 'encrypt' ) {
+			$output = openssl_encrypt($payload, $encrypt_method, $key, 0, $iv);
+		} else if( $action == 'decrypt' ) {
+			$output = openssl_decrypt($payload, $encrypt_method, $key, 0, $iv);
+		}
+	
+		return $output;
 	}
 
 	/**
@@ -320,7 +346,7 @@ class BadgrUser {
 		if ( false !== $slug ) {
 			update_user_meta( $user_id, self::$meta_key_for_badgr_user_slug, $slug );
 			update_user_meta( $user_id, self::$meta_key_for_user_state, 'created' );
-			update_user_meta( $user_id, 'badgr_password', $temporary_password );
+			update_user_meta( $user_id, 'badgr_password', self::encrypt_decrypt( 'encrypt' , $temporary_password ) );
 		}
 	}
 
