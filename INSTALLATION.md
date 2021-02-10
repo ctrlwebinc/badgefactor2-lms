@@ -1,5 +1,19 @@
 # Installation
 
+## Wordpress Configuration
+
+BadgeFactor2 handles passwords and these passwords are encrypted at rest.
+
+Sensitive encryption information is kept out of the wordpress database and is instead kept in wp-config.php .
+
+You should add the following entries in your wp-config.php file before you start using BadgeFactor2 taking care of using your own values for *key* and *iv*:
+
+```
+define( 'BF2_ENCRYPTION_ALGORITHM',  'AES-256-CBC' );
+define( 'BF2_SECRET_KEY',            'replace with your own unique secret key' );
+define( 'BF2_SECRET_IV',             'replace with your own unique secret iv ' );
+```
+
 ## Setting up a local badgr-server instance
 
 With these instructions, you'll have a local Badgr host to connect to.

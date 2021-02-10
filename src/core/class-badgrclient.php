@@ -252,7 +252,6 @@ class BadgrClient {
 	 * @return BadgrClient
 	 */
 	public static function make_instance( array $parameters ) {
-
 		// Start with un unconfigured client
 		$client = new self();
 		$client->state = self::STATE_NEW_AND_UNCONFIGURED;
@@ -261,32 +260,20 @@ class BadgrClient {
 		$key_parameters = array(
 			'username',
 			'as_admin',
-			'badgr_server_public_url',
-			'badgr_server_flavor',
 		);
 
 		foreach ( $key_parameters as $key_parameter ) {
 			if ( ! array_key_exists( $key_parameter, $parameters ) ) {
 				// Return an unconfigured client since some key paramaters are missing.
-				$client        = new self();
-				$client->state = self::STATE_NEW_AND_UNCONFIGURED;
 				return $client;
 			}
 		}
 
-		// TODO: perform checks on types and values of key parameters.
-
-		$client                          = new self();
 		$client->username                = $parameters['username'];
 		$client->as_admin                = $parameters['as_admin'];
-		$client->badgr_server_public_url = $parameters['badgr_server_public_url'];
-		$client->badgr_server_flavor     = $parameters['badgr_server_flavor'];
-
-		// TODO: check validity of optionnal parameters.
-
-		// TODO: save optionnal parameters in new instance.
 
 		$optionnal_parameters = array(
+			'badgr_server_public_url',
 			'badgr_server_internal_url',
 			'scopes',
 			'badgr_password',
@@ -298,6 +285,8 @@ class BadgrClient {
 			'token_expiration',
 			'badgr_profile',
 			'auth_type',
+			'password_grant_client_id',
+			'password_grant_client_secret',
 		);
 
 		foreach ( $optionnal_parameters as $optionnal_parameter ) {
@@ -310,10 +299,7 @@ class BadgrClient {
 		if ( null === $client->scopes ) {
 			$scopes = 'rw:profile rw:backpack';
 			if ( true === $client->as_admin ) {
-				$scopes .= ' rw:issuer';
-				if ( self::FLAVOR_LOCAL_R_JAMIROQUAI === $client->badgr_server_flavor ) {
-					$scopes .= ' rw:serverAdmin';
-				}
+				$scopes .= ' rw:issuer rw:serverAdmin';
 			}
 
 			$client->scopes = $scopes;
@@ -361,7 +347,7 @@ class BadgrClient {
 	 *
 	 * @return BadgrClient
 	 */
-	public static function make_client_from_saved_options() {
+/* 	public static function make_client_from_saved_options() {
 		// Make a client from the previous method of using options.
 
 		$options = get_option( 'badgefactor2_badgr_settings' );
@@ -372,9 +358,9 @@ class BadgrClient {
 			'badgr_server_flavor' => self::FLAVOR_LOCAL_R_JAMIROQUAI,
 		);
 
-/* 		if ( isset( $options['badgr_server_public_url'] ) ) {
-			$client_parameters['badgr_server_public_url'] = $options['badgr_server_public_url'];
-		} */
+// 		if ( isset( $options['badgr_server_public_url'] ) ) {
+//			$client_parameters['badgr_server_public_url'] = $options['badgr_server_public_url'];
+//		} 
 
 		if ( isset( $options['badgr_server_client_id'] ) ) {
 			$client_parameters['client_id'] = $options['badgr_server_client_id'];
@@ -384,10 +370,10 @@ class BadgrClient {
 			$client_parameters['client_secret'] = $options['badgr_server_client_secret'];
 		}
 
-/* 		if ( isset( $options['badgr_server_internal_url'] ) ) {
-			$client_parameters['badgr_server_internal_url'] = $options['badgr_server_internal_url'];
-		}
- */
+// 		if ( isset( $options['badgr_server_internal_url'] ) ) {
+//			$client_parameters['badgr_server_internal_url'] = $options['badgr_server_internal_url'];
+//		}
+ 
 		if ( isset( $options['badgr_server_access_token'] ) ) {
 			$client_parameters['badgr_server_access_token'] = $options['badgr_server_access_token'];
 		}
@@ -401,7 +387,7 @@ class BadgrClient {
 		}
 
 		return self::make_instance( $client_parameters );
-	}
+	} */
 
 	/**
 	 * Undocumented function
@@ -434,22 +420,13 @@ class BadgrClient {
 	public static function setup_admin_code_authorization() {
 		// Check that user is logged into WP.
 		$current_user = wp_get_current_user();
-		if ( 0 === $current_user ) {
+		if ( 1 !== $current_user->ID ) {
 			// Redirect to admin page.
 			header( 'Location: ' . site_url( self::REDIRECT_PATH_AFTER_AUTH ) );
 			exit;
 		}
 
-		$badgr_user = new BadgrUser( $current_user );
-
-		$client = null;
-
-		try {
-			$client = self::make_client_from_saved_options();
-		} catch ( BadMethodCallException $e ) {
-			// FIXME This is an error, $this->fail() is undefined.
-			$this->fail( 'Exception thrown on client creation: ' . $e->getMessage() );
-		}
+		$client = BadgrUser::get_or_make_user_client( $current_user );
 
 		$client->initiate_code_authorization();
 	}
@@ -635,7 +612,7 @@ class BadgrClient {
 				'password',
 				array(
 					'username' => $this->username,
-					'password' => $this->badgr_password,
+					'password' => BadgrUser::encrypt_decrypt( 'decrypt', $this->badgr_password ),
 					'scope'    => $this->scopes,
 				)
 			);
@@ -910,6 +887,15 @@ class BadgrClient {
 
 		// Fetch configuration options
 		self::refresh_config();
+
+		// If it's a password client with configuration, try to get accesstoken
+		if ( false === $this->as_admin && self::STATE_CONFIGURED === $this->state ) {
+			try {
+				$this->get_access_token_from_password_grant();
+			} catch (\Exception $e ) {
+				return null;
+			}
+		}
 
 		do {
 			// Refresh token if requested

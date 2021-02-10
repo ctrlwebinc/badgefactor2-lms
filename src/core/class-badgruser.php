@@ -61,6 +61,9 @@ class BadgrUser {
 	 *
 	 * @var [type]
 	 */
+
+	public static $meta_key_for_badgr_password = 'badgr_password';
+
 	protected $wp_user = null;
 	/**
 	 * Undocumented variable
@@ -69,6 +72,10 @@ class BadgrUser {
 	 */
 	protected $user_client = null;
 
+	private static $configuration_key_encryption_alogorithm = 'BF2_ENCRYPTION_ALGORITHM';
+	private static $configuration_key_encryption_secret_key = 'BF2_SECRET_KEY';
+	private static $configuration_key_encryption_secret_iv = 'BF2_SECRET_IV';
+
 	/**
 	 * Undocumented function
 	 *
@@ -76,9 +83,28 @@ class BadgrUser {
 	 */
 	public function __construct( WP_User $wp_user ) {
 		$this->wp_user = $wp_user;
-		$this->get_client_from_user_meta();
+	}
 
-		// TODO considering making if no client in user meta.
+	public static function encrypt_decrypt( $action, $payload) {
+		$output = false;
+
+		$encrypt_method = constant( self::$configuration_key_encryption_alogorithm );
+		$secret_key = constant( self::$configuration_key_encryption_secret_key );
+		$secret_iv = constant( self::$configuration_key_encryption_secret_iv );
+	
+		// hash
+		$key = hash('sha256', $secret_key);
+		
+		// iv - encrypt method AES-256-CBC expects 16 bytes - else you will get a warning
+		$iv = substr(hash('sha256', $secret_iv), 0, 16);
+	
+		if ( $action == 'encrypt' ) {
+			$output = openssl_encrypt($payload, $encrypt_method, $key, 0, $iv);
+		} else if( $action == 'decrypt' ) {
+			$output = openssl_decrypt($payload, $encrypt_method, $key, 0, $iv);
+		}
+	
+		return $output;
 	}
 
 	/**
@@ -157,7 +183,12 @@ class BadgrUser {
 	 * @return null|BadgrClient
 	 */
 	public function get_client() {
-		return $this->user_client;
+
+		if ( null !== $this->user_client ) {
+			return $this->user_client;
+		}
+
+		return self::get_or_make_user_client( $this->wp_user );
 	}
 
 	/**
@@ -179,7 +210,6 @@ class BadgrUser {
 	 *
 	 * @param WP_User $wp_user WordPress user.
 	 * @return BadgrClient
-	 * @throws \Exception Throws exception if can't determine the user for client creation.
 	 */
 	public static function get_or_make_user_client( WP_User $wp_user = null ) {
 
@@ -187,23 +217,35 @@ class BadgrUser {
 		if ( null === $wp_user ) {
 			$wp_user = wp_get_current_user();
 			if ( 0 === $wp_user->ID ) {
-				throw new \Exception( 'Can\'t determine user for client creation' );
+				// No current user, we need the admin client
+				$wp_user = get_user_by( 'ID', 1 );
 			}
 		}
 		// Look in user metas for existing client.
-		// TODO Transfer responsibility of user client fetching to BadgrUser.
 		$client = get_user_meta( $wp_user->ID, self::$user_meta_key_for_client, true );
 
 		if ( null !== $client && '' !== $client ) {
 			return $client;
 		}
 
-		// Make client.
-		$client = BadgrClient::make_client_from_saved_options();
+		$client_parameters = array(
+			'username'   => $wp_user->user_email,
+			'badgr_user' => new BadgrUser( $wp_user ),
+		);
 
-		// Set user.
-		$badgr_user = new BadgrUser( $wp_user );
-		$badgr_user->set_client( $client );
+		if (1 === $wp_user->ID ) {
+			$client_parameters[ 'as_admin' ] = true;
+		} else {
+			$client_parameters[ 'as_admin' ] = false;
+
+			$badgr_password = get_user_meta( $wp_user->ID, self::$meta_key_for_badgr_password, true );
+
+			if ( null !== $badgr_password && '' !== $badgr_password ) {
+				$client_parameters['badgr_password'] = $badgr_password;
+			}
+		}
+
+		$client = BadgrClient::make_instance( $client_parameters );
 
 		return $client;
 
@@ -226,6 +268,7 @@ class BadgrUser {
 	 */
 	public static function init() {
 		add_action( 'user_register', array( self::class, 'new_user_registers' ), 9966 );
+		add_action( 'profile_update', array( self::class, 'update_user' ), 9966 );
 	}
 
 	/**
@@ -303,7 +346,7 @@ class BadgrUser {
 		if ( false !== $slug ) {
 			update_user_meta( $user_id, self::$meta_key_for_badgr_user_slug, $slug );
 			update_user_meta( $user_id, self::$meta_key_for_user_state, 'created' );
-			update_user_meta( $user_id, 'badgr_password', $temporary_password );
+			update_user_meta( $user_id, 'badgr_password', self::encrypt_decrypt( 'encrypt' , $temporary_password ) );
 		}
 	}
 
