@@ -17,13 +17,14 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
- @import 'settings/variables'; 
+ @import 'settings/variables';
 
  @import 'elements/titles';
  @import 'elements/form';
- 
- @import 'objects/buttons';
- 
+ @import 'elements/buttons'; 
+
+ @import 'objects/layout';
+
  @import 'components/badge';
  @import 'components/list';
  @import 'components/single';

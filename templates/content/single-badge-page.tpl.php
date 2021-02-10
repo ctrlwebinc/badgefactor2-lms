@@ -33,7 +33,7 @@ use BadgeFactor2\Helpers\Template;
 global $bf2_template;
 ?>
 
-<main class="section-inner" <?php post_class(); ?> id="post-<?php the_ID(); ?>" role="main">
+<div class="c-bf2 c-bf2--single section-inner" <?php post_class(); ?> id="post-<?php the_ID(); ?>">
 	<?php if ( true === $bf2_template->fields['autoevaluation-form'] ) : ?>
 		<?php include( Template::locate( 'autoevaluation-form' ) ); ?>
 	<?php endif; ?>
@@ -41,7 +41,7 @@ global $bf2_template;
 		<?php include( Template::locate( 'badge-request-form' ) ); ?>
 	<?php endif; ?>
 	<?php if ( true === $bf2_template->fields['display-page'] ) : ?>
-		<article class="c-bf2__section c-bf2__single">
+		<article class="c-bf2__single">
 			<header class="c-bf2__header">
 				<h1 class="c-bf2__title"><?php echo $bf2_template->fields['badge']->name; ?></h1>
 			</header>
@@ -86,4 +86,4 @@ global $bf2_template;
 			</aside>
 		</article>
 	<?php endif; ?>
-</main>
+</div>

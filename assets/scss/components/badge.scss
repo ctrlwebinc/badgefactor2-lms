@@ -1,5 +1,8 @@
 .c-bf2__badge {
-    padding: 2rem;
+    //padding: 2rem;
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+    padding-right: 2rem;
     
     &__inner {
         display: flex;
@@ -14,7 +17,7 @@
         background: var(--badge-background);
         text-decoration: none;
     }
-    
+
     &__image {
         height: auto;
         max-width: 100%;

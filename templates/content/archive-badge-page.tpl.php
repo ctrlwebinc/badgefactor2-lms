@@ -31,12 +31,10 @@
 global $bf2_template;
 ?>
 <main class="section-inner" <?php post_class(); ?> id="post-<?php the_ID(); ?>" role="main">
-	<div class="c-bf2">
-
+	<div class="c-bf2 c-bf2--badges">
 		<header class="c-bf2__header">
 			<h1 class="c-bf2__title"><?php echo __( 'Badges' ); ?></h1>
 		</header>
-
 		<div class="c-bf2__body">
 			<?php foreach ( $bf2_template->fields['badgepages']['by_category'] as $category ): ?>
 			<section class="c-bf2__section">

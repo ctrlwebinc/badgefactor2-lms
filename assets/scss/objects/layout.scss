@@ -1,0 +1,10 @@
+.c-bf2 {
+    margin-left: auto;
+    margin-right: auto;
+    &--badges {
+        max-width: calc(var(--responsive--alignwide-width) + 4rem);
+    }
+    &--single {
+        max-width: var(--responsive--alignwide-width);
+    }
+}
