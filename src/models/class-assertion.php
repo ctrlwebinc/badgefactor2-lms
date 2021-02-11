@@ -103,7 +103,11 @@ class Assertion implements Badgr_Entity {
 	 */
 	public static function all_for_user( WP_User $user ) {
 		$badgr_user = new BadgrUser( $user );
-		return BadgrProvider::get_all_assertions_from_user_backpack( $badgr_user );
+		$assertions = BadgrProvider::get_all_assertions_from_user_backpack( $badgr_user );
+		if ( ! $assertions ) {
+			$assertions = array();
+		}
+		return $assertions;
 	}
 
 
