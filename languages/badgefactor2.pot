@@ -3,14 +3,14 @@ msgid ""
 msgstr ""
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 "Project-Id-Version: Badge Factor 2\n"
-"POT-Creation-Date: 2020-09-23 06:25-0400\n"
+"POT-Creation-Date: 2021-02-11 10:15-0500\n"
 "PO-Revision-Date: 2020-09-23 06:19-0400\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 2.4.1\n"
+"X-Generator: Poedit 2.4.2\n"
 "X-Poedit-Basepath: ..\n"
 "X-Poedit-Flags-xgettext: --add-comments=translators:\n"
 "X-Poedit-WPHeader: badgefactor2.php\n"
@@ -247,8 +247,10 @@ msgstr ""
 msgid "Entry Title"
 msgstr ""
 
-#: lib/CMB2/example-functions.php:544 templates/admin/tpl.edit-badges.php:74
-#: templates/admin/tpl.edit-issuers.php:84 templates/tpl.badge.php:53
+#: lib/CMB2/example-functions.php:544
+#: templates/admin/badgr/edit-badges.tpl.php:74
+#: templates/admin/badgr/edit-issuers.tpl.php:84
+#: templates/content/single-badge-page.tpl.php:49
 msgid "Description"
 msgstr ""
 
@@ -416,6 +418,7 @@ msgid "Remove Group"
 msgstr ""
 
 #: lib/CMB2/includes/CMB2_Field.php:1471 lib/CMB2/includes/CMB2_Field.php:1475
+#: src/post-types/class-badgepage.php:439
 msgid "None"
 msgstr ""
 
@@ -742,378 +745,395 @@ msgstr ""
 msgid "No terms"
 msgstr ""
 
-#: src/admin/class-badgefactor2-admin.php:132
-#: src/admin/class-badgefactor2-admin.php:181
-#: src/admin/class-badgefactor2-admin.php:265
+#. Plugin Name of the plugin/theme
+#: src/admin/buddypress/class-buddypress.php:52
+msgid "Badge Factor 2"
+msgstr ""
+
+#: src/admin/buddypress/class-buddypress.php:59
+msgid "Display Badges only?"
+msgstr ""
+
+#: src/admin/buddypress/class-buddypress.php:79
+msgid "Here you can ajust how Badge Factor 2 uses BuddyPress."
+msgstr ""
+
+#: src/admin/buddypress/class-buddypress.php:89
+msgid ""
+"If you check this box, BuddyPress member profile tabs will be overriden, and "
+"only the Badges portfolio will be shown."
+msgstr ""
+
+#: src/admin/class-badgefactor2-admin.php:137
+#: src/admin/class-badgefactor2-admin.php:186
+#: src/admin/class-badgefactor2-admin.php:270
 #: src/admin/lists/class-issuers.php:47
 msgid "Issuers"
 msgstr ""
 
-#: src/admin/class-badgefactor2-admin.php:136
-#: src/admin/class-badgefactor2-admin.php:209
-#: src/admin/class-badgefactor2-admin.php:284
-#: src/admin/lists/class-badges.php:47 templates/tpl.badges.php:43
+#: src/admin/class-badgefactor2-admin.php:141
+#: src/admin/class-badgefactor2-admin.php:214
+#: src/admin/class-badgefactor2-admin.php:289
+#: src/admin/lists/class-badges.php:47
+#: templates/content/archive-badge-page.tpl.php:36
 msgid "Badges"
 msgstr ""
 
-#: src/admin/class-badgefactor2-admin.php:140
-#: src/admin/class-badgefactor2-admin.php:237
-#: src/admin/class-badgefactor2-admin.php:303
+#: src/admin/class-badgefactor2-admin.php:145
+#: src/admin/class-badgefactor2-admin.php:242
+#: src/admin/class-badgefactor2-admin.php:308
 #: src/admin/lists/class-assertions.php:49
 msgid "Assertions"
 msgstr ""
 
-#: src/admin/class-badgefactor2-admin.php:341
+#: src/admin/class-badgefactor2-admin.php:346
 msgid "Settings"
 msgstr ""
 
-#: src/admin/class-badgefactor2-admin.php:354
+#: src/admin/class-badgefactor2-admin.php:359
 msgid "Send WordPress registration emails?"
 msgstr ""
 
-#: src/admin/class-badgefactor2-admin.php:355
+#: src/admin/class-badgefactor2-admin.php:360
 msgid ""
 "Registration emails are managed by Badgr. If you enable this, users will "
 "receive two registration validations emails."
 msgstr ""
 
-#: src/admin/class-badgefactor2-admin.php:363
+#: src/admin/class-badgefactor2-admin.php:368
 msgid "Make issued badges public or private by default?"
 msgstr ""
 
-#: src/admin/class-badgefactor2-admin.php:364
+#: src/admin/class-badgefactor2-admin.php:369
 msgid ""
 "Changing this will not change the visibility of previously issued badges."
 msgstr ""
 
-#: src/admin/class-badgefactor2-admin.php:368
+#: src/admin/class-badgefactor2-admin.php:373
 msgid "Public"
 msgstr ""
 
-#: src/admin/class-badgefactor2-admin.php:369
+#: src/admin/class-badgefactor2-admin.php:374
 msgid "Private"
 msgstr ""
 
-#: src/admin/class-badgefactor2-admin.php:391
+#: src/admin/class-badgefactor2-admin.php:384
 msgid "Form slug"
 msgstr ""
 
-#: src/admin/class-badgefactor2-admin.php:392
-msgid "When you modify this, you need to flush your rewrite rules."
+#: src/admin/class-badgefactor2-admin.php:393
+msgid "Activate self-evaluation form?"
 msgstr ""
 
-#: src/admin/class-badgefactor2-admin.php:404
-#: src/admin/class-badgefactor2-admin.php:409
+#: src/admin/class-badgefactor2-admin.php:402
+msgid "Autoevaluation form slug"
+msgstr ""
+
+#: src/admin/class-badgefactor2-admin.php:418
+#: src/admin/class-badgefactor2-admin.php:423
 msgid "Emails"
 msgstr ""
 
-#: src/admin/class-badgefactor2-admin.php:422
+#: src/admin/class-badgefactor2-admin.php:436
 msgid "Badge Request - Email to approver"
 msgstr ""
 
-#: src/admin/class-badgefactor2-admin.php:423
+#: src/admin/class-badgefactor2-admin.php:437
 msgid ""
 "This email will be sent to approvers when a user submits a badge request."
 msgstr ""
 
-#: src/admin/class-badgefactor2-admin.php:431
-#: src/admin/class-badgefactor2-admin.php:468
-#: src/admin/class-badgefactor2-admin.php:497
-#: src/admin/class-badgefactor2-admin.php:526
+#: src/admin/class-badgefactor2-admin.php:445
+#: src/admin/class-badgefactor2-admin.php:482
+#: src/admin/class-badgefactor2-admin.php:511
+#: src/admin/class-badgefactor2-admin.php:540
 msgid "Title"
 msgstr ""
 
-#: src/admin/class-badgefactor2-admin.php:440
-#: src/admin/class-badgefactor2-admin.php:477
-#: src/admin/class-badgefactor2-admin.php:506
-#: src/admin/class-badgefactor2-admin.php:535
+#: src/admin/class-badgefactor2-admin.php:454
+#: src/admin/class-badgefactor2-admin.php:491
+#: src/admin/class-badgefactor2-admin.php:520
+#: src/admin/class-badgefactor2-admin.php:549
 msgid "Body"
 msgstr ""
 
-#: src/admin/class-badgefactor2-admin.php:444
+#: src/admin/class-badgefactor2-admin.php:458
 msgid "Available variables: $badge$ $user$ $link$"
 msgstr ""
 
-#: src/admin/class-badgefactor2-admin.php:450
+#: src/admin/class-badgefactor2-admin.php:464
 msgid "Send auto-approved notifications?"
 msgstr ""
 
-#: src/admin/class-badgefactor2-admin.php:459
+#: src/admin/class-badgefactor2-admin.php:473
 msgid "Badge Request - Approval confirmation"
 msgstr ""
 
-#: src/admin/class-badgefactor2-admin.php:460
+#: src/admin/class-badgefactor2-admin.php:474
 msgid "This email will be sent to a user when a badge request is approved."
 msgstr ""
 
-#: src/admin/class-badgefactor2-admin.php:481
+#: src/admin/class-badgefactor2-admin.php:495
 msgid "Available variables: $badge$ $link$"
 msgstr ""
 
-#: src/admin/class-badgefactor2-admin.php:488
+#: src/admin/class-badgefactor2-admin.php:502
 msgid "Badge Request - Rejection confirmation"
 msgstr ""
 
-#: src/admin/class-badgefactor2-admin.php:489
+#: src/admin/class-badgefactor2-admin.php:503
 msgid "This email will be sent to a user when a badge request is rejected."
 msgstr ""
 
-#: src/admin/class-badgefactor2-admin.php:510
+#: src/admin/class-badgefactor2-admin.php:524
 msgid "Available variables: $badge$ $reason$ $link$"
 msgstr ""
 
-#: src/admin/class-badgefactor2-admin.php:517
+#: src/admin/class-badgefactor2-admin.php:531
 msgid "Badge Request - Revision confirmation"
 msgstr ""
 
-#: src/admin/class-badgefactor2-admin.php:518
+#: src/admin/class-badgefactor2-admin.php:532
 msgid ""
 "This email will be sent to a user when a badge request needs to be revised."
 msgstr ""
 
-#: src/admin/class-badgefactor2-admin.php:547
+#: src/admin/class-badgefactor2-admin.php:561
 msgid "Badgr Server"
 msgstr ""
 
-#: src/admin/class-badgefactor2-admin.php:547
+#: src/admin/class-badgefactor2-admin.php:561
 msgid "You need to configure the connection to the Badgr service you'll use."
 msgstr ""
 
-#: src/admin/class-badgefactor2-admin.php:565
+#: src/admin/class-badgefactor2-admin.php:579
 msgid "Badgr server"
 msgstr ""
 
-#: src/admin/class-badgefactor2-admin.php:566
+#: src/admin/class-badgefactor2-admin.php:580
 msgid "Choose the type of Badgr server you're using"
 msgstr ""
 
-#: src/admin/class-badgefactor2-admin.php:572
+#: src/admin/class-badgefactor2-admin.php:586
 msgid "Local Badgr"
 msgstr ""
 
-#: src/admin/class-badgefactor2-admin.php:573
-msgid "Badgr.io"
-msgstr ""
-
-#: src/admin/class-badgefactor2-admin.php:574
+#: src/admin/class-badgefactor2-admin.php:587
 msgid "Custom"
 msgstr ""
 
-#: src/admin/class-badgefactor2-admin.php:583
-msgid "Authorization type"
-msgstr ""
-
-#: src/admin/class-badgefactor2-admin.php:584
-msgid "Choose how to exchange credentials with Badgr"
-msgstr ""
-
-#: src/admin/class-badgefactor2-admin.php:590
-msgid "Use passwords"
-msgstr ""
-
-#: src/admin/class-badgefactor2-admin.php:591
-msgid "Redirect to server"
-msgstr ""
-
-#: src/admin/class-badgefactor2-admin.php:599
+#: src/admin/class-badgefactor2-admin.php:596
 msgid "Public URL"
 msgstr ""
 
-#: src/admin/class-badgefactor2-admin.php:600
-#: src/admin/class-badgefactor2-admin.php:612
+#: src/admin/class-badgefactor2-admin.php:597
+#: src/admin/class-badgefactor2-admin.php:609
 msgid "Format: scheme://URL:port"
 msgstr ""
 
-#: src/admin/class-badgefactor2-admin.php:611
+#: src/admin/class-badgefactor2-admin.php:608
 msgid "Internal URL"
 msgstr ""
 
-#: src/admin/class-badgefactor2-admin.php:623
+#: src/admin/class-badgefactor2-admin.php:620
 msgid "Client ID"
 msgstr ""
 
-#: src/admin/class-badgefactor2-admin.php:631
+#: src/admin/class-badgefactor2-admin.php:628
 msgid "Client Secret"
 msgstr ""
 
-#: src/admin/class-badgefactor2-admin.php:646
-#: src/admin/class-badgefactor2-admin.php:651
+#: src/admin/class-badgefactor2-admin.php:636
+msgid "Password Grant Client ID"
+msgstr ""
+
+#: src/admin/class-badgefactor2-admin.php:644
+msgid "Password Grant Client Secret"
+msgstr ""
+
+#: src/admin/class-badgefactor2-admin.php:659
+#: src/admin/class-badgefactor2-admin.php:664
 msgid "Add-Ons"
 msgstr ""
 
-#: src/admin/class-badgefactor2-admin.php:663
+#: src/admin/class-badgefactor2-admin.php:676
 msgid "Add-Ons List"
 msgstr ""
 
-#: src/admin/class-badgefactor2-admin.php:729
-#: src/admin/class-badgefactor2-admin.php:779
-#: src/admin/class-badgefactor2-admin.php:822
+#: src/admin/class-badgefactor2-admin.php:743
+#: src/admin/class-badgefactor2-admin.php:794
+#: src/admin/class-badgefactor2-admin.php:837
 msgid "You are not an approver on this website."
 msgstr ""
 
-#: src/admin/class-badgefactor2-admin.php:731
-#: src/admin/class-badgefactor2-admin.php:781
-#: src/admin/class-badgefactor2-admin.php:824
+#: src/admin/class-badgefactor2-admin.php:745
+#: src/admin/class-badgefactor2-admin.php:796
+#: src/admin/class-badgefactor2-admin.php:839
 msgid "This request is invalid!"
 msgstr ""
 
-#: src/admin/class-badgefactor2-admin.php:741
-#: src/admin/class-badgefactor2-admin.php:787
-#: src/admin/class-badgefactor2-admin.php:830
+#: src/admin/class-badgefactor2-admin.php:755
+#: src/admin/class-badgefactor2-admin.php:802
+#: src/admin/class-badgefactor2-admin.php:845
 msgid "You are not an approver for this badge."
 msgstr ""
 
-#: src/admin/class-badgefactor2-admin.php:750
+#: src/admin/class-badgefactor2-admin.php:765
 msgid "The badge request has been approved!"
 msgstr ""
 
-#: src/admin/class-badgefactor2-admin.php:796
+#: src/admin/class-badgefactor2-admin.php:811
 msgid "The badge request has been rejected."
 msgstr ""
 
-#: src/admin/class-badgefactor2-admin.php:839
+#: src/admin/class-badgefactor2-admin.php:854
 msgid "The badge request has been sent back for revision."
 msgstr ""
 
-#: src/admin/class-badgefactor2-admin.php:870
+#: src/admin/class-badgefactor2-admin.php:885
 msgid "Your badge request has been approved !"
 msgstr ""
 
-#: src/admin/class-badgefactor2-admin.php:871
+#: src/admin/class-badgefactor2-admin.php:886
 msgid ""
 "Your request for the badge $badge$ has been approved. You can view it here: "
 "$link$."
 msgstr ""
 
-#: src/admin/class-badgefactor2-admin.php:904
+#: src/admin/class-badgefactor2-admin.php:919
 msgid "Your badge request has been rejected."
 msgstr ""
 
-#: src/admin/class-badgefactor2-admin.php:905
+#: src/admin/class-badgefactor2-admin.php:920
 msgid ""
 "Your request for the badge $badge$ has been rejected. Here is the reason "
 "provided:<br/>$reason$<br/>You can resubmit a request here: $link$."
 msgstr ""
 
-#: src/admin/class-badgefactor2-admin.php:939
+#: src/admin/class-badgefactor2-admin.php:954
 msgid "Your badge request must be revised"
 msgstr ""
 
-#: src/admin/class-badgefactor2-admin.php:940
+#: src/admin/class-badgefactor2-admin.php:955
 msgid ""
 "You must revise and resubmit your badge request for the badge $badge$. Here "
 "is the reason provided:<br/>$reason$<br/>You can revise your request here: "
 "$link$."
 msgstr ""
 
-#: src/admin/class-badgefactor2-admin.php:961
-#: src/admin/class-badgefactor2-admin.php:969
-#: src/admin/class-badgefactor2-admin.php:995
+#: src/admin/class-badgefactor2-admin.php:976
+#: src/admin/class-badgefactor2-admin.php:984
+#: src/admin/class-badgefactor2-admin.php:1010
 msgid "Filter for"
 msgstr ""
 
-#: src/admin/class-badgr-list.php:157
+#: src/admin/class-badgr-list.php:158
 #, php-format
 msgid "No %s avaliable."
 msgstr ""
 
-#: src/admin/class-badgr-list.php:230
+#: src/admin/class-badgr-list.php:231
 msgid "Are you sure you want to delete this item?"
 msgstr ""
 
-#: src/admin/class-badgr-list.php:230 src/admin/class-badgr-list.php:298
+#: src/admin/class-badgr-list.php:231 src/admin/class-badgr-list.php:299
 msgid "Delete"
 msgstr ""
 
-#: src/admin/class-badgr-list.php:248
-#: templates/admin/tpl.edit-assertions.php:62
+#: src/admin/class-badgr-list.php:249
+#: templates/admin/badgr/edit-assertions.tpl.php:62
 msgid "REVOKED!"
 msgstr ""
 
-#: src/admin/class-badgr-list.php:253
+#: src/admin/class-badgr-list.php:254
 msgid "Revoke"
 msgstr ""
 
-#: src/admin/class-badgr-list.php:373 src/admin/class-badgr-list.php:404
+#: src/admin/class-badgr-list.php:374 src/admin/class-badgr-list.php:405
 msgid "You are missing an entity ID."
 msgstr ""
 
-#: src/admin/class-badgr-list.php:379 src/admin/class-badgr-list.php:409
-#: src/admin/class-badgr-list.php:416
+#: src/admin/class-badgr-list.php:380 src/admin/class-badgr-list.php:410
+#: src/admin/class-badgr-list.php:417
 msgid ""
 "You attempted to edit an item that doesn't exist. Perhaps it was deleted?"
 msgstr ""
 
-#: src/admin/class-badgr-list.php:392 src/admin/class-badgr-list.php:464
+#: src/admin/class-badgr-list.php:393 src/admin/class-badgr-list.php:465
 msgid "Item does not exist."
 msgstr ""
 
-#: src/admin/class-badgr-list.php:394
+#: src/admin/class-badgr-list.php:395
 msgid "Item cannot be edited."
 msgstr ""
 
-#: src/admin/class-badgr-list.php:437
+#: src/admin/class-badgr-list.php:438
 msgid "Object created."
 msgstr ""
 
-#: src/admin/class-badgr-list.php:461
+#: src/admin/class-badgr-list.php:462
 msgid "Item deleted."
 msgstr ""
 
-#: src/admin/class-badgr-list.php:466
+#: src/admin/class-badgr-list.php:467
 msgid "Item cannot be deleted."
 msgstr ""
 
-#: src/admin/class-badgr-list.php:480
+#: src/admin/class-badgr-list.php:481
 msgid "Items deleted."
 msgstr ""
 
-#: src/admin/class-badgr-list.php:501 src/admin/class-badgr-list.php:504
-#: src/post-types/class-badgepage.php:97
+#: src/admin/class-badgr-list.php:502 src/admin/class-badgr-list.php:505
+#: src/post-types/class-badgepage.php:99
 #: src/post-types/class-badgerequest.php:99
 msgid "Add New"
 msgstr ""
 
-#: src/admin/class-badgr-list.php:509
+#: src/admin/class-badgr-list.php:510
 msgid "List type"
 msgstr ""
 
-#: src/admin/class-badgr-list.php:526
+#: src/admin/class-badgr-list.php:527
 msgid "List for"
 msgstr ""
 
-#: src/admin/class-badgr-list.php:546 src/admin/cmb2-fields/class-badge.php:64
+#: src/admin/class-badgr-list.php:547 src/admin/cmb2-fields/class-badge.php:64
 msgid "Badgr connection inactive!"
 msgstr ""
 
-#: src/admin/class-notices.php:114 templates/admin/tpl.edit-assertions.php:37
-#: templates/admin/tpl.edit-badges.php:37
-#: templates/admin/tpl.edit-issuers.php:35
-#: templates/admin/tpl.revoke-assertions.php:37
+#: src/admin/class-notices.php:115
+#: templates/admin/badgr/edit-assertions.tpl.php:37
+#: templates/admin/badgr/edit-badges.tpl.php:37
+#: templates/admin/badgr/edit-issuers.tpl.php:35
+#: templates/admin/badgr/revoke-assertions.tpl.php:37
 msgid "Dismiss this message."
 msgstr ""
 
 #: src/admin/cmb2-fields/class-addons.php:55
-msgid "BadgeFactor2 Courses"
+msgid "BadgeFactor2 Certificates"
 msgstr ""
 
 #: src/admin/cmb2-fields/class-addons.php:59
-msgid "BadgeFactor2 GravityForms"
+msgid "BadgeFactor2 Courses"
 msgstr ""
 
 #: src/admin/cmb2-fields/class-addons.php:63
+msgid "BadgeFactor2 GravityForms"
+msgstr ""
+
+#: src/admin/cmb2-fields/class-addons.php:67
 msgid "BadgeFactor2 WooCommerce"
 msgstr ""
 
-#: src/admin/cmb2-fields/class-addons.php:93
+#: src/admin/cmb2-fields/class-addons.php:97
 msgid "Active"
 msgstr ""
 
-#: src/admin/cmb2-fields/class-addons.php:96
+#: src/admin/cmb2-fields/class-addons.php:100
 msgid "Inactive"
 msgstr ""
 
-#: src/admin/cmb2-fields/class-addons.php:98
+#: src/admin/cmb2-fields/class-addons.php:102
 msgid "Get"
 msgstr ""
 
@@ -1182,310 +1202,322 @@ msgstr ""
 msgid "Assertion"
 msgstr ""
 
-#: src/admin/lists/class-badges.php:46 src/models/class-assertion.php:178
-#: src/post-types/class-badgepage.php:242
+#: src/admin/lists/class-badges.php:46 src/models/class-assertion.php:199
+#: src/post-types/class-badgepage.php:244
 #: src/post-types/class-badgerequest.php:246
-#: templates/admin/tpl.edit-assertions.php:79
-#: templates/admin/tpl.edit-assertions.php:160
-#: templates/admin/tpl.edit-assertions.php:174
-#: templates/admin/tpl.revoke-assertions.php:76
+#: templates/admin/badgr/edit-assertions.tpl.php:79
+#: templates/admin/badgr/edit-assertions.tpl.php:160
+#: templates/admin/badgr/edit-assertions.tpl.php:174
+#: templates/admin/badgr/revoke-assertions.tpl.php:76
 msgid "Badge"
 msgstr ""
 
-#: src/admin/lists/class-issuers.php:46 src/models/class-assertion.php:177
-#: src/models/class-badgeclass.php:168
-#: templates/admin/tpl.edit-assertions.php:70
-#: templates/admin/tpl.edit-assertions.php:150
-#: templates/admin/tpl.edit-badges.php:62
-#: templates/admin/tpl.revoke-assertions.php:67
+#: src/admin/lists/class-issuers.php:46 src/models/class-assertion.php:198
+#: src/models/class-badgeclass.php:169
+#: templates/admin/badgr/edit-assertions.tpl.php:70
+#: templates/admin/badgr/edit-assertions.tpl.php:150
+#: templates/admin/badgr/edit-badges.tpl.php:62
+#: templates/admin/badgr/revoke-assertions.tpl.php:67
 msgid "Issuer"
 msgstr ""
 
-#: src/models/class-assertion.php:176
+#: src/models/class-assertion.php:197
 msgid "Issued Badge"
 msgstr ""
 
-#: src/models/class-assertion.php:179 src/post-types/class-badgerequest.php:255
-#: templates/admin/tpl.edit-assertions.php:88
-#: templates/admin/tpl.revoke-assertions.php:85
+#: src/models/class-assertion.php:200 src/post-types/class-badgerequest.php:255
+#: templates/admin/badgr/edit-assertions.tpl.php:88
+#: templates/admin/badgr/revoke-assertions.tpl.php:85
 msgid "Recipient"
 msgstr ""
 
-#: src/models/class-assertion.php:180 src/models/class-badgeclass.php:170
+#: src/models/class-assertion.php:201 src/models/class-badgeclass.php:171
 #: src/models/class-issuer.php:204
 msgid "Created on"
 msgstr ""
 
-#: src/models/class-badgeclass.php:167 src/models/class-issuer.php:202
-#: templates/admin/tpl.edit-badges.php:50
-#: templates/admin/tpl.edit-issuers.php:48
+#: src/models/class-badgeclass.php:168 src/models/class-issuer.php:202
+#: templates/admin/badgr/edit-badges.tpl.php:50
+#: templates/admin/badgr/edit-issuers.tpl.php:48
 msgid "Name"
 msgstr ""
 
-#: src/models/class-badgeclass.php:169
-#: templates/admin/tpl.edit-assertions.php:53
-#: templates/admin/tpl.edit-badges.php:82
-#: templates/admin/tpl.revoke-assertions.php:54
+#: src/models/class-badgeclass.php:170
+#: templates/admin/badgr/edit-assertions.tpl.php:53
+#: templates/admin/badgr/edit-badges.tpl.php:82
+#: templates/admin/badgr/revoke-assertions.tpl.php:54
 msgid "Image"
 msgstr ""
 
-#: src/models/class-issuer.php:203 templates/admin/tpl.edit-issuers.php:60
+#: src/models/class-issuer.php:203
+#: templates/admin/badgr/edit-issuers.tpl.php:60
 msgid "Email"
 msgstr ""
 
-#: src/post-types/class-badgepage.php:82 src/post-types/class-badgepage.php:106
+#: src/post-types/class-badgepage.php:84 src/post-types/class-badgepage.php:108
 msgid "Badge Pages"
 msgstr ""
 
-#: src/post-types/class-badgepage.php:83
+#: src/post-types/class-badgepage.php:85
 msgid "Badge Page"
 msgstr ""
 
-#: src/post-types/class-badgepage.php:84
+#: src/post-types/class-badgepage.php:86
 msgid "All Badge Pages"
 msgstr ""
 
-#: src/post-types/class-badgepage.php:85
+#: src/post-types/class-badgepage.php:87
 msgid "Badge Page Archives"
 msgstr ""
 
-#: src/post-types/class-badgepage.php:86
+#: src/post-types/class-badgepage.php:88
 msgid "Badge Page Attributes"
 msgstr ""
 
-#: src/post-types/class-badgepage.php:87
+#: src/post-types/class-badgepage.php:89
 msgid "Insert into Badge Page"
 msgstr ""
 
-#: src/post-types/class-badgepage.php:88
+#: src/post-types/class-badgepage.php:90
 msgid "Uploaded to this Badge Page"
 msgstr ""
 
-#: src/post-types/class-badgepage.php:93
+#: src/post-types/class-badgepage.php:95
 msgid "Filter Badge Pages list"
 msgstr ""
 
-#: src/post-types/class-badgepage.php:94
+#: src/post-types/class-badgepage.php:96
 msgid "Badge Pages list navigation"
 msgstr ""
 
-#: src/post-types/class-badgepage.php:95
+#: src/post-types/class-badgepage.php:97
 msgid "Badge Pages list"
 msgstr ""
 
-#: src/post-types/class-badgepage.php:96
+#: src/post-types/class-badgepage.php:98
 msgid "New Badge Page"
 msgstr ""
 
-#: src/post-types/class-badgepage.php:98
+#: src/post-types/class-badgepage.php:100
 msgid "Add New Badge Page"
 msgstr ""
 
-#: src/post-types/class-badgepage.php:99
+#: src/post-types/class-badgepage.php:101
 msgid "Edit Badge Page"
 msgstr ""
 
-#: src/post-types/class-badgepage.php:100
+#: src/post-types/class-badgepage.php:102
 msgid "View Badge Page"
 msgstr ""
 
-#: src/post-types/class-badgepage.php:101
+#: src/post-types/class-badgepage.php:103
 msgid "View Badge Pages"
 msgstr ""
 
-#: src/post-types/class-badgepage.php:102
+#: src/post-types/class-badgepage.php:104
 msgid "Search Badge Pages"
 msgstr ""
 
-#: src/post-types/class-badgepage.php:103
+#: src/post-types/class-badgepage.php:105
 msgid "No Badge Pages found"
 msgstr ""
 
-#: src/post-types/class-badgepage.php:104
+#: src/post-types/class-badgepage.php:106
 msgid "No Badge Pages found in trash"
 msgstr ""
 
-#: src/post-types/class-badgepage.php:105
+#: src/post-types/class-badgepage.php:107
 msgid "Parent Badge Page:"
 msgstr ""
 
 #. translators: %s: post permalink
-#: src/post-types/class-badgepage.php:142
+#: src/post-types/class-badgepage.php:144
 #, php-format
 msgid ""
 "Badge Page updated. <a target=\"_blank\" href=\"%s\">View Badge Page</a>"
 msgstr ""
 
-#: src/post-types/class-badgepage.php:143
+#: src/post-types/class-badgepage.php:145
 #: src/post-types/class-badgerequest.php:147
 msgid "Custom field updated."
 msgstr ""
 
-#: src/post-types/class-badgepage.php:144
+#: src/post-types/class-badgepage.php:146
 #: src/post-types/class-badgerequest.php:148
 msgid "Custom field deleted."
 msgstr ""
 
-#: src/post-types/class-badgepage.php:145
+#: src/post-types/class-badgepage.php:147
 msgid "Badge Page updated."
 msgstr ""
 
 #. translators: %s: date and time of the revision
-#: src/post-types/class-badgepage.php:147
+#: src/post-types/class-badgepage.php:149
 #, php-format
 msgid "Badge Page restored to revision from %s"
 msgstr ""
 
 #. translators: %s: post permalink
-#: src/post-types/class-badgepage.php:149
+#: src/post-types/class-badgepage.php:151
 #, php-format
 msgid "Badge Page published. <a href=\"%s\">View Badge Page</a>"
 msgstr ""
 
-#: src/post-types/class-badgepage.php:150
+#: src/post-types/class-badgepage.php:152
 msgid "Badge Page saved."
 msgstr ""
 
 #. translators: %s: post permalink
-#: src/post-types/class-badgepage.php:152
+#: src/post-types/class-badgepage.php:154
 #, php-format
 msgid ""
 "Badge Page submitted. <a target=\"_blank\" href=\"%s\">Preview Badge Page</a>"
 msgstr ""
 
 #. translators: 1: Publish box date format, see https://secure.php.net/date 2: Post permalink
-#: src/post-types/class-badgepage.php:155
+#: src/post-types/class-badgepage.php:157
 #, php-format
 msgid ""
 "Badge Page scheduled for: <strong>%1$s</strong>. <a target=\"_blank\" href="
 "\"%2$s\">Preview Badge Page</a>"
 msgstr ""
 
-#: src/post-types/class-badgepage.php:156
+#: src/post-types/class-badgepage.php:158
 #: src/post-types/class-badgerequest.php:160
 msgid "M j, Y @ G:i"
 msgstr ""
 
 #. translators: %s: post permalink
-#: src/post-types/class-badgepage.php:160
+#: src/post-types/class-badgepage.php:162
 #, php-format
 msgid ""
 "Badge Page draft updated. <a target=\"_blank\" href=\"%s\">Preview Badge "
 "Page</a>"
 msgstr ""
 
-#: src/post-types/class-badgepage.php:231
+#: src/post-types/class-badgepage.php:233
 #: src/post-types/class-badgerequest.php:235
 msgid "Badge Info"
 msgstr ""
 
-#: src/post-types/class-badgepage.php:243
+#: src/post-types/class-badgepage.php:245
 #: src/post-types/class-badgerequest.php:247
 msgid "Badgr Badge associated with this Badge Page"
 msgstr ""
 
-#: src/post-types/class-badgepage.php:256
+#: src/post-types/class-badgepage.php:258
 msgid "Badge Criteria"
 msgstr ""
 
-#: src/post-types/class-badgepage.php:257
+#: src/post-types/class-badgepage.php:259
 msgid "Criteria to obtain this badge."
 msgstr ""
 
-#: src/post-types/class-badgepage.php:268
+#: src/post-types/class-badgepage.php:270
 msgid "Endorsed By"
 msgstr ""
 
-#: src/post-types/class-badgepage.php:277
-#: src/post-types/class-badgepage.php:299
-msgid "Badge Request Form type"
-msgstr ""
-
-#: src/post-types/class-badgepage.php:286
-msgid "Form"
-msgstr ""
-
-#: src/post-types/class-badgepage.php:302
-msgid "Select approval type"
-msgstr ""
-
-#: src/post-types/class-badgepage.php:303
-msgid "Approved"
-msgstr ""
-
-#: src/post-types/class-badgepage.php:304
-msgid "Auto-approved"
-msgstr ""
-
-#: src/post-types/class-badgepage.php:305
-msgid "Given"
-msgstr ""
-
-#: src/post-types/class-badgepage.php:316
+#: src/post-types/class-badgepage.php:279
 msgid "Approvers"
 msgstr ""
 
-#: src/post-types/class-badgepage.php:342
+#: src/post-types/class-badgepage.php:298
+msgid "Autoevaluation"
+msgstr ""
+
+#: src/post-types/class-badgepage.php:309
 #: src/post-types/class-badgepage.php:343
-msgid "Category"
+msgid "Form type"
 msgstr ""
 
-#: src/post-types/class-badgepage.php:344
-msgid "Search Categories"
-msgstr ""
-
-#: src/post-types/class-badgepage.php:345
-msgid "All Categories"
-msgstr ""
-
-#: src/post-types/class-badgepage.php:346
-msgid "parent Category"
-msgstr ""
-
-#: src/post-types/class-badgepage.php:347
-msgid "parent Category:"
-msgstr ""
-
-#: src/post-types/class-badgepage.php:348
-msgid "Edit Category"
-msgstr ""
-
-#: src/post-types/class-badgepage.php:349
-msgid "Update Category"
-msgstr ""
-
-#: src/post-types/class-badgepage.php:350
-msgid "Add new Category"
-msgstr ""
-
-#: src/post-types/class-badgepage.php:351
-msgid "new Category Name"
-msgstr ""
-
+#: src/post-types/class-badgepage.php:318
 #: src/post-types/class-badgepage.php:352
-msgid "Categories"
+msgid "Form"
+msgstr ""
+
+#: src/post-types/class-badgepage.php:332
+#: src/post-types/class-badgerequest.php:85
+#: templates/content/basic-badge-request-form.tpl.php:37
+msgid "Badge Request"
+msgstr ""
+
+#: src/post-types/class-badgepage.php:365
+msgid "Badge Request Form type"
+msgstr ""
+
+#: src/post-types/class-badgepage.php:368
+msgid "Select approval type"
+msgstr ""
+
+#: src/post-types/class-badgepage.php:369
+msgid "Approved"
 msgstr ""
 
 #: src/post-types/class-badgepage.php:370
+msgid "Auto-approved"
+msgstr ""
+
+#: src/post-types/class-badgepage.php:371
+msgid "Given"
+msgstr ""
+
+#: src/post-types/class-badgepage.php:395
+#: src/post-types/class-badgepage.php:396
+msgid "Category"
+msgstr ""
+
+#: src/post-types/class-badgepage.php:397
+msgid "Search Categories"
+msgstr ""
+
+#: src/post-types/class-badgepage.php:398
+msgid "All Categories"
+msgstr ""
+
+#: src/post-types/class-badgepage.php:399
+msgid "parent Category"
+msgstr ""
+
+#: src/post-types/class-badgepage.php:400
+msgid "parent Category:"
+msgstr ""
+
+#: src/post-types/class-badgepage.php:401
+msgid "Edit Category"
+msgstr ""
+
+#: src/post-types/class-badgepage.php:402
+msgid "Update Category"
+msgstr ""
+
+#: src/post-types/class-badgepage.php:403
+msgid "Add new Category"
+msgstr ""
+
+#: src/post-types/class-badgepage.php:404
+msgid "new Category Name"
+msgstr ""
+
+#: src/post-types/class-badgepage.php:405
+msgid "Categories"
+msgstr ""
+
+#: src/post-types/class-badgepage.php:423
 msgid "Basic form"
 msgstr ""
 
-#: src/post-types/class-badgepage.php:373
+#: src/post-types/class-badgepage.php:426
+#: src/post-types/class-badgepage.php:442
 msgid "Gravity Forms"
 msgstr ""
 
-#: src/post-types/class-badgepage.php:388
+#: src/post-types/class-badgepage.php:457
 msgid "Generate new Gravity Form"
 msgstr ""
 
 #: src/post-types/class-badgerequest.php:84
 #: src/post-types/class-badgerequest.php:108
 msgid "Badge Requests"
-msgstr ""
-
-#: src/post-types/class-badgerequest.php:85
-#: templates/partials/basic-badge-request-form.php:37
-msgid "Badge Request"
 msgstr ""
 
 #: src/post-types/class-badgerequest.php:86
@@ -1645,25 +1677,29 @@ msgstr ""
 msgid "Something went wrong..."
 msgstr ""
 
-#: src/post-types/class-badgerequest.php:477
+#: src/post-types/class-badgerequest.php:456
+msgid "You must purchase this product before you can access it."
+msgstr ""
+
+#: src/post-types/class-badgerequest.php:498
 msgid "A new badge request has been submitted."
 msgstr ""
 
-#: src/post-types/class-badgerequest.php:478
+#: src/post-types/class-badgerequest.php:499
 msgid ""
 "The badge $badge$ has been requested by user $user$. You can review it here: "
 "$link$."
 msgstr ""
 
-#: src/post-types/class-badgerequest.php:501
+#: src/post-types/class-badgerequest.php:522
 msgid "Your request has been submitted!"
 msgstr ""
 
-#: src/public/shortcodes/class-badges.php:74
+#: src/public/shortcodes/class-badges.php:75
 msgid "Issued by:"
 msgstr ""
 
-#: src/public/shortcodes/class-badges.php:92
+#: src/public/shortcodes/class-badges.php:93
 msgid "There are no badges currently available."
 msgstr ""
 
@@ -1671,117 +1707,126 @@ msgstr ""
 msgid "No issuer for the moment."
 msgstr ""
 
-#: templates/admin/tpl.edit-assertions.php:35
-#: templates/admin/tpl.revoke-assertions.php:35
+#: src/public/widgets/class-user-assertions-widget.php:62
+msgid "User Badges"
+msgstr ""
+
+#: src/public/widgets/class-user-assertions-widget.php:64
+msgid "Badges list for current user."
+msgstr ""
+
+#: templates/admin/badgr/edit-assertions.tpl.php:35
+#: templates/admin/badgr/revoke-assertions.tpl.php:35
 msgid "Assertion updated."
 msgstr ""
 
-#: templates/admin/tpl.edit-assertions.php:96
-#: templates/admin/tpl.revoke-assertions.php:93
+#: templates/admin/badgr/edit-assertions.tpl.php:96
+#: templates/admin/badgr/revoke-assertions.tpl.php:93
 msgid "Issued On"
 msgstr ""
 
-#: templates/admin/tpl.edit-assertions.php:106
+#: templates/admin/badgr/edit-assertions.tpl.php:106
 msgid "Revocation reason"
 msgstr ""
 
-#: templates/admin/tpl.edit-assertions.php:117
-#: templates/admin/tpl.revoke-assertions.php:112
+#: templates/admin/badgr/edit-assertions.tpl.php:117
+#: templates/admin/badgr/revoke-assertions.tpl.php:112
 msgid "Revoke Assertion"
 msgstr ""
 
-#: templates/admin/tpl.edit-assertions.php:164
+#: templates/admin/badgr/edit-assertions.tpl.php:164
 msgid "Select a Badge"
 msgstr ""
 
-#: templates/admin/tpl.edit-assertions.php:184
+#: templates/admin/badgr/edit-assertions.tpl.php:184
 msgid "Recipient Email"
 msgstr ""
 
-#: templates/admin/tpl.edit-assertions.php:193
+#: templates/admin/badgr/edit-assertions.tpl.php:193
 msgid "Create Assertion"
 msgstr ""
 
-#: templates/admin/tpl.edit-badges.php:35
+#: templates/admin/badgr/edit-badges.tpl.php:35
 msgid "Badge updated."
 msgstr ""
 
-#: templates/admin/tpl.edit-badges.php:103
+#: templates/admin/badgr/edit-badges.tpl.php:103
 msgid "Edit Badge"
 msgstr ""
 
-#: templates/admin/tpl.edit-badges.php:105
+#: templates/admin/badgr/edit-badges.tpl.php:105
 msgid "Create Badge"
 msgstr ""
 
-#: templates/admin/tpl.edit-issuers.php:33
+#: templates/admin/badgr/edit-issuers.tpl.php:33
 msgid "Issuer updated."
 msgstr ""
 
-#: templates/admin/tpl.edit-issuers.php:72
+#: templates/admin/badgr/edit-issuers.tpl.php:72
 msgid "URL"
 msgstr ""
 
-#: templates/admin/tpl.edit-issuers.php:95
+#: templates/admin/badgr/edit-issuers.tpl.php:95
 msgid "Edit Issuer"
 msgstr ""
 
-#: templates/admin/tpl.edit-issuers.php:97
+#: templates/admin/badgr/edit-issuers.tpl.php:97
 msgid "Create Issuer"
 msgstr ""
 
-#: templates/admin/tpl.revoke-assertions.php:103
+#: templates/admin/badgr/revoke-assertions.tpl.php:103
 msgid "Reason to revoke"
 msgstr ""
 
-#: templates/admin/tpl.revoke-assertions.php:112
+#: templates/admin/badgr/revoke-assertions.tpl.php:112
 msgid "Are you sure you want to revoke this item?"
 msgstr ""
 
-#: templates/partials/badge-request-form.php:42
-#: templates/partials/basic-badge-request-form.php:32
+#: templates/content/archive-assertion.tpl.php:37
+msgid "Badges obtained"
+msgstr ""
+
+#: templates/content/badge-request-form.tpl.php:44
+#: templates/content/basic-badge-request-form.tpl.php:32
 msgid "A request has already been submitted."
 msgstr ""
 
-#: templates/partials/badge-request-form.php:44
-#: templates/partials/basic-badge-request-form.php:34
+#: templates/content/badge-request-form.tpl.php:46
+#: templates/content/basic-badge-request-form.tpl.php:34
 msgid "This badge has already been granted to you."
 msgstr ""
 
-#: templates/tpl.assertion.php:47
+#: templates/content/single-assertion.tpl.php:41
 msgid "badge issued to"
 msgstr ""
 
-#: templates/tpl.assertion.php:50
+#: templates/content/single-assertion.tpl.php:44
 msgid "Issued to"
 msgstr ""
 
-#: templates/tpl.assertion.php:56
+#: templates/content/single-assertion.tpl.php:50
 msgid "Issue date:"
 msgstr ""
 
-#: templates/tpl.assertion.php:61 templates/tpl.badge.php:67
+#: templates/content/single-assertion.tpl.php:55
+#: templates/content/single-badge-page.tpl.php:63
 msgid "Issued by"
 msgstr ""
 
-#: templates/tpl.badge.php:57
+#: templates/content/single-badge-page.tpl.php:53
 msgid "Criteria"
 msgstr ""
 
-#: templates/tpl.badge.php:74
+#: templates/content/single-badge-page.tpl.php:71
 msgid "Take this course"
 msgstr ""
 
-#: templates/tpl.badge.php:76
+#: templates/content/single-badge-page.tpl.php:73
 msgid "Get this course"
 msgstr ""
 
-#: templates/tpl.badge.php:78
+#: templates/content/single-badge-page.tpl.php:75
 msgid "This course is not currently available."
-msgstr ""
-
-#. Plugin Name of the plugin/theme
-msgid "Badge Factor 2"
 msgstr ""
 
 #. Plugin URI of the plugin/theme
