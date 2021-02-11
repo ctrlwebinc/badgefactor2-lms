@@ -57,7 +57,7 @@ wp badgr mark_existing_users_for_migration
 To launch the migration of your users, you can run this WP command:
 
 ```bash
-wp --allow-root badgr migrate_users_and_mark_as_verified
+wp badgr migrate_users_and_mark_as_verified
 ```
 
 Users that can't be created in Badgr will have a 'failed_to_create' badgr_user_state once this command has run.
