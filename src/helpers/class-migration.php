@@ -43,6 +43,7 @@ class Migration {
 
 		global $wpdb;
 
+		// FIXME Replace hard-written wp_ table prefixes with $wpdb->prefix.
 		// Get posts of type submission with status approved.
 		$assertions = $wpdb->get_results(
 			"SELECT ap.*, bcs.meta_value AS badge_class_slug, u.user_email AS recipient, eu.meta_value as evidence_url, u.ID AS recipient_id, u.display_name AS requester_name FROM wp_posts AS ap
@@ -138,6 +139,7 @@ class Migration {
 		// Get badges posts without badgr slug enriched with organisation issuer slug.
 		global $wpdb;
 
+		// FIXME Replace hard-written wp_ table prefixes with $wpdb->prefix.
 		$badges = $wpdb->get_results(
 			"SELECT bc.*, os.meta_value AS issuer_slug, i.meta_value AS image_name FROM wp_posts AS bc
 		JOIN wp_postmeta AS o
@@ -247,6 +249,7 @@ class Migration {
 		// Set to 'to_be_created'.
 		global $wpdb;
 
+		// FIXME Replace hard-written wp_ table prefixes with $wpdb->prefix.
 		return $wpdb->query(
 			"INSERT INTO wp_usermeta (user_id,meta_key,meta_value)
 		SELECT u.id, 'badgr_user_state', 'to_be_created' FROM wp_users AS u
@@ -341,6 +344,7 @@ class Migration {
 	public static function link_badge_pages_and_courses() {
 		global $wpdb;
 
+		// FIXME Replace hard-written wp_ table prefixes with $wpdb->prefix.
 		$badge_pages_and_courses_pairs = $wpdb->get_results(
 			"SELECT badge_page.ID AS badge_page_id, course.ID AS course_id FROM wp_posts AS badge_page
 			JOIN wp_postmeta AS badge_page_badge_class_slug
@@ -378,6 +382,7 @@ class Migration {
 	public static function mark_links_to_remove_from_courses() {
 		global $wpdb;
 
+		// FIXME Replace hard-written wp_ table prefixes with $wpdb->prefix.
 		$courses = $wpdb->get_results(
 			"SELECT p.ID, p.post_content FROM wp_posts AS p
 			WHERE p.post_type = 'course';"
@@ -499,6 +504,7 @@ class Migration {
 	public static function removed_marked_links_from_courses() {
 		global $wpdb;
 
+		// FIXME Replace hard-written wp_ table prefixes with $wpdb->prefix.
 		$courses = $wpdb->get_results(
 			"SELECT p.ID, p.post_content FROM wp_posts AS p
 			WHERE p.post_type = 'course' AND p.post_content LIKE '%div class=\"to-remove%';"
