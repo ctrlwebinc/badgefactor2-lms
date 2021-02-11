@@ -34,10 +34,10 @@ global $bf2_template;
 ?>
 
 <div class="c-bf2 c-bf2--single section-inner" <?php post_class(); ?> id="post-<?php the_ID(); ?>">
-	<?php if ( true === $bf2_template->fields['autoevaluation-form'] ) : ?>
+	<?php if ( true === $bf2_template->fields['display-autoevaluation-form'] ) : ?>
 		<?php include( Template::locate( 'autoevaluation-form' ) ); ?>
 	<?php endif; ?>
-	<?php if ( true === $bf2_template->fields['badge-request-form'] ) : ?>
+	<?php if ( true === $bf2_template->fields['display-badge-request-form'] ) : ?>
 		<?php include( Template::locate( 'badge-request-form' ) ); ?>
 	<?php endif; ?>
 	<?php if ( true === $bf2_template->fields['display-page'] ) : ?>
