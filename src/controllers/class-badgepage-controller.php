@@ -139,7 +139,6 @@ class BadgePage_Controller extends Page_Controller {
 					}
 				}
 			}
-			global $post;
 
 			$fields['display-autoevaluation-form'] = false;
 			$fields['display-badge-request-form'] = false;
@@ -168,7 +167,9 @@ class BadgePage_Controller extends Page_Controller {
 			global $bf2_template;
 			$bf2_template         = new stdClass();
 			$bf2_template->fields = $fields;
+
 		}
+		
 
 		return parent::single( $default_template );
 	}
