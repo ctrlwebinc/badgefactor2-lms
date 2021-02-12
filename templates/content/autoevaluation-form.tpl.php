@@ -24,21 +24,20 @@
  * @phpcs:disable WordPress.WP.I18n.NonSingularStringLiteralDomain
  */
 
-use BadgeFactor2\Helpers\Template;
-use BadgeFactor2\Post_Types\BadgeRequest;
+global $bf2_template;
 
-$autoevaluation_form_type = get_post_meta( $badge_page->ID, 'autoevaluation_form_type', true );
+$autoevaluation_form_type = get_post_meta( $bf2_template->fields['badge_page']->ID, 'autoevaluation_form_type', true );
 
 ?>
 <div class="c-bf2">
 	<div class="c-bf2__section c-bf2__request">
 		<header class="c-bf2__header">
-			<h1 class="c-bf2__title"><?php echo $badge->name; ?></h1>
+			<h1 class="c-bf2__title"><?php echo $bf2_template->fields['badge']->name; ?></h1>
 		</header>
 		<div class="c-bf2__body">
 			<?php if ( is_plugin_active( 'bf2-gravityforms/bf2-gravityforms.php' ) && 'gravityforms' === $autoevaluation_form_type ) : ?>
 				<?php
-				$form_id = get_post_meta( $badge_page->ID, 'autoevaluation_form_id', true );
+				$form_id = get_post_meta( $bf2_template->fields['badge_page']->ID, 'autoevaluation_form_id', true );
 				echo do_shortcode( sprintf( '[gravityform id="%s"]', $form_id ) );
 				?>
 			<?php else : ?>
