@@ -311,8 +311,6 @@ class BadgrClient {
 			&& null !== $client->token_expiration
 			&& time() < $client->token_expiration ) {
 				$client->state = self::STATE_HAVE_ACCESS_TOKEN;
-		} else {
-			$client->state = self::STATE_CONFIGURED;
 		}
 
 		// set BadgrUser if available (also saves instance).
