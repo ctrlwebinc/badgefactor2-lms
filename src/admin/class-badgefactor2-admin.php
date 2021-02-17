@@ -91,6 +91,7 @@ class BadgeFactor2_Admin {
 
 		// WordPress Hooks.
 		add_action( 'admin_enqueue_scripts', array( self::class, 'load_resources' ) );
+		add_action( 'admin_init', array( self::class, 'add_role_and_capabilities' ), 10 );
 		add_action( 'admin_menu', array( self::class, 'admin_menus' ) );
 		add_action( 'init', array( self::class, 'flush_form_slug' ), 10 );
 		add_action( 'init', array( self::class, 'flush_autoevaluation_form_slug' ), 10 );
@@ -679,6 +680,25 @@ class BadgeFactor2_Admin {
 			)
 		);
 
+	}
+
+
+	/**
+	 * Add role and capabilities.
+	 *
+	 * @return void
+	 */
+	public static function add_role_and_capabilities() {
+		add_role(
+			'badgr_administrator', 
+			__( 'Badgr Administrator', BF2_DATA['TextDomain'] ), 
+			array(
+				'read' => true,
+				'administer_badgr' => true,
+			)
+		);
+		$administrator = get_role( 'administrator' );
+		$administrator->add_cap( 'administer_badgr', true );
 	}
 
 
