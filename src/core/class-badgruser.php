@@ -219,6 +219,13 @@ class BadgrUser {
 			if ( 0 === $wp_user->ID ) {
 				// No current user, we need the admin client
 				$wp_user = get_user_by( 'ID', 1 );
+			} else {
+				// Check if we need to proxy the user
+				if ( true === user_can( $wp_user,'administer_badgr') )
+				{
+					// Proxy the admin
+					$wp_user = get_user_by( 'ID', 1 );
+				}
 			}
 		}
 		// Look in user metas for existing client.
