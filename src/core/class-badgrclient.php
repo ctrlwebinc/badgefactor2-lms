@@ -44,6 +44,7 @@ class BadgrClient {
 	const REDIRECT_PATH_AFTER_AUTH        = '/wp-admin/admin.php?page=badgefactor2_badgr_settings';
 	const START_ADMIN_LINK_URL            = '/bf2/init';
 	const ADMIN_INIT_NONCE_ACTION         = 'init_admin_auth';
+	const COMPLETE_USER_REGISTRATION_ACTION = 'bf2_complete_user_registration';
 	const DEFAULT_LOCAL_BADGR_SERVER_PORT = 8000;
 
 	// Password sources.
@@ -689,6 +690,7 @@ class BadgrClient {
 		add_action( 'init', array( self::class, 'init' ) );
 		add_filter( 'query_vars', array( self::class, 'hook_query_vars' ) );
 		add_action( 'template_redirect', array( self::class, 'hook_template_redirect' ) );
+		add_action( self::COMPLETE_USER_REGISTRATION_ACTION, array( self::class, 'hook_complete_user_registration' ) );
 	}
 
 	/**
@@ -719,6 +721,18 @@ class BadgrClient {
 				// Launch admin auth linking.
 				self::setup_admin_code_authorization();
 			}
+			if ( 'emailConfirm' === $bf2) {
+
+				if ( isset( $_GET['email'] ) ) {
+					do_action( self::COMPLETE_USER_REGISTRATION_ACTION, $_GET['email'] );
+					exit();
+				}
+
+				// TODO: Handle email confirm here
+				// Cadre21 >> procédure Cadre21
+				// 
+			}
+
 			header( 'Content-Type: text/plain' );
 			echo 'Badgr callback: ' . $bf2;
 			echo ' Full uri: ' . $_SERVER['REQUEST_URI'];
@@ -726,6 +740,10 @@ class BadgrClient {
 		}
 	}
 
+	public static function hook_complete_user_registration( $user_email ) {
+		// TODO: Handle email confirm here
+		echo 'about to recover password';
+	}
 	/**
 	 * Determine is client is active
 	 *
