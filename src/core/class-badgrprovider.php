@@ -392,23 +392,21 @@ class BadgrProvider {
 			if ( isset( $response_info->status->success ) &&
 				true === $response_info->status->success &&
 				isset( $response_info->result[0]->entityId ) ) {
-				
-				
 				/*
 				 * Trigger actions callback after badge class successfuly added
 				 * - $arg1 entityId.
 				 */
-				do_action( 'bf2_add_badge_class', $response_info->result[0]->entityId);
-				
+				do_action( 'bf2_add_badge_class', $response_info->result[0]->entityId );
+
 				return $response_info->result[0]->entityId;
 			}
 		}
-		
+
 		/*
-		* Trigger actions callback after badge class added unsuccessfuly 
-		* - $arg1 false.
-		*/
-		do_action( 'bf2_add_badge_class', false);
+		 * Trigger actions callback after badge class added unsuccessfuly
+		 * - $arg1 false.
+		 */
+		do_action( 'bf2_add_badge_class', false );
 		return false;
 	}
 
@@ -588,10 +586,11 @@ class BadgrProvider {
 			 * - $arg1 entityId.
 			 * - $arg2 updated data.
 			 */
-			do_action( 'bf2_update_badge_class', $badge_class_slug, $request_body  );
-			
+			do_action( 'bf2_update_badge_class', $badge_class_slug, $request_body );
+
 			return true;
 		}
+
 		/*
 		 * Trigger actions callback after badge class unsuccessfuly updated
 		 * - $arg1 false.
@@ -884,7 +883,8 @@ class BadgrProvider {
 			}
 		}
 
-		return false;
+		// TODO Validate whether or not replacing return false with return array() is an appropriate fix. Remove comment if so.
+		return array();
 	}
 
 	/**
