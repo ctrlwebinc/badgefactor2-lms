@@ -221,7 +221,7 @@ class BadgrUser {
 				$wp_user = get_user_by( 'ID', 1 );
 			} else {
 				// Check if we need to proxy the user
-				if ( true === user_can( $wp_user,'administer_badgr') )
+				if ( true === user_can( $wp_user, 'manage_badgr') )
 				{
 					// Proxy the admin
 					$wp_user = get_user_by( 'ID', 1 );

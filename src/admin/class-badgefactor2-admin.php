@@ -151,7 +151,7 @@ class BadgeFactor2_Admin {
 		add_menu_page(
 			'Badgr',
 			'Badgr',
-			'manage_options',
+			'manage_badgr',
 			$menus[0][1],
 			array( self::class, $menus[0][1] . '_page' ),
 			BF2_BASEURL . 'assets/images/badgr.svg'
@@ -162,7 +162,7 @@ class BadgeFactor2_Admin {
 				$menus[0][1],
 				$m[0],
 				$m[0],
-				'manage_options',
+				'manage_badgr',
 				$m[1],
 				array( self::class, $m[1] . '_page' )
 			);
@@ -689,16 +689,37 @@ class BadgeFactor2_Admin {
 	 * @return void
 	 */
 	public static function add_role_and_capabilities() {
+		remove_role( 'badgr_administrator' );
+		$capabilities = array(
+			'read' => true,
+			'manage_badgr' => true,
+			'upload_files' => true,
+			'list_users' => true,
+			'edit_posts' => true,
+			'gravityforms_view_entries' => true,
+			'gravityforms_edit_entries' => true,
+			'gravityforms_delete_entries' => true,
+			'gravityforms_view_entry_notes' => true,
+			'gravityforms_edit_entry_notes' => true,
+		);
+		foreach ( array( 'badge-pages', 'courses', 'badge-requests' ) as $post_type ) {
+			$capabilities[ "read_private_{$post_type}" ]     = true;
+			$capabilities[ "publish_{$post_type}" ]          = true;
+			$capabilities[ "edit_published_{$post_type}" ]   = true;
+			$capabilities[ "edit_private_{$post_type}" ]     = true;
+			$capabilities[ "edit_{$post_type}" ]             = true;
+			$capabilities[ "delete_published_{$post_type}" ] = true;
+			$capabilities[ "delete_private_{$post_type}" ]   = true;
+			$capabilities[ "delete_{$post_type}" ]           = true;
+		}
 		add_role(
-			'badgr_administrator', 
-			__( 'Badgr Administrator', BF2_DATA['TextDomain'] ), 
-			array(
-				'read' => true,
-				'administer_badgr' => true,
-			)
+			'badgr_administrator',
+			__( 'Badgr Administrator', BF2_DATA['TextDomain'] ),
+			$capabilities
 		);
 		$administrator = get_role( 'administrator' );
-		$administrator->add_cap( 'administer_badgr', true );
+		$administrator->add_cap( 'manage_badgr', true );
+		$user = wp_get_current_user();
 	}
 
 
