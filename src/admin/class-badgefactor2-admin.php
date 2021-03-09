@@ -88,13 +88,13 @@ class BadgeFactor2_Admin {
 		add_action( 'cmb2_admin_init', array( self::class, 'admin_init' ) );
 		add_action( 'cmb2_save_field_bf2_form_slug', array( self::class, 'save_form_slug' ), 99, 3 );
 		add_action( 'cmb2_save_field_bf2_autoevaluation_form_slug', array( self::class, 'save_autoevaluation_form_slug' ), 99, 3 );
+		add_action( 'cmb2_save_options-page_fields', array( self::class, 'save_options' ), 99, 1 );
 
 		// WordPress Hooks.
 		add_action( 'admin_enqueue_scripts', array( self::class, 'load_resources' ) );
 		add_action( 'admin_init', array( self::class, 'add_role_and_capabilities' ), 10 );
 		add_action( 'admin_menu', array( self::class, 'admin_menus' ) );
-		add_action( 'init', array( self::class, 'flush_form_slug' ), 10 );
-		add_action( 'init', array( self::class, 'flush_autoevaluation_form_slug' ), 10 );
+		add_action( 'init', array( self::class, 'hook_flush_rewrite_rules' ), 100 );
 		add_filter( 'pw_cmb2_field_select2_asset_path', array( self::class, 'pw_cmb2_field_select2_asset_path' ), 10 );
 	}
 
@@ -1129,26 +1129,14 @@ class BadgeFactor2_Admin {
 	}
 
 
-	/**
-	 * Hook called on form_slug field save.
-	 *
-	 * @param boolean    $updated Updated.
-	 * @param string     $action Action.
-	 * @param CMB2_Field $instance Field instance.
-	 * @return void
-	 */
-	public static function save_form_slug( bool $updated, string $action, CMB2_Field $instance ) {
-		set_transient( 'flush_form_slug', true );
-	}
-
 
 	/**
 	 * Hook called to verify if rewrite rules flush is required.
 	 *
 	 * @return void
 	 */
-	public static function flush_form_slug() {
-		if ( delete_transient( 'flush_form_slug' ) ) {
+	public static function hook_flush_rewrite_rules() {
+		if ( delete_transient( 'bf2_flush_rewrite_rules' ) ) {
 			flush_rewrite_rules();
 		}
 	}
@@ -1162,19 +1150,33 @@ class BadgeFactor2_Admin {
 	 * @param CMB2_Field $instance Field instance.
 	 * @return void
 	 */
-	public static function save_autoevaluation_form_slug( bool $updated, string $action, CMB2_Field $instance ) {
-		set_transient( 'flush_autoevaluation_form_slug', true );
+	public static function save_form_slug( bool $updated, string $action, CMB2_Field $instance ) {
+		set_transient( 'bf2_flush_rewrite_rules', true );
 	}
 
 
 	/**
-	 * Hook called to verify if rewrite rules flush is required.
+	 * Hook called on form_slug field save.
 	 *
+	 * @param boolean    $updated Updated.
+	 * @param string     $action Action.
+	 * @param CMB2_Field $instance Field instance.
 	 * @return void
 	 */
-	public static function flush_autoevaluation_form_slug() {
-		if ( delete_transient( 'flush_autoevaluation_form_slug' ) ) {
-			flush_rewrite_rules();
+	public static function save_autoevaluation_form_slug( bool $updated, string $action, CMB2_Field $instance ) {
+		set_transient( 'bf2_flush_rewrite_rules', true );
+	}
+
+
+	/**
+	 * Hook called on badgefactor2_badgr_settings options-page save.
+	 *
+	 * @param array $option_page Options page.
+	 * @return void
+	 */
+	public static function save_options( $option_page ) {
+		if ( 'badgefactor2_badgr_settings' === $option_page ) {
+			set_transient( 'bf2_flush_rewrite_rules', true );
 		}
 	}
 }

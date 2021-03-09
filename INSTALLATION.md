@@ -2,6 +2,8 @@
 
 ## Wordpress Configuration
 
+BadgeFactor2 requires the use of [permalinks](https://wordpress.org/support/article/using-permalinks/).
+
 BadgeFactor2 handles passwords and these passwords are encrypted at rest.
 
 Sensitive encryption information is kept out of the wordpress database and is instead kept in wp-config.php .
