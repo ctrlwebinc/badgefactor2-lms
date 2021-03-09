@@ -692,7 +692,6 @@ class BadgeFactor2_Admin {
 	 * @return void
 	 */
 	public static function add_role_and_capabilities() {
-		remove_role( 'badgr_administrator' );
 		$capabilities = array(
 			'read' => true,
 			'manage_badgr' => true,
