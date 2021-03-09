@@ -237,6 +237,7 @@ class BadgeRequest {
 				'context'      => 'normal',
 				'priority'     => 'high',
 				'show_names'   => true,
+				'capability'   => 'manage_badgr',
 			)
 		);
 

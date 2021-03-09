@@ -235,6 +235,7 @@ class BadgePage {
 				'context'      => 'normal',
 				'priority'     => 'high',
 				'show_names'   => true,
+				'capability'   => 'manage_badgr',
 			)
 		);
 
@@ -300,6 +301,7 @@ class BadgePage {
 					'context'      => 'normal',
 					'priority'     => 'high',
 					'show_names'   => true,
+					'capability'   => 'manage_badgr',
 				)
 			);
 
@@ -334,6 +336,7 @@ class BadgePage {
 				'context'      => 'normal',
 				'priority'     => 'high',
 				'show_names'   => true,
+				'capability'   => 'manage_badgr',
 			)
 		);
 

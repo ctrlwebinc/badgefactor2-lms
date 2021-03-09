@@ -345,7 +345,7 @@ class BadgeFactor2_Admin {
 			'icon_url'     => BF2_BASEURL . ( 'assets/images/badgefactor2_logo.svg' ),
 			'tab_group'    => 'badgefactor2',
 			'tab_title'    => __( 'Settings', BF2_DATA['TextDomain'] ),
-
+			'capability'   => 'manage_badgr',
 		);
 
 		// 'tab_group' property is supported in > 2.4.0.
@@ -422,6 +422,7 @@ class BadgeFactor2_Admin {
 			'parent_slug'  => 'badgefactor2',
 			'tab_group'    => 'badgefactor2',
 			'tab_title'    => __( 'Emails', BF2_DATA['TextDomain'] ),
+			'capability'   => 'manage_badgr',
 		);
 
 		// 'tab_group' property is supported in > 2.4.0.
@@ -565,6 +566,7 @@ class BadgeFactor2_Admin {
 			'parent_slug'  => 'badgefactor2',
 			'tab_group'    => 'badgefactor2',
 			'tab_title'    => 'Badgr',
+			'capability'   => 'manage_badgr',
 		);
 
 		// 'tab_group' property is supported in > 2.4.0.
@@ -663,6 +665,7 @@ class BadgeFactor2_Admin {
 			'parent_slug'  => 'badgefactor2',
 			'tab_group'    => 'badgefactor2',
 			'tab_title'    => __( 'Add-Ons', BF2_DATA['TextDomain'] ),
+			'capability'   => 'manage_badgr',
 		);
 
 		// 'tab_group' property is supported in > 2.4.0.
