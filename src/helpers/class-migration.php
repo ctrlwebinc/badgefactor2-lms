@@ -532,9 +532,85 @@ class Migration {
 
 		WP_CLI::confirm( 'Êtes-vous certain de vouloir supprimer les anciennes données ?', [] );
 
+		// achievement-type
+		WP_CLI::log( 'Démarrage de la suppression de posts de type achievement-type');
+		$count = $wpdb->query('DELETE p, m FROM wp_posts AS p JOIN wp_postmeta AS m ON p.ID = m.post_id WHERE p.post_type = "achievement-type";');
+		WP_CLI::log( sprintf(' %d posts de type achievement-type supprimés', $count) );
+
+		// attachments
+		// badgeos-log-entry
+
+		// badges
 		WP_CLI::log( 'Démarrage de la suppression de posts de type badges');
 		$count = $wpdb->query('DELETE p, m FROM wp_posts AS p JOIN wp_postmeta AS m ON p.ID = m.post_id WHERE p.post_type = "badges";');
 		WP_CLI::log( sprintf(' %d posts de type badges supprimés', $count) );
+
+		// bp-email: Ne pas éliminer.
+
+		// community-badge
+		WP_CLI::log( 'Démarrage de la suppression de posts de type community-badge');
+		$count = $wpdb->query('DELETE p, m FROM wp_posts AS p JOIN wp_postmeta AS m ON p.ID = m.post_id WHERE p.post_type = "community-badge";');
+		WP_CLI::log( sprintf(' %d posts de type community-badge supprimés', $count) );
+
+		// event_participant
+		WP_CLI::log( 'Démarrage de la suppression de posts de type event_participant');
+		$count = $wpdb->query('DELETE p, m FROM wp_posts AS p JOIN wp_postmeta AS m ON p.ID = m.post_id WHERE p.post_type = "event_participant";');
+		WP_CLI::log( sprintf(' %d posts de type event_participant supprimés', $count) );
+
+		// event_users
+		// events
+
+		// level
+		WP_CLI::log( 'Démarrage de la suppression de posts de type level');
+		$count = $wpdb->query('DELETE p, m FROM wp_posts AS p JOIN wp_postmeta AS m ON p.ID = m.post_id WHERE p.post_type = "level";');
+		WP_CLI::log( sprintf(' %d posts de type level supprimés', $count) );
+
+		// persobadgecat
+		WP_CLI::log( 'Démarrage de la suppression de posts de type persobadgecat');
+		$count = $wpdb->query('DELETE p, m FROM wp_posts AS p JOIN wp_postmeta AS m ON p.ID = m.post_id WHERE p.post_type = "persobadgecat";');
+		WP_CLI::log( sprintf(' %d posts de type persobadgecat supprimés', $count) );
+
+		// postman_sent_mail
+		WP_CLI::log( 'Démarrage de la suppression de posts de type postman_sent_mail');
+		$count = $wpdb->query('DELETE p, m FROM wp_posts AS p JOIN wp_postmeta AS m ON p.ID = m.post_id WHERE p.post_type = "postman_sent_mail";');
+		WP_CLI::log( sprintf(' %d posts de type postman_sent_mail supprimés', $count) );
+
+		// quest
+		WP_CLI::log( 'Démarrage de la suppression de posts de type quest');
+		$count = $wpdb->query('DELETE p, m FROM wp_posts AS p JOIN wp_postmeta AS m ON p.ID = m.post_id WHERE p.post_type = "quest";');
+		WP_CLI::log( sprintf(' %d posts de type quest supprimés', $count) );
+
+		// quest-badge
+		WP_CLI::log( 'Démarrage de la suppression de posts de type quest-badge');
+		$count = $wpdb->query('DELETE p, m FROM wp_posts AS p JOIN wp_postmeta AS m ON p.ID = m.post_id WHERE p.post_type = "quest-badge";');
+		WP_CLI::log( sprintf(' %d posts de type quest-badge supprimés', $count) );
+
+		// reply
+		WP_CLI::log( 'Démarrage de la suppression de posts de type reply');
+		$count = $wpdb->query('DELETE p, m FROM wp_posts AS p JOIN wp_postmeta AS m ON p.ID = m.post_id WHERE p.post_type = "reply";');
+		WP_CLI::log( sprintf(' %d posts de type reply supprimés', $count) );
+
+		// revision
+
+		// step
+		WP_CLI::log( 'Démarrage de la suppression de posts de type step');
+		$count = $wpdb->query('DELETE p, m FROM wp_posts AS p JOIN wp_postmeta AS m ON p.ID = m.post_id WHERE p.post_type = "step";');
+		WP_CLI::log( sprintf(' %d posts de type step supprimés', $count) );
+
+		// submission
+
+		// teachers
+		WP_CLI::log( 'Démarrage de la suppression de posts de type teachers');
+		$count = $wpdb->query('DELETE p, m FROM wp_posts AS p JOIN wp_postmeta AS m ON p.ID = m.post_id WHERE p.post_type = "teachers";');
+		WP_CLI::log( sprintf(' %d posts de type teachers supprimés', $count) );
+
+		// topic
+		WP_CLI::log( 'Démarrage de la suppression de posts de type topic');
+		$count = $wpdb->query('DELETE p, m FROM wp_posts AS p JOIN wp_postmeta AS m ON p.ID = m.post_id WHERE p.post_type = "topic";');
+		WP_CLI::log( sprintf(' %d posts de type topic supprimés', $count) );
+
+		// vc_grid_item: Ne pas éliminer.
+		// wpcf7_contact_form: Ne pas éliminer.
 
 	}
 }
