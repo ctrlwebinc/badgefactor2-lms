@@ -24,6 +24,7 @@
 
 namespace BadgeFactor2\Helpers;
 
+use WP_CLI;
 use WP_Query;
 use BadgeFactor2\BadgrUser;
 use BadgeFactor2\Models\Issuer;
@@ -524,5 +525,16 @@ class Migration {
 		}
 
 		return $count;
+	}
+
+	public static function suppress_old_entities() {
+		global $wpdb;
+
+		WP_CLI::confirm( 'Êtes-vous certain de vouloir supprimer les anciennes données ?', [] );
+
+		WP_CLI::log( 'Démarrage de la suppression de posts de type badges');
+		$count = $wpdb->query('DELETE p, m FROM wp_posts AS p JOIN wp_postmeta AS m ON p.ID = m.post_id WHERE p.post_type = "badges";');
+		WP_CLI::log( sprintf(' %d posts de type badges supprimés', $count) );
+
 	}
 }

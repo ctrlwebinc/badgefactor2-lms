@@ -200,4 +200,8 @@ class BadgeFactor2_CLI extends WP_CLI_Command {
 		WP_CLI::success( BadgrUser::encrypt_decrypt( 'decrypt', $args[0]) );
 
 	}
+
+	public function suppress_old_entities( $args, $assoc_args ) {
+		Migration::suppress_old_entities();
+	}
 }
