@@ -126,7 +126,7 @@ class Migration {
 			// Prepare the post title and post name.
 			$request_name_and_title = $assertion_post->requester_name . ' - ' . $assertion_post->post_title;
 
-			// Insert the badge request post
+			// Insert the badge request post.
 			$created_post_id = wp_insert_post(
 				array(
 					'post_author' => 1,
@@ -135,7 +135,7 @@ class Migration {
 					'post_status' => 'publish',
 					'post_type'   => 'badge-request',
 					'post_date'   => $issued_on,
-					'meta_input'  => array (
+					'meta_input'  => array(
 						'assertion' => $assertion_slug,
 						'badge'     => $assertion_post->badge_class_slug,
 						'type'      => 'gravityforms',
@@ -573,21 +573,95 @@ class Migration {
 		return $count;
 	}
 
+
+	/**
+	 * Undocumented function.
+	 *
+	 * @return void
+	 */
 	public static function suppress_old_entities() {
 		global $wpdb;
 
 		WP_CLI::confirm( 'Are you sure you want to delete previous Badge Factor 1 data?', array() );
 
-		WP_CLI::log( 'Starting badges post type deletion.' );
-		$count = $wpdb->query(
-			"DELETE p, m
-			FROM {$wpdb->prefix}posts AS p
-			JOIN {$wpdb->prefix}postmeta AS m
-				ON p.ID = m.post_id
-			WHERE p.post_type = 'badges'
-			;"
-		);
+		// achievement-type. FIXME only delete achievement-type badges, rest is not BadgeFactor-specific.
+		WP_CLI::log( 'Starting `achievement-type` post type deletion.' );
+		$count = $wpdb->query( 'DELETE p, m FROM wp_posts AS p JOIN wp_postmeta AS m ON p.ID = m.post_id WHERE p.post_type = "achievement-type";' );
+		WP_CLI::log( sprintf( ' %d achievement-type posts deleted.', $count ) );
+
+		// attachments
+		// badgeos-log-entry.
+
+		// badges.
+		WP_CLI::log( 'Starting `badges` post type deletion.' );
+		$count = $wpdb->query( 'DELETE p, m FROM wp_posts AS p JOIN wp_postmeta AS m ON p.ID = m.post_id WHERE p.post_type = "badges";' );
 		WP_CLI::log( sprintf( ' %d badges posts deleted.', $count ) );
 
+		// bp-email: Do not delete. TODO remove this comment.
+
+		// community-badge. TODO remove this from badgefactor repository (client-specific).
+		WP_CLI::log( 'Starting `community-badge` post type deletion.' );
+		$count = $wpdb->query( 'DELETE p, m FROM wp_posts AS p JOIN wp_postmeta AS m ON p.ID = m.post_id WHERE p.post_type = "community-badge";' );
+		WP_CLI::log( sprintf( ' %d community-badge posts deleted.', $count ) );
+
+		// event_participant. TODO remove this from badgefactor repository (client-specific).
+		WP_CLI::log( 'Starting `event_participant` post type deletion.' );
+		$count = $wpdb->query( 'DELETE p, m FROM wp_posts AS p JOIN wp_postmeta AS m ON p.ID = m.post_id WHERE p.post_type = "event_participant";' );
+		WP_CLI::log( sprintf( ' %d event_participant posts deleted.', $count ) );
+
+		// event_users
+		// events.
+
+		// level. TODO remove this from badgefactor repository (client-specific).
+		WP_CLI::log( 'Starting `level` post type deletion.' );
+		$count = $wpdb->query( 'DELETE p, m FROM wp_posts AS p JOIN wp_postmeta AS m ON p.ID = m.post_id WHERE p.post_type = "level";' );
+		WP_CLI::log( sprintf( ' %d level posts deleted.', $count ) );
+
+		// persobadgecat. TODO remove this from badgefactor repository (client-specific).
+		WP_CLI::log( 'Starting `persobadgecat` post type deletion.' );
+		$count = $wpdb->query( 'DELETE p, m FROM wp_posts AS p JOIN wp_postmeta AS m ON p.ID = m.post_id WHERE p.post_type = "persobadgecat";' );
+		WP_CLI::log( sprintf( ' %d persobadgecat posts deleted.', $count ) );
+
+		// postman_sent_mail. TODO remove this from badgefactor repository (client-specific).
+		WP_CLI::log( 'Starting `postman_sent_mail` post type deletion.' );
+		$count = $wpdb->query( 'DELETE p, m FROM wp_posts AS p JOIN wp_postmeta AS m ON p.ID = m.post_id WHERE p.post_type = "postman_sent_mail";' );
+		WP_CLI::log( sprintf( ' %d postman_sent_mail posts deleted.', $count ) );
+
+		// quest. TODO remove this from badgefactor repository (client-specific).
+		WP_CLI::log( 'Starting `quest` post type deletion.' );
+		$count = $wpdb->query( 'DELETE p, m FROM wp_posts AS p JOIN wp_postmeta AS m ON p.ID = m.post_id WHERE p.post_type = "quest";' );
+		WP_CLI::log( sprintf( ' %d quest posts.', $count ) );
+
+		// quest-badge. TODO remove this from badgefactor repository (client-specific).
+		WP_CLI::log( 'Starting `quest-badge` post type deletion.' );
+		$count = $wpdb->query( 'DELETE p, m FROM wp_posts AS p JOIN wp_postmeta AS m ON p.ID = m.post_id WHERE p.post_type = "quest-badge";' );
+		WP_CLI::log( sprintf( ' %d quest-badge posts deleted.', $count ) );
+
+		// reply. TODO remove this from badgefactor repository (client-specific).
+		WP_CLI::log( 'Starting `reply` post type deletion.' );
+		$count = $wpdb->query( 'DELETE p, m FROM wp_posts AS p JOIN wp_postmeta AS m ON p.ID = m.post_id WHERE p.post_type = "reply";' );
+		WP_CLI::log( sprintf( ' %d reply posts deleted.', $count ) );
+
+		// revision.
+
+		// step. TODO remove this from badgefactor repository (client-specific).
+		WP_CLI::log( 'Starting `step` post type deletion.' );
+		$count = $wpdb->query( 'DELETE p, m FROM wp_posts AS p JOIN wp_postmeta AS m ON p.ID = m.post_id WHERE p.post_type = "step";' );
+		WP_CLI::log( sprintf( ' %d step posts deleted.', $count ) );
+
+		// submission.
+
+		// teachers. TODO remove this from badgefactor repository (client-specific).
+		WP_CLI::log( 'Starting `teachers` post type deletion.' );
+		$count = $wpdb->query( 'DELETE p, m FROM wp_posts AS p JOIN wp_postmeta AS m ON p.ID = m.post_id WHERE p.post_type = "teachers";' );
+		WP_CLI::log( sprintf( ' %d teachers posts deleted.', $count ) );
+
+		// topic. TODO remove this from badgefactor repository (client-specific).
+		WP_CLI::log( 'Starting `topic` post type deletion.' );
+		$count = $wpdb->query( 'DELETE p, m FROM wp_posts AS p JOIN wp_postmeta AS m ON p.ID = m.post_id WHERE p.post_type = "topic";' );
+		WP_CLI::log( sprintf( ' %d topic posts deleted.', $count ) );
+
+		// vc_grid_item: Do not delete.  TODO remove this comment.
+		// wpcf7_contact_form: Do not delete. TODO remove this comment.
 	}
 }
