@@ -44,44 +44,69 @@ class Migration {
 
 		global $wpdb;
 
-		// FIXME Replace hard-written wp_ table prefixes with $wpdb->prefix.
 		// Get posts of type submission with status approved.
 		$assertions = $wpdb->get_results(
-			"SELECT ap.*, bcs.meta_value AS badge_class_slug, u.user_email AS recipient, eu.meta_value as evidence_url, u.ID AS recipient_id, u.display_name AS requester_name FROM wp_posts AS ap
-			JOIN wp_postmeta AS apm
-			ON ap.ID = apm.post_id
-			JOIN wp_users AS u
-			ON ap.post_author = u.ID
-			JOIN wp_postmeta AS bc
-			ON ap.ID = bc.post_id
-			JOIN wp_postmeta AS bcs
-			ON bc.meta_value = bcs.post_id
-			LEFT JOIN wp_posts as e
-			ON ap.ID = e.post_parent
-			LEFT JOIN wp_postmeta as eu
-			ON e.ID = eu.post_id
-			WHERE ap.post_type = 'submission' AND
-			apm.meta_key = '_badgeos_submission_status' AND
-			apm.meta_value = 'approved' AND
-			bc.meta_key = '_badgeos_submission_achievement_id' AND
-			bcs.meta_key = 'badgr_badge_class_slug' AND
-			( e.post_type IS NULL OR e.post_type = 'attachment' ) AND
-			(eu.meta_key IS NULL OR eu.meta_key = '_wp_attached_file')
+			"SELECT ap.*,
+				bcs.meta_value AS badge_class_slug,
+				bc.meta_value AS submission_id,
+				u.user_email AS recipient,
+				eu.meta_value as evidence_url,
+				u.ID AS recipient_id,
+				u.display_name AS requester_name
+			FROM {$wpdb->prefix}posts AS ap
+			JOIN {$wpdb->prefix}postmeta AS apm
+				ON ap.ID = apm.post_id
+			JOIN {$wpdb->prefix}users AS u
+				ON ap.post_author = u.ID
+			JOIN {$wpdb->prefix}postmeta AS bc
+				ON ap.ID = bc.post_id
+			JOIN {$wpdb->prefix}postmeta AS bcs
+				ON bc.meta_value = bcs.post_id
+			LEFT JOIN {$wpdb->prefix}posts as e
+				ON ap.ID = e.post_parent
+			LEFT JOIN {$wpdb->prefix}postmeta as eu
+				ON e.ID = eu.post_id
+			WHERE ap.post_type = 'submission'
+			AND apm.meta_key = '_badgeos_submission_status'
+			AND apm.meta_value = 'approved'
+			AND bc.meta_key = '_badgeos_submission_achievement_id'
+			AND bcs.meta_key = 'badgr_badge_class_slug'
+			AND ( e.post_type IS NULL OR e.post_type = 'attachment' )
+			AND (eu.meta_key IS NULL OR eu.meta_key = '_wp_attached_file')
 			AND NOT EXISTS (
-				SELECT aps.meta_id FROM wp_postmeta AS aps
+				SELECT aps.meta_id FROM {$wpdb->prefix}postmeta AS aps
 				WHERE aps.meta_key = 'badgr_assertion_slug' AND ap.ID = aps.post_id
-			);",
+			)
+			;",
 			OBJECT_K
 		);
 
 		$count = 0;
 
 		foreach ( $assertions as $assertion_post_id => $assertion_post ) {
+
+			$form_id = get_post_meta( $assertion_post->submission_id, 'badgefactor_form_id', true );
+
 			$issued_on = $assertion_post->post_date;
 
 			// Workout full url.
-			if ( 'NULL' !== $assertion_post->evidence_url ) {
+			if ( null !== $assertion_post->evidence_url ) {
 				$evidence_url = site_url( 'wp_content/uploads/' . $assertion_post->evidence_url );
+
+				$form_entries = \GFAPI::get_entries(
+					$form_id,
+					array(
+						'field_filters' => array(
+							array(
+								'key'   => 'created_by',
+								'value' => $assertion_post->recipient_id,
+							),
+						),
+					)
+				);
+
+				// TODO Add new hidden field value to each entry.
+
 			} else {
 				$evidence_url = null;
 			}
@@ -140,26 +165,30 @@ class Migration {
 		// Get badges posts without badgr slug enriched with organisation issuer slug.
 		global $wpdb;
 
-		// FIXME Replace hard-written wp_ table prefixes with $wpdb->prefix.
 		$badges = $wpdb->get_results(
-			"SELECT bc.*, os.meta_value AS issuer_slug, i.meta_value AS image_name FROM wp_posts AS bc
-		JOIN wp_postmeta AS o
-		ON bc.ID = o.post_id
-		JOIN wp_postmeta AS os
-		ON o.meta_value = os.post_id
-		JOIN wp_postmeta AS a
-		ON bc.ID = a.post_id
-		JOIN wp_postmeta as i
-		ON a.meta_value = i.post_id
-		WHERE bc.post_type = 'badges' AND
-		bc.post_status != 'trash' AND
-		o.meta_key = 'organisation' AND
-		os.meta_key = 'badgr_issuer_slug' AND
-		a.meta_key = '_thumbnail_id' AND
-		i.meta_key = '_wp_attached_file'
-		AND NOT EXISTS
-		(SELECT bcs.meta_id FROM wp_postmeta as bcs
-		 WHERE bcs.meta_key = 'badgr_badge_class_slug' AND bc.ID = bcs.post_id);",
+			"SELECT bc.*,
+				os.meta_value AS issuer_slug,
+				i.meta_value AS image_name
+			FROM {$wpdb->prefix}posts AS bc
+			JOIN {$wpdb->prefix}postmeta AS o
+				ON bc.ID = o.post_id
+			JOIN {$wpdb->prefix}postmeta AS os
+				ON o.meta_value = os.post_id
+			JOIN {$wpdb->prefix}postmeta AS a
+				ON bc.ID = a.post_id
+			JOIN {$wpdb->prefix}postmeta as i
+				ON a.meta_value = i.post_id
+			WHERE bc.post_type = 'badges'
+			AND bc.post_status != 'trash'
+			AND o.meta_key = 'organisation'
+			AND os.meta_key = 'badgr_issuer_slug'
+			AND a.meta_key = '_thumbnail_id'
+			AND i.meta_key = '_wp_attached_file'
+			AND NOT EXISTS(
+				SELECT bcs.meta_id FROM {$wpdb->prefix}postmeta as bcs
+				WHERE bcs.meta_key = 'badgr_badge_class_slug' AND bc.ID = bcs.post_id
+			)
+			;",
 			OBJECT_K
 		);
 
@@ -250,13 +279,23 @@ class Migration {
 		// Set to 'to_be_created'.
 		global $wpdb;
 
-		// FIXME Replace hard-written wp_ table prefixes with $wpdb->prefix.
 		return $wpdb->query(
-			"INSERT INTO wp_usermeta (user_id,meta_key,meta_value)
-		SELECT u.id, 'badgr_user_state', 'to_be_created' FROM wp_users AS u
-		WHERE NOT EXISTS
-		(SELECT m.umeta_id FROM wp_usermeta as m
-		WHERE m.`meta_key` = 'badgr_user_state' AND u.id = m.user_id) AND u.id != 1;"
+			"INSERT INTO {$wpdb->prefix}usermeta (
+				user_id,
+				meta_key,
+				meta_value
+			) SELECT u.id,
+				'badgr_user_state',
+				'to_be_created'
+			FROM {$wpdb->prefix}users AS u
+			WHERE NOT EXISTS (
+				SELECT m.umeta_id
+				FROM {$wpdb->prefix}usermeta AS m
+				WHERE m.`meta_key` = 'badgr_user_state'
+				AND u.id = m.user_id
+			)
+			AND u.id != 1
+			;"
 		);
 
 	}
@@ -345,19 +384,21 @@ class Migration {
 	public static function link_badge_pages_and_courses() {
 		global $wpdb;
 
-		// FIXME Replace hard-written wp_ table prefixes with $wpdb->prefix.
 		$badge_pages_and_courses_pairs = $wpdb->get_results(
-			"SELECT badge_page.ID AS badge_page_id, course.ID AS course_id FROM wp_posts AS badge_page
-			JOIN wp_postmeta AS badge_page_badge_class_slug
-			ON badge_page_badge_class_slug.post_id = badge_page.`ID`
-			JOIN wp_posts AS course
-			JOIN wp_postmeta AS course_badge_class_slug
-			ON course_badge_class_slug.post_id = course.ID
+			"SELECT badge_page.ID AS badge_page_id,
+				course.ID AS course_id
+			FROM {$wpdb->prefix}posts AS badge_page
+			JOIN {$wpdb->prefix}postmeta AS badge_page_badge_class_slug
+				ON badge_page_badge_class_slug.post_id = badge_page.`ID`
+			JOIN {$wpdb->prefix}posts AS course
+			JOIN {$wpdb->prefix}postmeta AS course_badge_class_slug
+				ON course_badge_class_slug.post_id = course.ID
 			WHERE badge_page.post_type = 'badge-page'
 			AND badge_page_badge_class_slug.meta_key = 'badge'
 			AND course.post_type = 'course'
 			AND course_badge_class_slug.meta_key = 'badgr_badge_class_slug'
-			AND badge_page_badge_class_slug.meta_value = course_badge_class_slug.meta_value;"
+			AND badge_page_badge_class_slug.meta_value = course_badge_class_slug.meta_value
+			;"
 		);
 
 		$count = 0;
@@ -383,10 +424,12 @@ class Migration {
 	public static function mark_links_to_remove_from_courses() {
 		global $wpdb;
 
-		// FIXME Replace hard-written wp_ table prefixes with $wpdb->prefix.
 		$courses = $wpdb->get_results(
-			"SELECT p.ID, p.post_content FROM wp_posts AS p
-			WHERE p.post_type = 'course';"
+			"SELECT p.ID,
+				p.post_content
+			FROM {$wpdb->prefix}posts AS p
+			WHERE p.post_type = 'course'
+			;"
 		);
 
 		$count = 0;
@@ -505,10 +548,13 @@ class Migration {
 	public static function removed_marked_links_from_courses() {
 		global $wpdb;
 
-		// FIXME Replace hard-written wp_ table prefixes with $wpdb->prefix.
 		$courses = $wpdb->get_results(
-			"SELECT p.ID, p.post_content FROM wp_posts AS p
-			WHERE p.post_type = 'course' AND p.post_content LIKE '%div class=\"to-remove%';"
+			"SELECT p.ID,
+				p.post_content
+			FROM {$wpdb->prefix}posts AS p
+			WHERE p.post_type = 'course'
+			AND p.post_content LIKE '%div class=\"to-remove%'
+			;"
 		);
 
 		$count = 0;
@@ -530,11 +576,18 @@ class Migration {
 	public static function suppress_old_entities() {
 		global $wpdb;
 
-		WP_CLI::confirm( 'Êtes-vous certain de vouloir supprimer les anciennes données ?', [] );
+		WP_CLI::confirm( 'Are you sure you want to delete previous Badge Factor 1 data?', array() );
 
-		WP_CLI::log( 'Démarrage de la suppression de posts de type badges');
-		$count = $wpdb->query('DELETE p, m FROM wp_posts AS p JOIN wp_postmeta AS m ON p.ID = m.post_id WHERE p.post_type = "badges";');
-		WP_CLI::log( sprintf(' %d posts de type badges supprimés', $count) );
+		WP_CLI::log( 'Starting badges post type deletion.' );
+		$count = $wpdb->query(
+			"DELETE p, m
+			FROM {$wpdb->prefix}posts AS p
+			JOIN {$wpdb->prefix}postmeta AS m
+				ON p.ID = m.post_id
+			WHERE p.post_type = 'badges'
+			;"
+		);
+		WP_CLI::log( sprintf( ' %d badges posts deleted.', $count ) );
 
 	}
 }
