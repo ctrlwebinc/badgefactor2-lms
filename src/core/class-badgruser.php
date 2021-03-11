@@ -213,20 +213,9 @@ class BadgrUser {
 	 */
 	public static function get_or_make_user_client( WP_User $wp_user = null ) {
 
-		// If no user passed, use the current user.
+		// If no user passed, proxy the admin
 		if ( null === $wp_user ) {
-			$wp_user = wp_get_current_user();
-			if ( 0 === $wp_user->ID ) {
-				// No current user, we need the admin client
-				$wp_user = get_user_by( 'ID', 1 );
-			} else {
-				// Check if we need to proxy the user
-				if ( true === user_can( $wp_user, 'manage_badgr') )
-				{
-					// Proxy the admin
-					$wp_user = get_user_by( 'ID', 1 );
-				}
-			}
+			$wp_user = get_user_by( 'ID', 1 );
 		}
 		// Look in user metas for existing client.
 		$client = get_user_meta( $wp_user->ID, self::$user_meta_key_for_client, true );
