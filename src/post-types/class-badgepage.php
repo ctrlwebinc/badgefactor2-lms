@@ -761,6 +761,18 @@ class BadgePage {
 			$count++;
 		}
 
+		// TODO: remove from generic.
+		// Replace course references in statistics logs
+		$wpdb->query("
+			UPDATE wp_cadre21_log AS l
+			LEFT JOIN ( wp_posts AS bp, wp_postmeta AS bfpim, wp_postmeta AS bbbcsm)
+			ON ( bfpim.post_id = bp.ID AND bfpim.meta_key = 'badgefactor_page_id' AND bfpim.meta_value = l.post_id AND bbbcsm.post_id = bp.ID AND bbbcsm.meta_key = 'badgr_badge_class_slug')
+			LEFT JOIN ( wp_posts AS cp, wp_postmeta AS cbbcsm)
+			ON ( cp.post_type = 'course' AND cbbcsm.post_id = cp.ID AND cbbcsm.meta_key = 'badgr_badge_class_slug' AND cbbcsm.meta_value = bbbcsm.meta_value)
+			SET l.post_id = cp.ID,
+			l.created_at = l.created_at;
+		");
+
 		return $count;
 	}
 
