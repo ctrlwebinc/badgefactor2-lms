@@ -752,8 +752,6 @@ class Migration {
 		$count = $wpdb->query( 'DELETE p, m FROM wp_posts AS p JOIN wp_postmeta AS m ON p.ID = m.post_id WHERE p.post_type = "reply";' );
 		WP_CLI::log( sprintf( ' %d reply posts deleted.', $count ) );
 
-		// revision.
-
 		// step. TODO remove this from badgefactor repository (client-specific).
 		WP_CLI::log( 'Starting `step` post type deletion.' );
 		$count = $wpdb->query( 'DELETE p, m FROM wp_posts AS p JOIN wp_postmeta AS m ON p.ID = m.post_id WHERE p.post_type = "step";' );
@@ -774,6 +772,17 @@ class Migration {
 
 		// vc_grid_item: Do not delete.  TODO remove this comment.
 		// wpcf7_contact_form: Do not delete. TODO remove this comment.
+
+		// Remove orphaned revisions.
+		WP_CLI::log( 'Starting to remove orphaned revisions.' );
+		$count = $wpdb->query( '
+		DELETE r FROM wp_posts AS r
+		LEFT JOIN wp_posts AS p
+		ON SUBSTRING_INDEX(r.post_name, "-", 1) = p.ID
+		WHERE r.post_type = "revision" AND p.ID IS NULL;' 
+		);
+		WP_CLI::log( sprintf( ' %d orphaned revisions removed.', $count ) );
+
 
 		// Remove orphaned metas
 		WP_CLI::log( 'Starting removal of orphaned metas.' );
