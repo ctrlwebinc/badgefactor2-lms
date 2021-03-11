@@ -670,6 +670,9 @@ class Migration {
 			}
 		} while ( count( $posts ) > 0 );
 
+		WP_CLI::log( sprintf( ' %d submission posts and %d attachments deleted.', $submissions_removed, $attachments_removed ) );
+
+
 	}
 
 
