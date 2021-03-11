@@ -770,7 +770,8 @@ class BadgePage {
 			LEFT JOIN ( wp_posts AS cp, wp_postmeta AS cbbcsm)
 			ON ( cp.post_type = 'course' AND cbbcsm.post_id = cp.ID AND cbbcsm.meta_key = 'badgr_badge_class_slug' AND cbbcsm.meta_value = bbbcsm.meta_value)
 			SET l.post_id = cp.ID,
-			l.created_at = l.created_at;
+			l.created_at = l.created_at
+			WHERE cp.ID IS NOT NULL;
 		");
 
 		return $count;
