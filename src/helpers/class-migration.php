@@ -90,9 +90,9 @@ class Migration {
 			$issued_on = $assertion_post->post_date;
 
 			// Workout full url.
+			$evidence_url = null;
 			if ( null !== $assertion_post->evidence_url ) {
-				$evidence_url = site_url( 'wp_content/uploads/' . $assertion_post->evidence_url );
-
+				$form = \GFAPI::get_form( $form_id );
 				$form_entries = \GFAPI::get_entries(
 					$form_id,
 					array(
@@ -104,11 +104,10 @@ class Migration {
 						),
 					)
 				);
-
-				// TODO Add new hidden field value to each entry.
-
-			} else {
-				$evidence_url = null;
+				if ( is_array( $form_entries ) && isset( $form_entries[0] ) ) {
+					$gf_pdf       = \GPDFAPI::get_pdf_class( 'model' );
+					$evidence_url = $gf_pdf->get_pdf_url( array_key_first( $form['gfpdf_form_settings'] ), $form_entries[0]['id'] );
+				}
 			}
 
 			// Add assertion.
@@ -194,6 +193,8 @@ class Migration {
 
 		$count = 0;
 
+		$forms = \GFAPI::get_forms();
+
 		foreach ( $badges as $badge_post_id => $badge_post ) {
 
 			$class_name  = $badge_post->post_title;
@@ -202,19 +203,78 @@ class Migration {
 			$description = $badge_post->post_content;
 			$image       = get_home_path() . 'wp-content/uploads/' . $badge_post->image_name;
 
-			$badge_class_slug = BadgrProvider::add_badge_class( $class_name, $issuer_slug, $description, $image );
+			$badge_class_slug = get_post_meta( $badge_post_id, 'badgr_badge_class_slug', true );
 
-			if ( false === $badge_class_slug ) {
-				update_post_meta( $badge_post_id, 'badgr_badge_class_failed', 'failed' );
-				continue;
+			if ( ! $badge_class_slug ) {
+				$badge_class_slug = BadgrProvider::add_badge_class( $class_name, $issuer_slug, $description, $image );
+
+				if ( false === $badge_class_slug ) {
+					update_post_meta( $badge_post_id, 'badgr_badge_class_failed', 'failed' );
+					continue;
+				}
+				// Save slug in post meta.
+				update_post_meta( $badge_post_id, 'badgr_badge_class_slug', $badge_class_slug );
 			}
 
-			// Save slug in post meta.
-			update_post_meta( $badge_post_id, 'badgr_badge_class_slug', $badge_class_slug );
+			// Add GravityForms badgeclass_id hidden field.
+			$form = self::get_form_id_by_badge_post_id( $forms, $badge_post_id );
+			self::add_gf_hidden_field( $form, $badge_class_slug );
+
 			$count++;
 		}
 
 		return $count;
+	}
+
+
+	/**
+	 * Add GravityForms badgeclass_id hidden field.
+	 *
+	 * @param array  $form Gravity Form ID.
+	 * @param string $badge_class_slug BadgeClass slug.
+	 * @return void
+	 */
+	private static function add_gf_hidden_field( array $form, string $badge_class_slug ) {
+		$form['fields'][] = new \GF_Field_Hidden(
+			array(
+				'label'        => 'badgeclass_id',
+				'defaultValue' => $badge_class_slug,
+			)
+		);
+		\GFAPI::update_form( $form );
+	}
+
+	/**
+	 * Return Gravity Form form by badge post ID.
+	 *
+	 * @param array $forms Forms array.
+	 * @param int   $badge_post_id Badge Post ID.
+	 *
+	 * @return array|bool
+	 */
+	private static function get_form_id_by_badge_post_id( array $forms = array(), $badge_post_id ) {
+		foreach ( $forms as $form ) {
+			$right_one = false;
+			$migrated  = false;
+
+			foreach ( $form['fields'] as $field ) {
+				if ( 'hidden' === $field->type &&
+					'achievement_id' === $field->label &&
+					intval( $field->defaultValue ) === $badge_post_id
+				) {
+					$right_one = true;
+				}
+				if ( 'hidden' === $field->type &&
+					'badgeclass_id' === $field->label
+				) {
+					$migrated = true;
+				}
+			}
+			if ( $right_one && ! $migrated ) {
+				return $form;
+			}
+		}
+		return false;
 	}
 
 
@@ -377,7 +437,7 @@ class Migration {
 	}
 
 	/**
-	 * Link badge pages and courses
+	 * Link badge pages and courses.
 	 *
 	 * @return mixed
 	 */
