@@ -633,6 +633,45 @@ class Migration {
 		return $count;
 	}
 
+	public static function remove_submissions_and_attachments() {
+		$attachments_removed = 0;
+		$submissions_removed = 0;
+
+		WP_CLI::log( 'Starting removal of submissions and their attachments.' );
+
+		// Loop through posts of type 'submission'.
+		do {
+			// Treat 10 posts at a time
+			$posts = get_posts(
+				array(
+					'post_type' => 'submission',
+					'numberposts' => 10
+				)
+			);
+
+			foreach ($posts as $post) {
+				// Loop through a post's attachments.
+				$attachments = get_attached_media( '', $post->ID);
+	
+				foreach ($attachments as $attachment) {
+					// Delete attachement and related media files.
+					wp_delete_attachment( $attachment->ID, 'true' );
+					$attachments_removed++;
+				}
+	
+				// Delete post
+				wp_delete_post($post->ID, true);
+				$submissions_removed++;
+				// Progress.
+				if ( 0 === ( $submissions_removed % 100) ) {
+					WP_CLI::log( 'Removal progressing...' );
+				}
+	
+			}
+		} while ( count( $posts ) > 0 );
+
+	}
+
 
 	/**
 	 * Undocumented function.
@@ -649,8 +688,12 @@ class Migration {
 		$count = $wpdb->query( 'DELETE p, m FROM wp_posts AS p JOIN wp_postmeta AS m ON p.ID = m.post_id WHERE p.post_type = "achievement-type";' );
 		WP_CLI::log( sprintf( ' %d achievement-type posts deleted.', $count ) );
 
-		// attachments
+		// attachments: relevant attachments to be deleted as part of the submissions deletions. TODO remove this comment.
+
 		// badgeos-log-entry.
+		WP_CLI::log( 'Starting `badgeos-log-entry` post type deletion.' );
+		$count = $wpdb->query( 'DELETE p, m FROM wp_posts AS p JOIN wp_postmeta AS m ON p.ID = m.post_id WHERE p.post_type = "badgeos-log-entry";' );
+		WP_CLI::log( sprintf( ' %d badgeos-log-entry posts deleted.', $count ) );
 
 		// badges.
 		WP_CLI::log( 'Starting `badges` post type deletion.' );
@@ -669,8 +712,12 @@ class Migration {
 		$count = $wpdb->query( 'DELETE p, m FROM wp_posts AS p JOIN wp_postmeta AS m ON p.ID = m.post_id WHERE p.post_type = "event_participant";' );
 		WP_CLI::log( sprintf( ' %d event_participant posts deleted.', $count ) );
 
-		// event_users
-		// events.
+		// event_users. TODO remove this from badgefactor repository (client-specific).
+		WP_CLI::log( 'Starting `event_users` post type deletion.' );
+		$count = $wpdb->query( 'DELETE p, m FROM wp_posts AS p JOIN wp_postmeta AS m ON p.ID = m.post_id WHERE p.post_type = "event_users";' );
+		WP_CLI::log( sprintf( ' %d event_users posts deleted.', $count ) );
+
+		// events: Do not delete. TODO remove this comment.
 
 		// level. TODO remove this from badgefactor repository (client-specific).
 		WP_CLI::log( 'Starting `level` post type deletion.' );
@@ -710,6 +757,7 @@ class Migration {
 		WP_CLI::log( sprintf( ' %d step posts deleted.', $count ) );
 
 		// submission.
+		self::remove_submissions_and_attachments();
 
 		// teachers. TODO remove this from badgefactor repository (client-specific).
 		WP_CLI::log( 'Starting `teachers` post type deletion.' );
@@ -723,5 +771,11 @@ class Migration {
 
 		// vc_grid_item: Do not delete.  TODO remove this comment.
 		// wpcf7_contact_form: Do not delete. TODO remove this comment.
+
+		// Remove orphaned metas
+		WP_CLI::log( 'Starting removal of orphaned metas.' );
+		$count = $wpdb->query( 'DELETE m FROM wp_postmeta AS m LEFT JOIN wp_posts AS p ON p.ID = m.post_id WHERE p.ID IS NULL;' );
+		WP_CLI::log( sprintf( ' %d orphaned metas deleted.', $count ) );
+
 	}
 }
