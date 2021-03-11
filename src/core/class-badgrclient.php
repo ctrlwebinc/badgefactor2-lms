@@ -746,6 +746,20 @@ class BadgrClient {
 
 				if ( isset( $_GET['email'] ) ) {
 					do_action( self::COMPLETE_USER_REGISTRATION_ACTION, $_GET['email'] );
+
+					$user_email = $_GET['email'];
+
+					$userData = get_user_by( 'email', $user_email);
+
+					if ( false === $userData ) {
+						exit();
+					}
+
+					$user_login = $userData->user_login;
+					$key = get_password_reset_key( $userData );
+
+					$link = network_site_url("wp-login.php?action=rp&key=$key&login=" . rawurlencode($user_login), 'login');
+					header( 'Location: ' . $link );
 					exit();
 				}
 
