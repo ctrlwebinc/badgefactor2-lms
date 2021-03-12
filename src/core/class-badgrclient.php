@@ -947,6 +947,18 @@ class BadgrClient {
 	 */
 	private function request( $method, $path, $args = array() ) {
 
+		// Fetch configuration options.
+		self::refresh_config();
+		
+		// If it's a password client, try to get accesstoken.
+		if ( false === $this->as_admin && self::STATE_HAVE_ACCESS_TOKEN !== $this->state ) {
+			try {
+				$this->get_access_token_from_password_grant();
+			} catch ( \Exception $e ) {
+				return null;
+			}
+		}
+
 		// Validate that we're using a configured client. If not, return null response.
 		if ( self::STATE_NEW_AND_UNCONFIGURED === $this->state ) {
 			return null;
@@ -954,18 +966,6 @@ class BadgrClient {
 
 		$done    = false;
 		$refresh = false;
-
-		// Fetch configuration options.
-		self::refresh_config();
-
-		// If it's a password client with configuration, try to get accesstoken.
-		if ( false === $this->as_admin && self::STATE_CONFIGURED === $this->state ) {
-			try {
-				$this->get_access_token_from_password_grant();
-			} catch ( \Exception $e ) {
-				return null;
-			}
-		}
 
 		do {
 			// Refresh token if requested.
