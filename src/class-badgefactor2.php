@@ -115,7 +115,7 @@ class BadgeFactor2 {
 		Shortcodes\Badges::init_hooks();
 
 		// Widgets.
-		User_Assertions_Widget::init_hooks();
+		Widgets::init_hooks();
 
 		// Badgr.
 		BadgrClient::init_hooks();
@@ -197,6 +197,7 @@ class BadgeFactor2 {
 
 		// Widgets.
 		require_once BF2_ABSPATH . 'src/public/widgets/class-user-assertions-widget.php';
+		require_once BF2_ABSPATH . 'src/public/widgets/class-widgets.php';
 
 		// Post Types.
 		require_once BF2_ABSPATH . 'src/roles/class-approver.php';

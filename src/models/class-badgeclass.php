@@ -78,7 +78,7 @@ class BadgeClass implements Badgr_Entity {
 			}
 		}
 
-		WP_Sortable::sort( $badges );
+		static::sort( $badges );
 
 		return $badges;
 	}

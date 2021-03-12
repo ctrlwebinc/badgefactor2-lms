@@ -112,6 +112,21 @@ class Assertion implements Badgr_Entity {
 
 
 	/**
+	 * Retrieve a user's assertion from Badgr provider.
+	 *
+	 * @param string  $badgeclass_entity_id BadgeClass entity id.
+	 * @param WP_User $user User.
+	 * @return void
+	 */
+	public static function get_for_user( $badgeclass_entity_id, $user ) {
+		$assertions = self::all_for_user( $user );
+		foreach ( $assertions as $assertion ) {
+			// TODO Look for specific assertion and return it.
+		}
+	}
+
+
+	/**
 	 * Count assertions.
 	 *
 	 * @return int

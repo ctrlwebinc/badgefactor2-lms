@@ -23,35 +23,13 @@
  * @phpcs:disable WordPress.WP.I18n.NonSingularStringLiteralDomain
  */
 
-namespace BadgeFactor2\Widgets;
-
 use BadgeFactor2\Controllers\Assertion_Controller;
 use BadgeFactor2\Helpers\Template;
 
 /**
  * User Assertions Widget.
  */
-class User_Assertions_Widget extends \WP_Widget {
-
-	/**
-	 * Hooks init.
-	 *
-	 * @return void
-	 */
-	public static function init_hooks() {
-		add_action( 'widgets_init', array( self::class, 'load_widget' ), 10 );
-	}
-
-
-	/**
-	 * Load widget hook.
-	 *
-	 * @return void
-	 */
-	public static function load_widget() {
-		register_widget( self::class );
-	}
-
+class User_Assertions extends \WP_Widget {
 
 	/**
 	 * Constructor.

@@ -837,9 +837,11 @@ class BadgePage {
 			$approvers = get_post_meta( $badge_page->ID, 'badge_request_approver', true );
 			$emails    = array();
 
-			foreach ( $approvers as $approver ) {
-				$user                        = get_userdata( $approver );
-				$emails[ $user->user_email ] = $user->user_email;
+			if ( $approvers ) {
+				foreach ( $approvers as $approver ) {
+					$user                        = get_userdata( $approver );
+					$emails[ $user->user_email ] = $user->user_email;
+				}
 			}
 
 			return join( ',', array_values( $emails ) );

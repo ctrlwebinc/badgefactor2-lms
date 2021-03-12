@@ -92,7 +92,7 @@ class Migration {
 			// Workout full url.
 			$evidence_url = null;
 			if ( null !== $assertion_post->evidence_url ) {
-				$form = \GFAPI::get_form( $form_id );
+				$form         = \GFAPI::get_form( $form_id );
 				$form_entries = \GFAPI::get_entries(
 					$form_id,
 					array(
@@ -633,6 +633,12 @@ class Migration {
 		return $count;
 	}
 
+
+	/**
+	 * Undocumented function.
+	 *
+	 * @return void
+	 */
 	public static function remove_submissions_and_attachments() {
 		$attachments_removed = 0;
 		$submissions_removed = 0;
@@ -641,37 +647,35 @@ class Migration {
 
 		// Loop through posts of type 'submission'.
 		do {
-			// Treat 10 posts at a time
+			// Treat 10 posts at a time.
 			$posts = get_posts(
 				array(
-					'post_type' => 'submission',
-					'numberposts' => 10
+					'post_type'   => 'submission',
+					'numberposts' => 10,
 				)
 			);
 
-			foreach ($posts as $post) {
+			foreach ( $posts as $post ) {
 				// Loop through a post's attachments.
-				$attachments = get_attached_media( '', $post->ID);
-	
-				foreach ($attachments as $attachment) {
+				$attachments = get_attached_media( '', $post->ID );
+
+				foreach ( $attachments as $attachment ) {
 					// Delete attachement and related media files.
 					wp_delete_attachment( $attachment->ID, 'true' );
 					$attachments_removed++;
 				}
-	
-				// Delete post
-				wp_delete_post($post->ID, true);
+
+				// Delete post.
+				wp_delete_post( $post->ID, true );
 				$submissions_removed++;
 				// Progress.
-				if ( 0 === ( $submissions_removed % 100) ) {
+				if ( 0 === ( $submissions_removed % 100 ) ) {
 					WP_CLI::log( 'Removal progressing...' );
 				}
-	
 			}
 		} while ( count( $posts ) > 0 );
 
 		WP_CLI::log( sprintf( ' %d submission posts and %d attachments deleted.', $submissions_removed, $attachments_removed ) );
-
 
 	}
 
@@ -775,14 +779,14 @@ class Migration {
 
 		// Remove orphaned revisions.
 		WP_CLI::log( 'Starting to remove orphaned revisions.' );
-		$count = $wpdb->query( '
+		$count = $wpdb->query(
+			'
 		DELETE r FROM wp_posts AS r
 		LEFT JOIN wp_posts AS p
 		ON SUBSTRING_INDEX(r.post_name, "-", 1) = p.ID
-		WHERE r.post_type = "revision" AND p.ID IS NULL;' 
+		WHERE r.post_type = "revision" AND p.ID IS NULL;'
 		);
 		WP_CLI::log( sprintf( ' %d orphaned revisions removed.', $count ) );
-
 
 		// Remove orphaned metas
 		WP_CLI::log( 'Starting removal of orphaned metas.' );
