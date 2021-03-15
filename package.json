@@ -21,6 +21,5 @@
     },
     "browserslist": [
         "last 6 versions"
-    ],
-    "dependencies": {}
+    ]
 }
