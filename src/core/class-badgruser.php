@@ -213,7 +213,7 @@ class BadgrUser {
 	 */
 	public static function get_or_make_user_client( WP_User $wp_user = null ) {
 
-		// If no user passed, proxy the admin
+		// If no user passed, proxy the admin.
 		if ( null === $wp_user ) {
 			$wp_user = get_user_by( 'ID', 1 );
 		}

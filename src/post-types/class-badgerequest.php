@@ -121,6 +121,7 @@ class BadgeRequest {
 				'capability_type'   => array( self::$slug, self::$slug_plural ),
 				'capabilities'      => array(
 					'create_posts' => 'do_not_allow',
+					'edit_post'    => 'edit_' . self::$slug,
 				),
 				'map_meta_cap'      => false,
 			)
@@ -175,37 +176,52 @@ class BadgeRequest {
 	 */
 	public static function add_capabilities() {
 		$capabilities = array(
+			'edit_' . self::$slug                    => array(
+				'badgr_administrator',
+				'administrator',
+			),
 			'edit_' . self::$slug_plural             => array(
+				'badgr_administrator',
 				'administrator',
 			),
 			'edit_other_' . self::$slug_plural       => array(
+				'badgr_administrator',
 				'administrator',
 			),
 			'edit_published_' . self::$slug_plural   => array(
+				'badgr_administrator',
 				'administrator',
 			),
 			'publish_' . self::$slug_plural          => array(
+				'badgr_administrator',
 				'administrator',
 			),
 			'delete_' . self::$slug_plural           => array(
+				'badgr_administrator',
 				'administrator',
 			),
 			'delete_others_' . self::$slug_plural    => array(
+				'badgr_administrator',
 				'administrator',
 			),
 			'delete_published_' . self::$slug_plural => array(
+				'badgr_administrator',
 				'administrator',
 			),
 			'delete_private_' . self::$slug_plural   => array(
+				'badgr_administrator',
 				'administrator',
 			),
 			'edit_private_' . self::$slug_plural     => array(
+				'badgr_administrator',
 				'administrator',
 			),
 			'read_private_' . self::$slug_plural     => array(
+				'badgr_administrator',
 				'administrator',
 			),
 			'read_' . self::$slug                    => array(
+				'badgr_administrator',
 				'administrator',
 			),
 		);
@@ -453,7 +469,7 @@ class BadgeRequest {
 				if ( $product_id ) {
 					// The client has not purchased this product, redirect to the product page.
 					if ( ! wc_customer_bought_product( $current_user->user_email, $current_user->ID, $product_id ) ) {
-						$status_code = 402;
+						$status_code         = 402;
 						$response['message'] = __( 'You must purchase this product before you can access it.', BF2_DATA['TextDomain'] );
 						wp_send_json( $response, $status_code );
 					}
@@ -514,7 +530,9 @@ class BadgeRequest {
 							'on' === $email_settings['send_auto_approved_badge_request_approver_emails']
 						)
 					) {
-						wp_mail( $approvers_emails, $email_subject, $email_body, array( 'Content-Type: text/html; charset=UTF-8' ) );
+						if ( $approvers_emails ) {
+							wp_mail( $approvers_emails, $email_subject, $email_body, array( 'Content-Type: text/html; charset=UTF-8' ) );
+						}
 					}
 
 					$status_code = 201;
