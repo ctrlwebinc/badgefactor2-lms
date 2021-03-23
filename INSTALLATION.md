@@ -51,31 +51,39 @@ HTTP_ORIGIN = 'http://127.0.0.1:8000'
 UNSUBSCRIBE_SECRET_KEY = '7GGGDKOT4H4O7QU4GPGZ7ERY9GPE2FKALAO81WYP'
 ```
 
-Login using your super user account. Add an application under DJANGO OAUTH TOOLKIT > Applications and configure as follows:
+Login using your super user account. Add a first application under DJANGO OAUTH TOOLKIT > Applications and configure as follows:
 
-- **Redirect uris:** Add your Badge Factor 2 url with the path /wp-admin/admin.php . E.g. https:://my-badge-factor-2.example.net/wp-admin/admin.php
+- **Redirect uris:** Add your Badge Factor 2 url with the path /bf2/auth . E.g. https:://my-badge-factor-2.example.net/bf2/auth
 - **Client type:** Public
 - **Authorization grant type:** Choose _Authorization code_
 - **Name:** Enter your site's friendly name. This name is displayed to users when they are asked to grant access to their account.
-- **Allowed scopes:** Enter _rw:issuer rw:backpack rw:profile_
+- **Allowed scopes:** Enter _rw:issuer rw:backpack rw:profile rw:serverAdmin_
 
 Make a note of client id and client secret and save the application.
+
+Add a second application under DJANGO OAUTH TOOLKIT > Applications and configure as follows:
+
+- **Client type:** Public
+- **Authorization grant type:** Choose _Resource owner password-based_
+- **Name:** Enter your site's friendly name and add Password to distinguish the name from the first client.
+- **Allowed scopes:** Enter _rw:issuer rw:backpack rw:profile_
 
 Under Home › Badgeuser › Terms versions, add a terms version.
 
 Create a new badgr app under Home › Mainsite › Badgr apps. If BadgeFactor2 is running at https:://my-badge-factor-2.example.net, use the following values:
 
 - CORS: ensure this setting matches the domain on which you are running BadgeFactor2, including the port if other than the standard HTTP or HTTPS ports. `https:://my-badge-factor-2.example.net`
-- Oauth authorization redirect: `https:://my-badge-factor-2.example.net`
+- Oauth authorization redirect: `https:://my-badge-factor-2.example.net/bf2/auth`
 - User auth code exchange: should be checked
-- Oauth application: choose the one created previously
+- Oauth application: choose the first one created previously
 - Is default: should be checked
-- Signup redirect: `https:://my-badge-factor-2.example.net/signup/`
-- Email confirmation redirect: `https:://my-badge-factor-2.example.net/auth/login/`
-- Forgot password redirect: `https:://my-badge-factor-2.example.net/change-password/`
-- UI login redirect: `https:://my-badge-factor-2.example.net/auth/login/`
-- UI signup success redirect: `https:://my-badge-factor-2.example.net/signup/success/`
-- UI connect success redirect: `https:://my-badge-factor-2.example.net/profile/`
+- Signup redirect: `https:://my-badge-factor-2.example.net/bf2/signup`
+- Email confirmation redirect: `https:://my-badge-factor-2.example.net/bf2/emailConfirm`
+- Forgot password redirect: `https:://my-badge-factor-2.example.net/forgotPassword`
+- UI login redirect: `https:://my-badge-factor-2.example.net/bf2/loginRedirect`
+- UI signup success redirect: `https:://my-badge-factor-2.example.net/bf2/signup`
+- UI signup faillure: `https:://my-badge-factor-2.example.net/bf2/signup`
+- UI connect success redirect: `https:://my-badge-factor-2.example.net/signup`
 - Public pages redirect: `https:://my-badge-factor-2.example.net/public/`
 
 Add the application settings to your Badge Factor 2 installation under Badge Factor 2 > Badgr Server. Once configured, you'll be redirected to your Badgr instance to login and grant permissions to Badge Factor 2.
