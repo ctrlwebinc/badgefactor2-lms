@@ -94,6 +94,25 @@ class Assertion implements Badgr_Entity {
 		return $assertions;
 	}
 
+	/**
+	 * Get random assertion.
+	 *
+	 * @return Assertion
+	 */
+	public static function random() {
+		$assertion = null;
+		$tries = 0;
+		do {
+			$badges = BadgeClass::all();
+			$badge  = $badges[ array_rand( $badges ) ];
+
+			$assertions = static::all( null, null, array( 'filter_type' => 'Badges', 'filter_value' => $badge->entityId ) );
+			$assertion  = $assertions[ array_rand( $assertions ) ];
+			$tries++;
+		} while ( null === $assertion && $tries <= 10 );
+
+		return $assertion;
+	}
 
 	/**
 	 * Retrieve a specified user's assertions from Badgr provider.
