@@ -216,6 +216,8 @@ class BadgeFactor2_CLI extends WP_CLI_Command {
 			if ( strlen( $badgr_password ) === 12 ) {
 				$encrypted_badgr_password = BadgrUser::encrypt_decrypt( 'encrypt', $badgr_password );
 				\update_user_meta( $user->ID, 'badgr_password', $encrypted_badgr_password );
+				$client = BadgrUser::get_or_make_user_client( $user, true );
+				\update_user_meta( $user->ID, 'badgr_client_instance', $client );
 			}
 		}
 		WP_CLI::success( 'reencrypted!' );

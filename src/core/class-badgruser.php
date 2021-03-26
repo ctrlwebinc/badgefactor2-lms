@@ -211,7 +211,7 @@ class BadgrUser {
 	 * @param WP_User $wp_user WordPress user.
 	 * @return BadgrClient
 	 */
-	public static function get_or_make_user_client( WP_User $wp_user = null ) {
+	public static function get_or_make_user_client( WP_User $wp_user = null, $skip_client = false ) {
 
 		// If no user passed, proxy the admin.
 		if ( null === $wp_user ) {
@@ -220,7 +220,7 @@ class BadgrUser {
 		// Look in user metas for existing client.
 		$client = get_user_meta( $wp_user->ID, self::$user_meta_key_for_client, true );
 
-		if ( null !== $client && '' !== $client ) {
+		if ( null !== $client && '' !== $client && false === $skip_client ) {
 			return $client;
 		}
 
@@ -229,6 +229,7 @@ class BadgrUser {
 			'badgr_user' => new BadgrUser( $wp_user ),
 		);
 
+		// FIXME Bad practice, never use 1 as way to identify admin user.
 		if (1 === $wp_user->ID ) {
 			$client_parameters[ 'as_admin' ] = true;
 		} else {

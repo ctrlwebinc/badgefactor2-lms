@@ -283,6 +283,7 @@ class BadgrUsersTest extends WP_UnitTestCase {
 	public function test_client_reports_active_when_admin_client_is_ready() {
 		// Clear any previous option.
 		update_option( BadgrUser::$options_key_for_badgr_admin, null );
+		// FIXME Never use 1 as user_id to identify admin.
 		update_user_meta( 1, BadgrUser::$user_meta_key_for_client, null );
 
 		$this->assertFalse( BadgrClient::is_active() );
