@@ -143,7 +143,7 @@ class Migration {
 						'dates'     => array(
 							'requested' => $issued_on,
 						),
-						'content'   => "<a href='/pdf/5f74f2acb286d/5' target='_blank'>Formulaire soumis</a>", // FIXME: create proper content.
+						'content'   => sprintf( "<a href='%s' target='_blank'>%s</a>", $evidence_url, __( 'Submitted Form', BF2_DATA['TextDomain'] ) ),
 					),
 				)
 			);
