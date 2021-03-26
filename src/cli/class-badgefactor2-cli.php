@@ -204,4 +204,20 @@ class BadgeFactor2_CLI extends WP_CLI_Command {
 	public function suppress_old_entities( $args, $assoc_args ) {
 		Migration::suppress_old_entities();
 	}
+
+	/**
+	 * Undocumented function.
+	 *
+	 * @return void
+	 */
+	public function reencrypt_user_passwords() {
+		foreach ( get_users() as $user ) {
+			$badgr_password = \get_user_meta( $user->ID, 'badgr_password', true );
+			if ( strlen( $badgr_password ) === 12 ) {
+				$encrypted_badgr_password = BadgrUser::encrypt_decrypt( 'encrypt', $badgr_password );
+				\update_user_meta( $user->ID, 'badgr_password', $encrypted_badgr_password );
+			}
+		}
+		WP_CLI::success( 'reencrypted!' );
+	}
 }
