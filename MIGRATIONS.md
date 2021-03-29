@@ -188,3 +188,21 @@ To link badge pages and course, mamke sure that badge pages and courses migratio
 ```bash
 wp bf2 link_badge_pages_and_courses
 ```
+
+## Removing links from content
+
+BadgeFactor2 includes links to request badges as part of its templates. Since this function wasn't in badgefactor,
+users added links manually. These links must be removed.
+
+Because automated treatment of content can be tricky, namely because targetted content is often entered with variations,
+this process happens in 2 parts: 
+- first we highlight the text to be suppressed (yellow background)
+- and then the content is suppressed.
+
+```bash
+wp bf2 mark_links_to_remove_from_courses
+```
+
+```bash
+wp bf2 removed_marked_links_from_courses
+```
