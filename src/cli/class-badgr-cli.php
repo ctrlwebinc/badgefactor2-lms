@@ -759,4 +759,25 @@ class Badgr_CLI extends WP_CLI_Command {
 			WP_CLI::success( 'Finished migrating badge assertions: ' . $count . ' badge assertions migrated' );
 		}
 	}
+
+		/**
+	 * Migrate Assertions.
+	 *
+	 * @param array $args Arguments.
+	 * @param array $assoc_args Associative Arguments.
+	 * @return void
+	 */
+	public function migrate_pending_approvals( $args, $assoc_args ) {
+		if ( count( $args ) !== 0 ) {
+			WP_CLI::error( 'Usage: migrate_pending_approvals' );
+		}
+
+		$count = Migration::migrate_pending_approvals();
+
+		if ( false === $count ) {
+			WP_CLI::error( 'Migrating pending approvals failed' );
+		} else {
+			WP_CLI::success( 'Finished migrating pending approvals: ' . $count . ' pending approvals migrated' );
+		}
+	}
 }

@@ -44,7 +44,7 @@ class Migration {
 
 		global $wpdb;
 
-		// Get posts of type submission with status approved.
+		// Get posts of type submission with status pending
 		$assertions = $wpdb->get_results(
 			"SELECT ap.*,
 				bcs.meta_value AS badge_class_slug,
@@ -128,7 +128,114 @@ class Migration {
 			// Insert the badge request post.
 			$created_post_id = wp_insert_post(
 				array(
-					'post_author' => 1,
+					'post_author' => $assertion_post->recipient_id, // TODO: set the requester as the post author
+					'post_title'  => $request_name_and_title,
+					'post_name'   => $request_name_and_title,
+					'post_status' => 'publish',
+					'post_type'   => 'badge-request',
+					'post_date'   => $issued_on,
+					'meta_input'  => array(
+						'assertion' => $assertion_slug,
+						'badge'     => $assertion_post->badge_class_slug,
+						'type'      => 'gravityforms',
+						'recipient' => $assertion_post->recipient_id,
+						'status'    => 'approved',
+						'dates'     => array(
+							'requested' => $issued_on,
+						),
+						'content'   => sprintf( "<a href='%s' target='_blank'>%s</a>", $evidence_url, __( 'Submitted Form', BF2_DATA['TextDomain'] ) ),
+					),
+				)
+			);
+
+			$count++;
+		}
+
+		return $count;
+	}
+
+		/**
+	 * Undocumented function.
+	 *
+	 * @return int
+	 */
+	public static function migrate_pending_approvals() {
+
+		global $wpdb;
+
+		// Get posts of type submission with status pending
+		$assertions = $wpdb->get_results(
+			"SELECT ap.*,
+				bcs.meta_value AS badge_class_slug,
+				bc.meta_value AS submission_id,
+				u.user_email AS recipient,
+				eu.meta_value as evidence_url,
+				u.ID AS recipient_id,
+				u.display_name AS requester_name
+			FROM {$wpdb->prefix}posts AS ap
+			JOIN {$wpdb->prefix}postmeta AS apm
+				ON ap.ID = apm.post_id
+			JOIN {$wpdb->prefix}users AS u
+				ON ap.post_author = u.ID
+			JOIN {$wpdb->prefix}postmeta AS bc
+				ON ap.ID = bc.post_id
+			JOIN {$wpdb->prefix}postmeta AS bcs
+				ON bc.meta_value = bcs.post_id
+			LEFT JOIN {$wpdb->prefix}posts as e
+				ON ap.ID = e.post_parent
+			LEFT JOIN {$wpdb->prefix}postmeta as eu
+				ON e.ID = eu.post_id
+			WHERE ap.post_type = 'submission'
+			AND apm.meta_key = '_badgeos_submission_status'
+			AND apm.meta_value = 'pending'
+			AND bc.meta_key = '_badgeos_submission_achievement_id'
+			AND bcs.meta_key = 'badgr_badge_class_slug'
+			AND ( e.post_type IS NULL OR e.post_type = 'attachment' )
+			AND (eu.meta_key IS NULL OR eu.meta_key = '_wp_attached_file')
+			AND NOT EXISTS (
+				SELECT aps.meta_id FROM {$wpdb->prefix}postmeta AS aps
+				WHERE aps.meta_key = 'badgr_assertion_slug' AND ap.ID = aps.post_id
+			)
+			;",
+			OBJECT_K
+		);
+
+		$count = 0;
+
+		foreach ( $assertions as $assertion_post_id => $assertion_post ) {
+
+			$form_id = get_post_meta( $assertion_post->submission_id, 'badgefactor_form_id', true );
+
+			$issued_on = $assertion_post->post_date;
+
+			// Workout full url.
+			$evidence_url = null;
+			if ( null !== $assertion_post->evidence_url ) {
+				$form         = \GFAPI::get_form( $form_id );
+				$form_entries = \GFAPI::get_entries(
+					$form_id,
+					array(
+						'field_filters' => array(
+							array(
+								'key'   => 'created_by',
+								'value' => $assertion_post->recipient_id,
+							),
+						),
+					)
+				);
+				if ( is_array( $form_entries ) && isset( $form_entries[0] ) ) {
+					$gf_pdf       = \GPDFAPI::get_pdf_class( 'model' );
+					$evidence_url = $gf_pdf->get_pdf_url( array_key_first( $form['gfpdf_form_settings'] ), $form_entries[0]['id'] );
+				}
+			}
+
+			// Create pending badge request
+			$request_name_and_title = $assertion_post->requester_name . ' - ' . $assertion_post->post_title;
+
+			// Insert the badge request post.
+			$created_post_id = wp_insert_post(
+				array(
+					'post_author' => $assertion_post->recipient_id,
 					'post_title'  => $request_name_and_title,
 					'post_name'   => $request_name_and_title,
 					'post_status' => 'publish',
