@@ -26,6 +26,7 @@
 
 namespace BadgeFactor2\Controllers;
 
+use BadgeFactor2\BadgrProvider;
 use BadgeFactor2\Models\BadgeClass;
 use BadgeFactor2\Models\Issuer;
 use BadgeFactor2\Page_Controller;
@@ -141,15 +142,15 @@ class BadgePage_Controller extends Page_Controller {
 			}
 
 			$fields['display-autoevaluation-form'] = false;
-			$fields['display-badge-request-form'] = false;
-			$fields['display-page'] = true;
+			$fields['display-badge-request-form']  = false;
+			$fields['display-page']                = true;
 			if ( 1 === intval( get_query_var( 'form' ) ) ) {
 				if ( 1 === intval( get_query_var( 'autoevaluation' ) ) ) {
 					$fields['display-autoevaluation-form'] = true;
-					$fields['display-page'] = false;
+					$fields['display-page']                = false;
 				} else {
 					$fields['display-badge-request-form'] = true;
-					$fields['display-page'] = false;
+					$fields['display-page']               = false;
 				}
 			}
 
@@ -164,12 +165,27 @@ class BadgePage_Controller extends Page_Controller {
 				$fields['courses'][ $i ]->is_purchasable = Course::is_purchasable( $course->ID );
 			}
 
+			$assertions = BadgrProvider::get_all_assertions_by_badge_class_slug( $fields['badge_entity_id'] );
+			$members    = array();
+			foreach ( $assertions as $assertion ) {
+				$user = get_user_by( 'email', $assertion->recipient->plaintextIdentity );
+				if ( $user ) {
+					$members[ $assertion->recipient->plaintextIdentity ] = $user;
+				}
+			}
+			usort( 
+				$members, 
+				function($a, $b) {
+					return strnatcasecmp($a->display_name, $b->display_name);
+				}
+			);
+			$fields['members'] = $members;
+
 			global $bf2_template;
 			$bf2_template         = new stdClass();
 			$bf2_template->fields = $fields;
 
 		}
-		
 
 		return parent::single( $default_template );
 	}

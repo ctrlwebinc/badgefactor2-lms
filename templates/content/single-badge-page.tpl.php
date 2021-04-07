@@ -85,5 +85,13 @@ global $bf2_template;
 				</div>
 			</aside>
 		</article>
+		<article class="c-bf2__single">
+			<header class="c-bf2__header">
+				<h1 class="c-bf2__title"><?php echo __( 'Members who have obtained this badge', BF2_DATA['TextDomain'] ); ?></h1>
+			</header>
+			<div class="c-bf2__body">
+				<!-- TODO -->
+			</div>
+		</article>
 	<?php endif; ?>
 </div>
