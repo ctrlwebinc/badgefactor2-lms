@@ -445,6 +445,52 @@ class BadgeRequest {
 
 
 	/**
+	 * Create a badge request.
+	 *
+	 * @param int    $badge_id Badge ID.
+	 * @param string $recipient_email Recipient email.
+	 * @return bool
+	 */
+	public static function create_badge_request( $badge_id, $recipient_email ) {
+
+		$current_user = wp_get_current_user();
+		$recipient    = \get_user_by( 'email', $recipient_email );
+		$badge        = BadgeClass::get( $badge_id );
+		$type         = 'basic';
+		// translators: %s is the user nicename of the user who is requesting the badge.
+		$content = sprintf( __( 'Badge issued manually by %s', BF2_DATA['TextDomain'] ), $current_user->user_nicename );
+
+		$status = 'auto-approved';
+
+		$badge_request_id = wp_insert_post(
+			array(
+				'post_type'      => 'badge-request',
+				'post_title'     => sprintf( '%s - %s - %s', $recipient->user_nicename, $badge->name, gmdate( 'Y-m-d H:i:s' ) ),
+				'post_content'   => '',
+				'post_author'    => $recipient->ID,
+				'post_status'    => 'publish',
+				'comment_status' => 'closed',
+				'ping_status'    => 'closed',
+			)
+		);
+
+		if ( $badge_request_id ) {
+			update_post_meta( $badge_request_id, 'badge', $badge_id );
+			update_post_meta( $badge_request_id, 'type', $type );
+			update_post_meta( $badge_request_id, 'recipient', $recipient->ID );
+			update_post_meta( $badge_request_id, 'status', 'granted' );
+			add_post_meta( $badge_request_id, 'dates', array( 'requested' => gmdate( 'Y-m-d H:i:s' ) ) );
+			add_post_meta( $badge_request_id, 'dates', array( 'granted' => gmdate( 'Y-m-d H:i:s' ) ) );
+			update_post_meta( $badge_request_id, 'approver', $current_user->ID );
+			add_post_meta( $badge_request_id, 'content', $content );
+
+			return true;
+		}
+		return false;
+	}
+
+
+	/**
 	 * Manage ajax badge requests from basic forms.
 	 *
 	 * @return void

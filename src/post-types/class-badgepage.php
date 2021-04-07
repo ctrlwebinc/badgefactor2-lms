@@ -631,7 +631,7 @@ class BadgePage {
 	}
 
 	/**
-	 * Create badge pages from badges
+	 * Create badge pages and products from badges
 	 *
 	 * @return mixed
 	 */
