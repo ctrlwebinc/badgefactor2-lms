@@ -5,7 +5,9 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [2.0.0-alpha]
+## [Unreleased]
+
+## [1.1.0-rc]
 
 ### Added
 
@@ -14,3 +16,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Badgr Client & Server settings page
 - Custom Post Types: Issuer, Badge, Assertion
 - WordPress CLI command
+- Compatible WP 5.7.x
+- Uses a modified version of Badgr as an Open Badges compliant badge store
+- Admins can create, modify and delete issuers, badge classes
+- Admins can issue and revoke badges 
+- Users can store badges in their individual backpack
+- Move badge class from one issuer to another not supported
+- New WP users get automatically created as a Badgr user with access to a backpack
+- Allows suppression of WP signup email
+- Badgr admin account linked to BF2 via code auth
+- Provides upstream workflow for badge issuance via Badge Requests
+
