@@ -39,13 +39,27 @@
 					</div>
 					<?php
 				break;
+			case 'revoked':
+				?>
+					<div class="updated settings-error notice is-dismissible">
+						<p><strong><?php echo __( 'Assertion revoked.', BF2_DATA['TextDomain'] ); ?></strong></p>
+						<button type="button" class="notice-dismiss">
+							<span class="screen-reader-text"><?php echo __( 'Dismiss this message.', BF2_DATA['TextDomain'] ); ?></span>
+						</button>
+					</div>
+					<?php
+				break;
 			case 'error':
 				?>
 					<div class="updated settings-error error">
 						<p><strong><?php echo __( 'Invalid email or user does not exist.', BF2_DATA['TextDomain'] ); ?></strong></p>
-						<button type="button" class="notice-dismiss">
-							<span class="screen-reader-text"><?php echo __( 'Dismiss this message.', BF2_DATA['TextDomain'] ); ?></span>
-						</button>
+					</div>
+					<?php
+				break;
+			case 'revocation-error':
+				?>
+					<div class="updated settings-error error">
+						<p><strong><?php echo __( 'The revocation of this assertion has failed.', BF2_DATA['TextDomain'] ); ?></strong></p>
 					</div>
 					<?php
 				break;

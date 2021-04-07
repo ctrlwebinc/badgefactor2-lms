@@ -28,8 +28,10 @@ namespace BadgeFactor2\Admin;
 
 use BadgeFactor2\BadgrClient;
 use BadgeFactor2\BadgrProvider;
+use BadgeFactor2\Models\Assertion;
 use BadgeFactor2\Models\BadgeClass;
 use BadgeFactor2\Models\Issuer;
+use BadgeFactor2\Post_Types\BadgeRequest;
 use BadgeFactor2\Singleton;
 use GuzzleHttp\Exception\ClientException;
 use stdClass;
@@ -402,22 +404,47 @@ class Badgr_List extends \WP_List_Table {
 					wp_die( __( 'You are missing an entity ID.', BF2_DATA['TextDomain'] ) );
 				} else {
 					// Entity ID is set.
-					$entity = $this->model::get( $_GET['entity_id'] );
+					$entity = Assertion::get( $_GET['entity_id'] );
 					if ( false === $entity ) {
-						wp_die( __( 'You attempted to edit an item that doesn\'t exist. Perhaps it was deleted?', BF2_DATA['TextDomain'] ) );
+						wp_die( __( 'You attempted to revoke an assertion that doesn\'t exist. Perhaps it was deleted?', BF2_DATA['TextDomain'] ) );
 					}
 
 					if ( 'POST' === $_SERVER['REQUEST_METHOD'] ) {
 						// Revoke.
 
 						if ( $_GET['entity_id'] !== $_POST['assertion'] ) {
-							wp_die( __( 'You attempted to edit an item that doesn\'t exist. Perhaps it was deleted?', BF2_DATA['TextDomain'] ) );
-						} else {
-							BadgrProvider::revoke_assertion( $_POST['assertion'], $_POST['reason'] );
+							wp_die( __( 'Revocation request mismatch!', BF2_DATA['TextDomain'] ) );
+						}
+
+						$user = get_user_by( 'email', $entity->recipient->plaintextIdentity );
+						if ( ! $user ) {
+							wp_die( __( 'The user with whom this assertion is associated does not seem to exist in WordPress!', BF2_DATA['TextDomain'] ) );
+						}
+
+						$badge_request = BadgeRequest::get_for_badgeclass_for_user( $entity->badgeclass, $user->ID );
+						if ( is_array( $badge_request ) ) {
+							$badge_request = array_pop( $badge_request );
+						}
+						if ( ! $badge_request ) {
+							wp_die( __( 'There does not seem to be a badge request associated to this assertion!', BF2_DATA['TextDomain'] ) );
+						}
+						$revoked = BadgrProvider::revoke_assertion( $_POST['assertion'], $_POST['reason'] );
+						if ( $revoked ) {
 							$_GET['notice'] = 'revoked';
+							$entity->revoked = true;
+							$revoking_user = \wp_get_current_user();
+							update_post_meta( $badge_request->ID, 'approver', $revoking_user->ID );
+							update_post_meta( $badge_request->ID, 'status', 'revoked' );
+							add_post_meta( $badge_request->ID, 'dates', array( 'revoked' => gmdate( 'Y-m-d H:i:s' ) ) );
+						} else {
+							$_GET['notice'] = 'revocation-error';
 						}
 					}
-					include BF2_ABSPATH . 'templates/admin/badgr/revoke-' . $this->slug . '.tpl.php';
+					if ( $entity->revoked ) {
+						include BF2_ABSPATH . 'templates/admin/badgr/edit-' . $this->slug . '.tpl.php';
+					} else {
+						include BF2_ABSPATH . 'templates/admin/badgr/revoke-' . $this->slug . '.tpl.php';
+					}
 				}
 				break;
 		}
