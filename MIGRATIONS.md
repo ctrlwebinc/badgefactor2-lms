@@ -145,7 +145,7 @@ Posts of type 'badges' without a 'badgr_badge_class_slug' meta will be migrated.
 
 ## Assertions
 
-Assertion migration is a one-step process where posts of type 'submission' are created as assertions in Badgr with a coresponding approved badge request posts.
+Assertion migration is a one-step process where posts of type 'submission' with status 'approved' are created as assertions in Badgr with a coresponding approved badge request posts.
 
 Badges classes ( and issuers ) must already be migrated before attempting to migrate assertions.
 
@@ -156,6 +156,17 @@ wp badgr migrate_badge_assertions
 ```
 
 Approved posts of type 'submission' without a 'badgr_assertion_slug' will be migrated. Failed assertion migrations are marked with a 'badgr_assertion_failed' meta.
+
+### Pending requests
+
+If you wish to migrate badges which haven't yet been awarded, run the command:
+
+```bash
+wp badgr migrate_pending_approvals
+```
+
+Posts of type 'submission' with status 'pending' will be migrated into Badge Requests with status 'requested'.
+
 
 ## Badge pages
 
