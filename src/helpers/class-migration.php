@@ -139,9 +139,10 @@ class Migration {
 						'badge'     => $assertion_post->badge_class_slug,
 						'type'      => 'gravityforms',
 						'recipient' => $assertion_post->recipient_id,
-						'status'    => 'approved',
+						'status'    => 'granted',
 						'dates'     => array(
 							'requested' => $issued_on,
+							'granted' => $issued_on,
 						),
 						'content'   => sprintf( "<a href='%s' target='_blank'>%s</a>", $evidence_url, __( 'Submitted Form', BF2_DATA['TextDomain'] ) ),
 					),
