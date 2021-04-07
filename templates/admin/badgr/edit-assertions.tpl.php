@@ -31,8 +31,18 @@
 		switch ( $_GET['notice'] ) {
 			case 'updated':
 				?>
-					<div class="updated settings-error notice is-dismissible"> 
+					<div class="updated settings-error notice is-dismissible">
 						<p><strong><?php echo __( 'Assertion updated.', BF2_DATA['TextDomain'] ); ?></strong></p>
+						<button type="button" class="notice-dismiss">
+							<span class="screen-reader-text"><?php echo __( 'Dismiss this message.', BF2_DATA['TextDomain'] ); ?></span>
+						</button>
+					</div>
+					<?php
+				break;
+			case 'error':
+				?>
+					<div class="updated settings-error error">
+						<p><strong><?php echo __( 'Invalid email or user does not exist.', BF2_DATA['TextDomain'] ); ?></strong></p>
 						<button type="button" class="notice-dismiss">
 							<span class="screen-reader-text"><?php echo __( 'Dismiss this message.', BF2_DATA['TextDomain'] ); ?></span>
 						</button>

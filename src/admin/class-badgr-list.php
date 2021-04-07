@@ -360,10 +360,7 @@ class Badgr_List extends \WP_List_Table {
 						$redirect_url = str_replace( '&action=new', '&notice=created', $_SERVER['REQUEST_URI'] );
 						$this->redirect( $redirect_url );
 					} else {
-						$entity = new stdClass;
-						foreach ( $_POST as $key => $value ) {
-							$entity->{$key} = $value;
-						}
+						$_GET['notice'] = 'error';
 					}
 				}
 				include BF2_ABSPATH . 'templates/admin/badgr/edit-' . $this->slug . '.tpl.php';

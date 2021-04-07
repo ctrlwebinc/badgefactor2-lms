@@ -28,6 +28,7 @@ namespace BadgeFactor2\Models;
 use BadgeFactor2\Badgr_Entity;
 use BadgeFactor2\BadgrProvider;
 use BadgeFactor2\BadgrUser;
+use BadgeFactor2\Post_Types\BadgeRequest;
 use BadgeFactor2\WP_Sortable;
 use WP_User;
 
@@ -187,7 +188,11 @@ class Assertion implements Badgr_Entity {
 	 */
 	public static function create( $values, $files = null ) {
 		if ( self::validate( $values, $files ) ) {
-			return BadgrProvider::add_assertion( $values['badge'], $values['recipient'] );
+			$assertion_slug = BadgrProvider::add_assertion( $values['badge'], $values['recipient'] );
+			if ( $assertion_slug ) {
+				$badge_request  = BadgeRequest::create_badge_request( $values['badge'], $values['recipient'] );
+				return $badge_request ? $assertion_slug : false;
+			}
 		}
 		return false;
 	}
@@ -278,6 +283,11 @@ class Assertion implements Badgr_Entity {
 		}
 		// Email format is ok.
 		if ( ! filter_var( $values['recipient'], FILTER_VALIDATE_EMAIL ) ) {
+			return false;
+		}
+
+		$user = get_user_by( 'email', $values['recipient'] );
+		if ( false === $user ) {
 			return false;
 		}
 
