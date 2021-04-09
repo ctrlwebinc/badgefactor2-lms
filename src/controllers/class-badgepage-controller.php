@@ -163,6 +163,27 @@ class BadgePage_Controller extends Page_Controller {
 			foreach ( $fields['courses'] as $i => $course ) {
 				$fields['courses'][ $i ]->is_accessible  = Course::is_accessible( $course->ID );
 				$fields['courses'][ $i ]->is_purchasable = Course::is_purchasable( $course->ID );
+
+				if ( class_exists( 'BadgeFactor2\BF2_WooCommerce' ) ) {
+
+					global $product;
+					$product = wc_get_product( get_post_meta( $course->ID, 'course_product', true ) );
+
+					$fields['courses'][ $i ]->price = wc_price( $product->get_price() );
+					$fields['courses'][ $i ]->cart_button = apply_filters(
+						'woocommerce_loop_add_to_cart_link',
+						sprintf(
+							'<a class="c-bf2__btn" href="%s" rel="nofollow" data-product_id="%s" data-product_sku="%s" class="button %s product_type_%s">%s</a>',
+							wc_get_cart_url() . esc_url( $product->add_to_cart_url() ),
+							esc_attr( $product->get_id() ),
+							esc_attr( $product->get_sku() ),
+							$product->is_purchasable() ? 'add_to_cart_button' : '',
+							esc_attr( $product->get_type() ),
+							esc_html( $product->add_to_cart_text() )
+						),
+						$product
+					);
+				}
 			}
 
 			$assertions = BadgrProvider::get_all_assertions_by_badge_class_slug( $fields['badge_entity_id'] );
@@ -173,10 +194,10 @@ class BadgePage_Controller extends Page_Controller {
 					$members[ $assertion->recipient->plaintextIdentity ] = $user;
 				}
 			}
-			usort( 
-				$members, 
-				function($a, $b) {
-					return strnatcasecmp($a->display_name, $b->display_name);
+			usort(
+				$members,
+				function( $a, $b ) {
+					return strnatcasecmp( $a->display_name, $b->display_name );
 				}
 			);
 			$fields['members'] = $members;
