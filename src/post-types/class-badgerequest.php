@@ -196,7 +196,7 @@ class BadgeRequest {
 				'badgr_administrator',
 				'administrator',
 			),
-			'delete_' . self::$slug_plural           => array(
+			'delete_' . self::$slug                  => array(
 				'badgr_administrator',
 				'administrator',
 			),
