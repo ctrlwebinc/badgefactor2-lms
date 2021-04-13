@@ -123,7 +123,7 @@ class BadgePage {
 				'capabilities'      => array(
 					'edit_post'          => 'edit_' . self::$slug,
 					'edit_posts'         => 'edit_' . self::$slug_plural,
-					'edit_other_posts'   => 'edit_other_' . self::$slug_plural,
+					'edit_others_posts'  => 'edit_others_' . self::$slug_plural,
 					'publish_posts'      => 'publish_' . self::$slug_plural,
 					'read_post'          => 'read_' . self::$slug,
 					'read_private_posts' => 'read_private_' . self::$slug_plural,
@@ -190,7 +190,7 @@ class BadgePage {
 				'badgr_administrator',
 				'administrator',
 			),
-			'edit_other_' . self::$slug_plural       => array(
+			'edit_others_' . self::$slug_plural      => array(
 				'badgr_administrator',
 				'administrator',
 			),

@@ -55,7 +55,7 @@ class Approver {
 				'edit_published_posts'          => true,
 				'edit_badge-request'            => true,
 				'edit_badge-requests'           => true,
-				'edit_other_badge-requests'     => true,
+				'edit_others_badge-requests'    => true,
 				'edit_published_badge-requests' => true,
 				'publish_badge-requests'        => true,
 				'edit_private_badge-requests'   => true,
