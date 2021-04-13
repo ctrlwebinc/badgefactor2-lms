@@ -797,6 +797,16 @@ class Migration {
 
 		WP_CLI::confirm( 'Are you sure you want to delete previous Badge Factor 1 data?', array() );
 
+		// Remove pages previously used as product pages
+		WP_CLI::log( 'Starting `course page` pages  deletion.' );
+		$count = $wpdb->query( 'DELETE p, m FROM wp_posts AS p JOIN wp_postmeta AS m ON p.ID = m.post_id WHERE p.post_type = "page" AND m.meta_key = "is_course_page";' );
+		WP_CLI::log( sprintf( ' %d `course page` pages deleted.', $count ) );
+
+		// Remove pages with badgeos metas
+		WP_CLI::log( 'Starting `badgeos` pages  deletion.' );
+		$count = $wpdb->query( 'DELETE p, m FROM wp_posts AS p JOIN wp_postmeta AS m ON p.ID = m.post_id WHERE p.post_type = "page" AND m.meta_key LIKE "%_badgeos%";' );
+		WP_CLI::log( sprintf( ' %d `badgeos` pages deleted.', $count ) );
+
 		// achievement-type. FIXME only delete achievement-type badges, rest is not BadgeFactor-specific.
 		WP_CLI::log( 'Starting `achievement-type` post type deletion.' );
 		$count = $wpdb->query( 'DELETE p, m FROM wp_posts AS p JOIN wp_postmeta AS m ON p.ID = m.post_id WHERE p.post_type = "achievement-type";' );
