@@ -705,16 +705,7 @@ class BadgeFactor2_Admin {
 			'gravityforms_view_entry_notes' => true,
 			'gravityforms_edit_entry_notes' => true,
 		);
-		foreach ( array( 'badge-pages', 'courses', 'badge-requests' ) as $post_type ) {
-			$capabilities[ "read_private_{$post_type}" ]     = true;
-			$capabilities[ "publish_{$post_type}" ]          = true;
-			$capabilities[ "edit_published_{$post_type}" ]   = true;
-			$capabilities[ "edit_private_{$post_type}" ]     = true;
-			$capabilities[ "edit_{$post_type}" ]             = true;
-			$capabilities[ "delete_published_{$post_type}" ] = true;
-			$capabilities[ "delete_private_{$post_type}" ]   = true;
-			$capabilities[ "delete_{$post_type}" ]           = true;
-		}
+		
 		add_role(
 			'badgr_administrator',
 			__( 'Badgr Administrator', BF2_DATA['TextDomain'] ),
@@ -722,7 +713,6 @@ class BadgeFactor2_Admin {
 		);
 		$administrator = get_role( 'administrator' );
 		$administrator->add_cap( 'manage_badgr', true );
-		$user = wp_get_current_user();
 	}
 
 
