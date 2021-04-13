@@ -120,6 +120,15 @@ class BadgePage {
 				'show_in_rest'      => false,
 				'taxonomies'        => array( 'badge-category' ),
 				'capability_type'   => array( self::$slug, self::$slug_plural ),
+				'capabilities'      => array(
+					'edit_post'          => 'edit_' . self::$slug,
+					'edit_posts'         => 'edit_' . self::$slug_plural,
+					'edit_other_posts'   => 'edit_other_' . self::$slug_plural,
+					'publish_posts'      => 'publish_' . self::$slug_plural,
+					'read_post'          => 'read_' . self::$slug,
+					'read_private_posts' => 'read_private_' . self::$slug_plural,
+					'delete_post'        => 'delete_' . self::$slug,
+				),
 				'map_meta_cap'      => true,
 			)
 		);
@@ -173,37 +182,52 @@ class BadgePage {
 	 */
 	public static function add_capabilities() {
 		$capabilities = array(
+			'edit_' . self::$slug                    => array(
+				'badgr_administrator',
+				'administrator',
+			),
 			'edit_' . self::$slug_plural             => array(
+				'badgr_administrator',
 				'administrator',
 			),
 			'edit_other_' . self::$slug_plural       => array(
+				'badgr_administrator',
 				'administrator',
 			),
 			'edit_published_' . self::$slug_plural   => array(
+				'badgr_administrator',
 				'administrator',
 			),
 			'publish_' . self::$slug_plural          => array(
+				'badgr_administrator',
 				'administrator',
 			),
 			'delete_' . self::$slug_plural           => array(
+				'badgr_administrator',
 				'administrator',
 			),
 			'delete_others_' . self::$slug_plural    => array(
+				'badgr_administrator',
 				'administrator',
 			),
 			'delete_published_' . self::$slug_plural => array(
+				'badgr_administrator',
 				'administrator',
 			),
 			'delete_private_' . self::$slug_plural   => array(
+				'badgr_administrator',
 				'administrator',
 			),
 			'edit_private_' . self::$slug_plural     => array(
+				'badgr_administrator',
 				'administrator',
 			),
 			'read_private_' . self::$slug_plural     => array(
+				'badgr_administrator',
 				'administrator',
 			),
 			'read_' . self::$slug                    => array(
+				'badgr_administrator',
 				'administrator',
 			),
 		);
