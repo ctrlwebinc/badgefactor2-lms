@@ -842,7 +842,7 @@ class BadgeFactor2_Admin {
 			$badge_entity_id = get_post_meta( $badge_request_id, 'badge', true );
 			$badge_page      = BadgePage::get_by_badgeclass_id( $badge_entity_id );
 			$approvers       = get_post_meta( $badge_page->ID, 'badge_request_approver', true );
-			if ( ! in_array( $approver->ID, $approvers, true ) && ! in_array( 'administrator', $approver->roles, true ) ) {
+			if ( ! in_array( $approver->ID, $approvers ) && ! in_array( 'administrator', $approver->roles, true ) ) {
 				$response['message'] = __( 'You are not an approver for this badge.', BF2_DATA['TextDomain'] );
 			} else {
 				update_post_meta( $badge_request_id, 'status', 'rejected' );
@@ -885,7 +885,7 @@ class BadgeFactor2_Admin {
 			$badge_entity_id = get_post_meta( $badge_request_id, 'badge', true );
 			$badge_page      = BadgePage::get_by_badgeclass_id( $badge_entity_id );
 			$approvers       = get_post_meta( $badge_page->ID, 'badge_request_approver', true );
-			if ( ! in_array( $approver->ID, $approvers, true ) && ! in_array( 'administrator', $approver->roles, true ) ) {
+			if ( ! in_array( $approver->ID, $approvers ) && ! in_array( 'administrator', $approver->roles, true ) ) {
 				$response['message'] = __( 'You are not an approver for this badge.', BF2_DATA['TextDomain'] );
 			} else {
 				update_post_meta( $badge_request_id, 'status', 'revision' );
