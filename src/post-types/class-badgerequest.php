@@ -120,8 +120,14 @@ class BadgeRequest {
 				'show_in_rest'      => false,
 				'capability_type'   => array( self::$slug, self::$slug_plural ),
 				'capabilities'      => array(
-					'create_posts' => 'do_not_allow',
-					'edit_post'    => 'edit_' . self::$slug,
+					'create_posts'       => 'do_not_allow',
+					'edit_post'          => 'edit_' . self::$slug,
+					'edit_posts'         => 'edit_' . self::$slug_plural,
+					'edit_others_posts'  => 'edit_others_' . self::$slug_plural,
+					'publish_posts'      => 'publish_' . self::$slug_plural,
+					'read_post'          => 'read_' . self::$slug,
+					'read_private_posts' => 'read_private_' . self::$slug_plural,
+					'delete_post'        => 'delete_' . self::$slug,
 				),
 				'map_meta_cap'      => false,
 			)
@@ -179,24 +185,29 @@ class BadgeRequest {
 			'edit_' . self::$slug                    => array(
 				'badgr_administrator',
 				'administrator',
+				'approver',
 			),
 			'edit_' . self::$slug_plural             => array(
 				'badgr_administrator',
 				'administrator',
+				'approver',
 			),
-			'edit_other_' . self::$slug_plural       => array(
+			'edit_others_' . self::$slug_plural      => array(
 				'badgr_administrator',
 				'administrator',
+				'approver',
 			),
 			'edit_published_' . self::$slug_plural   => array(
 				'badgr_administrator',
 				'administrator',
+				'approver',
 			),
 			'publish_' . self::$slug_plural          => array(
 				'badgr_administrator',
 				'administrator',
+				'approver',
 			),
-			'delete_' . self::$slug_plural           => array(
+			'delete_' . self::$slug                  => array(
 				'badgr_administrator',
 				'administrator',
 			),
@@ -215,21 +226,24 @@ class BadgeRequest {
 			'edit_private_' . self::$slug_plural     => array(
 				'badgr_administrator',
 				'administrator',
+				'approver',
 			),
 			'read_private_' . self::$slug_plural     => array(
 				'badgr_administrator',
 				'administrator',
+				'approver',
 			),
 			'read_' . self::$slug                    => array(
 				'badgr_administrator',
 				'administrator',
+				'approver',
 			),
 		);
 
 		foreach ( $capabilities as $capability => $roles ) {
 			foreach ( $roles as $role ) {
 				$role = get_role( $role );
-				if ($role) {
+				if ( $role ) {
 					$role->add_cap( $capability );
 				}
 			}

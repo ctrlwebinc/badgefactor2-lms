@@ -95,6 +95,7 @@ class BadgeFactor2_Admin {
 		add_action( 'admin_init', array( self::class, 'add_role_and_capabilities' ), 10 );
 		add_action( 'admin_menu', array( self::class, 'admin_menus' ) );
 		add_action( 'init', array( self::class, 'hook_flush_rewrite_rules' ), 100 );
+		add_action( 'load-edit.php', array( self::class, 'all_by_default_in_admin' ), 10 );
 		add_filter( 'pw_cmb2_field_select2_asset_path', array( self::class, 'pw_cmb2_field_select2_asset_path' ), 10 );
 	}
 
@@ -586,8 +587,8 @@ class BadgeFactor2_Admin {
 				'show_option_none' => false,
 				'default'          => 'local',
 				'options'          => array(
-					'local'    => __( 'Local Badgr', BF2_DATA['TextDomain'] ),
-					'custom'   => __( 'Custom', BF2_DATA['TextDomain'] ),
+					'local'  => __( 'Local Badgr', BF2_DATA['TextDomain'] ),
+					'custom' => __( 'Custom', BF2_DATA['TextDomain'] ),
 				),
 
 			)
@@ -628,9 +629,9 @@ class BadgeFactor2_Admin {
 
 		$badgr_settings->add_field(
 			array(
-				'name'      => __( 'Client Secret', BF2_DATA['TextDomain'] ),
-				'id'        => 'badgr_server_client_secret',
-				'type'      => 'text',
+				'name' => __( 'Client Secret', BF2_DATA['TextDomain'] ),
+				'id'   => 'badgr_server_client_secret',
+				'type' => 'text',
 			)
 		);
 
@@ -644,9 +645,9 @@ class BadgeFactor2_Admin {
 
 		$badgr_settings->add_field(
 			array(
-				'name' => __( 'Password Grant Client Secret', BF2_DATA['TextDomain'] ),
-				'id'   => 'badgr_server_password_grant_client_secret',
-				'type' => 'text',
+				'name'      => __( 'Password Grant Client Secret', BF2_DATA['TextDomain'] ),
+				'id'        => 'badgr_server_password_grant_client_secret',
+				'type'      => 'text',
 				'after_row' => function ( $field_args, $field ) {
 					include BF2_ABSPATH . 'templates/admin/badgr/server-status.tpl.php';
 					include BF2_ABSPATH . 'templates/admin/badgr/server-link.tpl.php';
@@ -693,27 +694,18 @@ class BadgeFactor2_Admin {
 	 */
 	public static function add_role_and_capabilities() {
 		$capabilities = array(
-			'read' => true,
-			'manage_badgr' => true,
-			'upload_files' => true,
-			'list_users' => true,
-			'edit_posts' => true,
-			'gravityforms_view_entries' => true,
-			'gravityforms_edit_entries' => true,
-			'gravityforms_delete_entries' => true,
+			'read'                          => true,
+			'manage_badgr'                  => true,
+			'upload_files'                  => true,
+			'list_users'                    => true,
+			'edit_posts'                    => true,
+			'gravityforms_view_entries'     => true,
+			'gravityforms_edit_entries'     => true,
+			'gravityforms_delete_entries'   => true,
 			'gravityforms_view_entry_notes' => true,
 			'gravityforms_edit_entry_notes' => true,
 		);
-		foreach ( array( 'badge-pages', 'courses', 'badge-requests' ) as $post_type ) {
-			$capabilities[ "read_private_{$post_type}" ]     = true;
-			$capabilities[ "publish_{$post_type}" ]          = true;
-			$capabilities[ "edit_published_{$post_type}" ]   = true;
-			$capabilities[ "edit_private_{$post_type}" ]     = true;
-			$capabilities[ "edit_{$post_type}" ]             = true;
-			$capabilities[ "delete_published_{$post_type}" ] = true;
-			$capabilities[ "delete_private_{$post_type}" ]   = true;
-			$capabilities[ "delete_{$post_type}" ]           = true;
-		}
+		
 		add_role(
 			'badgr_administrator',
 			__( 'Badgr Administrator', BF2_DATA['TextDomain'] ),
@@ -721,7 +713,6 @@ class BadgeFactor2_Admin {
 		);
 		$administrator = get_role( 'administrator' );
 		$administrator->add_cap( 'manage_badgr', true );
-		$user = wp_get_current_user();
 	}
 
 
@@ -794,7 +785,7 @@ class BadgeFactor2_Admin {
 			$badge_page = BadgePage::get_by_badgeclass_id( $badge_entity_id );
 			$approvers  = get_post_meta( $badge_page->ID, 'badge_request_approver', true );
 
-			if ( ! in_array( $approver->ID, $approvers, true ) && ! in_array( 'administrator', $approver->roles, true ) ) {
+			if ( ! in_array( $approver->ID, $approvers ) && ! in_array( 'administrator', $approver->roles, true ) ) {
 				$response['message'] = __( 'You are not an approver for this badge.', BF2_DATA['TextDomain'] );
 			} else {
 				update_post_meta( $badge_request_id, 'status', 'granted' );
@@ -841,7 +832,7 @@ class BadgeFactor2_Admin {
 			$badge_entity_id = get_post_meta( $badge_request_id, 'badge', true );
 			$badge_page      = BadgePage::get_by_badgeclass_id( $badge_entity_id );
 			$approvers       = get_post_meta( $badge_page->ID, 'badge_request_approver', true );
-			if ( ! in_array( $approver->ID, $approvers, true ) && ! in_array( 'administrator', $approver->roles, true ) ) {
+			if ( ! in_array( $approver->ID, $approvers ) && ! in_array( 'administrator', $approver->roles, true ) ) {
 				$response['message'] = __( 'You are not an approver for this badge.', BF2_DATA['TextDomain'] );
 			} else {
 				update_post_meta( $badge_request_id, 'status', 'rejected' );
@@ -884,7 +875,7 @@ class BadgeFactor2_Admin {
 			$badge_entity_id = get_post_meta( $badge_request_id, 'badge', true );
 			$badge_page      = BadgePage::get_by_badgeclass_id( $badge_entity_id );
 			$approvers       = get_post_meta( $badge_page->ID, 'badge_request_approver', true );
-			if ( ! in_array( $approver->ID, $approvers, true ) && ! in_array( 'administrator', $approver->roles, true ) ) {
+			if ( ! in_array( $approver->ID, $approvers ) && ! in_array( 'administrator', $approver->roles, true ) ) {
 				$response['message'] = __( 'You are not an approver for this badge.', BF2_DATA['TextDomain'] );
 			} else {
 				update_post_meta( $badge_request_id, 'status', 'revision' );
@@ -899,6 +890,26 @@ class BadgeFactor2_Admin {
 			}
 		}
 		wp_send_json( $response );
+	}
+
+
+	/**
+	 * Force admin display to list all badge requests, and not just 'mine'.
+	 *
+	 * @return void
+	 */
+	public static function all_by_default_in_admin() {
+		global $typenow;
+		// Not our post type, bail out.
+		if ( 'badge-request' !== $typenow ) {
+			return;
+		}
+
+		// Only the Mine tab fills this conditions, redirect.
+		if ( ! isset( $_GET['post_status'] ) && ! isset( $_GET['all_posts'] ) ) {
+			wp_redirect( admin_url( 'edit.php?post_type=badge-request&all_posts=1' ) );
+			exit();
+		}
 	}
 
 

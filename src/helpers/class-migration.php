@@ -498,7 +498,7 @@ class Migration {
 				}
 
 				// Create user and mark as created.
-				$temporary_password = Text::generate_random_password();
+				$temporary_password = BadgrUser::encrypt_decrypt( 'encrypt' , Text::generate_random_password() );
 				$slug               = BadgrProvider::add_user( $user_to_process->first_name, $user_to_process->last_name, $user_to_process->user_email, $temporary_password );
 
 				// If successful set badgr user state to 'created' and save slug and save previous password.
