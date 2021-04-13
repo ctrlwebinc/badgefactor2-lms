@@ -50,10 +50,17 @@ class Approver {
 			'approver',
 			__( 'Approver', BF2_DATA['TextDomain'] ),
 			array(
-				'read'                 => true,
-				'edit_posts'           => true,
-				'edit_published_posts' => true,
-				// FIXME List must be validated at a later development stage.
+				'read'                          => true,
+				'edit_posts'                    => true,
+				'edit_published_posts'          => true,
+				'edit_badge-request'            => true,
+				'edit_badge-requests'           => true,
+				'edit_other_badge-requests'     => true,
+				'edit_published_badge-requests' => true,
+				'publish_badge-requests'        => true,
+				'edit_private_badge-requests'   => true,
+				'read_private_badge-requests'   => true,
+				'read_badge-request'            => true,
 			)
 		);
 
