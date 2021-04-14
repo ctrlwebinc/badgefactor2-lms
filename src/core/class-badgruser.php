@@ -331,6 +331,12 @@ class BadgrUser {
 	 * @return void
 	 */
 	public static function new_user_registers( $user_id ) {
+		// Don't create a user for Badgr if metas already exist for user.
+		$badgr_user_state = get_user_meta( $user_id, self::$meta_key_for_user_state, true );
+		if ( 'to_be_created' ==  $badgr_user_state || 'created' == $badgr_user_state ) {
+			return;
+		}
+
 		// Set badgr user state to 'to_be_created'.
 		update_user_meta( $user_id, self::$meta_key_for_user_state, 'to_be_created' );
 
