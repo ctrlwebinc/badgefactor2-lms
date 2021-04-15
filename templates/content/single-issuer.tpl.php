@@ -34,7 +34,7 @@ global $bf2_template;
 ?>
 
 
-<div class="profile-organisation-intro"></div>
+<div class="profile-organisation-intro"><?php echo $bf2_template->fields['issuer']->description; ?></div>
 
 <section class="profile-members-badges">
 	<div class="profile-members-badges-heading"><span class="separator-prefix"></span><span class="separator-prefix"></span>
