@@ -252,7 +252,7 @@ class BadgrProvider {
 		$issuers = self::get_all_issuers();
 		if ( $issuers ) {
 			foreach ( $issuers as $issuer ) {
-				if ( strtolower( $name ) === strtolower( $issuer->name ) ) {
+				if ( strtolower( $name ) === sanitize_title( strtolower( $issuer->name ) ) ) {
 					return $issuer;
 				}
 			}

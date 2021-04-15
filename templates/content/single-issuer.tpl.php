@@ -43,7 +43,7 @@ global $bf2_template;
 			<!-- TODO fix page switcher -->
 			<select>
 			<?php foreach ( $bf2_template->fields['issuers'] as $issuer ) : ?>
-				<option <?php if (strtolower( $issuer->name ) === strtolower( $bf2_template->fields['issuer']->name ) ): ?>selected <?php endif; ?>value="<?php echo $issuer->name; ?>"><?php echo strtoupper( $issuer->name ); ?></option>
+				<option <?php if (strtolower( $issuer->name ) === strtolower( $bf2_template->fields['issuer']->name ) ) : ?>selected <?php endif; ?>value="<?php echo sanitize_title( $issuer->name ); ?>"><?php echo $issuer->name; ?></option>
 			<?php endforeach; ?>
 			</select>
 		</ul>
