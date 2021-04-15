@@ -392,6 +392,15 @@ class BadgeFactor2_Admin {
 
 		$badgefactor2_settings->add_field(
 			array(
+				'name'    => __( 'Issuers slug', BF2_DATA['TextDomain'] ),
+				'id'      => 'bf2_issuers_slug',
+				'type'    => 'text',
+				'default' => 'issuers',
+			)
+		);
+
+		$badgefactor2_settings->add_field(
+			array(
 				'name'    => __( 'Activate self-evaluation form?', BF2_DATA['TextDomain'] ),
 				'id'      => 'bf2_autoevaluation_form',
 				'type'    => 'checkbox',
@@ -705,7 +714,7 @@ class BadgeFactor2_Admin {
 			'gravityforms_view_entry_notes' => true,
 			'gravityforms_edit_entry_notes' => true,
 		);
-		
+
 		add_role(
 			'badgr_administrator',
 			__( 'Badgr Administrator', BF2_DATA['TextDomain'] ),

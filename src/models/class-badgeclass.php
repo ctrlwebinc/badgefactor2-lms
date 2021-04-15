@@ -110,6 +110,18 @@ class BadgeClass implements Badgr_Entity {
 
 
 	/**
+	 * Retrieve badge from Badgr provider.
+	 *
+	 * @param string $entity_id Issuer ID.
+	 *
+	 * @return array array of Issuers.
+	 */
+	public static function get_by_issuer( $entity_id ) {
+		return $entity_id ? BadgrProvider::get_all_badge_classes_by_issuer_slug( $entity_id ) : array();
+	}
+
+
+	/**
 	 * Create Badge through Badgr provider.
 	 *
 	 * @param array $values Associated array of values of badge to create.

@@ -190,6 +190,7 @@ class BadgeFactor2 {
 		require_once BF2_ABSPATH . 'src/controllers/class-assertion-controller.php';
 		require_once BF2_ABSPATH . 'src/controllers/class-badgepage-controller.php';
 		require_once BF2_ABSPATH . 'src/controllers/class-badgerequest-controller.php';
+		require_once BF2_ABSPATH . 'src/controllers/class-issuer-controller.php';
 
 		// Shortcodes.
 		require_once BF2_ABSPATH . 'src/public/shortcodes/class-badges.php';

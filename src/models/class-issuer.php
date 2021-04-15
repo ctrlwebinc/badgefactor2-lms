@@ -147,6 +147,18 @@ class Issuer implements Badgr_Entity {
 
 
 	/**
+	 * Retrieve issuer from Badgr provider.
+	 *
+	 * @param string $name Issuer name.
+	 *
+	 * @return WP_Post Virtual WP_Post representation of the entity.
+	 */
+	public static function get_by_name( $name ) {
+		return $name ? BadgrProvider::get_issuer_by_name( $name ) : null;
+	}
+
+
+	/**
 	 * Create Issuer through Badgr provider.
 	 *
 	 * @param array $values Associated array of values of issuer to create.

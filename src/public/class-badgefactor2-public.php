@@ -25,6 +25,7 @@
 namespace BadgeFactor2;
 
 use BadgeFactor2\Controllers\Assertion_Controller;
+use BadgeFactor2\Controllers\Issuer_Controller;
 use BadgeFactor2\Helpers\BuddyPress;
 use BadgeFactor2\Helpers\Template;
 
@@ -50,6 +51,8 @@ class BadgeFactor2_Public {
 			add_filter( 'template_include', array( self::class, 'member_template' ) );
 		}
 		add_filter( 'template_include', array( Assertion_Controller::class, 'single' ), 20 );
+		add_filter( 'template_include', array( Issuer_Controller::class, 'archive' ), 20 );
+		add_filter( 'template_include', array( Issuer_Controller::class, 'single' ), 20 );
 		add_filter( 'document_title_parts', array( Assertion_Controller::class, 'title' ), 20 );
 	}
 
@@ -60,6 +63,7 @@ class BadgeFactor2_Public {
 	 * @return void
 	 */
 	public static function add_rewrite_tags() {
+		add_rewrite_tag( '%issuers%', '([^&]+)' );
 		add_rewrite_tag( '%issuer%', '([^&]+)' );
 		add_rewrite_tag( '%form%', '([^&]+)' );
 		add_rewrite_tag( '%member%', '([^&]+)' );
@@ -91,11 +95,13 @@ class BadgeFactor2_Public {
 
 		$form_slug                = ! empty( $options['bf2_form_slug'] ) ? $options['bf2_form_slug'] : 'form';
 		$autoevaluation_form_slug = ! empty( $options['bf2_autoevaluation_form_slug'] ) ? $options['bf2_autoevaluation_form_slug'] : 'autoevaluation';
+		$issuers_slug             = ! empty( $options['bf2_issuers_slug'] ) ? $options['bf2_issuers_slug'] : 'issuers';
 
 		add_rewrite_rule( "badges/([^/]+)/{$form_slug}/?$", 'index.php?badge-page=$matches[1]&form=1', 'top' );
 		add_rewrite_rule( "badges/([^/]+)/{$autoevaluation_form_slug}/?$", 'index.php?badge-page=$matches[1]&form=1&autoevaluation=1', 'top' );
 		add_rewrite_rule( "{$members_page}/([^/]+)/badges/([^/]+)/?$", 'index.php?member=$matches[1]&badge=$matches[2]', 'top' );
-		add_rewrite_rule( 'issuers/([^/]+)/?$', 'index.php?issuer=$matches[1]', 'top' );
+		add_rewrite_rule( "{$issuers_slug}/?$", 'index.php?issuers=1', 'top' );
+		add_rewrite_rule( "{$issuers_slug}/([^/]+)/?$", 'index.php?issuer=$matches[1]', 'top' );
 	}
 
 
@@ -106,6 +112,7 @@ class BadgeFactor2_Public {
 	 * @return array
 	 */
 	public static function add_custom_query_vars( $vars ) {
+		$vars[] = 'issuers';
 		$vars[] = 'issuer';
 		$vars[] = 'form';
 		$vars[] = 'autoevaluation';

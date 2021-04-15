@@ -1,0 +1,1 @@
+<script>window.location.href = "./cadre21/";</script>

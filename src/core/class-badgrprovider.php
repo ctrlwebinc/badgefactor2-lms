@@ -241,6 +241,25 @@ class BadgrProvider {
 		return false;
 	}
 
+
+	/**
+	 * Get Badgr Issuer by name.
+	 *
+	 * @param string $name Issuer name.
+	 * @return boolean|object
+	 */
+	public static function get_issuer_by_name( $name ) {
+		$issuers = self::get_all_issuers();
+		if ( $issuers ) {
+			foreach ( $issuers as $issuer ) {
+				if ( strtolower( $name ) === strtolower( $issuer->name ) ) {
+					return $issuer;
+				}
+			}
+		}
+		return false;
+	}
+
 	/**
 	 * Get Badgr Issuer by entity ID / slug.
 	 *
