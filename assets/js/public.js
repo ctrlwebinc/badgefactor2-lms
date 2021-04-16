@@ -34,4 +34,10 @@ jQuery(document).ready(function ($) {
             $("body").css("cursor", "default");
         });
     });
+	if($("#bf2-profile-switcher").length) {
+		$("#bf2-profile-switcher").bind("change", function(){
+			window.location.href = $(this).data("issuers-url") + $(this).val();
+		});
+		
+	}
 });
