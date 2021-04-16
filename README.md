@@ -48,3 +48,7 @@ Uses the templating engine, but returns a generated PDF, and therefore does not 
 - `single-course.tpl.php`
 - `content/archive-course.tpl.php`
 - `content/single-course.tpl.php`
+
+## Dependancies
+
+Version 1.1.0 requires BuddyPress.

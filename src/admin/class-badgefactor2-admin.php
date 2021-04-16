@@ -951,7 +951,7 @@ class BadgeFactor2_Admin {
 		$email_body    = get_option( 'badge_request_approval_confirmation_email_body', __( 'Your request for the badge $badge$ has been approved. You can view it here: $link$.', BF2_DATA['TextDomain'] ) );
 		$email_body    = str_replace( '$badge$', $badge->name, $email_body );
 		// FIXME: link should look like /membres/slug_membre/badges/slug_badge/
-		$email_link    = get_site_url() . '#';
+		$email_link    = self::build_approved_email_link( $badge_page, $recipient_id );
 		$email_body    = str_replace( '$link$', '<a href="' . $email_link . '">' . $email_link . '</a>', $email_body );
 
 		return wp_mail( $recipient->user_email, $email_subject, $email_body, array( 'Content-Type: text/html; charset=UTF-8' ) );
@@ -986,8 +986,8 @@ class BadgeFactor2_Admin {
 		$email_body    = get_option( 'badge_request_rejection_confirmation_email_body', __( 'Your request for the badge $badge$ has been rejected. Here is the reason provided:<br/>$reason$<br/>You can resubmit a request here: $link$.', BF2_DATA['TextDomain'] ) );
 		$email_body    = str_replace( '$badge$', $badge->name, $email_body );
 		$email_body    = str_replace( '$reason$', $rejection_reason, $email_body );
-		// FIXME: build proper link
-		$email_link    = get_site_url() . '#';
+
+		$email_link    = self::build_rejection_email_link( $badge_page );
 		$email_body    = str_replace( '$link$', '<a href="' . $email_link . '">' . $email_link . '</a>', $email_body );
 
 		return wp_mail( $recipient->user_email, $email_subject, $email_body, array( 'Content-Type: text/html; charset=UTF-8' ) );
@@ -1219,5 +1219,19 @@ class BadgeFactor2_Admin {
 
 	private static function build_revision_email_link( $badge_page) {
 		return get_permalink($badge_page->ID) . self::get_form_slug();
+	}
+
+	private static function build_rejection_email_link( $badge_page) {
+		return get_permalink($badge_page->ID);
+	}
+
+	private static function build_approved_email_link( $badge_page, $recipient_id) {
+		$site_url = get_site_url();
+		$badge_page_url = get_permalink($badge_page->ID);
+		// TODO: remove dependency on Buddy Press function.
+		$user_page_url = bp_core_get_user_domain( $recipient_id );
+		$badge_page_relative_url = substr( $badge_page_url, strlen( $site_url) + 1);
+
+		return $user_page_url . $badge_page_relative_url;
 	}
 }
