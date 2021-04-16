@@ -59,6 +59,8 @@ class BadgeFactor2_Admin {
 	 */
 	public static $assertions;
 
+	private static $form_slug = null;
+
 
 	/**
 	 * Init Hooks.
@@ -948,6 +950,7 @@ class BadgeFactor2_Admin {
 		$email_subject = get_option( 'badge_request_approval_confirmation_email_subject', __( 'Your badge request has been approved !', BF2_DATA['TextDomain'] ) );
 		$email_body    = get_option( 'badge_request_approval_confirmation_email_body', __( 'Your request for the badge $badge$ has been approved. You can view it here: $link$.', BF2_DATA['TextDomain'] ) );
 		$email_body    = str_replace( '$badge$', $badge->name, $email_body );
+		// FIXME: link should look like /membres/slug_membre/badges/slug_badge/
 		$email_link    = get_site_url() . '#';
 		$email_body    = str_replace( '$link$', '<a href="' . $email_link . '">' . $email_link . '</a>', $email_body );
 
@@ -983,6 +986,7 @@ class BadgeFactor2_Admin {
 		$email_body    = get_option( 'badge_request_rejection_confirmation_email_body', __( 'Your request for the badge $badge$ has been rejected. Here is the reason provided:<br/>$reason$<br/>You can resubmit a request here: $link$.', BF2_DATA['TextDomain'] ) );
 		$email_body    = str_replace( '$badge$', $badge->name, $email_body );
 		$email_body    = str_replace( '$reason$', $rejection_reason, $email_body );
+		// FIXME: build proper link
 		$email_link    = get_site_url() . '#';
 		$email_body    = str_replace( '$link$', '<a href="' . $email_link . '">' . $email_link . '</a>', $email_body );
 
@@ -1018,7 +1022,8 @@ class BadgeFactor2_Admin {
 		$email_body    = get_option( 'badge_request_revision_confirmation_email_body', __( 'You must revise and resubmit your badge request for the badge $badge$. Here is the reason provided:<br/>$reason$<br/>You can revise your request here: $link$.', BF2_DATA['TextDomain'] ) );
 		$email_body    = str_replace( '$badge$', $badge->name, $email_body );
 		$email_body    = str_replace( '$reason$', $revision_reason, $email_body );
-		$email_link    = get_site_url() . '#';
+
+		$email_link    = self::build_revision_email_link( $badge_page );
 		$email_body    = str_replace( '$link$', '<a href="' . $email_link . '">' . $email_link . '</a>', $email_body );
 
 		return wp_mail( $recipient->user_email, $email_subject, $email_body, array( 'Content-Type: text/html; charset=UTF-8' ) );
@@ -1198,5 +1203,21 @@ class BadgeFactor2_Admin {
 		if ( 'badgefactor2_badgr_settings' === $option_page ) {
 			set_transient( 'bf2_flush_rewrite_rules', true );
 		}
+	}
+
+	private static function get_form_slug() {
+		if ( null === self::$form_slug) {
+			self::$form_slug = get_option('badgefactor2')['bf2_form_slug'];
+		}
+
+		return self::$form_slug;
+	}
+
+	private static function set_form_slug( $slug ) {
+		self::$form_slug = $slug;
+	}
+
+	private static function build_revision_email_link( $badge_page) {
+		return get_permalink($badge_page->ID) . self::get_form_slug();
 	}
 }
