@@ -21,6 +21,10 @@ jQuery(document).ready(function ($) {
         $(
             ".cmb-type-badge-request-rejection-reason, .cmb-type-badge-request-revision-reason"
         ).hide();
+    } else {
+        $(
+            ".cmb-type-badge-request-revision-reason"
+        ).hide();
     }
     function insertParam(key, value) {
         key = encodeURI(key);
@@ -70,28 +74,28 @@ jQuery(document).ready(function ($) {
         })
         .on("click", "button#approve-badge", function (e) {
             e.preventDefault();
-            $(".cmb-type-badge-request-rejection-reason").fadeOut(function () {
-                var button = $(this);
-                var action_buttons = $(this)
-                    .closest(".button-group")
-                    .find("button");
-                var form = $(this).closest("form");
-                if (confirm(button.data("confirm"))) {
-                    action_buttons.attr("disabled", true);
-                    var post_id = form.find("input#post_ID").val();
+            $(".cmb-type-badge-request-rejection-reason").fadeOut();
+            $(".cmb-type-badge-request-revision-reason").fadeOut();
+            var button = $(this);
+            var action_buttons = $(this)
+                .closest(".button-group")
+                .find("button");
+            var form = $(this).closest("form");
+            if (confirm(button.data("confirm"))) {
+                action_buttons.attr("disabled", true);
+                var post_id = form.find("input#post_ID").val();
 
-                    $.post(
-                        ajaxurl,
-                        {
-                            action: "approve_badge_request",
-                            badge_request_id: post_id
-                        },
-                        function (response) {
-                            location.reload();
-                        }
-                    );
-                }
-            });
+                $.post(
+                    ajaxurl,
+                    {
+                        action: "approve_badge_request",
+                        badge_request_id: post_id
+                    },
+                    function (response) {
+                        location.reload();
+                    }
+                );
+            }
 
             return false;
         })
