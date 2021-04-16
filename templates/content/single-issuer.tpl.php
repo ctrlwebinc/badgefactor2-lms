@@ -31,27 +31,32 @@
 use BadgeFactor2\Helpers\Template;
 
 global $bf2_template;
+
+global $wp;
+
+$issuer_url = home_url( $wp->request );
+$issuer_url_a = explode("/", $issuer_url);
+array_pop($issuer_url_a);  
+$issuer_url = implode("/", $issuer_url_a) . "/";
 ?>
 
 
 <div class="profile-organisation-intro"><?php echo $bf2_template->fields['issuer']->description; ?></div>
-
+ 
 <section class="profile-members-badges">
 	<div class="profile-members-badges-heading"><span class="separator-prefix"></span><span class="separator-prefix"></span>
 		<h3 class="profile-organisation-badges-heading-title">Badges disponibles<small class="profile-members-badges-available"><?php echo count( $bf2_template->fields['badges'] ); ?> disponible<?php echo count( $bf2_template->fields['badges'] ) >= 2 ? 's' : ''; ?></small></h3>
-		<ul class="profile-organisation-badges-cta">
-			<!-- TODO fix page switcher -->
-			<select>
+	
+		<select id="bf2-profile-switcher" data-issuers-url="<?php echo $issuer_url; ?>">
 			<?php foreach ( $bf2_template->fields['issuers'] as $issuer ) : ?>
 				<option <?php if (strtolower( $issuer->name ) === strtolower( $bf2_template->fields['issuer']->name ) ) : ?>selected <?php endif; ?>value="<?php echo sanitize_title( $issuer->name ); ?>"><?php echo $issuer->name; ?></option>
 			<?php endforeach; ?>
-			</select>
-		</ul>
+		</select>
 
 	</div>
 	<ul class="profile-members-badges-list">
 	<?php foreach ( $bf2_template->fields['badges'] as $badge): ?>
-		<li class="profile-members-badge">
+		<li class="profile-members-badge <?php echo $badge->issuer; ?>">
 			<figure class="profile-members-badge-figure">
 				<a href="<?php echo $badge->badge_page->permalink; ?>" class="profile-members-badge-link">
 					<img src="<?php echo $badge->image; ?>" class="profile-members-badge-image">
@@ -60,8 +65,9 @@ global $bf2_template;
 					<span class="profile-members-badge-description"><?php echo $badge->name; ?></span>
 				</figcaption>
 			</figure>
+			
 		</li>
 	<?php endforeach; ?>
 
-			</ul>
+	</ul>
 </section>
