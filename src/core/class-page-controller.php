@@ -80,7 +80,7 @@ class Page_Controller implements Page_Controller_Interface {
 		}
 		global $post;
 		// Added check for true === $default_template to allow template return for custom templates.
-		if ( true === $default_template || static::$post_type === $post->post_type ) {
+		if ( true === $default_template || ( isset( $post ) && static::$post_type === $post->post_type ) ) {
 			if ( $default_template ) {
 				status_header( 200 );
 				return $template;
