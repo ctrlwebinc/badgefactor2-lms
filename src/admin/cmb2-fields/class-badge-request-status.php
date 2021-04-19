@@ -59,7 +59,7 @@ class Badge_Request_Status {
 			'revision'  => __( 'Revision requested', BF2_DATA['TextDomain'] ),
 		);
 
-		echo sprintf( '<div style="margin-top: 6px">%s</div>', $badge_request_status );
+		echo sprintf( '<div style="margin-top: 6px">%s</div>', $options[ $badge_request_status ]);
 		echo sprintf( '<input type="hidden" name="status" value="%s">', $badge_request_status );
 		if ( 'requested' === $badge_request_status ) {
 			echo '<span class="button-group" style="margin-top: 1rem">';
