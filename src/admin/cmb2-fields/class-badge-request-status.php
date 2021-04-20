@@ -63,7 +63,7 @@ class Badge_Request_Status {
 		echo sprintf( '<input type="hidden" name="status" value="%s">', $badge_request_status );
 		if ( 'requested' === $badge_request_status ) {
 			echo '<span class="button-group" style="margin-top: 1rem">';
-			echo sprintf( '<button data-confirm="%s" class="button button-primary" id="approve-badge">%s</button>', __( 'Approve this badge request?', BF2_DATA['TextDomain'] ), __( 'Approve', BF2_DATA['TextDomain'] ) );
+			echo sprintf( '<button data-confirm="%s" class="button button-secondary" id="approve-badge">%s</button>', __( 'Approve this badge request?', BF2_DATA['TextDomain'] ), __( 'Approve', BF2_DATA['TextDomain'] ) );
 			echo sprintf( '<button class="button button-secondary" id="start-badge-revision">%s</button>', __( 'Request Revision', BF2_DATA['TextDomain'] ) );
 			echo sprintf( '<button class="button button-secondary" id="start-badge-rejection">%s</button>', __( 'Reject', BF2_DATA['TextDomain'] ) );
 			echo '</span>';
