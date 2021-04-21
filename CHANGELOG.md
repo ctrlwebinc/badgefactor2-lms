@@ -28,4 +28,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Badgr admin account linked to BF2 via code auth
 - Provides upstream workflow for badge issuance via Badge Requests
 - Limitation: no image transferred to Badgr for issuers
+- Supports svg, png, gif and jpeg image transfers to Badgr
 

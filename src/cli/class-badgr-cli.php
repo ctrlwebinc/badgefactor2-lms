@@ -144,8 +144,8 @@ class Badgr_CLI extends WP_CLI_Command {
 	 */
 	public function add_issuer( $args, $assoc_args ) {
 
-		if ( count( $args ) !== 4 ) {
-			WP_CLI::error( 'Usage: add_issuer name email url description' );
+		if ( !( count( $args ) == 4 || count( $args ) == 5 ) ) {
+			WP_CLI::error( 'Usage: add_issuer name email url description [image_filename]' );
 		}
 
 		if ( ! filter_var( $args[1], FILTER_VALIDATE_EMAIL ) ) {
@@ -160,7 +160,11 @@ class Badgr_CLI extends WP_CLI_Command {
 			WP_CLI::error( 'Please provide a description as the 4th argument' );
 		}
 
-		$slug = BadgrProvider::add_issuer( $args[0], $args[1], $args[2], $args[3] );
+		if ( count( $args ) == 5 && ( strlen( $args[4] ) < 1 || ! file_exists( $args[4] ) ) ) {
+			WP_CLI::error( 'Please provide the name of an existing image file as the 5th argument' );
+		}
+
+		$slug = BadgrProvider::add_issuer( $args[0], $args[1], $args[2], $args[3], $args[4] );
 
 		if ( $slug ) {
 			WP_CLI::success( 'Issuer added with slug ' . $slug );

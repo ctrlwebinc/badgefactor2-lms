@@ -311,12 +311,21 @@ class BadgrProvider {
 	 * @param string $description Issuer description.
 	 * @return string|boolean Issuer Entity ID or false on error.
 	 */
-	public static function add_issuer( $issuer_name, $email, $url, $description ) {
+	public static function add_issuer( $issuer_name, $email, $url, $description, $image = null ) {
+		$image_data = null;
+
+		if ( null !== $image ) {
+			$image_data = self::handle_image_data( $image );
+
+			if ( false === $image_data ) {
+				return false;
+			}
+		}
 
 		// Setup body.
 		$request_body = array(
 			'name'        => $issuer_name,
-			'image'       => null,
+			'image'       => $image_data,
 			'email'       => $email,
 			'url'         => $url,
 			'description' => $description,
