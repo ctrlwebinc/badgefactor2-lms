@@ -362,52 +362,6 @@ class BadgrClient {
 		return $this->state;
 	}
 
-	/**
-	 * Use wp_options to make and configure a client
-	 *
-	 * @return BadgrClient
-	 */
-	/*  public static function make_client_from_saved_options() {
-		// Make a client from the previous method of using options.
-
-		$options = get_option( 'badgefactor2_badgr_settings' );
-
-		$client_parameters = array(
-			'username'            => '',
-			'as_admin'            => true,
-			'badgr_server_flavor' => self::FLAVOR_LOCAL_R_JAMIROQUAI,
-		);
-
-	//      if ( isset( $options['badgr_server_public_url'] ) ) {
-	//          $client_parameters['badgr_server_public_url'] = $options['badgr_server_public_url'];
-	//      }
-
-		if ( isset( $options['badgr_server_client_id'] ) ) {
-			$client_parameters['client_id'] = $options['badgr_server_client_id'];
-		}
-
-		if ( isset( $options['badgr_server_client_secret'] ) ) {
-			$client_parameters['client_secret'] = $options['badgr_server_client_secret'];
-		}
-
-	//      if ( isset( $options['badgr_server_internal_url'] ) ) {
-	//          $client_parameters['badgr_server_internal_url'] = $options['badgr_server_internal_url'];
-	//      }
-
-		if ( isset( $options['badgr_server_access_token'] ) ) {
-			$client_parameters['badgr_server_access_token'] = $options['badgr_server_access_token'];
-		}
-
-		if ( isset( $options['badgr_server_refresh_token'] ) ) {
-			$client_parameters['badgr_server_refresh_token'] = $options['badgr_server_refresh_token'];
-		}
-
-		if ( isset( $options['badgr_server_token_expiration'] ) ) {
-			$client_parameters['badgr_server_token_expiration'] = $options['badgr_server_token_expiration'];
-		}
-
-		return self::make_instance( $client_parameters );
-	} */
 
 	/**
 	 * FIXME Undocumented function
