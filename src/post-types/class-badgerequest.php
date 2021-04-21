@@ -463,7 +463,7 @@ class BadgeRequest {
 	 *
 	 * @param int    $badge_id Badge ID.
 	 * @param string $recipient_email Recipient email.
-	 * @return bool
+	 * @return int|bool
 	 */
 	public static function create_badge_request( $badge_id, $recipient_email ) {
 
@@ -497,8 +497,9 @@ class BadgeRequest {
 			add_post_meta( $badge_request_id, 'dates', array( 'granted' => gmdate( 'Y-m-d H:i:s' ) ) );
 			update_post_meta( $badge_request_id, 'approver', $current_user->ID );
 			add_post_meta( $badge_request_id, 'content', $content );
+			do_action( 'badge_request_approval_confirmation_email', $badge_request_id );
 
-			return true;
+			return $badge_request_id;
 		}
 		return false;
 	}
