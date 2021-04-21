@@ -796,20 +796,16 @@ class BadgeFactor2_Admin {
 			$badge_page = BadgePage::get_by_badgeclass_id( $badge_entity_id );
 			$approvers  = get_post_meta( $badge_page->ID, 'badge_request_approver', true );
 
-			if ( ! in_array( $approver->ID, $approvers ) && ! in_array( 'administrator', $approver->roles, true ) ) {
-				$response['message'] = __( 'You are not an approver for this badge.', BF2_DATA['TextDomain'] );
-			} else {
-				update_post_meta( $badge_request_id, 'status', 'granted' );
-				update_post_meta( $badge_request_id, 'approver', $approver->ID );
-				add_post_meta( $badge_request_id, 'dates', array( 'granted' => gmdate( 'Y-m-d H:i:s' ) ) );
-				$assertion_entity_id = BadgrProvider::add_assertion( $badge_entity_id, $recipient->user_email );
-				add_post_meta( $badge_request_id, 'assertion', $assertion_entity_id );
-				do_action( 'badge_request_approval_confirmation_email', $badge_request_id );
-				$response = array(
-					'status'  => 'success',
-					'message' => __( 'The badge request has been approved!', BF2_DATA['TextDomain'] ),
-				);
-			}
+			update_post_meta( $badge_request_id, 'status', 'granted' );
+			update_post_meta( $badge_request_id, 'approver', $approver->ID );
+			add_post_meta( $badge_request_id, 'dates', array( 'granted' => gmdate( 'Y-m-d H:i:s' ) ) );
+			$assertion_entity_id = BadgrProvider::add_assertion( $badge_entity_id, $recipient->user_email );
+			add_post_meta( $badge_request_id, 'assertion', $assertion_entity_id );
+			do_action( 'badge_request_approval_confirmation_email', $badge_request_id );
+			$response = array(
+				'status'  => 'success',
+				'message' => __( 'The badge request has been approved!', BF2_DATA['TextDomain'] ),
+			);
 		}
 
 		if ( $ajax ) {
@@ -843,19 +839,16 @@ class BadgeFactor2_Admin {
 			$badge_entity_id = get_post_meta( $badge_request_id, 'badge', true );
 			$badge_page      = BadgePage::get_by_badgeclass_id( $badge_entity_id );
 			$approvers       = get_post_meta( $badge_page->ID, 'badge_request_approver', true );
-			if ( ! in_array( $approver->ID, $approvers ) && ! in_array( 'administrator', $approver->roles, true ) ) {
-				$response['message'] = __( 'You are not an approver for this badge.', BF2_DATA['TextDomain'] );
-			} else {
-				update_post_meta( $badge_request_id, 'status', 'rejected' );
-				update_post_meta( $badge_request_id, 'approver', $approver->ID );
-				update_post_meta( $badge_request_id, 'rejection_reason', $rejection_reason );
-				add_post_meta( $badge_request_id, 'dates', array( 'rejected' => gmdate( 'Y-m-d H:i:s' ) ) );
-				do_action( 'badge_request_rejection_confirmation_email', $badge_request_id );
-				$response = array(
-					'status'  => 'success',
-					'message' => __( 'The badge request has been rejected.', BF2_DATA['TextDomain'] ),
-				);
-			}
+
+			update_post_meta( $badge_request_id, 'status', 'rejected' );
+			update_post_meta( $badge_request_id, 'approver', $approver->ID );
+			update_post_meta( $badge_request_id, 'rejection_reason', $rejection_reason );
+			add_post_meta( $badge_request_id, 'dates', array( 'rejected' => gmdate( 'Y-m-d H:i:s' ) ) );
+			do_action( 'badge_request_rejection_confirmation_email', $badge_request_id );
+			$response = array(
+				'status'  => 'success',
+				'message' => __( 'The badge request has been rejected.', BF2_DATA['TextDomain'] ),
+			);
 		}
 		wp_send_json( $response );
 	}
@@ -886,19 +879,17 @@ class BadgeFactor2_Admin {
 			$badge_entity_id = get_post_meta( $badge_request_id, 'badge', true );
 			$badge_page      = BadgePage::get_by_badgeclass_id( $badge_entity_id );
 			$approvers       = get_post_meta( $badge_page->ID, 'badge_request_approver', true );
-			if ( ! in_array( $approver->ID, $approvers ) && ! in_array( 'administrator', $approver->roles, true ) ) {
-				$response['message'] = __( 'You are not an approver for this badge.', BF2_DATA['TextDomain'] );
-			} else {
-				update_post_meta( $badge_request_id, 'status', 'revision' );
-				update_post_meta( $badge_request_id, 'approver', $approver->ID );
-				update_post_meta( $badge_request_id, 'revision_reason', $revision_reason );
-				add_post_meta( $badge_request_id, 'dates', array( 'revision' => gmdate( 'Y-m-d H:i:s' ) ) );
-				do_action( 'badge_request_revision_confirmation_email', $badge_request_id );
-				$response = array(
-					'status'  => 'success',
-					'message' => __( 'The badge request has been sent back for revision.', BF2_DATA['TextDomain'] ),
-				);
-			}
+
+			update_post_meta( $badge_request_id, 'status', 'revision' );
+			update_post_meta( $badge_request_id, 'approver', $approver->ID );
+			update_post_meta( $badge_request_id, 'revision_reason', $revision_reason );
+			add_post_meta( $badge_request_id, 'dates', array( 'revision' => gmdate( 'Y-m-d H:i:s' ) ) );
+			do_action( 'badge_request_revision_confirmation_email', $badge_request_id );
+			$response = array(
+				'status'  => 'success',
+				'message' => __( 'The badge request has been sent back for revision.', BF2_DATA['TextDomain'] ),
+			);
+
 		}
 		wp_send_json( $response );
 	}
