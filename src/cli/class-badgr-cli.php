@@ -164,7 +164,7 @@ class Badgr_CLI extends WP_CLI_Command {
 			WP_CLI::error( 'Please provide the name of an existing image file as the 5th argument' );
 		}
 
-		$slug = BadgrProvider::add_issuer( $args[0], $args[1], $args[2], $args[3], $args[4] );
+		$slug = BadgrProvider::add_issuer( $args[0], $args[1], $args[2], $args[3], $args[4] ?? null );
 
 		if ( $slug ) {
 			WP_CLI::success( 'Issuer added with slug ' . $slug );
@@ -182,8 +182,8 @@ class Badgr_CLI extends WP_CLI_Command {
 	 * @return void
 	 */
 	public function update_issuer( $args, $assoc_args ) {
-		if ( ! ( count( $args ) === 4 || count( $args ) === 5 ) ) {
-			WP_CLI::error( 'Usage: update_issuer issuer_slug name email url [description]' );
+		if ( ! ( count( $args ) === 4 || count( $args ) === 5 ) || ( count( $assoc_args) == 1 && !isset($assoc_args['image']) ) ) {
+			WP_CLI::error( 'Usage: update_issuer issuer_slug name email url [description] [--image=image_filename]' );
 		}
 
 		if ( strlen( $args[0] ) < 1 ) {
@@ -206,7 +206,11 @@ class Badgr_CLI extends WP_CLI_Command {
 			WP_CLI::error( 'Please provide an issuer description as the 5th argument' );
 		}
 
-		if ( BadgrProvider::update_issuer( $args[0], $args[1], $args[2], $args[3], $args[4] ) ) {
+		if ( isset($assoc_args['image']) && ( strlen( $assoc_args['image'] ) < 1 || ! file_exists( $assoc_args['image'] ) ) ) {
+			WP_CLI::error( 'Please provide the name of an existing image file as the argument to --image=' );
+		}
+
+		if ( BadgrProvider::update_issuer( $args[0], $args[1], $args[2], $args[3], $args[4] ?? null, $assoc_args['image'] ?? null ) ) {
 			WP_CLI::success( 'Updated issuer with slug ' . $args[0] );
 		} else {
 			WP_CLI::error( 'Updating issuer failed.' );
