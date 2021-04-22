@@ -86,21 +86,35 @@ class Assertion_Controller extends Page_Controller {
 		if ( get_query_var( 'member' ) && get_query_var( 'badge' ) ) {
 			$fields         = array();
 			$fields['user'] = get_user_by( 'slug', get_query_var( 'member' ) );
-			foreach ( Assertion::all_for_user( $fields['user'] ) as $a ) {
-				$badgepage = BadgePage::get_by_badgeclass_id( $a->badgeclass );
-				if ( get_query_var( 'badge' ) === $badgepage->post_name ) {
-					$fields['badgepage'] = $badgepage;
-					$fields['assertion'] = $a;
-					break;
+			if ( ! $fields['user'] ) {
+				$is_404 = true;
+			} else {
+				foreach ( Assertion::all_for_user( $fields['user'] ) as $a ) {
+					$badgepage = BadgePage::get_by_badgeclass_id( $a->badgeclass );
+					if ( get_query_var( 'badge' ) === $badgepage->post_name ) {
+						$fields['badgepage'] = $badgepage;
+						$fields['assertion'] = $a;
+						break;
+					}
+				}
+				$fields['badge']  = BadgeClass::get( $fields['assertion']->badgeclass );
+				$fields['issuer'] = Issuer::get( $fields['assertion']->issuer );
+
+				if ( ! isset( $fields['assertion'] ) ) {
+					$is_404 = true;
+				} else {
+					global $bf2_template;
+					$bf2_template         = new stdClass();
+					$bf2_template->fields = $fields;
+					return parent::single( true );
 				}
 			}
-			$fields['badge']  = BadgeClass::get( $fields['assertion']->badgeclass );
-			$fields['issuer'] = Issuer::get( $fields['assertion']->issuer );
-
-			global $bf2_template;
-			$bf2_template         = new stdClass();
-			$bf2_template->fields = $fields;
-			return parent::single( true );
+			if ( $is_404 ) {
+				global $wp_query;
+				$wp_query->set_404();
+				status_header( 404 );
+				return get_query_template( '404' );
+			}
 		}
 		if ( $default_template ) {
 			return $default_template;
