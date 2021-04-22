@@ -97,12 +97,13 @@ class Assertion_Controller extends Page_Controller {
 						break;
 					}
 				}
-				$fields['badge']  = BadgeClass::get( $fields['assertion']->badgeclass );
-				$fields['issuer'] = Issuer::get( $fields['assertion']->issuer );
 
 				if ( ! isset( $fields['assertion'] ) ) {
 					$is_404 = true;
 				} else {
+					$fields['badge']  = BadgeClass::get( $fields['assertion']->badgeclass );
+					$fields['issuer'] = Issuer::get( $fields['assertion']->issuer );
+
 					global $bf2_template;
 					$bf2_template         = new stdClass();
 					$bf2_template->fields = $fields;
@@ -113,6 +114,9 @@ class Assertion_Controller extends Page_Controller {
 				global $wp_query;
 				$wp_query->set_404();
 				status_header( 404 );
+				nocache_headers();
+				set_query_var( 'member', false );
+				set_query_var( 'badge', false );
 				return get_query_template( '404' );
 			}
 		}
