@@ -112,8 +112,13 @@ class Badgr_Public_Urls {
 					}
 					exit;
 				case 'badge':
+					$badge_page = BadgePage::get_by_badgeclass_id( get_query_var( 'badgr_redirect_value' ) );
+					if ( $badge_page ) {
+						wp_redirect( get_permalink( $badge_page ) );
+					}
 					break;
 				case 'issuer':
+					$issuer = Issuer::get( get_query_var( 'badgr_redirect_value' ) );
 					break;
 			}
 		}
