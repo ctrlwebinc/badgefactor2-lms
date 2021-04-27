@@ -110,6 +110,7 @@ class BadgeFactor2 {
 
 		// Core.
 		BadgeFactor2_Public::init_hooks();
+		Badgr_Public_Urls::init_hooks();
 
 		// Shortcodes.
 		Shortcodes\Badges::init_hooks();
@@ -207,6 +208,7 @@ class BadgeFactor2 {
 
 		// Public (site) class.
 		require_once BF2_ABSPATH . 'src/public/class-badgefactor2-public.php';
+		require_once BF2_ABSPATH . 'src/public/class-badgr-public-urls.php';
 
 		// Admin / CLI classes.
 		if ( is_admin() || ( defined( 'WP_CLI' ) && WP_CLI ) ) {

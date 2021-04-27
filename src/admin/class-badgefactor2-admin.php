@@ -666,6 +666,15 @@ class BadgeFactor2_Admin {
 			)
 		);
 
+		$badgr_settings->add_field(
+			array(
+				'name'    => __( 'Public pages redirect slug', BF2_DATA['TextDomain'] ),
+				'id'      => 'badgr_server_public_pages_redirect_slug',
+				'type'    => 'text',
+				'default' => 'badgr',
+			)
+		);
+
 		/**
 		 * Registers Add-Ons page.
 		 */
@@ -942,8 +951,8 @@ class BadgeFactor2_Admin {
 		$email_body    = get_option( 'badge_request_approval_confirmation_email_body', __( 'Your request for the badge $badge$ has been approved. You can view it here: $link$.', BF2_DATA['TextDomain'] ) );
 		$email_body    = str_replace( '$badge$', $badge->name, $email_body );
 		// FIXME: link should look like /membres/slug_membre/badges/slug_badge/
-		$email_link    = self::build_approved_email_link( $badge_page, $recipient_id );
-		$email_body    = str_replace( '$link$', '<a href="' . $email_link . '">' . $email_link . '</a>', $email_body );
+		$email_link = self::build_approved_email_link( $badge_page, $recipient_id );
+		$email_body = str_replace( '$link$', '<a href="' . $email_link . '">' . $email_link . '</a>', $email_body );
 
 		return wp_mail( $recipient->user_email, $email_subject, $email_body, array( 'Content-Type: text/html; charset=UTF-8' ) );
 	}
@@ -978,8 +987,8 @@ class BadgeFactor2_Admin {
 		$email_body    = str_replace( '$badge$', $badge->name, $email_body );
 		$email_body    = str_replace( '$reason$', $rejection_reason, $email_body );
 
-		$email_link    = self::build_rejection_email_link( $badge_page );
-		$email_body    = str_replace( '$link$', '<a href="' . $email_link . '">' . $email_link . '</a>', $email_body );
+		$email_link = self::build_rejection_email_link( $badge_page );
+		$email_body = str_replace( '$link$', '<a href="' . $email_link . '">' . $email_link . '</a>', $email_body );
 
 		return wp_mail( $recipient->user_email, $email_subject, $email_body, array( 'Content-Type: text/html; charset=UTF-8' ) );
 	}
@@ -1014,8 +1023,8 @@ class BadgeFactor2_Admin {
 		$email_body    = str_replace( '$badge$', $badge->name, $email_body );
 		$email_body    = str_replace( '$reason$', $revision_reason, $email_body );
 
-		$email_link    = self::build_revision_email_link( $badge_page );
-		$email_body    = str_replace( '$link$', '<a href="' . $email_link . '">' . $email_link . '</a>', $email_body );
+		$email_link = self::build_revision_email_link( $badge_page );
+		$email_body = str_replace( '$link$', '<a href="' . $email_link . '">' . $email_link . '</a>', $email_body );
 
 		return wp_mail( $recipient->user_email, $email_subject, $email_body, array( 'Content-Type: text/html; charset=UTF-8' ) );
 	}
@@ -1197,8 +1206,8 @@ class BadgeFactor2_Admin {
 	}
 
 	private static function get_form_slug() {
-		if ( null === self::$form_slug) {
-			self::$form_slug = get_option('badgefactor2')['bf2_form_slug'];
+		if ( null === self::$form_slug ) {
+			self::$form_slug = get_option( 'badgefactor2' )['bf2_form_slug'];
 		}
 
 		return self::$form_slug;
@@ -1208,20 +1217,20 @@ class BadgeFactor2_Admin {
 		self::$form_slug = $slug;
 	}
 
-	private static function build_revision_email_link( $badge_page) {
-		return get_permalink($badge_page->ID) . self::get_form_slug();
+	private static function build_revision_email_link( $badge_page ) {
+		return get_permalink( $badge_page->ID ) . self::get_form_slug();
 	}
 
-	private static function build_rejection_email_link( $badge_page) {
-		return get_permalink($badge_page->ID);
+	private static function build_rejection_email_link( $badge_page ) {
+		return get_permalink( $badge_page->ID );
 	}
 
-	private static function build_approved_email_link( $badge_page, $recipient_id) {
-		$site_url = get_site_url();
-		$badge_page_url = get_permalink($badge_page->ID);
+	private static function build_approved_email_link( $badge_page, $recipient_id ) {
+		$site_url       = get_site_url();
+		$badge_page_url = get_permalink( $badge_page->ID );
 		// TODO: remove dependency on Buddy Press function.
-		$user_page_url = bp_core_get_user_domain( $recipient_id );
-		$badge_page_relative_url = substr( $badge_page_url, strlen( $site_url) + 1);
+		$user_page_url           = bp_core_get_user_domain( $recipient_id );
+		$badge_page_relative_url = substr( $badge_page_url, strlen( $site_url ) + 1 );
 
 		return $user_page_url . $badge_page_relative_url;
 	}
