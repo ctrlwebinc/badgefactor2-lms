@@ -108,17 +108,26 @@ class Badgr_Public_Urls {
 
 							$badge_page = BadgePage::get_by_badgeclass_id( $assertion->badgeclass );
 							wp_redirect( sprintf( '%s/badges/%s/', $member_page, $badge_page->post_name ) );
+							exit;
 						}
 					}
-					exit;
+					break;
 				case 'badge':
 					$badge_page = BadgePage::get_by_badgeclass_id( get_query_var( 'badgr_redirect_value' ) );
 					if ( $badge_page ) {
 						wp_redirect( get_permalink( $badge_page ) );
+						exit;
 					}
 					break;
 				case 'issuer':
 					$issuer = Issuer::get( get_query_var( 'badgr_redirect_value' ) );
+					if ( $issuer ) {
+						$options      = get_option( 'badgefactor2' );
+						$issuers_slug = ! empty( $options['bf2_issuers_slug'] ) ? $options['bf2_issuers_slug'] : 'issuers';
+						$issuer_name  = strtolower( $issuer->name );
+						wp_redirect( '%s/%s/%s', get_site_url(), $issuers_slug, $issuer_name );
+						exit;
+					}
 					break;
 			}
 		}
