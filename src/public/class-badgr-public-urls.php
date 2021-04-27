@@ -125,7 +125,7 @@ class Badgr_Public_Urls {
 						$options      = get_option( 'badgefactor2' );
 						$issuers_slug = ! empty( $options['bf2_issuers_slug'] ) ? $options['bf2_issuers_slug'] : 'issuers';
 						$issuer_name  = strtolower( $issuer->name );
-						wp_redirect( '%s/%s/%s', get_site_url(), $issuers_slug, $issuer_name );
+						wp_redirect( sprintf( '%s/%s/%s', get_site_url(), $issuers_slug, $issuer_name ) );
 						exit;
 					}
 					break;
