@@ -390,7 +390,7 @@ class BadgeRequest {
 					echo __( 'Rejected', BF2_DATA['TextDomain'] );
 					break;
 				default:
-					echo __( "Unknown", BF2_DATA['TextDomain'] );
+					echo __( 'Unknown', BF2_DATA['TextDomain'] );
 					break;
 			}
 		}
