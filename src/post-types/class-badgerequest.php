@@ -372,7 +372,27 @@ class BadgeRequest {
 	public static function admin_columns( $column, $post_id ) {
 		if ( 'status' === $column ) {
 			$status = get_post_meta( $post_id, 'status', true );
-			echo $status;
+			switch ( $status ) {
+				case 'revision':
+					echo __( 'Revision', BF2_DATA['TextDomain'] );
+					break;
+				case 'granted':
+				case 'approved':
+					echo __( 'Granted', BF2_DATA['TextDomain'] );
+					break;
+				case 'auto-approved':
+					echo __( 'Auto-Approved', BF2_DATA['TextDomain'] );
+					break;
+				case 'requested':
+					echo __( 'Requested', BF2_DATA['TextDomain'] );
+					break;
+				case 'rejected':
+					echo __( 'Rejected', BF2_DATA['TextDomain'] );
+					break;
+				default:
+					echo __( "Unknown", BF2_DATA['TextDomain'] );
+					break;
+			}
 		}
 	}
 
