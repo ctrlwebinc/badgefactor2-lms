@@ -499,13 +499,15 @@ class Migration {
 
 				// Create user and mark as created.
 				$temporary_password = BadgrUser::encrypt_decrypt( 'encrypt' , Text::generate_random_password() );
+				update_user_meta( $user_to_process->ID, 'badgr_password', $temporary_password );
+
 				$slug               = BadgrProvider::add_user( $user_to_process->first_name, $user_to_process->last_name, $user_to_process->user_email, $temporary_password );
 
 				// If successful set badgr user state to 'created' and save slug and save previous password.
 				if ( false !== $slug ) {
 					update_user_meta( $user_to_process->ID, BadgrUser::$meta_key_for_badgr_user_slug, $slug );
 					update_user_meta( $user_to_process->ID, BadgrUser::$meta_key_for_user_state, 'created' );
-					update_user_meta( $user_to_process->ID, 'badgr_password', $temporary_password );
+					//update_user_meta( $user_to_process->ID, 'badgr_password', $temporary_password );
 					$consecutive_failures = 0;
 				} else {
 					update_user_meta( $user_to_process->ID, BadgrUser::$meta_key_for_user_state, 'failed_to_create' );
