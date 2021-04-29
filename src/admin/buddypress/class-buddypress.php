@@ -65,7 +65,7 @@ class BuddyPress {
 		register_setting(
 			'buddypress',
 			'bp-bf2-display-badges-only',
-			array( 'type' => 'boolean' ),
+			array( 'type' => 'boolean' )
 		);
 
 	}
