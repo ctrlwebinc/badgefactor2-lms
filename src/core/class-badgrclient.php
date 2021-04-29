@@ -169,7 +169,7 @@ class BadgrClient {
 	 *
 	 * @var [type]
 	 */
-	private $password_grant_client_id     = null;
+	private $password_grant_client_id = null;
 
 	/**
 	 * FIXME Undocumented variable.
@@ -666,6 +666,7 @@ class BadgrClient {
 		add_filter( 'query_vars', array( self::class, 'hook_query_vars' ) );
 		add_action( 'template_redirect', array( self::class, 'hook_template_redirect' ) );
 		add_action( self::COMPLETE_USER_REGISTRATION_ACTION, array( self::class, 'hook_complete_user_registration' ) );
+		add_action( 'bf2_reset_password', array( self::class, 'reset_password' ) );
 	}
 
 	/**
@@ -703,22 +704,17 @@ class BadgrClient {
 
 					$user_email = $_GET['email'];
 
-					$userData = get_user_by( 'email', $user_email);
+					$userData = get_user_by( 'email', $user_email );
 
 					if ( false === $userData ) {
 						exit();
 					}
 
 					$user_login = $userData->user_login;
-					$key = get_password_reset_key( $userData );
+					$key        = get_password_reset_key( $userData );
 
-					$link = network_site_url("wp-login.php?action=rp&key=$key&login=" . rawurlencode($user_login), 'login');
-					header( 'Location: ' . $link );
-					exit();
+					do_action( 'bf2_reset_password', $user_login );
 				}
-
-				// TODO: Handle email confirm here
-				// Cadre21 >> procédure Cadre21.
 			}
 
 			header( 'Content-Type: text/plain' );
@@ -726,6 +722,19 @@ class BadgrClient {
 			echo ' Full uri: ' . $_SERVER['REQUEST_URI'];
 			exit();
 		}
+	}
+
+
+	/**
+	 * Reset password.
+	 *
+	 * @param string $user_login User login.
+	 * @return void
+	 */
+	public static function reset_password( $user_login ) {
+		$link = network_site_url( "wp-login.php?action=rp&key=$key&login=" . rawurlencode( $user_login ), 'login' );
+		header( 'Location: ' . $link );
+		exit();
 	}
 
 
@@ -903,7 +912,7 @@ class BadgrClient {
 
 		// Fetch configuration options.
 		self::refresh_config();
-		
+
 		// If it's a password client, try to get accesstoken.
 		if ( false === $this->as_admin && self::STATE_HAVE_ACCESS_TOKEN !== $this->state ) {
 			try {
