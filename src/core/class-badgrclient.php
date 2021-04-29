@@ -666,7 +666,6 @@ class BadgrClient {
 		add_filter( 'query_vars', array( self::class, 'hook_query_vars' ) );
 		add_action( 'template_redirect', array( self::class, 'hook_template_redirect' ) );
 		add_action( self::COMPLETE_USER_REGISTRATION_ACTION, array( self::class, 'hook_complete_user_registration' ) );
-		add_action( 'bf2_reset_password', array( self::class, 'reset_password' ) );
 	}
 
 	/**
@@ -701,19 +700,6 @@ class BadgrClient {
 
 				if ( isset( $_GET['email'] ) ) {
 					do_action( self::COMPLETE_USER_REGISTRATION_ACTION, $_GET['email'] );
-
-					$user_email = $_GET['email'];
-
-					$userData = get_user_by( 'email', $user_email );
-
-					if ( false === $userData ) {
-						exit();
-					}
-
-					$user_login = $userData->user_login;
-					$key        = get_password_reset_key( $userData );
-
-					do_action( 'bf2_reset_password', $user_login );
 				}
 			}
 
@@ -739,14 +725,20 @@ class BadgrClient {
 
 
 	/**
-	 * FIXME Undocumented function.
+	 * Complete user registration.
 	 *
 	 * @param string $user_email User Email.
 	 * @return void
 	 */
 	public static function hook_complete_user_registration( $user_email ) {
-		// TODO: Handle email confirm here.
-		echo 'about to recover password';
+		$user_data = get_user_by( 'email', $user_email );
+
+		if ( false === $user_data ) {
+			exit();
+		}
+
+		$user_login = $user_data->user_login;
+		$key        = get_password_reset_key( $user_data );
 	}
 
 
