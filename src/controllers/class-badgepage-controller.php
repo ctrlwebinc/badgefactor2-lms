@@ -94,9 +94,19 @@ class BadgePage_Controller extends Page_Controller {
 				);
 
 				foreach ( $fields['badgepages']['by_category'][ $term->slug ]['badgepages'] as $i => $badgepage ) {
-					$fields['badgepages']['by_category'][ $term->slug ]['badgepages'][ $i ]->badge_entity_id = get_post_meta( $badgepage->ID, 'badge', true );
-					$fields['badgepages']['by_category'][ $term->slug ]['badgepages'][ $i ]->badge           = BadgeClass::get( $fields['badgepages']['by_category'][ $term->slug ]['badgepages'][ $i ]->badge_entity_id );
-					$fields['badgepages']['by_category'][ $term->slug ]['badgepages'][ $i ]->issuer          = Issuer::get( $fields['badgepages']['by_category'][ $term->slug ]['badgepages'][ $i ]->badge->issuer );
+
+					$badge_entity_id = get_post_meta( $badgepage->ID, 'badge', true );
+					$badge           = BadgeClass::get( $badge_entity_id );
+
+					if ( $badge ) {
+						$fields['badgepages']['by_category'][ $term->slug ]['badgepages'][ $i ]->badge_entity_id = $badge_entity_id;
+						$fields['badgepages']['by_category'][ $term->slug ]['badgepages'][ $i ]->badge           = $badge;
+						$fields['badgepages']['by_category'][ $term->slug ]['badgepages'][ $i ]->issuer          = Issuer::get( $badge->issuer );
+					} else {
+						$fields['badgepages']['by_category'][ $term->slug ]['badgepages'][ $i ]->badge_entity_id = null;
+						$fields['badgepages']['by_category'][ $term->slug ]['badgepages'][ $i ]->badge           = null;
+						$fields['badgepages']['by_category'][ $term->slug ]['badgepages'][ $i ]->issuer          = null;
+					}
 				}
 			}
 
