@@ -107,6 +107,10 @@ class Assertion_Controller extends Page_Controller {
 					global $bf2_template;
 					$bf2_template         = new stdClass();
 					$bf2_template->fields = $fields;
+					global $wp_query;
+					$wp_query->is_404 = false;
+					status_header( 200 );
+					nocache_headers();
 					return parent::single( true );
 				}
 			}
