@@ -28,6 +28,7 @@
 
 namespace BadgeFactor2\Post_Types;
 
+use BadgeFactor2\BadgrProvider;
 use BadgeFactor2\Helpers\Template;
 use BadgeFactor2\Models\BadgeClass;
 
