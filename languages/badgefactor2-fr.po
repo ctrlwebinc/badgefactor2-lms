@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Badge Factor 2\n"
 "POT-Creation-Date: 2021-04-08 12:46-0400\n"
-"PO-Revision-Date: 2021-04-09 10:17-0400\n"
+"PO-Revision-Date: 2021-05-04 15:54-0400\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: fr\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Poedit 2.4.2\n"
+"X-Generator: Poedit 2.4.3\n"
 "X-Poedit-Basepath: ..\n"
 "X-Poedit-Flags-xgettext: --add-comments=translators:\n"
 "X-Poedit-WPHeader: badgefactor2.php\n"
@@ -1892,8 +1892,8 @@ msgstr "Une demande a déjà été soumise."
 
 #: templates/content/badge-request-form.tpl.php:48
 #: templates/content/basic-badge-request-form.tpl.php:34
-msgid "This badge has already been granted to you."
-msgstr "Ce badge vous a déjà été octroyé."
+msgid "This badge has been granted to you."
+msgstr "Ce badge vous a été décerné."
 
 #: templates/content/single-assertion.tpl.php:41
 msgid "badge issued to"

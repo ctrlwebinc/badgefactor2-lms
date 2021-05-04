@@ -31,6 +31,7 @@ use BadgeFactor2\Models\BadgeClass;
 use BadgeFactor2\Models\Issuer;
 use BadgeFactor2\Page_Controller;
 use BadgeFactor2\Post_Types\BadgePage;
+use BadgeFactor2\Post_Types\BadgeRequest;
 use stdClass;
 use WP_Post;
 
@@ -103,6 +104,7 @@ class Assertion_Controller extends Page_Controller {
 				} else {
 					$fields['badge']  = BadgeClass::get( $fields['assertion']->badgeclass );
 					$fields['issuer'] = Issuer::get( $fields['assertion']->issuer );
+					$fields['badge-request'] = BadgeRequest::get_for_badgeclass_for_user( $fields['assertion']->badgeclass, $fields['user']->ID );
 
 					global $bf2_template;
 					$bf2_template         = new stdClass();

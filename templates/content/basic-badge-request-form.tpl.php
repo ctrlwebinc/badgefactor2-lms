@@ -31,7 +31,7 @@ $current_user = wp_get_current_user();
 <?php if ( BadgeRequest::is_in_progress( $badge->entityId ) ) : ?>
 <p><?php echo __( 'A request has already been submitted.', BF2_DATA['TextDomain'] ); ?></p>
 <?php elseif ( BadgeRequest::is_granted( $badge->entityId ) ) : ?>
-<p><?php echo __( 'This badge has already been granted to you.', BF2_DATA['TextDomain'] ); ?></p>
+<p><?php echo __( 'This badge has been granted to you.', BF2_DATA['TextDomain'] ); ?></p>
 <?php else : ?>
 <form class="c-bf2__form" id="badge-request-form">
 	<label class="c-bf2__label" for="content"><?php echo __( 'Badge Request', BF2_DATA['TextDomain'] ); ?></label>

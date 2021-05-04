@@ -1860,7 +1860,7 @@ msgstr ""
 
 #: templates/content/badge-request-form.tpl.php:48
 #: templates/content/basic-badge-request-form.tpl.php:34
-msgid "This badge has already been granted to you."
+msgid "This badge has been granted to you."
 msgstr ""
 
 #: templates/content/single-assertion.tpl.php:41

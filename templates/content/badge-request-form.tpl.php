@@ -45,7 +45,7 @@ $form_type = get_post_meta( $bf2_template->fields['badge_page']->ID, 'badge_requ
 						if ( BadgeRequest::is_in_progress( $bf2_template->fields['badge']->entityId ) ) {
 							echo sprintf( '<p>%s</p>', __( 'A request has already been submitted.', BF2_DATA['TextDomain'] ) );
 						} elseif ( BadgeRequest::is_granted( $bf2_template->fields['badge']->entityId ) ) {
-							echo sprintf( '<p>%s</p>', __( 'This badge has already been granted to you.', BF2_DATA['TextDomain'] ) );
+							echo sprintf( '<p>%s</p>', __( 'This badge has been granted to you.', BF2_DATA['TextDomain'] ) );
 						} else {
 							$form_id = get_post_meta( $bf2_template->fields['badge_page']->ID, 'badge_request_form_id', true );
 							echo do_shortcode( sprintf( '[bf2-gf-badge-request gravityform_id="%s"]', $form_id ) );
