@@ -665,7 +665,6 @@ class BadgrClient {
 		add_action( 'init', array( self::class, 'init' ) );
 		add_filter( 'query_vars', array( self::class, 'hook_query_vars' ) );
 		add_action( 'template_redirect', array( self::class, 'hook_template_redirect' ) );
-		add_action( self::COMPLETE_USER_REGISTRATION_ACTION, array( self::class, 'hook_complete_user_registration' ) );
 	}
 
 	/**
@@ -698,9 +697,13 @@ class BadgrClient {
 			}
 			if ( 'emailConfirm' === $bf2 ) {
 
+				// TODO: check referer
+
 				if ( isset( $_GET['email'] ) ) {
 					do_action( self::COMPLETE_USER_REGISTRATION_ACTION, $_GET['email'] );
 				}
+
+				exit();
 			}
 
 			header( 'Content-Type: text/plain' );
@@ -709,38 +712,6 @@ class BadgrClient {
 			exit();
 		}
 	}
-
-
-	/**
-	 * Reset password.
-	 *
-	 * @param string $user_login User login.
-	 * @return void
-	 */
-	public static function reset_password( $user_login ) {
-		$link = network_site_url( "wp-login.php?action=rp&key=$key&login=" . rawurlencode( $user_login ), 'login' );
-		header( 'Location: ' . $link );
-		exit();
-	}
-
-
-	/**
-	 * Complete user registration.
-	 *
-	 * @param string $user_email User Email.
-	 * @return void
-	 */
-	public static function hook_complete_user_registration( $user_email ) {
-		$user_data = get_user_by( 'email', $user_email );
-
-		if ( false === $user_data ) {
-			exit();
-		}
-
-		$user_login = $user_data->user_login;
-		$key        = get_password_reset_key( $user_data );
-	}
-
 
 	/**
 	 * Determine is client is active
