@@ -876,7 +876,6 @@ class BadgePage {
 	 */
 	public static function is_auto_approved( $entity_id ) {
 		$badge_page = self::get_by_badgeclass_id( $entity_id );
-		var_dump($badge_page); die;
 		if ( $badge_page ) {
 			return 'auto-approved' === get_post_meta( $badge_page->ID, 'badge_approval_type', true );
 		}
