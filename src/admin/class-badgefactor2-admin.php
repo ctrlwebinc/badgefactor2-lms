@@ -79,7 +79,6 @@ class BadgeFactor2_Admin {
 
 		// BadgeFactor2 Hooks.
 		add_action( 'approve_badge_request', array( self::class, 'approve_badge_request' ), 10, 3 );
-		add_action( 'auto_approve_badge_request', array( self::class, 'auto_approve_badge_request' ), 10 );
 		add_action( 'badge_request_approval_confirmation_email', array( self::class, 'badge_request_approval_confirmation_email' ), 10 );
 		add_action( 'badge_request_rejection_confirmation_email', array( self::class, 'badge_request_rejection_confirmation_email' ), 10 );
 		add_action( 'badge_request_revision_confirmation_email', array( self::class, 'badge_request_revision_confirmation_email' ), 10 );
@@ -733,46 +732,6 @@ class BadgeFactor2_Admin {
 		);
 		$administrator = get_role( 'administrator' );
 		$administrator->add_cap( 'manage_badgr', true );
-	}
-
-
-	/**
-	 * Auto-approve badge request.
-	 *
-	 * @param int $badge_request_id Badge Request ID.
-	 * @return bool
-	 */
-	public static function auto_approve_badge_request( $badge_request_id ) {
-
-		$badge_request = get_post( $badge_request_id );
-		if ( ! $badge_request ) {
-			return false;
-		}
-
-		$badge_entity_id = get_post_meta( $badge_request_id, 'badge', true );
-		$badge_page      = BadgePage::get_by_badgeclass_id( $badge_entity_id );
-
-		if ( ! $badge_page ) {
-			return false;
-		}
-
-		$badge_approval_type = get_post_meta( $badge_page->ID, 'badge_approval_type', true );
-
-		if ( 'badge-request' === $badge_request->post_type &&
-			'auto-approved' === $badge_approval_type ) {
-
-			$recipient_id = get_post_meta( $badge_request_id, 'recipient', true );
-			$recipient    = get_user_by( 'ID', $recipient_id );
-
-			update_post_meta( $badge_request_id, 'status', 'granted' );
-			update_post_meta( $badge_request_id, 'approver', 'auto-approved' );
-			add_post_meta( $badge_request_id, 'dates', array( 'granted' => gmdate( 'Y-m-d H:i:s' ) ) );
-			$assertion_entity_id = BadgrProvider::add_assertion( $badge_entity_id, $recipient->user_email );
-			add_post_meta( $badge_request_id, 'assertion', $assertion_entity_id );
-
-			return true;
-		}
-		return false;
 	}
 
 

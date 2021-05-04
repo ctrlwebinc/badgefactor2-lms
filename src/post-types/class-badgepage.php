@@ -623,13 +623,6 @@ class BadgePage {
 			if ( 0 === $created_post_id ) {
 				return false;
 			}
-			// Add badgepage_badge meta with the associated badge class slug as its value.
-			// update_post_meta( $created_post_id, 'badge', $badge_post->badge_class_slug );
-			// Add badge_page_request_form_type with value basic.
-			// update_post_meta( $created_post_id, 'badge_page_request_form_type', 'basic' );
-			// Add criteria as the value of badge_criteria.
-			// update_post_meta( $created_post_id, 'badge_criteria', $badge_post->criteria );
-			// Add badge approval type under badge_approval_type as one of approved, auto-approved or given.
 			$approval_type = null;
 			switch ( $badge_post->earning_type ) {
 				case 'submission_auto':
@@ -883,6 +876,7 @@ class BadgePage {
 	 */
 	public static function is_auto_approved( $entity_id ) {
 		$badge_page = self::get_by_badgeclass_id( $entity_id );
+		var_dump($badge_page); die;
 		if ( $badge_page ) {
 			return 'auto-approved' === get_post_meta( $badge_page->ID, 'badge_approval_type', true );
 		}
