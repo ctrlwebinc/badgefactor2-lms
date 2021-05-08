@@ -311,12 +311,21 @@ class BadgrProvider {
 	 * @param string $description Issuer description.
 	 * @return string|boolean Issuer Entity ID or false on error.
 	 */
-	public static function add_issuer( $issuer_name, $email, $url, $description ) {
+	public static function add_issuer( $issuer_name, $email, $url, $description, $image = null ) {
+		$image_data = null;
+
+		if ( null !== $image ) {
+			$image_data = self::handle_image_data( $image );
+
+			if ( false === $image_data ) {
+				return false;
+			}
+		}
 
 		// Setup body.
 		$request_body = array(
 			'name'        => $issuer_name,
-			'image'       => null,
+			'image'       => $image_data,
 			'email'       => $email,
 			'url'         => $url,
 			'description' => $description,
@@ -349,7 +358,16 @@ class BadgrProvider {
 	 * @param string $description Issuer Description.
 	 * @return string|boolean Issuer Entity ID or false on error.
 	 */
-	public static function update_issuer( $issuer_slug, $issuer_name, $email, $url, $description = null ) {
+	public static function update_issuer( $issuer_slug, $issuer_name, $email, $url, $description = null, $image = null ) {
+		$image_data = null;
+
+		if ( null !== $image ) {
+			$image_data = self::handle_image_data( $image );
+
+			if ( false === $image_data ) {
+				return false;
+			}
+		}
 
 		// Setup body.
 		$request_body = array(
@@ -361,6 +379,11 @@ class BadgrProvider {
 		if ( null !== $description ) {
 			$request_body['description'] = $description;
 		}
+
+		if ( null !== $image ) {
+			$request_body['image'] = $image_data;
+		}
+
 
 		// Make PUT request to /v2/issuers/{entity_id}.
 		$response = self::get_client()->put( '/v2/issuers/' . $issuer_slug, $request_body );
