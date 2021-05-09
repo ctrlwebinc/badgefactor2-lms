@@ -235,7 +235,9 @@ class BadgePage {
 		foreach ( $capabilities as $capability => $roles ) {
 			foreach ( $roles as $role ) {
 				$role = get_role( $role );
-				$role->add_cap( $capability );
+				if ( $role ) {
+					$role->add_cap( $capability );
+				}
 			}
 		}
 
