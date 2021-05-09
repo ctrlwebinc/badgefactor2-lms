@@ -599,8 +599,8 @@ class BadgeRequest {
 					add_post_meta( $badge_request_id, 'content', $content );
 
 					$approvers_emails = BadgePage::get_approvers_emails_by_badgeclass_id( $badge_id );
-					$email_subject    = get_option( 'badge_request_approver_email_subject', __( 'A new badge request has been submitted.', BF2_DATA['TextDomain'] ) );
-					$email_body       = get_option( 'badge_request_approver_email_body', __( 'The badge $badge$ has been requested by user $user$. You can review it here: $link$.', BF2_DATA['TextDomain'] ) );
+					$email_subject    = cmb2_get_option( 'badgefactor2_emails_settings', 'badge_request_approver_email_subject', __( 'A new badge request has been submitted.', BF2_DATA['TextDomain'] ) );
+					$email_body       = cmb2_get_option( 'badgefactor2_emails_settings', 'badge_request_approver_email_body', __( 'The badge $badge$ has been requested by user $user$. You can review it here: $link$.', BF2_DATA['TextDomain'] ) );
 					$email_body       = str_replace( '$badge$', $badge->name, $email_body );
 					$user_link        = get_site_url() . '/wp-admin/user-edit.php?user_id=' . $current_user->ID;
 					$email_body       = str_replace( '$user$', '<a href="' . $user_link . '">' . $current_user->user_nicename . '</a>', $email_body );
