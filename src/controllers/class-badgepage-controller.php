@@ -179,8 +179,9 @@ class BadgePage_Controller extends Page_Controller {
 					global $product;
 					$product = wc_get_product( get_post_meta( $course->ID, 'course_product', true ) );
 
-					$fields['courses'][ $i ]->price = wc_price( $product->get_price() );
-					$fields['courses'][ $i ]->cart_button = apply_filters(
+					$fields['courses'][ $i ]->price             = wc_price( $product->get_price() );
+					$fields['courses'][ $i ]->unformatted_price = $product->get_price();
+					$fields['courses'][ $i ]->cart_button       = apply_filters(
 						'woocommerce_loop_add_to_cart_link',
 						sprintf(
 							'<a class="c-bf2__btn" href="%s" rel="nofollow" data-product_id="%s" data-product_sku="%s" class="button %s product_type_%s">%s</a>',
