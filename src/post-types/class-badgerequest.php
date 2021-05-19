@@ -517,8 +517,10 @@ class BadgeRequest {
 			update_post_meta( $badge_request_id, 'type', $type );
 			update_post_meta( $badge_request_id, 'recipient', $recipient->ID );
 			update_post_meta( $badge_request_id, 'status', 'granted' );
-			add_post_meta( $badge_request_id, 'dates', array( 'requested' => gmdate( 'Y-m-d H:i:s' ) ) );
-			add_post_meta( $badge_request_id, 'dates', array( 'granted' => gmdate( 'Y-m-d H:i:s' ) ) );
+			add_post_meta( $badge_request_id, 'dates', array(
+				'requested' => gmdate( 'Y-m-d H:i:s' ),
+				'granted' => gmdate( 'Y-m-d H:i:s' ) 
+			) );
 			update_post_meta( $badge_request_id, 'approver', $current_user->ID );
 			add_post_meta( $badge_request_id, 'content', $content );
 			do_action( 'badge_request_approval_confirmation_email', $badge_request_id );
