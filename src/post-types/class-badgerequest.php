@@ -667,7 +667,9 @@ class BadgeRequest {
 
 			update_post_meta( $badge_request_id, 'status', 'granted' );
 			update_post_meta( $badge_request_id, 'approver', 'auto-approved' );
-			add_post_meta( $badge_request_id, 'dates', array( 'granted' => gmdate( 'Y-m-d H:i:s' ) ) );
+			$dates = get_post_meta( $badge_request_id, 'dates', true );
+			$dates['granted'] = gmdate( 'Y-m-d H:i:s' );
+			update_post_meta( $badge_request_id, 'dates', $dates );
 			$assertion_entity_id = BadgrProvider::add_assertion( $badge_entity_id, $recipient->user_email );
 			add_post_meta( $badge_request_id, 'assertion', $assertion_entity_id );
 
