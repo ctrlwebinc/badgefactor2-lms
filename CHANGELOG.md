@@ -11,6 +11,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - optionnaly include an image when creating or updating issuers via provider or cli
 
+## 1.1.2
+
+- Fixed: free courses
+- Fixed: duplicated date metas on approvals
+- Fixed: empty description when creating issuers generates front-end message
+
 ## [1.1.0-rc]
 
 ### Added
