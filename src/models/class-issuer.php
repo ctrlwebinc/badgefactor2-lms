@@ -255,7 +255,7 @@ class Issuer implements Badgr_Entity {
 			return false;
 		}
 		// Not too small.
-		if ( strlen( $values['name'] ) < 1 || strlen( $values['email'] ) < 3 || strlen( $values['url'] ) < 8 ) {
+		if ( strlen( $values['name'] ) < 1 || strlen( $values['email'] ) < 3 || strlen( $values['url'] ) < 8 || strlen( $values['description'] ) < 1 ) {
 			return false;
 		}
 		// Email format is ok.
