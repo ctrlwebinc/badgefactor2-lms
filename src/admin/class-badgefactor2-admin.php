@@ -455,6 +455,15 @@ class BadgeFactor2_Admin {
 
 		$emails_settings->add_field(
 			array(
+				'name'    => __( 'Email from', BF2_DATA['TextDomain'] ),
+				'id'      => 'badge_request_approval_email_from',
+				'type'    => 'text',
+				'default' => get_option( 'admin_email' ),
+			)
+		);
+
+		$emails_settings->add_field(
+			array(
 				'name'    => __( 'Title', BF2_DATA['TextDomain'] ),
 				'id'      => 'badge_request_approver_email_subject',
 				'type'    => 'text',
@@ -492,6 +501,15 @@ class BadgeFactor2_Admin {
 
 		$emails_settings->add_field(
 			array(
+				'name'    => __( 'Email from', BF2_DATA['TextDomain'] ),
+				'id'      => 'badge_request_approval_confirmation_email_from',
+				'type'    => 'text',
+				'default' => get_option( 'admin_email' ),
+			)
+		);
+
+		$emails_settings->add_field(
+			array(
 				'name'    => __( 'Title', BF2_DATA['TextDomain'] ),
 				'id'      => 'badge_request_approval_confirmation_email_subject',
 				'type'    => 'text',
@@ -521,6 +539,15 @@ class BadgeFactor2_Admin {
 
 		$emails_settings->add_field(
 			array(
+				'name'    => __( 'Email from', BF2_DATA['TextDomain'] ),
+				'id'      => 'badge_request_rejection_confirmation_email_from',
+				'type'    => 'text',
+				'default' => get_option( 'admin_email' ),
+			)
+		);
+
+		$emails_settings->add_field(
+			array(
 				'name'    => __( 'Title', BF2_DATA['TextDomain'] ),
 				'id'      => 'badge_request_rejection_confirmation_email_subject',
 				'type'    => 'text',
@@ -545,6 +572,15 @@ class BadgeFactor2_Admin {
 				'desc' => __( 'This email will be sent to a user when a badge request needs to be revised.', BF2_DATA['TextDomain'] ),
 				'id'   => 'badge_request_revision_confirmation_email',
 				'type' => 'title',
+			)
+		);
+
+		$emails_settings->add_field(
+			array(
+				'name'    => __( 'Email from', BF2_DATA['TextDomain'] ),
+				'id'      => 'badge_request_revision_confirmation_email_from',
+				'type'    => 'text',
+				'default' => get_option( 'admin_email' ),
 			)
 		);
 
@@ -909,11 +945,21 @@ class BadgeFactor2_Admin {
 		$email_subject = cmb2_get_option( 'badgefactor2_emails_settings', 'badge_request_approval_confirmation_email_subject', __( 'Your badge request has been approved !', BF2_DATA['TextDomain'] ) );
 		$email_body    = cmb2_get_option( 'badgefactor2_emails_settings', 'badge_request_approval_confirmation_email_body', __( 'Your request for the badge $badge$ has been approved. You can view it here: $link$.', BF2_DATA['TextDomain'] ) );
 		$email_body    = str_replace( '$badge$', $badge->name, $email_body );
-		// FIXME: link should look like /membres/slug_membre/badges/slug_badge/
-		$email_link = self::build_approved_email_link( $badge_page, $recipient_id );
-		$email_body = str_replace( '$link$', '<a href="' . $email_link . '">' . $email_link . '</a>', $email_body );
+		$email_link    = self::build_approved_email_link( $badge_page, $recipient_id );
+		$email_body    = str_replace( '$link$', '<a href="' . $email_link . '">' . $email_link . '</a>', $email_body );
 
-		return wp_mail( $recipient->user_email, $email_subject, $email_body, array( 'Content-Type: text/html; charset=UTF-8' ) );
+		$sanitized_blog_name = str_replace( '"', "'", get_option( 'blog_name' ) );
+			$from_email          = cmb2_get_option( 'badgefactor2_emails_settings', 'badge_request_approval_confirmation_email_from', get_option( 'admin_email' ) );
+		$from                = sprintf( "From: \"%s\" <%s>;\n\r", $sanitized_blog_name, $from_email );
+
+		add_filter(
+			'wp_mail_from',
+			function( $original_email_address ) use ( $from_email ) {
+				return $from_email;
+			}
+		);
+
+		return wp_mail( $recipient->user_email, $email_subject, $email_body, array( 'Content-Type: text/html; charset=UTF-8', $from ) );
 	}
 
 
@@ -949,7 +995,18 @@ class BadgeFactor2_Admin {
 		$email_link = self::build_rejection_email_link( $badge_page );
 		$email_body = str_replace( '$link$', '<a href="' . $email_link . '">' . $email_link . '</a>', $email_body );
 
-		return wp_mail( $recipient->user_email, $email_subject, $email_body, array( 'Content-Type: text/html; charset=UTF-8' ) );
+		$sanitized_blog_name = str_replace( '"', "'", get_option( 'blog_name' ) );
+		$from_email          = cmb2_get_option( 'badgefactor2_emails_settings', 'badge_request_rejection_confirmation_email_from', get_option( 'admin_email' ) );
+		$from                = sprintf( "From: \"%s\" <%s>;\n\r", $sanitized_blog_name, $from_email );
+
+		add_filter(
+			'wp_mail_from',
+			function( $original_email_address ) use ( $from_email ) {
+				return $from_email;
+			}
+		);
+
+		return wp_mail( $recipient->user_email, $email_subject, $email_body, array( 'Content-Type: text/html; charset=UTF-8', $from ) );
 	}
 
 
@@ -985,7 +1042,18 @@ class BadgeFactor2_Admin {
 		$email_link = self::build_revision_email_link( $badge_page );
 		$email_body = str_replace( '$link$', '<a href="' . $email_link . '">' . $email_link . '</a>', $email_body );
 
-		return wp_mail( $recipient->user_email, $email_subject, $email_body, array( 'Content-Type: text/html; charset=UTF-8' ) );
+		$sanitized_blog_name = str_replace( '"', "'", get_option( 'blog_name' ) );
+		$from_email          = cmb2_get_option( 'badgefactor2_emails_settings', 'badge_request_revision_confirmation_email_from', get_option( 'admin_email' ) );
+		$from                = sprintf( "From: \"%s\" <%s>;\n\r", $sanitized_blog_name, $from_email );
+
+		add_filter(
+			'wp_mail_from',
+			function( $original_email_address ) use ( $from_email ) {
+				return $from_email;
+			}
+		);
+
+		return wp_mail( $recipient->user_email, $email_subject, $email_body, array( 'Content-Type: text/html; charset=UTF-8', $from ) );
 	}
 
 

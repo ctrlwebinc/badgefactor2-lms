@@ -609,6 +609,17 @@ class BadgeRequest {
 					$email_link       = get_site_url() . '/wp-admin/post.php?post=' . $badge_request_id . '&action=edit';
 					$email_body       = str_replace( '$link$', '<a href="' . $email_link . '">' . $email_link . '</a>', $email_body );
 
+					$sanitized_blog_name = str_replace( '"', "'", get_option( 'blog_name' ) );
+					$from_email          = cmb2_get_option( 'badgefactor2_emails_settings', 'badge_request_approver_email_from', get_option( 'admin_email' ) );
+					$from                = sprintf( "From: \"%s\" <%s>;\n\r", $sanitized_blog_name, $from_email );
+
+					add_filter(
+						'wp_mail_from',
+						function( $original_email_address ) use ( $from_email ) {
+							return $from_email;
+						}
+					);
+
 					if ( BadgePage::is_auto_approved( $badge_id ) ) {
 						do_action( 'auto_approve_badge_request', $badge_request_id );
 					}
@@ -620,7 +631,7 @@ class BadgeRequest {
 						)
 					) {
 						if ( $approvers_emails ) {
-							wp_mail( $approvers_emails, $email_subject, $email_body, array( 'Content-Type: text/html; charset=UTF-8' ) );
+							wp_mail( $approvers_emails, $email_subject, $email_body, array( 'Content-Type: text/html; charset=UTF-8', $from ) );
 						}
 					}
 
