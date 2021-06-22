@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+[1.2.0]
+
+- Added: email from fields for approval feedback
+- Changed: badgr password saved ahead of user creation
+
 ## 1.1.2
 
 - Fixed: free courses
