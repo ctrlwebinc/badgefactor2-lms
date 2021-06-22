@@ -342,16 +342,20 @@ class BadgrUser {
 		// Set badgr user state to 'to_be_created'.
 		update_user_meta( $user_id, self::$meta_key_for_user_state, 'to_be_created' );
 
-		// Add user to badgr.
+		// Prepare to add user to badgr.
 		$user_data          = get_userdata( $user_id );
 		$temporary_password = Text::generate_random_password();
-		$slug               = BadgrProvider::add_user( $user_data->first_name, $user_data->last_name, $user_data->user_email, $temporary_password );
+
+		// Proactively save the generated password
+		update_user_meta( $user_id, 'badgr_password', self::encrypt_decrypt( 'encrypt' , $temporary_password ) );
+
+		// Add user
+		$slug = BadgrProvider::add_user( $user_data->first_name, $user_data->last_name, $user_data->user_email, $temporary_password );
 
 		// If successful set badgr user state to 'created' and save slug and save previous password.
 		if ( false !== $slug ) {
 			update_user_meta( $user_id, self::$meta_key_for_badgr_user_slug, $slug );
 			update_user_meta( $user_id, self::$meta_key_for_user_state, 'created' );
-			update_user_meta( $user_id, 'badgr_password', self::encrypt_decrypt( 'encrypt' , $temporary_password ) );
 		}
 	}
 

@@ -7,9 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Added
+## [1.2.0]
 
-- optionnaly include an image when creating or updating issuers via provider or cli
+- Added: email from fields for approval feedback
+- Changed: badgr password saved ahead of user creation
+- Added: optionnaly include an image when creating or updating issuers via provider or cli
+
 
 ## 1.1.2
 
