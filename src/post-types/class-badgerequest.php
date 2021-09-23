@@ -489,7 +489,7 @@ class BadgeRequest {
 	 * @param string $recipient_email Recipient email.
 	 * @return int|bool
 	 */
-	public static function create_badge_request( $badge_id, $recipient_email ) {
+	public static function create_badge_request( $badge_id, $recipient_email, $assertion_slug = null ) {
 
 		$current_user = wp_get_current_user();
 		$recipient    = \get_user_by( 'email', $recipient_email );
@@ -523,6 +523,9 @@ class BadgeRequest {
 			) );
 			update_post_meta( $badge_request_id, 'approver', $current_user->ID );
 			add_post_meta( $badge_request_id, 'content', $content );
+			if ( null !== $assertion_slug) {
+				add_post_meta( $badge_request_id, 'assertion', $assertion_slug);
+			} 
 			do_action( 'badge_request_approval_confirmation_email', $badge_request_id );
 
 			return $badge_request_id;

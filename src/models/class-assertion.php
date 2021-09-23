@@ -190,7 +190,7 @@ class Assertion implements Badgr_Entity {
 		if ( self::validate( $values, $files ) ) {
 			$assertion_slug = BadgrProvider::add_assertion( $values['badge'], $values['recipient'] );
 			if ( $assertion_slug ) {
-				$badge_request_id = BadgeRequest::create_badge_request( $values['badge'], $values['recipient'] );
+				$badge_request_id = BadgeRequest::create_badge_request( $values['badge'], $values['recipient'], $assertion_slug );
 				return $badge_request_id ? $assertion_slug : false;
 			}
 		}
