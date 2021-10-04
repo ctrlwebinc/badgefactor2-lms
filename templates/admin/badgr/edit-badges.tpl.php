@@ -62,11 +62,18 @@
 						<label for="issuer_slug"><?php echo __( 'Issuer', BF2_DATA['TextDomain'] ); ?></label>
 					</div>
 					<div class="cmb-td">
+						<?php if ( 'new' === $_GET['action'] ) : ?>
 						<select name="issuer_slug" class="cmb2-select cmb2-select-medium" required>
 							<?php foreach ( BadgeFactor2\Models\Issuer::all( -1 ) as $issuer ) : ?>
 							<option value="<?php echo $issuer->entityId; ?>"><?php echo $issuer->name; ?></option>
 							<?php endforeach; ?>
 						</select>
+						<?php else : ?>
+							<select disabled style="color:#000;">
+								<?php $issuer = BadgeFactor2\Models\Issuer::get( $entity->issuer ); ?>
+								<option value="<?php echo $issuer->entityId; ?>"><?php echo $issuer->name; ?></option>
+							</select>
+						<?php endif; ?>
 					</div>
 				</div>
 				<div class="cmb-row cmb-type-textarea table-layout">	

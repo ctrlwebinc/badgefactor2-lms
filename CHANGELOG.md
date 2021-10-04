@@ -7,9 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## 1.2.2
+
+- Corrected: issuer displayed in badge page.
+
 ## 1.2.1
 
-- Corrected: badge requests for maaually emitted badges now includes assertion meta
+- Corrected: badge requests for manually emitted badges now includes assertion meta
 
 ## [1.2.0]
 
