@@ -9,7 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## 1.2.2
 
-- Corrected: issuer displayed in badge page.
+- Corrected: issuer displayed in badge page now the correct one, and field is disabled.
+- Corrected: badge-page and badge-request capabilities fix
 
 ## 1.2.1
 

@@ -121,13 +121,14 @@ class BadgePage {
 				'taxonomies'        => array( 'badge-category' ),
 				'capability_type'   => array( self::$slug, self::$slug_plural ),
 				'capabilities'      => array(
-					'edit_post'          => 'edit_' . self::$slug,
-					'edit_posts'         => 'edit_' . self::$slug_plural,
-					'edit_others_posts'  => 'edit_others_' . self::$slug_plural,
-					'publish_posts'      => 'publish_' . self::$slug_plural,
-					'read_post'          => 'read_' . self::$slug,
-					'read_private_posts' => 'read_private_' . self::$slug_plural,
-					'delete_post'        => 'delete_' . self::$slug,
+					'edit_post'           => 'edit_' . self::$slug,
+					'edit_posts'          => 'edit_' . self::$slug_plural,
+					'edit_others_posts'   => 'edit_others_' . self::$slug_plural,
+					'publish_posts'       => 'publish_' . self::$slug_plural,
+					'read_post'           => 'read_' . self::$slug,
+					'read_private_posts'  => 'read_private_' . self::$slug_plural,
+					'delete_posts'        => 'delete_' . self::$slug,
+					'delete_others_posts' => 'delete_' . self::$slug,
 				),
 				'map_meta_cap'      => true,
 			)
@@ -202,7 +203,7 @@ class BadgePage {
 				'badgr_administrator',
 				'administrator',
 			),
-			'delete_' . self::$slug                  => array(
+			'delete_' . self::$slug_plural           => array(
 				'badgr_administrator',
 				'administrator',
 			),
