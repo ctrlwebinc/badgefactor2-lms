@@ -61,6 +61,9 @@ trait WP_Sortable {
 						$b       = $b->$orderby;
 						$orderby = $internal_orderby[ $orderby ];
 					}
+					if ( ! isset( $a->$orderby ) || ! isset( $b->$orderby ) ) {
+						return 0;
+					}
 					return 'desc' === $order ? strcmp( $b->$orderby, $a->$orderby ) : strcmp( $a->$orderby, $b->$orderby ); }
 			);
 		}

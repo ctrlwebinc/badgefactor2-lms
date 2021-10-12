@@ -115,7 +115,7 @@ class Issuer implements Badgr_Entity {
 		$orderby = $_GET['orderby'] ?? 'createdAt';
 		$order   = $_GET['order'] ?? 'desc';
 
-		WP_Sortable::sort( $issuers );
+		static::sort( $issuers );
 
 		return $issuers;
 	}

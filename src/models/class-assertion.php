@@ -89,7 +89,7 @@ class Assertion implements Badgr_Entity {
 					)
 				);
 			}
-			WP_Sortable::sort( $assertions, array( 'recipient' => 'plaintextIdentity' ) );
+			static::sort( $assertions, array( 'recipient' => 'plaintextIdentity' ) );
 		}
 
 		return $assertions;
