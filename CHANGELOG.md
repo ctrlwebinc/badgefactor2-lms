@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## 1.2.3
+
+- Corrected: Remove sortable trait's side-effects in other plugins namely Registration
+
 ## 1.2.2
 
 - Corrected: issuer displayed in badge page now the correct one, and field is disabled.
