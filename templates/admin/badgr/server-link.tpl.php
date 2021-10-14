@@ -34,7 +34,6 @@
 		if ( null === $badgr_admin_user ) {
 			echo '<a href="' . $protected_url . '" class="button button-primary">Link admin account</a>';
 		} else {
-			echo $badgr_admin_user->get_wp_username();
 			echo '<a href="' . $protected_url . '" class="button button-primary">Reauthorize ' . $badgr_admin_user->get_wp_username() . '</a>';
 		}
 		?>

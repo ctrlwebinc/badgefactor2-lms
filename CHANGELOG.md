@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## 1.3.0
+
+- Added: now possible to manually trigger admin to badgr auth
+
 ## 1.2.4
 
 - Corrected: issuer url field in admin now of type url
