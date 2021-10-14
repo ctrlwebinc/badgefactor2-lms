@@ -72,7 +72,7 @@
 						<label for="url"><?php echo __( 'URL', BF2_DATA['TextDomain'] ); ?></label>
 					</div>
 					<div class="cmb-td">
-						<input type="text" name="url" class="cmb2-text-url cmb2-text-medium regular-text" required
+						<input type="url" name="url" class="cmb2-text-url cmb2-text-medium regular-text" required
 						<?php
 						if ( isset( $entity ) ) :
 							?>
