@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## 1.2.4
+
+- Corrected: issuer url field in admin now of type url
+
 ## 1.2.3
 
 - Corrected: Remove sortable trait's side-effects in other plugins namely Registration
