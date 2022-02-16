@@ -77,6 +77,7 @@
 						if ( isset( $entity ) ) :
 							?>
 							value="<?php echo $entity->url; ?>"<?php endif; ?>>
+							<p class="cmb2-metabox-description"><?php echo __( 'Format: scheme://URL:port', BF2_DATA['TextDomain']);  ?></p>
 					</div>
 				</div>
 				<div class="cmb-row cmb-type-textarea table-layout">	

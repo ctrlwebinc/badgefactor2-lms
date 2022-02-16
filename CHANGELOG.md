@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## 1.3.2
+
+- Fix: add description to issuer url field
+
 ## 1.3.1
 
 - Fix: tooltip in template
