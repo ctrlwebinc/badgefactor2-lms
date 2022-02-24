@@ -234,4 +234,12 @@ class BadgeFactor2_CLI extends WP_CLI_Command {
 		}
 		WP_CLI::success( AssertionPrivacy::has_privacy_flag( $args[0], $args[1]));
 	}
+
+	public function get_assertion_privacy_toggle_info ( $args, $assoc_args ) {
+		if ( count( $args ) !== 1 ) {
+			WP_CLI::error( 'Usage: get_assertion_privacy_toggle_info class_slug' );
+		}
+
+		WP_CLI::success( json_encode(AssertionPrivacy::generate_ajax_callback_parameters( $args[0] )));
+	}
 }

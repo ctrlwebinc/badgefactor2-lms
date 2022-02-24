@@ -30,6 +30,10 @@ class AssertionPrivacy {
 
     private static $table_name_suffix = 'bf2_assertion_privacy_flags';
 
+    private static $visibility_nonce_base = 'bf2-assertion-privacy-nonce';
+
+    public static $visibility_toggle_action = 'bf2_toggle_assertion_visibility';
+
     private static function get_table_name() {
         global $wpdb;
 
@@ -42,7 +46,7 @@ class AssertionPrivacy {
 	}
 
     public static function init() {
-
+        add_action('wp_ajax_' . self::$visibility_toggle_action, array( self::class, 'handle_ajax_visibility_toggle'));
     }
 
     public static function bf2_install() {
@@ -62,7 +66,7 @@ class AssertionPrivacy {
     $sql = "CREATE TABLE $table_name (
         badge_class_slug varchar(100) NOT NULL DEFAULT '',
         user_id bigint(20) unsigned NOT NULL,
-        PRIMARY KEY  (badge_class_slug),
+        KEY (badge_class_slug),
         UNIQUE KEY badge_class_slug_user_id_composite (badge_class_slug,user_id),
         KEY user_id (user_id)
       ) $charset_collate;";
@@ -83,5 +87,53 @@ class AssertionPrivacy {
         $flag_count = $wpdb->get_var( $wpdb->prepare($query,[$badge_slug,$user_id]) );
 
         return ( $flag_count > 0);
+    }
+
+    public static function toggle_privacy_flag( $badge_slug, $user_id) {
+        global $wpdb;
+
+        $current_state = self::has_privacy_flag( $badge_slug, $user_id);
+
+        if (true == $current_state) {
+            // Remove flag
+            $wpdb->delete(self::get_table_name(),['badge_class_slug' => $badge_slug, 'user_id' => $user_id], ['%s','%d']);
+        } else {
+            // Insert flag
+            $wpdb->insert(self::get_table_name(), ['badge_class_slug' => $badge_slug, 'user_id' => $user_id], ['%s','%d']);
+        }
+
+        return !$current_state;
+    }
+
+    public static function generate_ajax_callback_parameters( $badge_slug ) {
+        $callback_parameters['nonce'] = wp_create_nonce(self::$visibility_nonce_base);
+        $callback_parameters['link'] = admin_url('admin-ajax.php?action=' . self::$visibility_toggle_action . '&badge_slug=' . $badge_slug . '&nonce='. $callback_parameters['nonce']);
+
+        return compact('callback_parameters');
+    }
+
+    public static function handle_ajax_visibility_toggle() {
+/*         if ( !wp_verify_nonce( $_REQUEST['nonce'], self::$visibility_nonce_base)) {
+            exit('Nonce verification failed');
+        } */
+
+        if ( !isset($_REQUEST['badge_slug']) || '' == $_REQUEST['badge_slug']) {
+            exit('badge_slug missing');
+        }
+      
+         $new_state = self::toggle_privacy_flag( $_REQUEST['badge_slug'], get_current_user_id());
+
+         $result = ['has_privacy_flag' => $new_state];
+
+         if(!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
+            $result = json_encode($result);
+            echo $result;
+         }
+         else {
+            header("Location: ".$_SERVER["HTTP_REFERER"]);
+         }
+      
+         die();
+      
     }
 }
