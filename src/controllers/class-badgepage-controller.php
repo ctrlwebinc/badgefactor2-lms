@@ -34,6 +34,7 @@ use BadgeFactor2\Post_Types\BadgePage;
 use BadgeFactor2\Post_Types\Course;
 use stdClass;
 use WP_Query;
+use BadgeFactor2\AssertionPrivacy;
 
 /**
  * BadgePage Controller Class.
@@ -202,10 +203,13 @@ class BadgePage_Controller extends Page_Controller {
 				$assertions = array();
 			}
 			$members = array();
-			foreach ( $assertions as $assertion ) {
+ 			foreach ( $assertions as $assertion ) {
 				$user = get_user_by( 'email', $assertion->recipient->plaintextIdentity );
 				if ( $user ) {
-					$members[ $assertion->recipient->plaintextIdentity ] = $user;
+					// check badge visibility
+					if ( !AssertionPrivacy::has_privacy_flag( $fields['badge_entity_id'], $user->ID)) {
+						$members[ $assertion->recipient->plaintextIdentity ] = $user;
+					}
 				}
 			}
 			usort(
@@ -213,7 +217,7 @@ class BadgePage_Controller extends Page_Controller {
 				function( $a, $b ) {
 					return strnatcasecmp( $a->display_name, $b->display_name );
 				}
-			);
+			); 
 			$fields['members'] = $members;
 
 			global $bf2_template;
