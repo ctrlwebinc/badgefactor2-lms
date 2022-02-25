@@ -197,6 +197,7 @@ class BadgePage_Controller extends Page_Controller {
 					);
 				}
 			}
+wp_localize_script( 'bf2-privacy-js', 'bf2_privacy_probe', ['token' => 'token']);
 
 			$assertions = BadgrProvider::get_all_assertions_by_badge_class_slug( $fields['badge_entity_id'] );
 			if ( ! $assertions ) {
