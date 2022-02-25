@@ -42,7 +42,7 @@ class AssertionPrivacy {
 
     public static function init_hooks() {
 		add_action( 'init', array( self::class, 'init' ) );
-        add_action( 'init', array( self::class, 'enqueue_scripts') );
+        add_action( 'init', array( self::class, 'register_scripts') );
 	}
 
     public static function init() {
@@ -140,11 +140,12 @@ class AssertionPrivacy {
       
     }
 
-    public static function enqueue_scripts() {
+    public static function register_scripts() {
         wp_register_script( 'bf2-privacy-js', BF2_BASEURL . 'assets/js/privacy.js', array( 'jquery' ), BF2_DATA['Version'], true );
+    }
 
-        wp_localize_script( 'bf2-privacy-js', 'bf2_privacy_ajax', ['ajax_endpoint' => admin_url('admin-ajax.php'), 'ajax_action' => self::$visibility_toggle_action]);
-
+    public static function enqueue_scripts( $badge_class) {
+        wp_localize_script( 'bf2-privacy-js', 'bf2_privacy_ajax',[ self::generate_ajax_callback_parameters( $badge_class)]);
         wp_enqueue_script( 'bf2-privacy-js' );
     }
 }
