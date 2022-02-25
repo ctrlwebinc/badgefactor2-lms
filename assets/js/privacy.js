@@ -17,6 +17,16 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 jQuery(document).ready(function ($) {
-    console.log('privacy script loaded');
-    console.log(JSON.stringify(bf2_privacy_ajax));
+
+    jQuery.ajax({
+        type : "post",
+        dataType : "json",
+        url : bf2_privacy_ajax[0].callback_parameters.ajax_endpoint,
+        data : {
+            action: bf2_privacy_ajax[0].callback_parameters.ajax_action,
+            badge_slug: bf2_privacy_ajax[0].callback_parameters.badge_slug,
+            nonce: bf2_privacy_ajax[0].callback_parameters.nonce
+        },
+        success: function (response) { console.log(response);},
+        error: function ( error ) { console.log(error)}});
 });
