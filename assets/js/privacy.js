@@ -21,11 +21,11 @@ jQuery(document).ready(function ($) {
     jQuery.ajax({
         type : "post",
         dataType : "json",
-        url : bf2_privacy_ajax[0].callback_parameters.ajax_endpoint,
+        url : bf2_privacy_ajax.callback_parameters.ajax_endpoint,
         data : {
-            action: bf2_privacy_ajax[0].callback_parameters.ajax_action,
-            badge_slug: bf2_privacy_ajax[0].callback_parameters.badge_slug,
-            nonce: bf2_privacy_ajax[0].callback_parameters.nonce
+            action: bf2_privacy_ajax.callback_parameters.ajax_action,
+            badge_slug: bf2_privacy_ajax.callback_parameters.badge_slug,
+            nonce: bf2_privacy_ajax.callback_parameters.nonce
         },
         success: function (response) { console.log(response);},
         error: function ( error ) { console.log(error);}

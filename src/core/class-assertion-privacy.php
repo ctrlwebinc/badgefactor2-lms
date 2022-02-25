@@ -106,13 +106,13 @@ class AssertionPrivacy {
     }
 
     public static function generate_ajax_callback_parameters( $badge_slug ) {
-        $callback_parameters['nonce'] = wp_create_nonce(self::$visibility_nonce_base);
-        $callback_parameters['link'] = admin_url('admin-ajax.php?action=' . self::$visibility_toggle_action . '&badge_slug=' . $badge_slug . '&nonce='. $callback_parameters['nonce']);
-        $callback_parameters['ajax_endpoint'] = admin_url('admin-ajax.php');
-        $callback_parameters['ajax_action'] = self::$visibility_toggle_action;
-        $callback_parameter['badge_slug'] = $badge_slug;
-
-        return compact('callback_parameters');
+        return [
+            'nonce' => wp_create_nonce(self::$visibility_nonce_base),
+            'link' => admin_url('admin-ajax.php?action=' . self::$visibility_toggle_action . '&badge_slug=' . $badge_slug . '&nonce='. $callback_parameters['nonce']),
+            'ajax_endpoint' => admin_url('admin-ajax.php'),
+            'ajax_action' => self::$visibility_toggle_action,
+            'badge_slug' => $badge_slug,
+        ];
     }
 
     public static function handle_ajax_visibility_toggle() {//die(json_encode(check_ajax_referer($_REQUEST['nonce'], self::$visibility_nonce_base, false)));
@@ -145,7 +145,7 @@ class AssertionPrivacy {
     }
 
     public static function enqueue_scripts( $badge_class) {
-        wp_localize_script( 'bf2-privacy-js', 'bf2_privacy_ajax',[ self::generate_ajax_callback_parameters( $badge_class)]);
+        wp_localize_script( 'bf2-privacy-js', 'bf2_privacy_ajax',[ 'callback_parameters' => self::generate_ajax_callback_parameters( $badge_class)]);
         wp_enqueue_script( 'bf2-privacy-js' );
     }
 }
