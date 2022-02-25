@@ -106,9 +106,10 @@ class AssertionPrivacy {
     }
 
     public static function generate_ajax_callback_parameters( $badge_slug ) {
+        $nonce = wp_create_nonce(self::$visibility_nonce_base);
         return [
-            'nonce' => wp_create_nonce(self::$visibility_nonce_base),
-            'link' => admin_url('admin-ajax.php?action=' . self::$visibility_toggle_action . '&badge_slug=' . $badge_slug . '&nonce='. $callback_parameters['nonce']),
+            'nonce' => $nonce,
+            'link' => admin_url('admin-ajax.php?action=' . self::$visibility_toggle_action . '&badge_slug=' . $badge_slug . '&nonce='. $nonce),
             'ajax_endpoint' => admin_url('admin-ajax.php'),
             'ajax_action' => self::$visibility_toggle_action,
             'badge_slug' => $badge_slug,
