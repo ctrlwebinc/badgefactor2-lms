@@ -141,7 +141,7 @@ class AssertionPrivacy {
     }
 
     public static function register_scripts() {
-        wp_register_script( 'bf2-privacy-js', BF2_BASEURL . 'assets/js/privacy.js', array( 'jquery' ), BF2_DATA['Version'] . '1', true );
+        wp_register_script( 'bf2-privacy-js', BF2_BASEURL . 'assets/js/privacy.js', array( 'jquery' ), BF2_DATA['Version'], true );
     }
 
     public static function enqueue_scripts( $badge_class) {
