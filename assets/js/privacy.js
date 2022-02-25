@@ -28,5 +28,6 @@ jQuery(document).ready(function ($) {
             nonce: bf2_privacy_ajax[0].callback_parameters.nonce
         },
         success: function (response) { console.log(response);},
-        error: function ( error ) { console.log(error)}});
+        error: function ( error ) { console.log(error);}
+    });
 });
