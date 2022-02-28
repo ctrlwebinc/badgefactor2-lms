@@ -33,9 +33,9 @@ jQuery(document).ready(function ($) {
             success: function (response) {
                  console.log(response);
                  if ( response.has_privacy_flag == true ) {
-                    $('#assertion_visibility_toggle').removeclass('visibility-public');
+                    $('#assertion_visibility_toggle').removeClass('visibility-public');
                  } else {
-                    $('#assertion_visibility_toggle').addclass('visibility-public');
+                    $('#assertion_visibility_toggle').addClass('visibility-public');
                  }
                 },
             error: function ( error ) { console.log(error);}
