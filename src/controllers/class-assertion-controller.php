@@ -107,7 +107,7 @@ class Assertion_Controller extends Page_Controller {
 					$fields['issuer'] = Issuer::get( $fields['assertion']->issuer );
 					$fields['badge-request'] = BadgeRequest::get_for_badgeclass_for_user( $fields['assertion']->badgeclass, $fields['user']->ID );
 
-					AssertionPrivacy::enqueue_scripts($fields['badge']);
+					AssertionPrivacy::enqueue_scripts($fields['badge']->entityId);
 
 					global $bf2_template;
 					$bf2_template         = new stdClass();
