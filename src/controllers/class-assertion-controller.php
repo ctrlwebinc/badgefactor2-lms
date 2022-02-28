@@ -91,6 +91,7 @@ class Assertion_Controller extends Page_Controller {
 			if ( ! $fields['user'] ) {
 				$is_404 = true;
 			} else {
+				$fields['logged_in_user_s_own_page'] = $fields['user']->ID == get_current_user_id();
 				foreach ( Assertion::all_for_user( $fields['user'] ) as $a ) {
 					$badgepage = BadgePage::get_by_badgeclass_id( $a->badgeclass );
 					if ( get_query_var( 'badge' ) === $badgepage->post_name ) {
