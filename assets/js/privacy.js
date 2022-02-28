@@ -18,7 +18,9 @@
  */
 jQuery(document).ready(function ($) {
 
-    jQuery.ajax({
+    console.log('Privacy js loaded');
+
+/*     jQuery.ajax({
         type : "post",
         dataType : "json",
         url : bf2_privacy_ajax.callback_parameters.ajax_endpoint,
@@ -29,5 +31,5 @@ jQuery(document).ready(function ($) {
         },
         success: function (response) { console.log(response);},
         error: function ( error ) { console.log(error);}
-    });
+    }); */
 });

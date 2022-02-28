@@ -220,8 +220,6 @@ class BadgePage_Controller extends Page_Controller {
 			); 
 			$fields['members'] = $members;
 
-			AssertionPrivacy::enqueue_scripts($fields['badge_entity_id']);
-
 			global $bf2_template;
 			$bf2_template         = new stdClass();
 			$bf2_template->fields = $fields;
