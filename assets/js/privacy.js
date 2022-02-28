@@ -20,6 +20,28 @@ jQuery(document).ready(function ($) {
 
     console.log('Privacy js loaded');
 
+    $('#assertion_visibility_toggle').on('click', function (e) {
+        $.ajax({
+            type : "post",
+            dataType : "json",
+            url : bf2_privacy_ajax.callback_parameters.ajax_endpoint,
+            data : {
+                action: bf2_privacy_ajax.callback_parameters.ajax_action,
+                badge_slug: bf2_privacy_ajax.callback_parameters.badge_slug,
+                nonce: bf2_privacy_ajax.callback_parameters.nonce
+            },
+            success: function (response) {
+                 console.log(response);
+                 if ( response.has_privacy_flag == true ) {
+                    $('#assertion_visibility_toggle').removeclass('visibility-public');
+                 } else {
+                    $('#assertion_visibility_toggle').addclass('visibility-public');
+                 }
+                },
+            error: function ( error ) { console.log(error);}
+        });
+    })
+
 /*     jQuery.ajax({
         type : "post",
         dataType : "json",
