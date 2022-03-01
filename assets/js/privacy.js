@@ -21,6 +21,9 @@ jQuery(document).ready(function ($) {
     console.log('Privacy js loaded');
 
     $('#assertion_visibility_toggle').on('click', function (e) {
+
+        $('#assertion_visibility_toggle').addClass('visibility-updating');
+
         $.ajax({
             type : "post",
             dataType : "json",
@@ -31,11 +34,12 @@ jQuery(document).ready(function ($) {
                 nonce: bf2_privacy_ajax.callback_parameters.nonce
             },
             success: function (response) {
+                $('#assertion_visibility_toggle').removeClass('visibility-updating');
                  console.log(response);
                  if ( response.has_privacy_flag == true ) {
-                    $('#assertion_visibility_toggle').removeClass('visibility-public');
+                    $('#assertion_visibility_toggle').addClass('visibility-private');
                  } else {
-                    $('#assertion_visibility_toggle').addClass('visibility-public');
+                    $('#assertion_visibility_toggle').removeClass('visibility-private');
                  }
                 },
             error: function ( error ) { console.log(error);}
