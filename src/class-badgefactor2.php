@@ -111,6 +111,7 @@ class BadgeFactor2 {
 		// Core.
 		BadgeFactor2_Public::init_hooks();
 		Badgr_Public_Urls::init_hooks();
+		AssertionPrivacy::init_hooks();
 
 		// Shortcodes.
 		Shortcodes\Badges::init_hooks();
@@ -181,6 +182,8 @@ class BadgeFactor2 {
 		require_once BF2_ABSPATH . 'src/core/class-badgrprovider.php';
 		require_once BF2_ABSPATH . 'src/core/class-badgruser.php';
 		require_once BF2_ABSPATH . 'src/core/class-page-controller.php';
+		require_once BF2_ABSPATH . 'src/core/class-assertion-privacy.php';
+
 
 		// Models.
 		require_once BF2_ABSPATH . 'src/models/class-issuer.php';

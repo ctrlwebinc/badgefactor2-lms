@@ -26,6 +26,7 @@ use BadgeFactor2\Helpers\Migration;
 use WP_CLI;
 use WP_CLI_Command;
 use BadgeFactor2\Post_Types\BadgePage;
+use BadgeFactor2\AssertionPrivacy;
 
 WP_CLI::add_command( 'bf2', BadgeFactor2_CLI::class );
 
@@ -221,5 +222,24 @@ class BadgeFactor2_CLI extends WP_CLI_Command {
 			}
 		}
 		WP_CLI::success( 'reencrypted!' );
+	}
+
+	public function add_assertion_privacy_flags_table() {
+		AssertionPrivacy::create_table();
+	}
+
+	public function check_assertion_privacy_flag( $args, $assoc_args ) {
+		if ( count( $args ) !== 2 ) {
+			WP_CLI::error( 'Usage: check_assertion_privacy_flag class_slug user_id' );
+		}
+		WP_CLI::success( AssertionPrivacy::has_privacy_flag( $args[0], $args[1]));
+	}
+
+	public function get_assertion_privacy_toggle_info ( $args, $assoc_args ) {
+		if ( count( $args ) !== 1 ) {
+			WP_CLI::error( 'Usage: get_assertion_privacy_toggle_info class_slug' );
+		}
+
+		WP_CLI::success( json_encode(AssertionPrivacy::generate_ajax_callback_parameters( $args[0] )));
 	}
 }
