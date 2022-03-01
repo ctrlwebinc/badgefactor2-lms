@@ -110,6 +110,8 @@ class Assertion_Controller extends Page_Controller {
 
 					AssertionPrivacy::enqueue_scripts($fields['badge']->entityId);
 
+					$fields['assertion']->has_privacy_flag = AssertionPrivacy::has_privacy_flag( $fields['badge']->entityId, $fields['user']->ID);
+
 					global $bf2_template;
 					$bf2_template         = new stdClass();
 					$bf2_template->fields = $fields;
