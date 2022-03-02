@@ -89,6 +89,18 @@ class AssertionPrivacy {
         return ( $flag_count > 0);
     }
 
+    public static function get_user_privacy_flags( $user_id ) {
+        global $wpdb;
+
+        $table_name = self::get_table_name();
+
+        $query = "SELECT badge_class_slug FROM $table_name 
+        WHERE user_id = %d";
+
+        return $wpdb->get_col( $wpdb->prepare($query, [$user_id]));
+
+    }
+
     public static function toggle_privacy_flag( $badge_slug, $user_id) {
         global $wpdb;
 

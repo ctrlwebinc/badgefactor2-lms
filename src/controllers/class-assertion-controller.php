@@ -59,13 +59,34 @@ class Assertion_Controller extends Page_Controller {
 			global $bp;
 			$fields               = array();
 			$fields['user']       = get_user_by( 'id', $bp->displayed_user->id );
-			$fields['assertions'] = Assertion::all_for_user( $fields['user'] );
 
-			foreach ( $fields['assertions'] as $i => $assertion ) {
-				$fields['assertions'][ $i ]->badge     = BadgeClass::get( $assertion->badgeclass );
-				$fields['assertions'][ $i ]->issuer    = Issuer::get( $fields['assertions'][ $i ]->badge->issuer );
-				$fields['assertions'][ $i ]->badgepage = BadgePage::get_by_badgeclass_id( $assertion->badgeclass );
+			$unfiltered_assertions =  Assertion::all_for_user( $fields['user'] );
+
+			if ( $fields['user']->ID == get_current_user_id() ) {
+				$fields['assertions'] = $unfiltered_assertions;
+
+				foreach ( $fields['assertions'] as $i => $assertion ) {
+					$fields['assertions'][ $i ]->badge     = BadgeClass::get( $assertion->badgeclass );
+					$fields['assertions'][ $i ]->issuer    = Issuer::get( $fields['assertions'][ $i ]->badge->issuer );
+					$fields['assertions'][ $i ]->badgepage = BadgePage::get_by_badgeclass_id( $assertion->badgeclass );
+				}
+			} else {
+				$filtered_assertions_count = 0;
+				$user_privacy_flags = AssertionPrivacy::get_user_privacy_flags($fields['user']->ID);
+
+				foreach( $unfiltered_assertions as $assertion ) {
+					$badge_class = BadgeClass::get( $assertion->badgeclass );
+					if ( !in_array( $badge_class->entityId, $user_privacy_flags ) ) {
+						$fields['assertions'][ $filtered_assertions_count ] = $assertion;
+						$fields['assertions'][ $filtered_assertions_count ]->badge     = $badge_class;
+						$fields['assertions'][ $filtered_assertions_count ]->issuer    = Issuer::get( $fields['assertions'][ $filtered_assertions_count ]->badge->issuer );
+						$fields['assertions'][ $filtered_assertions_count ]->badgepage = BadgePage::get_by_badgeclass_id( $assertion->badgeclass );
+						$filtered_assertions_count++;
+					}
+				}
 			}
+
+
 			global $bf2_template;
 			$bf2_template         = new stdClass();
 			$bf2_template->fields = $fields;
