@@ -71,6 +71,7 @@ class Assertion_Controller extends Page_Controller {
 					$fields['assertions'][ $i ]->badgepage = BadgePage::get_by_badgeclass_id( $assertion->badgeclass );
 				}
 			} else {
+				$fields['assertions'] = [];
 				$filtered_assertions_count = 0;
 				$user_privacy_flags = AssertionPrivacy::get_user_privacy_flags($fields['user']->ID);
 
