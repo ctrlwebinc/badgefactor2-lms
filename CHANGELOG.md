@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- Added: loginRedirect from Badgr now redirects to home page
+
 
 ## 1.3.3
 
