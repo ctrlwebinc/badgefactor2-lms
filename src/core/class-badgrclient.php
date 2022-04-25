@@ -650,7 +650,7 @@ class BadgrClient {
 			'top'
 		);
 		add_rewrite_rule(
-			'bf2/(loginRedirect|signupSuccess|signupFailure|signup|uiConnectSuccess)(\S+)/?',
+			'bf2/(loginRedirect|signupSuccess|signupFailure|signup|uiConnectSuccess)(\S+)?',
 			'index.php?bf2=$matches[1]',
 			'top'
 		);
@@ -703,6 +703,10 @@ class BadgrClient {
 					do_action( self::COMPLETE_USER_REGISTRATION_ACTION, $_GET['email'] );
 				}
 
+				exit();
+			}
+			if ( 'loginRedirect' === $bf2 ) {
+				header( 'Location: ' . site_url('/' ) );
 				exit();
 			}
 
