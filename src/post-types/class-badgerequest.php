@@ -680,12 +680,18 @@ class BadgeRequest {
 			$recipient_id = get_post_meta( $badge_request_id, 'recipient', true );
 			$recipient    = get_user_by( 'ID', $recipient_id );
 
+			$evidence_content = get_post_meta( $badge_request_id, 'content', true );
+			$matches = array();
+			preg_match("/(<a href=')(.*)(' target=')/",$evidence_content, $matches);
+			$evidence_url = site_url( $matches[2]);
+
 			update_post_meta( $badge_request_id, 'status', 'granted' );
 			update_post_meta( $badge_request_id, 'approver', 'auto-approved' );
 			$dates = get_post_meta( $badge_request_id, 'dates', true );
 			$dates['granted'] = gmdate( 'Y-m-d H:i:s' );
 			update_post_meta( $badge_request_id, 'dates', $dates );
-			$assertion_entity_id = BadgrProvider::add_assertion( $badge_entity_id, $recipient->user_email );
+			
+			$assertion_entity_id = BadgrProvider::add_assertion( $badge_entity_id, $recipient->user_email, 'email', $dates['granted'], $evidence_url);
 			add_post_meta( $badge_request_id, 'assertion', $assertion_entity_id );
 
 			return true;
