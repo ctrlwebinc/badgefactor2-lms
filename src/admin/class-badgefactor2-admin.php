@@ -797,13 +797,19 @@ class BadgeFactor2_Admin {
 			$recipient_id    = get_post_meta( $badge_request_id, 'recipient', true );
 			$recipient       = get_user_by( 'ID', $recipient_id );
 
+			$evidence_content = get_post_meta( $badge_request_id, 'content', true );
+			$matches = array();
+			preg_match("/(<a href=')(.*)(' target=')/",$evidence_content, $matches);
+			$evidence_url = site_url( $matches[2]);
 			$badge_page = BadgePage::get_by_badgeclass_id( $badge_entity_id );
 			$approvers  = get_post_meta( $badge_page->ID, 'badge_request_approver', true );
 
 			update_post_meta( $badge_request_id, 'status', 'granted' );
 			update_post_meta( $badge_request_id, 'approver', $approver->ID );
-			add_post_meta( $badge_request_id, 'dates', array( 'granted' => gmdate( 'Y-m-d H:i:s' ) ) );
-			$assertion_entity_id = BadgrProvider::add_assertion( $badge_entity_id, $recipient->user_email );
+			$issued_on = gmdate( 'Y-m-d H:i:s' );
+			add_post_meta( $badge_request_id, 'dates', array( 'granted' =>  $issued_on ) );
+			
+			$assertion_entity_id = BadgrProvider::add_assertion( $badge_entity_id, $recipient->user_email, 'email', $issued_on, $evidence_url);
 			add_post_meta( $badge_request_id, 'assertion', $assertion_entity_id );
 			do_action( 'badge_request_approval_confirmation_email', $badge_request_id );
 			$response = array(
