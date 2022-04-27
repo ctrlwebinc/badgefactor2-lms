@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## 1.4.0
+
 - Added: loginRedirect from Badgr now redirects to home page
 - Corrected: evidence url now included when adding an assertion through badge requests
 
