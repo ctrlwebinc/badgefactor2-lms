@@ -451,8 +451,8 @@ class Badgr_CLI extends WP_CLI_Command {
 	 * @return void
 	 */
 	public function add_assertion( $args, $assoc_args ) {
-		if ( count( $args ) !== 2 ) {
-			WP_CLI::error( 'Usage: add_assertion badge_class_slug recipient_identity' );
+		if ( count( $args ) !== 2 || 3 < count($assoc_args) ) {
+			WP_CLI::error( 'Usage: add_assertion badge_class_slug recipient_identity [--issued_on={date} --evidence_url={url} --evidence_narrative="{narrative}"]' );
 		}
 
 		if ( strlen( $args[0] ) < 1 ) {
@@ -463,9 +463,25 @@ class Badgr_CLI extends WP_CLI_Command {
 			WP_CLI::error( 'Please provide a recipient identity (email) as the 2nd argument' );
 		}
 
-		// 	public static function add_assertion( $badge_class_slug, $recipient_identifier, $recipient_type = 'email', $issued_on = null, $evidence_url = null, $evidence_narrative = null ) {
+		if ( isset($assoc_args['issued_on']) && strlen($assoc_args['issued_on']) > 0 ) {
+			$issued_on = $assoc_args['issued_on'];
+		} else {
+			$issued_on = null;
+		}
 
-		$slug = BadgrProvider::add_assertion( $args[0], $args[1], 'email', '1977-04-22T06:00:00Z' );
+		if ( isset($assoc_args['evidence_url']) && strlen($assoc_args['evidence_url']) > 0 ) {
+			$evidence_url = $assoc_args['evidence_url'];
+		} else {
+			$evidence_url = null;
+		}
+
+		if ( isset($assoc_args['evidence_narrative']) && strlen($assoc_args['evidence_narrative']) > 0 ) {
+			$evidence_narrative = $assoc_args['evidence_narrative'];
+		} else {
+			$evidence_narrative = null;
+		}
+
+		$slug = BadgrProvider::add_assertion( $args[0], $args[1], 'email', $issued_on, $evidence_url, $evidence_narrative );
 
 		if ( $slug ) {
 			WP_CLI::success( 'Assertion added with slug ' . $slug );
