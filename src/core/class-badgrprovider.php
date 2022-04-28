@@ -696,6 +696,51 @@ class BadgrProvider {
 		return false;
 	}
 
+	public static function update_assertion( $assertion_slug, $parameters=[] ) {
+				// Setup body.
+				$request_body = array(
+
+				);
+		
+				if (true == isset($parameters['issued_on']) && 0 != strlen($parameters['issued_on']) ) {
+					try {
+						$issue_date = new DateTime( $parameters['issued_on'] );
+					} catch ( \Exception $e ) {
+						return false;
+					}
+		
+					$request_body['issuedOn'] = $issue_date->format( 'c' );					
+				}
+		
+				if ( true == isset($parameters['evidence_narrative']) && 0 != strlen($parameters['evidence_narrative']) ) {
+					$evidence['narrative'] = $parameters['evidence_narrative'];
+				}
+				
+				if ( true == isset($parameters['evidence_url']) && 0 != strlen($parameters['evidence_url']) ) {
+					$evidence['url'] = $parameters['evidence_url'];
+				}
+
+				if ( isset( $evidence ) ) {
+					$request_body['evidence'] = array( $evidence );
+				}
+
+				if ( true == empty($request_body) ) {
+					// Nothing to change, update not possible
+					return false;
+				}
+
+				// Make PUT request to /v2/assertions/{entity_id}. Only changed fields are required.
+				$response = self::get_client()->put( '/v2/assertions/' . $assertion_slug, $request_body );
+
+				// Check for 200 response.
+				if ( null !== $response && 200 === $response->getStatusCode() ) {
+
+					return true;
+				}
+		
+				return false;
+	}
+
 
 	/**
 	 * TODO.

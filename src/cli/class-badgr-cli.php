@@ -463,6 +463,8 @@ class Badgr_CLI extends WP_CLI_Command {
 			WP_CLI::error( 'Please provide a recipient identity (email) as the 2nd argument' );
 		}
 
+		// 	public static function add_assertion( $badge_class_slug, $recipient_identifier, $recipient_type = 'email', $issued_on = null, $evidence_url = null, $evidence_narrative = null ) {
+
 		$slug = BadgrProvider::add_assertion( $args[0], $args[1], 'email', '1977-04-22T06:00:00Z' );
 
 		if ( $slug ) {
@@ -470,6 +472,19 @@ class Badgr_CLI extends WP_CLI_Command {
 		} else {
 			WP_CLI::error( 'Adding assertion failed.' );
 		}
+	}
+
+	public function update_assertion( $args, $assoc_args ) {
+		if ( count( $args ) !== 1 || ( 1 > count($assoc_args) || 3 < count($assoc_args) ) ) {
+			WP_CLI::error( 'Usage: update_assertion assertion_slug [--issued_on={date} --evidence_url={url} --evidence_narrative="{narrative}"]' );
+		}
+
+		if ( true !== BadgrProvider::update_assertion( $args[0], $assoc_args) ) {
+			WP_CLI::error( 'Updating assertion failed.' );
+		}
+
+		WP_CLI::success( 'Assertion with slug ' . $args[0] . ' successfully updated.' );
+
 	}
 
 
