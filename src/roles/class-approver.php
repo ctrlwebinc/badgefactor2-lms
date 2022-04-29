@@ -77,7 +77,7 @@ class Approver {
 	 */
 	public static function select_options() {
 		$args      = array(
-			'role'    => 'approver',
+			'role__in'    => array( 'approver', 'administrator' ),
 			'orderby' => 'user_nicename',
 			'order'   => 'ASC',
 		);
