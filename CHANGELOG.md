@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added: badgr provider now has an update assertion call
 - Added: badgr update_assertion command
 - Modified: badgr add_assertion command now accepts all parameters supported by provider
+- Modified: approver list now includes admins
 
 ## 1.4.0
 
