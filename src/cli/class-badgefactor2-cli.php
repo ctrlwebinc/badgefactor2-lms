@@ -263,7 +263,7 @@ class BadgeFactor2_CLI extends WP_CLI_Command {
 			OBJECT_K
 		);
 
-		die(json_encode($requests[0]));
+		die(json_encode($requests[266672]));
 
 		
 	}
