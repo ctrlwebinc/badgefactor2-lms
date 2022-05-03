@@ -324,7 +324,7 @@ class Migration {
 			}
 
 			// Add GravityForms badgeclass_id hidden field.
-			$form = self::get_form_id_by_badge_post_id( $forms, $badge_post_id );
+			$form = self::get_form_id_by_badge_post_id( $badge_post_id, $forms );
 			self::add_gf_hidden_field( $form, $badge_class_slug );
 
 			$count++;
@@ -359,7 +359,7 @@ class Migration {
 	 *
 	 * @return array|bool
 	 */
-	private static function get_form_id_by_badge_post_id( array $forms = array(), $badge_post_id ) {
+	private static function get_form_id_by_badge_post_id( $badge_post_id, array $forms = array() ) {
 		foreach ( $forms as $form ) {
 			$right_one = false;
 			$migrated  = false;

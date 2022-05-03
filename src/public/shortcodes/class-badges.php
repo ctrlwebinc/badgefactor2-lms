@@ -61,7 +61,7 @@ class Badges {
 	 * @param string $tag Tag.
 	 * @return string
 	 */
-	public function list( $atts = array(), $content = null, string $tag ) {
+	public function list( string $tag, $atts = array(), $content = null ) {
 
 		$atts = array_change_key_case( (array) $atts, CASE_LOWER );
 
