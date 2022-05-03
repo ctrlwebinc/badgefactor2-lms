@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added: badgr update_assertion command
 - Modified: badgr add_assertion command now accepts all parameters supported by provider
 - Modified: approver list now includes admins
-- Fix: php8 compatibility (BadgeFactor2\Helpers\Migration::get_form_id_by_badge_post_id(), BadgeFactor2\Shortcodes\Badges::list())
+- Fixed: php8 compatibility on function parameters order (BadgeFactor2\Helpers\Migration::get_form_id_by_badge_post_id(), BadgeFactor2\Shortcodes\Badges::list())
 
 ## 1.4.0
 
