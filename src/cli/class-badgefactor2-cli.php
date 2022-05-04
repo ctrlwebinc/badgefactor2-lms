@@ -251,14 +251,17 @@ class BadgeFactor2_CLI extends WP_CLI_Command {
 
 		// Get badge-requests for period between migration and recent correction 
 		$requests = $wpdb->get_results(
-			"SELECT br.id, br.*, a.*, d.* FROM wp_posts AS br
+			"SELECT br.ID, a.meta_value AS assertion, d.meta_value AS dates, c.meta_value AS evidence FROM wp_posts AS br
 			LEFT JOIN wp_postmeta AS a
 			ON a.post_id = br.ID
 			LEFT JOIN wp_postmeta AS d
 			ON d.post_id = br.ID
+			LEFT JOIN wp_postmeta AS c
+			ON c.post_id = br.ID 
 			WHERE br.post_type = 'badge-request'
 			AND a.meta_key = 'assertion'
 			AND d.meta_key = 'dates'
+			AND c.meta_key = 'content'
 			AND d.meta_value REGEXP '\"granted\";s:19:\"(2021-(06|07|08|09|10|11|12)|2021-05-1|2021-05-09|2022-)' = 1;",
 			OBJECT_K
 		);
