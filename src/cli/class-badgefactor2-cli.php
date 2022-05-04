@@ -284,7 +284,7 @@ class BadgeFactor2_CLI extends WP_CLI_Command {
 			}
 			$url = site_url($matches[2]);
 			// rebake
-			$result = BadgrProvider::update_assertion( $request->assertion, ['evidence_url' => $url );
+			$result = BadgrProvider::update_assertion( $request->assertion, ['evidence_url' => $url ] );
 			//$result = false;
 
 			// add rebaked meta
