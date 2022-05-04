@@ -262,7 +262,9 @@ class BadgeFactor2_CLI extends WP_CLI_Command {
 			AND a.meta_key = 'assertion'
 			AND d.meta_key = 'dates'
 			AND c.meta_key = 'content'
-			AND d.meta_value REGEXP '\"granted\";s:19:\"(2021-(06|07|08|09|10|11|12)|2021-05-1|2021-05-09|2022-)' = 1;",
+			AND c.meta_value != 'Formulaire soumis'
+			AND d.meta_value REGEXP '\"granted\";s:19:\"(2021-(06|07|08|09|10|11|12)|2021-05-1|2021-05-09|2022-)' = 1
+			AND d.meta_value NOT REGEXP '\"granted\";s:19:\"2022-0(4-28|4-29|4-30|5)' = 1;",
 			OBJECT_K
 		);
 
