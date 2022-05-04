@@ -290,7 +290,9 @@ class BadgeFactor2_CLI extends WP_CLI_Command {
 			// add rebaked meta
 			if ( false === $result) {
 				add_post_meta($request->ID,'bf2_mass_rebake', 'update failed', true);
+				$count_failed++;
 			} else {
+				$count_success++;
 				add_post_meta($request->ID,'bf2_mass_rebake', '2022-05-03', true);
 			}
 			
