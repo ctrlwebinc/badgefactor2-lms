@@ -294,7 +294,7 @@ class BadgeFactor2_CLI extends WP_CLI_Command {
 				add_post_meta($request->ID,'bf2_mass_rebake', '2022-05-03', true);
 			}
 			
-			die(json_encode([$url,$result,]));
+			die(json_encode([$url,$result,$request->assertion]));
 		}
 	
 		WP_CLI::success( 'Command completed: ' . $count_success . ' updated, ' . $count_failed . ' badgr update failed, ' . $count_url_not_found . ' url issues.');
