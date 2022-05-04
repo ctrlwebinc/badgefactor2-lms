@@ -27,6 +27,7 @@ use WP_CLI;
 use WP_CLI_Command;
 use BadgeFactor2\Post_Types\BadgePage;
 use BadgeFactor2\AssertionPrivacy;
+use BadgeFactor2\BadgrProvider;
 
 WP_CLI::add_command( 'bf2', BadgeFactor2_CLI::class );
 
@@ -268,8 +269,34 @@ class BadgeFactor2_CLI extends WP_CLI_Command {
 			OBJECT_K
 		);
 
-		die(json_encode($requests[266672]));
+		$count_success = 0;
+		$count_failed = 0;
+		$count_url_not_found = 0;
 
+		foreach ( $requests AS $k => $request) {
+			// get evidence url
+			$matches = [];
+			$url_matching = preg_match("/(<a href=')(.*)(' target=')/",$request->evidence, $matches);
+			if (1 !== $url_matching ) {
+				$count_url_not_found++;
+				add_post_meta($request->ID,'bf2_mass_rebake', 'url issue', true);
+				continue;
+			}
+			// rebake
+			//$result = BadgrProvider::update_assertion( $request->assertion, ['evidence_url' => $matches[2] );
+			$result = false;
+
+			// add rebaked meta
+			if ( false === $result) {
+				add_post_meta($request->ID,'bf2_mass_rebake', 'update failed', true);
+			} else {
+				add_post_meta($request->ID,'bf2_mass_rebake', '2022-05-03', true);
+			}
+			
+			die(json_encode([$matches[2],$result,]));
+		}
+	
+		WP_CLI::success( 'Command completed: ' . $count_success . ' updated, ' . $count_failed . ' badgr update failed, ' . $count_url_not_found . ' url issues.');
 		
 	}
 }
