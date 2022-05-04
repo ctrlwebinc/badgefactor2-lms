@@ -282,8 +282,9 @@ class BadgeFactor2_CLI extends WP_CLI_Command {
 				add_post_meta($request->ID,'bf2_mass_rebake', 'url issue', true);
 				continue;
 			}
+			$url = site_url($matches[2]);
 			// rebake
-			//$result = BadgrProvider::update_assertion( $request->assertion, ['evidence_url' => $matches[2] );
+			//$result = BadgrProvider::update_assertion( $request->assertion, ['evidence_url' => $url );
 			$result = false;
 
 			// add rebaked meta
@@ -293,7 +294,7 @@ class BadgeFactor2_CLI extends WP_CLI_Command {
 				add_post_meta($request->ID,'bf2_mass_rebake', '2022-05-03', true);
 			}
 			
-			die(json_encode([$matches[2],$result,]));
+			die(json_encode([$url,$result,]));
 		}
 	
 		WP_CLI::success( 'Command completed: ' . $count_success . ' updated, ' . $count_failed . ' badgr update failed, ' . $count_url_not_found . ' url issues.');
