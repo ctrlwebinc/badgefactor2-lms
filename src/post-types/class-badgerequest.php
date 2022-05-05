@@ -575,7 +575,7 @@ class BadgeRequest {
 			$content          = $_POST['content'];
 			$type             = $_POST['type'];
 			$badge_request_id = $_POST['badge_request_id'];
-
+			
 			if ( $badge ) {
 
 				if ( ! $badge_request_id ) {
@@ -603,16 +603,20 @@ class BadgeRequest {
 					update_post_meta( $badge_request_id, 'status', 'requested' );
 					add_post_meta( $badge_request_id, 'dates', array( 'requested' => gmdate( 'Y-m-d H:i:s' ) ) );
 					add_post_meta( $badge_request_id, 'content', $content );
-
+					$email_body       = '';
+					
 					$approvers_emails = BadgePage::get_approvers_emails_by_badgeclass_id( $badge_id );
 					$email_subject    = cmb2_get_option( 'badgefactor2_emails_settings', 'badge_request_approver_email_subject', __( 'A new badge request has been submitted.', BF2_DATA['TextDomain'] ) );
+					$email_body      .= '<div style="font-family: Sans-serif">';
 					$email_body       = cmb2_get_option( 'badgefactor2_emails_settings', 'badge_request_approver_email_body', __( 'The badge $badge$ has been requested by user $user$. You can review it here: $link$.', BF2_DATA['TextDomain'] ) );
 					$email_body       = str_replace( '$badge$', $badge->name, $email_body );
 					$user_link        = get_site_url() . '/wp-admin/user-edit.php?user_id=' . $current_user->ID;
 					$email_body       = str_replace( '$user$', '<a href="' . $user_link . '">' . $current_user->user_nicename . '</a>', $email_body );
 					$email_link       = get_site_url() . '/wp-admin/post.php?post=' . $badge_request_id . '&action=edit';
 					$email_body       = str_replace( '$link$', '<a href="' . $email_link . '">' . $email_link . '</a>', $email_body );
-
+					$email_body       = apply_filters( 'the_content', $email_body );
+					$email_body      .= '</div>';
+					
 					$sanitized_blog_name = str_replace( '"', "'", get_option( 'blog_name' ) );
 					$from_email          = cmb2_get_option( 'badgefactor2_emails_settings', 'badge_request_approver_email_from', get_option( 'admin_email' ) );
 					$from                = sprintf( "From: \"%s\" <%s>;\n\r", $sanitized_blog_name, $from_email );

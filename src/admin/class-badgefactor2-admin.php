@@ -940,6 +940,7 @@ class BadgeFactor2_Admin {
 		$badge_entity_id = get_post_meta( $badge_request_id, 'badge', true );
 		$badge_page      = BadgePage::get_by_badgeclass_id( $badge_entity_id );
 		$badge           = BadgeClass::get( $badge_entity_id );
+		$email_body      = '';
 
 		if ( ! $badge_page ) {
 			return false;
@@ -949,10 +950,13 @@ class BadgeFactor2_Admin {
 		$recipient    = get_user_by( 'ID', $recipient_id );
 
 		$email_subject = cmb2_get_option( 'badgefactor2_emails_settings', 'badge_request_approval_confirmation_email_subject', __( 'Your badge request has been approved !', BF2_DATA['TextDomain'] ) );
-		$email_body    = cmb2_get_option( 'badgefactor2_emails_settings', 'badge_request_approval_confirmation_email_body', __( 'Your request for the badge $badge$ has been approved. You can view it here: $link$.', BF2_DATA['TextDomain'] ) );
+		$email_body   .= '<div style="font-family: Sans-serif">';
+		$email_body   .= cmb2_get_option( 'badgefactor2_emails_settings', 'badge_request_approval_confirmation_email_body', __( 'Your request for the badge $badge$ has been approved. You can view it here: $link$.', BF2_DATA['TextDomain'] ) );
 		$email_body    = str_replace( '$badge$', $badge->name, $email_body );
 		$email_link    = self::build_approved_email_link( $badge_page, $recipient_id );
 		$email_body    = str_replace( '$link$', '<a href="' . $email_link . '">' . $email_link . '</a>', $email_body );
+		$email_body    = apply_filters( 'the_content', $email_body );
+		$email_body   .= '</div>';
 
 		$sanitized_blog_name = str_replace( '"', "'", get_option( 'blog_name' ) );
 			$from_email          = cmb2_get_option( 'badgefactor2_emails_settings', 'badge_request_approval_confirmation_email_from', get_option( 'admin_email' ) );
@@ -985,18 +989,22 @@ class BadgeFactor2_Admin {
 		$badge_page       = BadgePage::get_by_badgeclass_id( $badge_entity_id );
 		$badge            = BadgeClass::get( $badge_entity_id );
 		$rejection_reason = get_post_meta( $badge_request_id, 'rejection_reason', true );
-
+		
 		if ( ! $badge_page ) {
 			return false;
 		}
 
 		$recipient_id = get_post_meta( $badge_request_id, 'recipient', true );
 		$recipient    = get_user_by( 'ID', $recipient_id );
+		$email_body       = '';
 
 		$email_subject = cmb2_get_option( 'badgefactor2_emails_settings', 'badge_request_rejection_confirmation_email_subject', __( 'Your badge request has been rejected.', BF2_DATA['TextDomain'] ) );
-		$email_body    = cmb2_get_option( 'badgefactor2_emails_settings', 'badge_request_rejection_confirmation_email_body', __( 'Your request for the badge $badge$ has been rejected. Here is the reason provided:<br/>$reason$<br/>You can resubmit a request here: $link$.', BF2_DATA['TextDomain'] ) );
+		$email_body   .= '<div style="font-family: Sans-serif">';
+		$email_body   .= cmb2_get_option( 'badgefactor2_emails_settings', 'badge_request_rejection_confirmation_email_body', __( 'Your request for the badge $badge$ has been rejected. Here is the reason provided:<br/>$reason$<br/>You can resubmit a request here: $link$.', BF2_DATA['TextDomain'] ) );
 		$email_body    = str_replace( '$badge$', $badge->name, $email_body );
 		$email_body    = str_replace( '$reason$', $rejection_reason, $email_body );
+		$email_body    = apply_filters( 'the_content', $email_body );
+		$email_body   .= '</div>';
 
 		$email_link = self::build_rejection_email_link( $badge_page );
 		$email_body = str_replace( '$link$', '<a href="' . $email_link . '">' . $email_link . '</a>', $email_body );
@@ -1032,18 +1040,22 @@ class BadgeFactor2_Admin {
 		$badge_page      = BadgePage::get_by_badgeclass_id( $badge_entity_id );
 		$badge           = BadgeClass::get( $badge_entity_id );
 		$revision_reason = get_post_meta( $badge_request_id, 'revision_reason', true );
-
+		
 		if ( ! $badge_page ) {
 			return false;
 		}
 
 		$recipient_id = get_post_meta( $badge_request_id, 'recipient', true );
 		$recipient    = get_user_by( 'ID', $recipient_id );
-
+		$email_body      = '';
+		
 		$email_subject = cmb2_get_option( 'badgefactor2_emails_settings', 'badge_request_revision_confirmation_email_subject', __( 'Your badge request must be revised', BF2_DATA['TextDomain'] ) );
-		$email_body    = cmb2_get_option( 'badgefactor2_emails_settings', 'badge_request_revision_confirmation_email_body', __( 'You must revise and resubmit your badge request for the badge $badge$. Here is the reason provided:<br/>$reason$<br/>You can revise your request here: $link$.', BF2_DATA['TextDomain'] ) );
+		$email_body   .= '<div style="font-family: Sans-serif">';
+		$email_body   .= cmb2_get_option( 'badgefactor2_emails_settings', 'badge_request_revision_confirmation_email_body', __( 'You must revise and resubmit your badge request for the badge $badge$. Here is the reason provided:<br/>$reason$<br/>You can revise your request here: $link$.', BF2_DATA['TextDomain'] ) );
 		$email_body    = str_replace( '$badge$', $badge->name, $email_body );
 		$email_body    = str_replace( '$reason$', $revision_reason, $email_body );
+		$email_body    = apply_filters( 'the_content', $email_body );
+		$email_body   .= '</div>';
 
 		$email_link = self::build_revision_email_link( $badge_page );
 		$email_body = str_replace( '$link$', '<a href="' . $email_link . '">' . $email_link . '</a>', $email_body );
