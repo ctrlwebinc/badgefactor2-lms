@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Modified: badgr add_assertion command now accepts all parameters supported by provider
 - Modified: approver list now includes admins
 - Fixed: php8 compatibility on function parameters order (BadgeFactor2\Helpers\Migration::get_form_id_by_badge_post_id(), BadgeFactor2\Shortcodes\Badges::list())
+- Changed: Set Sans-serif as email default font
 
 ## 1.4.0
 
