@@ -206,8 +206,10 @@ class BadgePage_Controller extends Page_Controller {
  			foreach ( $assertions as $assertion ) {
 				$user = get_user_by( 'email', $assertion->recipient->plaintextIdentity );
 				if ( $user ) {
-					// check badge visibility
-					if ( !AssertionPrivacy::has_privacy_flag( $fields['badge_entity_id'], $user->ID)) {
+					if ( 
+						!AssertionPrivacy::has_privacy_flag( $fields['badge_entity_id'], $user->ID) // check badge visibility
+						&& FALSE === $assertion->revoked // hide revoked assertion
+					) {
 						$members[ $assertion->recipient->plaintextIdentity ] = $user;
 					}
 				}
