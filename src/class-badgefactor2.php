@@ -49,7 +49,7 @@ class BadgeFactor2 {
 	 *
 	 * @var string
 	 */
-	public $version = '2.0.0-alpha';
+	public $version = '2.0.1-alpha';
 
 	/**
 	 * The single instance of the class.
@@ -160,7 +160,7 @@ class BadgeFactor2 {
 		// Libraries.
 		require_once BF2_ABSPATH . 'lib/CMB2/init.php';
 		require_once BF2_ABSPATH . 'lib/cmb-field-select2/cmb-field-select2.php';
-		require_once 'phar://' . BF2_ABSPATH . 'lib/league-oauth2-client.phar/vendor/autoload.php';
+		require_once 'phar://' . BF2_ABSPATH . 'lib/league-guzzlehttp-intervention.phar/vendor/autoload.php';
 
 		// Helpers.
 		require_once BF2_ABSPATH . 'src/helpers/class-buddypress.php';

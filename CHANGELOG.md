@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- Added: Intervention Image to phar
+- Modified: renamed phar to reflect contents
 - Added: badgr provider now has an update assertion call
 - Added: badgr update_assertion command
 - Modified: badgr add_assertion command now accepts all parameters supported by provider
