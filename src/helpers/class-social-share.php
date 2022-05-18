@@ -58,7 +58,7 @@ class SocialShare {
 	public static function init() {
 		// TODO: add auth/welcome.
 		add_rewrite_rule(
-            'bf2/(share)/(' . self::MEDIA_LINKEDIN . '|' . self::MEDIA_FACEBOOK . '|' . self::MEDIA_TWITTER . ')/(?)',
+            'bf2/(share)/(' . self::MEDIA_LINKEDIN . '|' . self::MEDIA_FACEBOOK . '|' . self::MEDIA_TWITTER . ')/(.*)',
             'index.php?bf2=$matches[1]&media=$matches[2]&url=$matches[3]',
 			'top'
 		);
