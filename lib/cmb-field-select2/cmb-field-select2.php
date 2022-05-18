@@ -80,7 +80,13 @@ class PW_CMB2_Field_Select2 {
 	 * Return the list of options, with selected options at the top preserving their order. This also handles the
 	 * removal of selected options which no longer exist in the options array.
 	 */
-	public function get_pw_multiselect_options( $field_escaped_value = array(), $field_type_object ) {
+	public function get_pw_multiselect_options( $field_escaped_value_param, $field_type_object ) {
+		if ( null == $field_escaped_value_param ) {
+			$field_escaped_value = array();
+		} else {
+			$field_escaped_value = $field_escaped_value_param;
+		}
+		
 		$options = (array) $field_type_object->field->options();
 
 		// If we have selected items, we need to preserve their order
