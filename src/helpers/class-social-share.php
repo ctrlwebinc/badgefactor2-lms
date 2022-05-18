@@ -146,13 +146,15 @@ class SocialShare {
     }
 
     public static function handleHeaders() {
+        global $bf2_template;
         // déterminer sir on est sur une page d'asserstion
         // tester global $bf2_template et son contenu
 
         // Si oui, émettre les tags OG
 
         // Boucle sur tous les réseaux sociaux
-        echo '<!-- og tags viendront ici -->';
+        if ( isset($bf2_template->fields['assertion']) )
+            echo '<!-- og tags viendront ici -->';
 
     }
 }
