@@ -24,6 +24,7 @@
 
 namespace BadgeFactor2\Helpers;
 
+use Intervention\Image\ImageManagerStatic as Image;
 /**
  * Text helper class.
  */
@@ -73,11 +74,13 @@ class SocialShare {
 		$bf2 = get_query_var( 'bf2' );
 		if ( $bf2 ) {
 			if ( 'share' === $bf2 ) {
-                header( 'Content-Type: text/plain' );
-                echo 'Badgr callback: ' . $bf2;
-                echo ' Full uri: ' . $_SERVER['REQUEST_URI'];
+                self::serveShareImage();
                 exit();
             }
+            header( 'Content-Type: text/plain' );
+            echo 'Badgr callback: ' . $bf2;
+            echo ' Full uri: ' . $_SERVER['REQUEST_URI'];
+            exit();
 		}
 	}
 
@@ -111,5 +114,13 @@ class SocialShare {
                 'image_url' => '/bf2/share/' . self::MEDIA_LINKEDIN,
             ],
         ];
+    }
+
+    public static function serveShareImage() {
+        // create a new image resource
+        $img = Image::canvas(800, 600, '#ff0000');
+
+        // send HTTP header and output image data
+        echo $img->response('jpg', 70);
     }
 }
