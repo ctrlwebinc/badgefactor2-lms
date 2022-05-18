@@ -32,9 +32,9 @@ use GuzzleHttp\Client;
  */
 class SocialShare {
 
-    const MEDIA_FACEBOOK = 'facebook';
-    const MEDIA_TWITTER = 'twitter';
-    const MEDIA_LINKEDIN= 'linkedin';
+    const MEDIA_FACEBOOK = 'facebook'; // should be 1200×630, Recommended ratio: 1.91:1
+    const MEDIA_TWITTER = 'twitter'; // ratio of 2:1 with minimum dimensions of 300x157 or maximum of 4096x4096 pixels
+    const MEDIA_LINKEDIN= 'linkedin'; // Minimum image dimensions: 1200 (w) x 627 (h) pixels, Recommended ratio: 1.91:1
 
     /**
 	 * Init tasks
@@ -92,7 +92,7 @@ class SocialShare {
     public static function getShares( $assertion) {
         return [
             self::MEDIA_FACEBOOK => [
-                'sharing_url' => 'http://facebook.com',
+                'sharing_url' => 'http://facebook.com', // https://www.facebook.com/sharer/sharer.php?u=https://iqpf.ctrlweb.dev/apprenants/ctrlweb/badges/badge-numero-3/
                 'sharing_text' => 'Share on Facebook',
                 'sharing_classes' => 'share_facebook',
                 'url' => '/apprenants/ctrlweb/badge5',
@@ -101,7 +101,7 @@ class SocialShare {
                 'image_url' => '/bf2/share/' . self::MEDIA_FACEBOOK,
             ],
             self::MEDIA_TWITTER => [
-                'sharing_url' => 'http://twitter.com',
+                'sharing_url' => 'http://twitter.com', // href="https://twitter.com/intent/tweet?text=Hello%20world&url=https://iqpf.ctrlweb.dev/apprenants/ctrlweb/badges/badge-numero-3/
                 'sharing_text' => 'Share on Twitter',
                 'sharing_classes' => 'share_twitter',
                 'url' => '/apprenants/ctrlweb/badge5',
@@ -110,7 +110,7 @@ class SocialShare {
                 'image_url' => '/bf2/share/' . self::MEDIA_TWITTER,
             ],
             self::MEDIA_LINKEDIN => [
-                'sharing_url' => 'http://linkedin.com',
+                'sharing_url' => 'http://linkedin.com', // https://www.linkedin.com/sharing/share-offsite/?url=https://iqpf.ctrlweb.dev/apprenants/ctrlweb/badges/badge-numero-3/
                 'sharing_text' => 'Share on LinkedIn',
                 'sharing_classes' => 'share_linkedin',
                 'url' => '/apprenants/ctrlweb/badge5',
