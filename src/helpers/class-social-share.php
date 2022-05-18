@@ -91,7 +91,7 @@ class SocialShare {
             self::MEDIA_FACEBOOK => [
                 'sharing_url' => 'http://facebook.com',
                 'sharing_text' => 'Share on Facebook',
-                'sharing_clases' => 'share_facebook',
+                'sharing_classes' => 'share_facebook',
                 'url' => '/apprenants/ctrlweb/badge5',
                 'description' => 'Une description pour Facebook',
                 'titre' => 'Tahina a reçu le badge de planificateur financier',
@@ -100,7 +100,7 @@ class SocialShare {
             self::MEDIA_TWITTER => [
                 'sharing_url' => 'http://twitter.com',
                 'sharing_text' => 'Share on Twitter',
-                'sharing_clases' => 'share_twitter',
+                'sharing_classes' => 'share_twitter',
                 'url' => '/apprenants/ctrlweb/badge5',
                 'description' => 'Une description pour Twitter',
                 'titre' => 'Tahina a reçu le badge de planificateur financier',
@@ -109,7 +109,7 @@ class SocialShare {
             self::MEDIA_LINKEDIN => [
                 'sharing_url' => 'http://linkedin.com',
                 'sharing_text' => 'Share on LinkedIn',
-                'sharing_clases' => 'share_linkedin',
+                'sharing_classes' => 'share_linkedin',
                 'url' => '/apprenants/ctrlweb/badge5',
                 'description' => 'Une description pour LinkedIn',
                 'titre' => 'Tahina a reçu le badge de planificateur financier',
