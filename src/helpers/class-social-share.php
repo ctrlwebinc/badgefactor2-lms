@@ -45,6 +45,9 @@ class SocialShare {
 		add_action( 'init', array( self::class, 'init' ) );
 		add_filter( 'query_vars', array( self::class, 'hook_query_vars' ) );
 		add_action( 'template_redirect', array( self::class, 'hook_template_redirect' ) );
+        // add hook for header calls header override function
+        add_action( 'wp_head', array( self::class, 'handleHeaders' ) );
+
 	}
     
     /**
@@ -139,6 +142,17 @@ class SocialShare {
         }
 
         return;
+
+    }
+
+    public static function handleHeaders() {
+        // déterminer sir on est sur une page d'asserstion
+        // tester global $bf2_template et son contenu
+
+        // Si oui, émettre les tags OG
+
+        // Boucle sur tous les réseaux sociaux
+        echo '<!-- og tags viendront ici -->';
 
     }
 }
