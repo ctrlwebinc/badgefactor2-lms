@@ -739,6 +739,53 @@ class BadgeFactor2_Admin {
 			)
 		);
 
+		/**
+		 * Registers Social media settings page.
+		 */
+		$args = array(
+			'id'           => 'badgefactor2_social_media_settings_page',
+			'menu_title'   => __( 'Social media', BF2_DATA['TextDomain'] ),
+			'object_types' => array( 'options-page' ),
+			'option_key'   => 'badgefactor2_social_media_settings',
+			'parent_slug'  => 'badgefactor2',
+			'tab_group'    => 'badgefactor2',
+			'tab_title'    => __( 'Social media', BF2_DATA['TextDomain'] ),
+			'capability'   => 'manage_badgr',
+		);
+
+		// 'tab_group' property is supported in > 2.4.0.
+		if ( version_compare( CMB2_VERSION, '2.4.0' ) ) {
+			$args['display_cb'] = 'badgefactor2_options_display_with_tabs';
+		}
+
+		$social_settings = new_cmb2_box( $args );
+		
+		$social_settings->add_field(
+			array(
+				'name'    => __( 'Activate sharing on Facebook', BF2_DATA['TextDomain'] ),
+				'id'      => 'bf2_social_media_sharing_facebook',
+				'type'    => 'checkbox',
+				'default' => false,
+			)
+		);
+
+		$social_settings->add_field(
+			array(
+				'name'    => __( 'Activate sharing on Twitter', BF2_DATA['TextDomain'] ),
+				'id'      => 'bf2_social_media_sharing_twitter',
+				'type'    => 'checkbox',
+				'default' => false,
+			)
+		);
+
+		$social_settings->add_field(
+			array(
+				'name'    => __( 'Activate sharing on Linkedin', BF2_DATA['TextDomain'] ),
+				'id'      => 'bf2_social_media_sharing_linkedin',
+				'type'    => 'checkbox',
+				'default' => false,
+			)
+		);
 	}
 
 
