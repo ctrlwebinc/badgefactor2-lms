@@ -35,6 +35,7 @@ use BadgeFactor2\Post_Types\BadgeRequest;
 use stdClass;
 use WP_Post;
 use BadgeFactor2\AssertionPrivacy;
+use BadgeFactor2\Helpers\SocialShare;
 
 /**
  * Assertion Controller Class.
@@ -126,6 +127,7 @@ class Assertion_Controller extends Page_Controller {
 				if ( ! isset( $fields['assertion'] ) ) {
 					$is_404 = true;
 				} else {
+					$fields['sharing'] = SocialShare::getShares( $fields['assertion'] );
 					$fields['badge']  = BadgeClass::get( $fields['assertion']->badgeclass );
 					$fields['issuer'] = Issuer::get( $fields['assertion']->issuer );
 					$fields['badge-request'] = BadgeRequest::get_for_badgeclass_for_user( $fields['assertion']->badgeclass, $fields['user']->ID );

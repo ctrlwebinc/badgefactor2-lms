@@ -29,6 +29,10 @@ namespace BadgeFactor2\Helpers;
  */
 class SocialShare {
 
+    const MEDIA_FACEBOOK = 'facebook';
+    const MEDIA_TWITTER = 'twitter';
+    const MEDIA_LINKEDIN= 'linkedin';
+
     /**
 	 * Init tasks
 	 *
@@ -76,4 +80,36 @@ class SocialShare {
             }
 		}
 	}
+
+    public static function getShares( $assertion) {
+        return [
+            self::MEDIA_FACEBOOK => [
+                'sharing_url' => 'http://facebook.com',
+                'sharing_text' => 'Share on Facebook',
+                'sharing_clases' => 'share_facebook',
+                'url' => '/apprenants/ctrlweb/badge5',
+                'description' => 'Une description pour Facebook',
+                'titre' => 'Tahina a reçu le badge de planificateur financier',
+                'image_url' => '/bf2/share/' . self::MEDIA_FACEBOOK,
+            ],
+            self::MEDIA_TWITTER => [
+                'sharing_url' => 'http://twitter.com',
+                'sharing_text' => 'Share on Twitter',
+                'sharing_clases' => 'share_twitter',
+                'url' => '/apprenants/ctrlweb/badge5',
+                'description' => 'Une description pour Twitter',
+                'titre' => 'Tahina a reçu le badge de planificateur financier',
+                'image_url' => '/bf2/share/' . self::MEDIA_TWITTER,
+            ],
+            self::MEDIA_LINKEDIN => [
+                'sharing_url' => 'http://linkedin.com',
+                'sharing_text' => 'Share on LinkedIn',
+                'sharing_clases' => 'share_linkedin',
+                'url' => '/apprenants/ctrlweb/badge5',
+                'description' => 'Une description pour LinkedIn',
+                'titre' => 'Tahina a reçu le badge de planificateur financier',
+                'image_url' => '/bf2/share/' . self::MEDIA_LINKEDIN,
+            ],
+        ];
+    }
 }
