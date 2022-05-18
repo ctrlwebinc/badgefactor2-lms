@@ -88,9 +88,7 @@ class SocialShare {
                 echo 'Media: ' . $media;
                 echo 'URL: ' . $url;
                 echo ' Full uri: ' . $_SERVER['REQUEST_URI'];
-                $revert = array('%21'=>'!', '%2A'=>'*', '%27'=>"'", '%28'=>'(', '%29'=>')');
-                echo strtr(rawurlencode('https://badgr-iqpf.ctrlweb.dev/media/uploads/badges/assertion-0h30U7K7QGaqRj8S1LH6_w.png'), $revert);
-                //echo rawurlencode('https://badgr-iqpf.ctrlweb.dev/media/uploads/badges/assertion-0h30U7K7QGaqRj8S1LH6_w.png');
+                echo base64_encode('https://badgr-iqpf.ctrlweb.dev/media/uploads/badges/assertion-0h30U7K7QGaqRj8S1LH6_w.png');
                 exit();
                 self::serveShareImage();
                 exit();
