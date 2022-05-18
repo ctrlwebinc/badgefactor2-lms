@@ -123,13 +123,13 @@ class SocialShare {
 
         $client = new Client([
             // Base URI is used with relative requests
-            'base_uri' => "https:\/\/badgr-iqpf.ctrlweb.dev",
+            'base_uri' => 'https://badgr-iqpf.ctrlweb.dev',
             // You can set any number of default request options.
             'timeout'  => 2.0,
         ]);
 
-        $response = $client->get("\/media\/uploads\/badges\/assertion-0h30U7K7QGaqRj8S1LH6_w.png");
-        
+        $response = $client->get('/media/uploads/badges/assertion-0h30U7K7QGaqRj8S1LH6_w.png');
+
             // create a new image resource
             $img = Image::canvas(800, 600, '#ff0000');
 
