@@ -709,11 +709,6 @@ class BadgrClient {
 				header( 'Location: ' . site_url('/' ) );
 				exit();
 			}
-
-			header( 'Content-Type: text/plain' );
-			echo 'Badgr callback: ' . $bf2;
-			echo ' Full uri: ' . $_SERVER['REQUEST_URI'];
-			exit();
 		}
 	}
 

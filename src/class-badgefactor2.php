@@ -130,6 +130,9 @@ class BadgeFactor2 {
 		// Roles.
 		Roles\Approver::init_hooks();
 
+		// Helpers with hooks.
+		Helpers\SocialShare::init_hooks();
+
 		// Admin.
 		if ( is_admin() || ( defined( 'WP_CLI' ) && WP_CLI ) ) {
 			BadgeFactor2_Admin::init_hooks();
@@ -167,6 +170,7 @@ class BadgeFactor2 {
 		require_once BF2_ABSPATH . 'src/helpers/class-migration.php';
 		require_once BF2_ABSPATH . 'src/helpers/class-template.php';
 		require_once BF2_ABSPATH . 'src/helpers/class-text.php';
+		require_once BF2_ABSPATH . 'src/helpers/class-social-share.php';
 
 		// Traits.
 		require_once BF2_ABSPATH . 'src/core/trait-singleton.php';
