@@ -131,6 +131,7 @@ class SocialShare {
             $response = $client->get('/media/uploads/badges/assertion-0h30U7K7QGaqRj8S1LH6_w.png');
 
             $img = Image::make($response->getBody());
+            $img->resize(100, 100);
             echo $img->response('png');
 
         } catch ( \Exception $e ) {
