@@ -58,8 +58,8 @@ class SocialShare {
 	public static function init() {
 		// TODO: add auth/welcome.
 		add_rewrite_rule(
-			'bf2/(share)/(' . self::MEDIA_LINKEDIN . '|' . self::MEDIA_FACEBOOK . '|' . self::MEDIA_TWITTER . ')/(*)?',
-			'index.php?bf2=$matches[1]&media=$matches[2]&url=$matches[3]',
+            'bf2/(share)/(' . self::MEDIA_LINKEDIN . '|' . self::MEDIA_FACEBOOK . '|' . self::MEDIA_TWITTER . ')/(?)',
+            'index.php?bf2=$matches[1]&media=$matches[2]&url=$matches[3]',
 			'top'
 		);
 	}
@@ -72,6 +72,8 @@ class SocialShare {
 	 */
 	public static function hook_query_vars( $vars ) {
 		$vars[] = 'bf2';
+		$vars[] = 'media';
+		$vars[] = 'url';
 		return $vars;
 	}
 
@@ -79,6 +81,14 @@ class SocialShare {
 		$bf2 = get_query_var( 'bf2' );
 		if ( $bf2 ) {
 			if ( 'share' === $bf2 ) {
+                $media = get_query_var('media');
+                $url = get_query_var('url');
+                header( 'Content-Type: text/plain' );
+                echo 'Action verb: ' . $bf2;
+                echo 'Media: ' . $media;
+                echo 'URL: ' . $url;
+                echo ' Full uri: ' . $_SERVER['REQUEST_URI'];
+                exit();
                 self::serveShareImage();
                 exit();
             }
