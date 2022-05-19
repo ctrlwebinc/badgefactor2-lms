@@ -82,7 +82,7 @@ class SocialShare {
 		if ( $bf2 ) {
 			if ( 'share' === $bf2 ) {
                 $media = get_query_var('media');
-                $url = get_query_var('url');
+                $url = base64_decode( get_query_var('url') );
                 self::serveShareImage( $media, $url );
                 exit();
             }
