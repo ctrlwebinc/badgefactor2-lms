@@ -142,11 +142,10 @@ class SocialShare {
                     $img = $img->resizeCanvas( 800, 400, 'center');
                     break;                    
             }
-            $img->resize(100, 100);
             echo $img->response('png');
 
         } catch ( \Exception $e ) {
-
+            // TODO: return a generic bf2 image
         }
 
         return;
