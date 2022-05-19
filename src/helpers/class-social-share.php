@@ -83,20 +83,9 @@ class SocialShare {
 			if ( 'share' === $bf2 ) {
                 $media = get_query_var('media');
                 $url = get_query_var('url');
-                header( 'Content-Type: text/plain' );
-                echo 'Action verb: ' . $bf2;
-                echo 'Media: ' . $media;
-                echo 'URL: ' . $url;
-                echo ' Full uri: ' . $_SERVER['REQUEST_URI'];
-                echo base64_encode('https://badgr-iqpf.ctrlweb.dev/media/uploads/badges/assertion-0h30U7K7QGaqRj8S1LH6_w.png');
-                exit();
-                self::serveShareImage();
+                self::serveShareImage( $media, $url );
                 exit();
             }
-            header( 'Content-Type: text/plain' );
-            echo 'Badgr callback: ' . $bf2;
-            echo ' Full uri: ' . $_SERVER['REQUEST_URI'];
-            exit();
 		}
 	}
 
@@ -109,7 +98,7 @@ class SocialShare {
                 'url' => '/apprenants/ctrlweb/badge5',
                 'description' => 'Une description pour Facebook',
                 'titre' => 'Tahina a reçu le badge de planificateur financier',
-                'image_url' => '/bf2/share/' . self::MEDIA_FACEBOOK,
+                'image_url' => '/bf2/share/' . self::MEDIA_FACEBOOK . '/' . base64_encode( $assertion['image']),
             ],
             self::MEDIA_TWITTER => [
                 'sharing_url' => 'http://twitter.com', // href="https://twitter.com/intent/tweet?text=Hello%20world&url=https://iqpf.ctrlweb.dev/apprenants/ctrlweb/badges/badge-numero-3/
@@ -118,7 +107,7 @@ class SocialShare {
                 'url' => '/apprenants/ctrlweb/badge5',
                 'description' => 'Une description pour Twitter',
                 'titre' => 'Tahina a reçu le badge de planificateur financier',
-                'image_url' => '/bf2/share/' . self::MEDIA_TWITTER,
+                'image_url' => '/bf2/share/' . self::MEDIA_TWITTER . '/' . base64_encode( $assertion['image']),
             ],
             self::MEDIA_LINKEDIN => [
                 'sharing_url' => 'http://linkedin.com', // https://www.linkedin.com/sharing/share-offsite/?url=https://iqpf.ctrlweb.dev/apprenants/ctrlweb/badges/badge-numero-3/
@@ -127,22 +116,17 @@ class SocialShare {
                 'url' => '/apprenants/ctrlweb/badge5',
                 'description' => 'Une description pour LinkedIn',
                 'titre' => 'Tahina a reçu le badge de planificateur financier',
-                'image_url' => '/bf2/share/' . self::MEDIA_LINKEDIN,
+                'image_url' => '/bf2/share/' . self::MEDIA_LINKEDIN . '/' . base64_encode( $assertion['image']),
             ],
         ];
     }
 
-    public static function serveShareImage() {
+    public static function serveShareImage( $media, $url) {
         try {
 
-            $client = new Client([
-                // Base URI is used with relative requests
-                'base_uri' => 'https://badgr-iqpf.ctrlweb.dev',
-                // You can set any number of default request options.
-                'timeout'  => 2.0,
-            ]);
+            $client = new Client();
 
-            $response = $client->get('/media/uploads/badges/assertion-0h30U7K7QGaqRj8S1LH6_w.png');
+            $response = $client->get($url);
 
             $img = Image::make($response->getBody());
             $img->resize(100, 100);
