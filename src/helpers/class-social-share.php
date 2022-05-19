@@ -90,6 +90,8 @@ class SocialShare {
 	}
 
     public static function getShares( $assertion) {
+        $share_image_relative_url_start = site_url('/bf2/share/');
+
         return [
             self::MEDIA_FACEBOOK => [
                 'sharing_url' => 'http://facebook.com', // https://www.facebook.com/sharer/sharer.php?u=https://iqpf.ctrlweb.dev/apprenants/ctrlweb/badges/badge-numero-3/
@@ -98,7 +100,7 @@ class SocialShare {
                 'url' => '/apprenants/ctrlweb/badge5',
                 'description' => 'Une description pour Facebook',
                 'titre' => 'Tahina a reçu le badge de planificateur financier',
-                'image_url' => '/bf2/share/' . self::MEDIA_FACEBOOK . '/' . base64_encode( $assertion->image),
+                'image_url' => $share_image_relative_url_start . self::MEDIA_FACEBOOK . '/' . base64_encode( $assertion->image),
             ],
             self::MEDIA_TWITTER => [
                 'sharing_url' => 'http://twitter.com', // href="https://twitter.com/intent/tweet?text=Hello%20world&url=https://iqpf.ctrlweb.dev/apprenants/ctrlweb/badges/badge-numero-3/
@@ -107,7 +109,7 @@ class SocialShare {
                 'url' => '/apprenants/ctrlweb/badge5',
                 'description' => 'Une description pour Twitter',
                 'titre' => 'Tahina a reçu le badge de planificateur financier',
-                'image_url' => '/bf2/share/' . self::MEDIA_TWITTER . '/' . base64_encode( $assertion->image),
+                'image_url' => $share_image_relative_url_start . self::MEDIA_TWITTER . '/' . base64_encode( $assertion->image),
             ],
             self::MEDIA_LINKEDIN => [
                 'sharing_url' => 'http://linkedin.com', // https://www.linkedin.com/sharing/share-offsite/?url=https://iqpf.ctrlweb.dev/apprenants/ctrlweb/badges/badge-numero-3/
@@ -116,7 +118,7 @@ class SocialShare {
                 'url' => '/apprenants/ctrlweb/badge5',
                 'description' => 'Une description pour LinkedIn',
                 'titre' => 'Tahina a reçu le badge de planificateur financier',
-                'image_url' => '/bf2/share/' . self::MEDIA_LINKEDIN . '/' . base64_encode( $assertion->image),
+                'image_url' => $share_image_relative_url_start . self::MEDIA_LINKEDIN . '/' . base64_encode( $assertion->image),
             ],
         ];
     }
