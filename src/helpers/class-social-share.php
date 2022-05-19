@@ -164,8 +164,28 @@ class SocialShare {
         // Si oui, émettre les tags OG
 
         // Boucle sur tous les réseaux sociaux
-        if ( isset($bf2_template->fields['assertion']) )
-            echo '<!-- og tags viendront ici -->';
-
+        if ( isset($bf2_template->fields['assertion']) ) {
+            echo '<!-- bf2 og tags -->' . PHP_EOL;
+            if ( is_array( $bf2_template->fields['sharing'] ) ) {
+                foreach( $bf2_template->fields['sharing'] as $key => $value ) {
+                    if ( 'facebook' == $key ) { // linkedin uses the same og tags
+                        echo '<meta property="og:url"                content="' . $value['url'] . '" />' . PHP_EOL;
+                        echo '<meta property="og:type"               content="assertion" />' . PHP_EOL;
+                        echo '<meta property="og:title"              content="' . $value['titre'] . '" />' . PHP_EOL;
+                        echo '<meta property="og:description"        content="' . $value['description'] . '" />' . PHP_EOL;
+                        echo '<meta property="og:image"              content="' . $value['image_url'] . '" />' . PHP_EOL;
+                    }
+                    if ( 'twitter' == $key ) {
+                        echo '<meta name="twitter:card"        content="summary_large_image">' . PHP_EOL;
+                        // echo '<meta name="twitter:site"     content="@yourwebsite">' . PHP_EOL;
+                        // echo '<meta name="twitter:creator"  content="@yourtwitterhandle">' . PHP_EOL;
+                        echo '<meta name="twitter:title"       content="' . $value['titre'] . '">' . PHP_EOL;
+                        echo '<meta name="twitter:description" content="' . $value['description'] . '">' . PHP_EOL;
+                        echo '<meta name="twitter:image"       content="' . $value['image_url'] . '">' . PHP_EOL;
+                    }
+                }
+            }
+            echo '<!-- /bf2 og tags -->' . PHP_EOL;
+        }
     }
 }
