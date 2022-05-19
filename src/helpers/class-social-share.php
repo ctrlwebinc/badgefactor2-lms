@@ -131,6 +131,17 @@ class SocialShare {
             $response = $client->get($url);
 
             $img = Image::make($response->getBody());
+            switch ($media) {
+                case self::MEDIA_FACEBOOK:
+                    $img = $img->resizeCanvas( 1200, 630, 'center');
+                    break;
+                case self::MEDIA_LINKEDIN:
+                    $img = $img->resizeCanvas( 1200, 627, 'center');
+                    break;
+                case self::MEDIA_TWITTER:
+                    $img = $img->resizeCanvas( 800, 400, 'center');
+                    break;                    
+            }
             $img->resize(100, 100);
             echo $img->response('png');
 
