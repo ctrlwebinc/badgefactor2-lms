@@ -89,12 +89,12 @@ class SocialShare {
 		}
 	}
 
-    public static function getShares( $assertion) {
+    public static function getShares( $assertion ) {
         $share_image_relative_url_start = site_url('/bf2/share/');
-
+        
         return [
             self::MEDIA_FACEBOOK => [
-                'sharing_url' => 'http://facebook.com', // https://www.facebook.com/sharer/sharer.php?u=https://iqpf.ctrlweb.dev/apprenants/ctrlweb/badges/badge-numero-3/
+                'sharing_url' => self::generateSharingUrl( $assertion , self::MEDIA_FACEBOOK), // https://www.facebook.com/sharer/sharer.php?u=https://iqpf.ctrlweb.dev/apprenants/ctrlweb/badges/badge-numero-3/
                 'sharing_text' => 'Share on Facebook',
                 'sharing_classes' => 'share_facebook',
                 'url' => '/apprenants/ctrlweb/badge5',
@@ -103,7 +103,7 @@ class SocialShare {
                 'image_url' => $share_image_relative_url_start . self::MEDIA_FACEBOOK . '/' . base64_encode( $assertion->image),
             ],
             self::MEDIA_TWITTER => [
-                'sharing_url' => 'http://twitter.com', // href="https://twitter.com/intent/tweet?text=Hello%20world&url=https://iqpf.ctrlweb.dev/apprenants/ctrlweb/badges/badge-numero-3/
+                'sharing_url' => self::generateSharingUrl( $assertion , self::MEDIA_TWITTER), // href="https://twitter.com/intent/tweet?text=Hello%20world&url=https://iqpf.ctrlweb.dev/apprenants/ctrlweb/badges/badge-numero-3/
                 'sharing_text' => 'Share on Twitter',
                 'sharing_classes' => 'share_twitter',
                 'url' => '/apprenants/ctrlweb/badge5',
@@ -112,7 +112,7 @@ class SocialShare {
                 'image_url' => $share_image_relative_url_start . self::MEDIA_TWITTER . '/' . base64_encode( $assertion->image),
             ],
             self::MEDIA_LINKEDIN => [
-                'sharing_url' => 'http://linkedin.com', // https://www.linkedin.com/sharing/share-offsite/?url=https://iqpf.ctrlweb.dev/apprenants/ctrlweb/badges/badge-numero-3/
+                'sharing_url' => self::generateSharingUrl( $assertion , self::MEDIA_LINKEDIN), // https://www.linkedin.com/sharing/share-offsite/?url=https://iqpf.ctrlweb.dev/apprenants/ctrlweb/badges/badge-numero-3/
                 'sharing_text' => 'Share on LinkedIn',
                 'sharing_classes' => 'share_linkedin',
                 'url' => '/apprenants/ctrlweb/badge5',
@@ -173,5 +173,25 @@ class SocialShare {
             }
             echo '<!-- /bf2 og tags -->' . PHP_EOL;
         }
+    }
+
+    public static function generateSharingUrl( $assertion, $social_media ) {
+        $badge_url = urlencode( $assertion->openBadgeId );
+        
+        if ( 'facebook' == $social_media ) {
+            // https://www.facebook.com/sharer/sharer.php?u=https://iqpf.ctrlweb.dev/apprenants/ctrlweb/badges/badge-numero-3/
+            $sharing_url = "https://www.facebook.com/sharer/sharer.php?u=" . $badge_url;
+        } else if ( 'twitter' == $social_media ) {
+            // href="https://twitter.com/intent/tweet?text=Hello%20world&url=https://iqpf.ctrlweb.dev/apprenants/ctrlweb/badges/badge-numero-3/
+            $text = urlencode("J'ai obtenu ce badge");
+            $sharing_url = "https://twitter.com/intent/tweet?";
+            $sharing_url .= "text=" . $text;
+            $sharing_url .= "&url=" . $badge_url;
+        } else if ( 'linkedin' == $social_media ) {
+            // https://www.linkedin.com/sharing/share-offsite/?url=https://iqpf.ctrlweb.dev/apprenants/ctrlweb/badges/badge-numero-3/
+            $sharing_url = "https://www.linkedin.com/sharing/share-offsite/?url=" . $badge_url;
+        }
+
+        return $sharing_url;
     }
 }
