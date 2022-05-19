@@ -127,7 +127,7 @@ class Assertion_Controller extends Page_Controller {
 				if ( ! isset( $fields['assertion'] ) ) {
 					$is_404 = true;
 				} else {
-					$fields['sharing'] = SocialShare::getShares( $fields['assertion'] );
+					$fields['sharing'] = SocialShare::getShares( $fields['assertion'], $fields['badgepage'] );
 					$fields['badge']  = BadgeClass::get( $fields['assertion']->badgeclass );
 					$fields['issuer'] = Issuer::get( $fields['assertion']->issuer );
 					$fields['badge-request'] = BadgeRequest::get_for_badgeclass_for_user( $fields['assertion']->badgeclass, $fields['user']->ID );

@@ -26,6 +26,8 @@ namespace BadgeFactor2\Helpers;
 
 use Intervention\Image\ImageManagerStatic as Image;
 use GuzzleHttp\Client;
+use BadgeFactor2\Models\BadgeClass;
+use BadgeFactor2\Post_Types\BadgePage;
 
 /**
  * Text helper class.
@@ -89,35 +91,38 @@ class SocialShare {
 		}
 	}
 
-    public static function getShares( $assertion ) {
+    public static function getShares( $assertion, $badge_page ) {
         $share_image_relative_url_start = site_url('/bf2/share/');
+        $description = self::generateOgDescription( $badge_page );
+        $title =  self::generateOgTitle( $badge_page );
+        $url = self::getCurrentUrl();
         
         return [
             self::MEDIA_FACEBOOK => [
-                'sharing_url' => self::generateSharingUrl( $assertion , self::MEDIA_FACEBOOK), // https://www.facebook.com/sharer/sharer.php?u=https://iqpf.ctrlweb.dev/apprenants/ctrlweb/badges/badge-numero-3/
+                'sharing_url' => self::generateSharingUrl( $assertion, $badge_page, self::MEDIA_FACEBOOK), // https://www.facebook.com/sharer/sharer.php?u=https://iqpf.ctrlweb.dev/apprenants/ctrlweb/badges/badge-numero-3/
                 'sharing_text' => 'Share on Facebook',
                 'sharing_classes' => 'share_facebook',
-                'url' => '/apprenants/ctrlweb/badge5',
-                'description' => 'Une description pour Facebook',
-                'titre' => 'Tahina a reçu le badge de planificateur financier',
+                'url' => $url,
+                'description' => $description,
+                'titre' => $title,
                 'image_url' => $share_image_relative_url_start . self::MEDIA_FACEBOOK . '/' . base64_encode( $assertion->image),
             ],
             self::MEDIA_TWITTER => [
-                'sharing_url' => self::generateSharingUrl( $assertion , self::MEDIA_TWITTER), // href="https://twitter.com/intent/tweet?text=Hello%20world&url=https://iqpf.ctrlweb.dev/apprenants/ctrlweb/badges/badge-numero-3/
+                'sharing_url' => self::generateSharingUrl( $assertion, $badge_page, self::MEDIA_TWITTER), // href="https://twitter.com/intent/tweet?text=Hello%20world&url=https://iqpf.ctrlweb.dev/apprenants/ctrlweb/badges/badge-numero-3/
                 'sharing_text' => 'Share on Twitter',
                 'sharing_classes' => 'share_twitter',
-                'url' => '/apprenants/ctrlweb/badge5',
-                'description' => 'Une description pour Twitter',
-                'titre' => 'Tahina a reçu le badge de planificateur financier',
+                'url' => $url,
+                'description' => $description,
+                'titre' => $title,
                 'image_url' => $share_image_relative_url_start . self::MEDIA_TWITTER . '/' . base64_encode( $assertion->image),
             ],
             self::MEDIA_LINKEDIN => [
-                'sharing_url' => self::generateSharingUrl( $assertion , self::MEDIA_LINKEDIN), // https://www.linkedin.com/sharing/share-offsite/?url=https://iqpf.ctrlweb.dev/apprenants/ctrlweb/badges/badge-numero-3/
+                'sharing_url' => self::generateSharingUrl( $assertion, $badge_page, self::MEDIA_LINKEDIN), // https://www.linkedin.com/sharing/share-offsite/?url=https://iqpf.ctrlweb.dev/apprenants/ctrlweb/badges/badge-numero-3/
                 'sharing_text' => 'Share on LinkedIn',
                 'sharing_classes' => 'share_linkedin',
-                'url' => '/apprenants/ctrlweb/badge5',
-                'description' => 'Une description pour LinkedIn',
-                'titre' => 'Tahina a reçu le badge de planificateur financier',
+                'url' => $url,
+                'description' => $description,
+                'titre' => $title,
                 'image_url' => $share_image_relative_url_start . self::MEDIA_LINKEDIN . '/' . base64_encode( $assertion->image),
             ],
         ];
@@ -154,12 +159,7 @@ class SocialShare {
 
     public static function handleHeaders() {
         global $bf2_template;
-        // déterminer sir on est sur une page d'asserstion
-        // tester global $bf2_template et son contenu
-
-        // Si oui, émettre les tags OG
-
-        // Boucle sur tous les réseaux sociaux
+        
         if ( isset($bf2_template->fields['assertion']) ) {
             echo '<!-- bf2 og tags -->' . PHP_EOL;
             if ( is_array( $bf2_template->fields['sharing'] ) ) {
@@ -185,7 +185,7 @@ class SocialShare {
         }
     }
 
-    public static function generateSharingUrl( $assertion, $social_media ) {
+    public static function generateSharingUrl( $assertion,  $badge_page, $social_media ) {
         $badge_url = urlencode( $assertion->openBadgeId );
         
         if ( 'facebook' == $social_media ) {
@@ -193,9 +193,8 @@ class SocialShare {
             $sharing_url = "https://www.facebook.com/sharer/sharer.php?u=" . $badge_url;
         } else if ( 'twitter' == $social_media ) {
             // href="https://twitter.com/intent/tweet?text=Hello%20world&url=https://iqpf.ctrlweb.dev/apprenants/ctrlweb/badges/badge-numero-3/
-            $text = urlencode("J'ai obtenu ce badge");
             $sharing_url = "https://twitter.com/intent/tweet?";
-            $sharing_url .= "text=" . $text;
+            $sharing_url .= "text=" . urlencode( $badge_page->post_title );
             $sharing_url .= "&url=" . $badge_url;
         } else if ( 'linkedin' == $social_media ) {
             // https://www.linkedin.com/sharing/share-offsite/?url=https://iqpf.ctrlweb.dev/apprenants/ctrlweb/badges/badge-numero-3/
@@ -203,5 +202,38 @@ class SocialShare {
         }
 
         return $sharing_url;
+    }
+
+    public static function generateOgDescription( $badge_page ) {
+        if ( !is_null( $badge_page ) ) 
+            return wp_trim_words( strip_tags( $badge_page->post_content ), 30, '' );
+        else
+            return "";
+    }
+
+    public static function generateOgTitle( $badge_page ) {
+        if ( !is_null( $badge_page ) ) 
+            return $badge_page->post_title;
+        else
+            return "";
+    }
+
+    public static function getCurrentUrl() {
+        // Program to display URL of current page.
+        if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on')
+            $link = "https";
+        else $link = "http";
+        
+        // Here append the common URL characters.
+        $link .= "://";
+        
+        // Append the host(domain name, ip) to the URL.
+        $link .= $_SERVER['HTTP_HOST'];
+        
+        // Append the requested resource location to the URL
+        $link .= $_SERVER['REQUEST_URI'];
+        
+        // Print the link
+        return $link;
     }
 }
