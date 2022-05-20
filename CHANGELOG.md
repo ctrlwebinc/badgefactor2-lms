@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed: php8 compatibility on function parameters order (BadgeFactor2\Helpers\Migration::get_form_id_by_badge_post_id(), BadgeFactor2\Shortcodes\Badges::list())
 - Changed: Set Sans-serif as email default font
 - Added: filter on revoked assertion on single badge page
+- Added: new entry in language file
 
 ## 1.4.0
 
