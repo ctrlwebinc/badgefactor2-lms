@@ -163,10 +163,11 @@ class Issuer implements Badgr_Entity {
 	 *
 	 * @param array $values Associated array of values of issuer to create.
 	 * @param array $files Files.
+	 * @param boolean $create performed action flag.
 	 *
 	 * @return string|boolean Id of created issuer, or false on error.
 	 */
-	public static function create( $values, $files = null ) {
+	public static function create( $values, $files = null, $create = true ) {
 		if ( self::validate( $values, $files ) ) {
 			return BadgrProvider::add_issuer( $values['name'], $values['email'], $values['url'], $values['description'] );
 		}
@@ -180,10 +181,11 @@ class Issuer implements Badgr_Entity {
 	 * @param string $entity_id Issuer ID.
 	 * @param array  $values Associative array of values to change.
 	 * @param array  $files Files.
+	 * @param boolean $create performed action flag.
 	 *
 	 * @return boolean Whether or not update has succeeded.
 	 */
-	public static function update( $entity_id, $values, $files = null ) {
+	public static function update( $entity_id, $values, $files = null, $create = true ) {
 		if ( self::validate( $values ) ) {
 			return BadgrProvider::update_issuer( $entity_id, $values['name'], $values['email'], $values['url'], $values['description'] );
 		}

@@ -183,10 +183,11 @@ class Assertion implements Badgr_Entity {
 	 *
 	 * @param array $values Associated array of values of issuer to create.
 	 * @param array $files Files.
+	 * @param boolean $create performed action flag.
 	 *
 	 * @return string|boolean Id of created issuer, or false on error.
 	 */
-	public static function create( $values, $files = null ) {
+	public static function create( $values, $files = null, $create = true ) {
 		if ( self::validate( $values, $files ) ) {
 			$assertion_slug = BadgrProvider::add_assertion( $values['badge'], $values['recipient'] );
 			if ( $assertion_slug ) {
@@ -204,10 +205,11 @@ class Assertion implements Badgr_Entity {
 	 * @param string $entity_id Issuer ID.
 	 * @param array  $values Associative array of values to change.
 	 * @param array  $files Files.
+	 * @param boolean $create performed action flag.
 	 *
 	 * @return boolean Whether or not update has succeeded.
 	 */
-	public static function update( $entity_id, $values, $files = null ) {
+	public static function update( $entity_id, $values, $files = null, $create = false ) {
 		// Assertion updating is unauthorized.
 		return false;
 	}

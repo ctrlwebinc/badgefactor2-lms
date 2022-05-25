@@ -126,11 +126,12 @@ class BadgeClass implements Badgr_Entity {
 	 *
 	 * @param array $values Associated array of values of badge to create.
 	 * @param array $files Files.
+	 * @param boolean $create performed action flag.
 	 *
 	 * @return string|boolean Id of created badge, or false on error.
 	 */
-	public static function create( $values, $files = null ) {
-		if ( self::validate( $values, $files ) ) {
+	public static function create( $values, $files = null, $create = true ) {
+		if ( self::validate( $values, $files, $create ) ) {
 			$result = BadgrProvider::add_badge_class( $values['name'], $values['issuer_slug'], $values['description'], $files['image']['tmp_name'] );
 			do_action( 'bf2_add_badge_class', $result );
 			return $result;
@@ -145,14 +146,15 @@ class BadgeClass implements Badgr_Entity {
 	 * @param string $entity_id Badge ID.
 	 * @param array  $values Associative array of values to change.
 	 * @param array  $files Files.
+	 * @param boolean $create performed action flag.
 	 *
 	 * @return boolean Whether or not update has succeeded.
 	 */
-	public static function update( $entity_id, $values, $files = null ) {
+	public static function update( $entity_id, $values, $files = null, $create = false ) {
 
 		$badge = BadgeClass::get( $entity_id );
 
-		if ( $badge && self::validate( $values ) ) {
+		if ( $badge && self::validate( $values, $files, $create ) ) {
 			$result = BadgrProvider::update_badge_class( $entity_id, $values['name'], $values['description'], $files );
 			do_action('bf2_update_badge_class', $result, $entity_id);
 			return $result;
@@ -208,12 +210,17 @@ class BadgeClass implements Badgr_Entity {
 	 *
 	 * @param array $values Values.
 	 * @param array $files Files.
-	 *
+	 * @param boolean $create performed action flag.
+	 * 
 	 * @return bool
 	 */
-	public static function validate( $values, $files = null ) {
+	public static function validate( $values, $files = null, $create = true ) {
+		
 		// Not empty.
-		if ( ! isset( $values['name'] ) || ! isset( $values['issuer_slug'] ) || ! isset( $values['description'] ) ) {
+		if ( ! isset( $values['name'] ) || ! isset( $values['description'] ) ) {
+			if ( true === $create ) {
+				if ( ! isset( $values['issuer_slug'] )) return false;
+			}
 			return false;
 		}
 		// TODO File ok.
@@ -221,15 +228,24 @@ class BadgeClass implements Badgr_Entity {
 
 		}
 		// Right type.
-		if ( ! is_string( $values['name'] ) || ! is_string( $values['issuer_slug'] ) || ! is_string( $values['description'] ) ) {
+		if ( ! is_string( $values['name'] ) || ! is_string( $values['description'] ) ) {
+			if ( true === $create ) {
+				if ( ! is_string( $values['issuer_slug'] )) return false;
+			}
 			return false;
 		}
 		// Not too big.
-		if ( strlen( $values['name'] ) > 255 || strlen( $values['issuer_slug'] ) > 255 ) {
+		if ( strlen( $values['name'] ) > 255 ) {
+			if ( true === $create ) {
+				if ( strlen( $values['issuer_slug'] ) > 255 ) return false;
+			}
 			return false;
 		}
 		// Not too small.
-		if ( strlen( $values['name'] ) < 1 || strlen( $values['issuer_slug'] ) < 16 ) {
+		if ( strlen( $values['name'] ) < 1 ) {
+			if ( true === $create ) {
+				if ( strlen( $values['issuer_slug'] ) < 16 ) return false;
+			}
 			return false;
 		}
 

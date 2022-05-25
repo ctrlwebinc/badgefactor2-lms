@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Changed: Set Sans-serif as email default font
 - Added: filter on revoked assertion on single badge page
 - Added: new entry in language file
+- Added: flag of a performed action to the Badgr_Entity interface
 
 ## 1.4.0
 

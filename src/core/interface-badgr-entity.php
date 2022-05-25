@@ -61,9 +61,10 @@ interface Badgr_Entity {
 	 *
 	 * @param array $values Associated array of values of entity to create.
 	 * @param array $files Files to upload.
+	 * @param boolean $create performed action flag.
 	 * @return string|boolean Id of created entity, or false on error.
 	 */
-	public static function create ( $values, $files = null );
+	public static function create ( $values, $files = null, $create = true  );
 
 
 	/**
@@ -72,9 +73,10 @@ interface Badgr_Entity {
 	 * @param string $entity_id Slug / Entity ID.
 	 * @param array  $values Associative array of values to change.
 	 * @param array  $files Files to upload.
+	 * @param boolean $create performed action flag.
 	 * @return boolean Whether or not update has succeeded.
 	 */
-	public static function update( $entity_id, $values, $files = null );
+	public static function update( $entity_id, $values, $files = null, $create = false );
 
 
 	/**
