@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## 1.5.0-pre-release
+
 - Added: Intervention Image to phar
 - Modified: renamed phar to reflect contents
 - Added: badgr provider now has an update assertion call
@@ -18,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added: filter on revoked assertion on single badge page
 - Added: new entry in language file
 - Added: flag of a performed action to the Badgr_Entity interface
+- Fixed: backoffice badge class update now works
 
 ## 1.4.0
 
