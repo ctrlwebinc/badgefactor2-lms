@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## 1.5.1
+
+- Updated: CMB2 updated to 2.10.1 to fix php 8.0 deprecation
+
+Note: Social Shares in this version is only partially complete:
+configuration in back office presently has no effect.
+
 ## 1.5.0-pre-release
 
 - Added: Intervention Image to phar
