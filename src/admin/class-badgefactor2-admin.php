@@ -855,7 +855,7 @@ class BadgeFactor2_Admin {
 			update_post_meta( $badge_request_id, 'approver', $approver->ID );
 			$issued_on = gmdate( 'Y-m-d H:i:s' );
 			add_post_meta( $badge_request_id, 'dates', array( 'granted' =>  $issued_on ) );
-			
+
 			$assertion_entity_id = BadgrProvider::add_assertion( $badge_entity_id, $recipient->user_email, 'email', $issued_on, $evidence_url);
 			add_post_meta( $badge_request_id, 'assertion', $assertion_entity_id );
 			do_action( 'badge_request_approval_confirmation_email', $badge_request_id );
@@ -1199,10 +1199,12 @@ class BadgeFactor2_Admin {
 	 */
 	public static function ajax_approve_badge_request() {
 
-		$current_user     = wp_get_current_user();
-		$badge_request_id = $_POST['badge_request_id'];
+		$current_user = wp_get_current_user();
+		if ( $current_user > 0 ) {
+			$badge_request_id = $_POST['badge_request_id'];
 
-		do_action( 'approve_badge_request', $current_user, $badge_request_id, true );
+			do_action( 'approve_badge_request', $current_user, $badge_request_id, true );
+		}
 	}
 
 
@@ -1213,11 +1215,13 @@ class BadgeFactor2_Admin {
 	 */
 	public static function ajax_reject_badge_request() {
 
-		$current_user     = wp_get_current_user();
-		$badge_request_id = $_POST['badge_request_id'];
-		$rejection_reason = $_POST['rejection_reason'];
+		$current_user = wp_get_current_user();
+		if ( $current_user > 0 ) {
+			$badge_request_id = $_POST['badge_request_id'];
+			$rejection_reason = $_POST['rejection_reason'];
 
-		do_action( 'reject_badge_request', $current_user, $badge_request_id, $rejection_reason, true );
+			do_action( 'reject_badge_request', $current_user, $badge_request_id, $rejection_reason, true );
+		}
 	}
 
 
@@ -1228,11 +1232,13 @@ class BadgeFactor2_Admin {
 	 */
 	public static function ajax_revise_badge_request() {
 
-		$current_user     = wp_get_current_user();
-		$badge_request_id = $_POST['badge_request_id'];
-		$revision_reason  = $_POST['revision_reason'];
+		$current_user = wp_get_current_user();
+		if ( $current_user > 0 ) {
+			$badge_request_id = $_POST['badge_request_id'];
+			$revision_reason  = $_POST['revision_reason'];
 
-		do_action( 'revise_badge_request', $current_user, $badge_request_id, $revision_reason, true );
+			do_action( 'revise_badge_request', $current_user, $badge_request_id, $revision_reason, true );
+		}
 	}
 
 
