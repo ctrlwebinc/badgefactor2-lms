@@ -91,6 +91,13 @@ class SocialShare {
 		}
 	}
 
+    /**
+     * Get shares
+     * 
+     * @param Assertion $assertion
+     * @param BadgePage $badge_page
+     * @param boolean $logged_in_user_s_own_page
+     */
     public static function getShares( $assertion, $badge_page ) {
         $social_share_data = array();
         $share_image_relative_url_start = site_url('/bf2/share/');
@@ -98,12 +105,14 @@ class SocialShare {
         $title =  self::generateOgTitle( $badge_page );
         $url = self::getCurrentUrl();
         $social_share_settings = get_option( 'badgefactor2_social_media_settings' );
+        $badge_url = $assertion->openBadgeId;
 
         if ( $social_share_settings && array_key_exists( 'bf2_social_media_sharing_' . self::MEDIA_FACEBOOK, $social_share_settings ) ) {
             $social_share_data[self::MEDIA_FACEBOOK] = [
                 'sharing_url' => self::generateSharingUrl( $assertion, $badge_page, self::MEDIA_FACEBOOK), 
                 'sharing_text' => 'Share on Facebook',
                 'sharing_classes' => 'share_facebook',
+                'shareable_url' => $badge_url,
                 'url' => $url,
                 'description' => $description,
                 'titre' => $title,
@@ -116,6 +125,7 @@ class SocialShare {
                 'sharing_url' => self::generateSharingUrl( $assertion, $badge_page, self::MEDIA_TWITTER), 
                 'sharing_text' => 'Share on Twitter',
                 'sharing_classes' => 'share_twitter',
+                'shareable_url' => $badge_url,
                 'url' => $url,
                 'description' => $description,
                 'titre' => $title,
@@ -124,17 +134,20 @@ class SocialShare {
         }
 
         if ( $social_share_settings && array_key_exists( 'bf2_social_media_sharing_' . self::MEDIA_LINKEDIN, $social_share_settings ) ) {
+            
             $social_share_data[self::MEDIA_LINKEDIN] = [
                 'sharing_url' => self::generateSharingUrl( $assertion, $badge_page, self::MEDIA_LINKEDIN), 
                 'sharing_text' => 'Share on LinkedIn',
                 'sharing_classes' => 'share_linkedin',
+                'shareable_url' => $badge_url, 
                 'url' => $url,
                 'description' => $description,
                 'titre' => $title,
                 'image_url' => $share_image_relative_url_start . self::MEDIA_LINKEDIN . '/' . base64_encode( $assertion->image),
             ];
         }
-
+        
+        
         return $social_share_data;
     }
 
@@ -199,15 +212,12 @@ class SocialShare {
         $badge_url = urlencode( $assertion->openBadgeId );
         
         if ( 'facebook' == $social_media ) {
-            // https://www.facebook.com/sharer/sharer.php?u=https://iqpf.ctrlweb.dev/apprenants/ctrlweb/badges/badge-numero-3/
             $sharing_url = "https://www.facebook.com/sharer/sharer.php?u=" . $badge_url;
         } else if ( 'twitter' == $social_media ) {
-            // href="https://twitter.com/intent/tweet?text=Hello%20world&url=https://iqpf.ctrlweb.dev/apprenants/ctrlweb/badges/badge-numero-3/
             $sharing_url = "https://twitter.com/intent/tweet?";
             $sharing_url .= "text=" . urlencode( $badge_page->post_title );
             $sharing_url .= "&url=" . $badge_url;
         } else if ( 'linkedin' == $social_media ) {
-            // https://www.linkedin.com/sharing/share-offsite/?url=https://iqpf.ctrlweb.dev/apprenants/ctrlweb/badges/badge-numero-3/
             $sharing_url = "https://www.linkedin.com/sharing/share-offsite/?url=" . $badge_url;
         }
 
