@@ -117,17 +117,19 @@ class Assertion_Controller extends Page_Controller {
 				$fields['logged_in_user_s_own_page'] = $fields['user']->ID == get_current_user_id();
 				foreach ( Assertion::all_for_user( $fields['user'] ) as $a ) {
 					$badgepage = BadgePage::get_by_badgeclass_id( $a->badgeclass );
-					if ( get_query_var( 'badge' ) === $badgepage->post_name ) {
-						$fields['badgepage'] = $badgepage;
-						$fields['assertion'] = $a;
-						break;
+					if ( $badgepage ) {
+						if ( get_query_var( 'badge' ) === $badgepage->post_name ) {
+							$fields['badgepage'] = $badgepage;
+							$fields['assertion'] = $a;
+							break;
+						}
 					}
 				}
 
 				if ( ! isset( $fields['assertion'] ) ) {
 					$is_404 = true;
 				} else {
-					$fields['sharing'] = SocialShare::getShares( $fields['assertion'], $fields['badgepage'] );
+					
 					$fields['badge']  = BadgeClass::get( $fields['assertion']->badgeclass );
 					$fields['issuer'] = Issuer::get( $fields['assertion']->issuer );
 					$fields['badge-request'] = BadgeRequest::get_for_badgeclass_for_user( $fields['assertion']->badgeclass, $fields['user']->ID );
@@ -135,7 +137,8 @@ class Assertion_Controller extends Page_Controller {
 					AssertionPrivacy::enqueue_scripts($fields['badge']->entityId);
 
 					$fields['assertion']->has_privacy_flag = AssertionPrivacy::has_privacy_flag( $fields['badge']->entityId, $fields['user']->ID);
-
+					$fields['sharing'] = SocialShare::getShares( $fields['assertion'], $fields['badgepage'] );
+					
 					global $bf2_template;
 					$bf2_template         = new stdClass();
 					$bf2_template->fields = $fields;
