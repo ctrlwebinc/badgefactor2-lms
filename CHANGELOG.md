@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## 1.5.2
+
+- Fixed: Checking whether admin is logged in before approving/rejecting/requesting-a-modification on a badge request.
+
 ## 1.5.1
 
 - Updated: CMB2 updated to 2.10.1 to fix php 8.0 deprecation
