@@ -106,7 +106,7 @@ class SocialShare {
         $url = self::getCurrentUrl();
         $social_share_settings = get_option( 'badgefactor2_social_media_settings' );
         $badge_url = $assertion->openBadgeId;
-        $additional_css_classes = ( $assertion->has_privacy_flag ) ? ' has_privacy_flag' : '';
+        $additional_css_classes = ( $assertion->has_privacy_flag ) ? ' bf2_social_share has_privacy_flag' : '';
 
         if ( $social_share_settings && array_key_exists( 'bf2_social_media_sharing_' . self::MEDIA_FACEBOOK, $social_share_settings ) ) {
             $social_share_data[self::MEDIA_FACEBOOK] = [

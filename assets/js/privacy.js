@@ -35,6 +35,7 @@ jQuery(document).ready(function ($) {
                 $('#assertion_visibility_toggle').removeClass('visibility-updating');
                  if ( response.has_privacy_flag == true ) {
                     $('#assertion_visibility_toggle').addClass('visibility-private');
+                    $('.bf2_social_share').addClass('has_privacy_flag');
                  } else {
                     $('#assertion_visibility_toggle').removeClass('visibility-private');
                     $('.has_privacy_flag').removeClass('has_privacy_flag');
