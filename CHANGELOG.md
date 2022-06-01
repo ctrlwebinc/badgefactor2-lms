@@ -6,8 +6,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## 1.6.0
+
+- Modified: Updated privacy.js to add/remove privacy flag class when toggling visibility
 - Added: additional classes to sharing_classes in $social_share_data array when there is an assertion privacy
+- Added: shareable URL to $social_share_data array
 - Fixed: checking if $badgepage is false in Assertion_Controller class when looping on assertions
+- Added: social share backoffice configuration
+
 
 ## 1.5.2
 
