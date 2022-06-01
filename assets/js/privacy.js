@@ -37,6 +37,7 @@ jQuery(document).ready(function ($) {
                     $('#assertion_visibility_toggle').addClass('visibility-private');
                  } else {
                     $('#assertion_visibility_toggle').removeClass('visibility-private');
+                    $('.has_privacy_flag').removeClass('has_privacy_flag');
                  }
                 },
             error: function ( error ) { console.log(error);}
