@@ -22,6 +22,7 @@ jQuery(document).ready(function ($) {
     $('body').on('click', '.has_privacy_flag', function (e) {
         e.preventDefault();
         var popupOverlay = $('.assertion_privacy_popup_overlay');
+        popupOverlay.css('opacity','1');
         popupOverlay.css('display','flex');
     });
 
@@ -40,7 +41,7 @@ jQuery(document).ready(function ($) {
             popupOverlay.css('display','none');
         } else if (actionToTake == 'make_assertion_visible') {
             $('#assertion_visibility_toggle').addClass('visibility-updating');
-            $('.assertion_privacy_popup_content').text(updatingMessage);
+            $('.assertion_privacy_popup_action_message').addClass('show').text(updatingMessage);
             toggle_assertion_privacy(true) 
         }
     });
@@ -49,7 +50,7 @@ jQuery(document).ready(function ($) {
         var popupOverlay = $('.assertion_privacy_popup_overlay');
         var confirmingMessage = $('#assertion_privacy_popup_confirming_message').val();
         var overlayContent = $('.assertion_privacy_popup_content').text();
-        
+
         $('#assertion_visibility_toggle').addClass('visibility-updating');
 
         $.ajax({
@@ -70,10 +71,11 @@ jQuery(document).ready(function ($) {
                         $('#assertion_visibility_toggle').removeClass('visibility-private');
                         $('.has_privacy_flag').removeClass('has_privacy_flag');
                         if (makePublic == true) {
-                            $('.assertion_privacy_popup_content').text(confirmingMessage);
+                            $('.assertion_privacy_popup_action_message').text(confirmingMessage);
                             setTimeout(function() {
+                                $('.assertion_privacy_popup_action_message').text('');
+                                $('.assertion_privacy_popup_action_message').removeClass('show');
                                 popupOverlay.css('display','none');
-                                $('.assertion_privacy_popup_content').html(overlayContent);
                             }, 3000);
                         }
                     }
