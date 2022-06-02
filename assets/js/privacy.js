@@ -34,8 +34,6 @@ jQuery(document).ready(function ($) {
     $('body').on('click', '#assertion_privacy_btn_confirm', function (e) {
         var popupOverlay = $('.assertion_privacy_popup_overlay');
         var updatingMessage = $('#assertion_privacy_popup_updating_message').val();
-        var confirmingMessage = $('#assertion_privacy_popup_confirming_message').val();
-        var overlayContent = $('.assertion_privacy_popup_content').text();
         var actionToTake = $('input[type=radio][name=prompt_assertion_privacy]:checked').val();
 
         if (actionToTake == 'close') {
@@ -43,16 +41,15 @@ jQuery(document).ready(function ($) {
         } else if (actionToTake == 'make_assertion_visible') {
             $('#assertion_visibility_toggle').addClass('visibility-updating');
             $('.assertion_privacy_popup_content').text(updatingMessage);
-            toggle_assertion_privacy()
-            $('.assertion_privacy_popup_content').text(confirmingMessage);
-            setTimeout(function() {
-                popupOverlay.css('display','none');
-                $('.assertion_privacy_popup_content').html(overlayContent);
-            }, 3000);
+            toggle_assertion_privacy(true) 
         }
     });
 
-    function toggle_assertion_privacy() {
+    function toggle_assertion_privacy(makePublic = false) {
+        var popupOverlay = $('.assertion_privacy_popup_overlay');
+        var confirmingMessage = $('#assertion_privacy_popup_confirming_message').val();
+        var overlayContent = $('.assertion_privacy_popup_content').text();
+        
         $('#assertion_visibility_toggle').addClass('visibility-updating');
 
         $.ajax({
@@ -66,13 +63,20 @@ jQuery(document).ready(function ($) {
             },
             success: function (response) {
                 $('#assertion_visibility_toggle').removeClass('visibility-updating');
-                 if ( response.has_privacy_flag == true ) {
-                    $('#assertion_visibility_toggle').addClass('visibility-private');
-                    $('.bf2_social_share').addClass('has_privacy_flag');
-                 } else {
-                    $('#assertion_visibility_toggle').removeClass('visibility-private');
-                    $('.has_privacy_flag').removeClass('has_privacy_flag');
-                 }
+                    if ( response.has_privacy_flag == true ) {
+                        $('#assertion_visibility_toggle').addClass('visibility-private');
+                        $('.bf2_social_share').addClass('has_privacy_flag');
+                    } else {
+                        $('#assertion_visibility_toggle').removeClass('visibility-private');
+                        $('.has_privacy_flag').removeClass('has_privacy_flag');
+                        if (makePublic == true) {
+                            $('.assertion_privacy_popup_content').text(confirmingMessage);
+                            setTimeout(function() {
+                                popupOverlay.css('display','none');
+                                $('.assertion_privacy_popup_content').html(overlayContent);
+                            }, 3000);
+                        }
+                    }
                 },
             error: function ( error ) { console.log(error);}
         });

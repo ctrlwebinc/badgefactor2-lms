@@ -41,3 +41,12 @@ jQuery(document).ready(function ($) {
 		
 	}
 });
+
+function copyShareableLink() {
+    if (document.querySelector('i.has_privacy_flag') == null) {
+        var copyText = document.getElementById("linkedin_shareable_link").value;
+        navigator.clipboard.writeText(copyText).then(() => {
+            alert("URL copié dans le presse-papier");
+        });
+    }
+}
