@@ -244,6 +244,16 @@ textarea.c-bf2__input {
   height: auto;
   background-color: white;
 }
+@media only screen and (max-width: 480px) {
+  .assertion_privacy_popup_overlay .assertion_privacy_popup_wrap {
+    width: 95%;
+  }
+}
+@media only screen and (max-width: 1024px) {
+  .assertion_privacy_popup_overlay .assertion_privacy_popup_wrap {
+    width: 65%;
+  }
+}
 .assertion_privacy_popup_overlay .assertion_privacy_popup_wrap .assertion_privacy_popup_content {
   padding: 30px;
 }
