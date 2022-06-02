@@ -18,8 +18,41 @@
  */
 jQuery(document).ready(function ($) {
 
-    $('#assertion_visibility_toggle').on('click', function (e) {
+    /* Show assertion privacy popup */
+    $('body').on('click', '.has_privacy_flag', function (e) {
+        e.preventDefault();
+        var popupOverlay = $('.assertion_privacy_popup_overlay');
+        popupOverlay.css('display','flex');
+    });
 
+    // click on eye icon
+    $('#assertion_visibility_toggle').on('click', function (e) {
+        toggle_assertion_privacy()
+    })
+
+    /* Assertion privacy popup */
+    $('body').on('click', '#assertion_privacy_btn_confirm', function (e) {
+        var popupOverlay = $('.assertion_privacy_popup_overlay');
+        var updatingMessage = $('#assertion_privacy_popup_updating_message').val();
+        var confirmingMessage = $('#assertion_privacy_popup_confirming_message').val();
+        var overlayContent = $('.assertion_privacy_popup_content').text();
+        var actionToTake = $('input[type=radio][name=prompt_assertion_privacy]:checked').val();
+
+        if (actionToTake == 'close') {
+            popupOverlay.css('display','none');
+        } else if (actionToTake == 'make_assertion_visible') {
+            $('#assertion_visibility_toggle').addClass('visibility-updating');
+            $('.assertion_privacy_popup_content').text(updatingMessage);
+            toggle_assertion_privacy()
+            $('.assertion_privacy_popup_content').text(confirmingMessage);
+            setTimeout(function() {
+                popupOverlay.css('display','none');
+                $('.assertion_privacy_popup_content').html(overlayContent);
+            }, 3000);
+        }
+    });
+
+    function toggle_assertion_privacy() {
         $('#assertion_visibility_toggle').addClass('visibility-updating');
 
         $.ajax({
@@ -43,6 +76,6 @@ jQuery(document).ready(function ($) {
                 },
             error: function ( error ) { console.log(error);}
         });
-    })
+    }
 
 });

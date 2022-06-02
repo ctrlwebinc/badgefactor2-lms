@@ -106,13 +106,13 @@ class SocialShare {
         $url = self::getCurrentUrl();
         $social_share_settings = get_option( 'badgefactor2_social_media_settings' );
         $badge_url = $assertion->openBadgeId;
-        $additional_css_classes = ( $assertion->has_privacy_flag ) ? ' bf2_social_share has_privacy_flag' : '';
+        $additional_css_classes = ( $assertion->has_privacy_flag ) ? ' has_privacy_flag' : '';
 
         if ( $social_share_settings && array_key_exists( 'bf2_social_media_sharing_' . self::MEDIA_FACEBOOK, $social_share_settings ) ) {
             $social_share_data[self::MEDIA_FACEBOOK] = [
                 'sharing_url' => self::generateSharingUrl( $assertion, $badge_page, self::MEDIA_FACEBOOK), 
                 'sharing_text' => 'Share on Facebook',
-                'sharing_classes' => 'share_facebook' . $additional_css_classes,
+                'sharing_classes' => 'share_facebook bf2_social_share' . $additional_css_classes,
                 'shareable_url' => $badge_url,
                 'url' => $url,
                 'description' => $description,
@@ -125,7 +125,7 @@ class SocialShare {
             $social_share_data[self::MEDIA_TWITTER] = [
                 'sharing_url' => self::generateSharingUrl( $assertion, $badge_page, self::MEDIA_TWITTER), 
                 'sharing_text' => 'Share on Twitter',
-                'sharing_classes' => 'share_twitter' . $additional_css_classes,
+                'sharing_classes' => 'share_twitter bf2_social_share' . $additional_css_classes,
                 'shareable_url' => $badge_url,
                 'url' => $url,
                 'description' => $description,
@@ -139,7 +139,7 @@ class SocialShare {
             $social_share_data[self::MEDIA_LINKEDIN] = [
                 'sharing_url' => self::generateSharingUrl( $assertion, $badge_page, self::MEDIA_LINKEDIN), 
                 'sharing_text' => 'Share on LinkedIn',
-                'sharing_classes' => 'share_linkedin' . $additional_css_classes,
+                'sharing_classes' => 'share_linkedin bf2_social_share' . $additional_css_classes,
                 'shareable_url' => $badge_url, 
                 'url' => $url,
                 'description' => $description,
