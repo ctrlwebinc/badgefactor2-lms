@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## 1.6.1
+
 - Modified: moved assertion privacy popup handling to badgefactor2 privacy.js
 - Modified: moved assertion privacy popup styling to badgefactory2 public.css
 - Added: new entries in the language file
