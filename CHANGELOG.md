@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## 1.6.2
+
+- Modified: updated plugin version to 1.6.2 for cache busting
+
 ## 1.6.1
 
 - Modified: moved assertion privacy popup handling to badgefactor2 privacy.js

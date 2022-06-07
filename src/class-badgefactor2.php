@@ -49,7 +49,7 @@ class BadgeFactor2 {
 	 *
 	 * @var string
 	 */
-	public $version = '2.0.1-alpha';
+	public $version = '1.6.2';
 
 	/**
 	 * The single instance of the class.
