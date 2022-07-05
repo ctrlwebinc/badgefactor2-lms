@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- Added: get_user method to BadgrProvider class.
+- Fixed: coding style.
+
 ## 1.6.2
 
 - Modified: updated plugin version to 1.6.2 for cache busting
