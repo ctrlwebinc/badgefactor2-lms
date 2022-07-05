@@ -134,6 +134,31 @@ class BadgrProvider {
 	}
 
 	/**
+	 * Get user from Badgr Server.
+	 *
+	 * @param string $user_entity_id Badgr User Entity ID.
+	 * @return boolean Whether or not user has a verified email.
+	 */
+	public static function get_user( $user_entity_id ) {
+
+		// Make GET request to /v2/users/{slug-entity_id}.
+		$response = self::get_client()->get( '/v2/users/' . $user_entity_id );
+
+		// Check for 200 response.
+		if ( null !== $response && $response->getStatusCode() === 200 ) {
+			// Check for a non-null recipient field.
+			$response_info = json_decode( $response->getBody() );
+			if ( isset( $response_info->status->success ) &&
+			true === $response_info->status->success &&
+				isset( $response_info->result[0] ) ) {
+				return $response_info->result[0];
+			}
+		}
+
+		return false;
+	}
+
+	/**
 	 * Checks email status in Badgr Server.
 	 *
 	 * @param string $user_entity_id Badgr User Entity ID.
@@ -696,49 +721,59 @@ class BadgrProvider {
 		return false;
 	}
 
-	public static function update_assertion( $assertion_slug, $parameters=[] ) {
-				// Setup body.
-				$request_body = array(
+	/**
+	 * Update assertion.
+	 *
+	 * @param string $assertion_slug Assertion slug.
+	 * @param array  $parameters Parameters.
+	 *
+	 * @return boolean
+	 */
+	public static function update_assertion( $assertion_slug, $parameters = array() ) {
+		// Setup body.
+		$request_body = array();
 
-				);
-		
-				if (true == isset($parameters['issued_on']) && 0 != strlen($parameters['issued_on']) ) {
-					try {
-						$issue_date = new DateTime( $parameters['issued_on'] );
-					} catch ( \Exception $e ) {
-						return false;
-					}
-		
-					$request_body['issuedOn'] = $issue_date->format( 'c' );					
-				}
-		
-				if ( true == isset($parameters['evidence_narrative']) && 0 != strlen($parameters['evidence_narrative']) ) {
-					$evidence['narrative'] = $parameters['evidence_narrative'];
-				}
-				
-				if ( true == isset($parameters['evidence_url']) && 0 != strlen($parameters['evidence_url']) ) {
-					$evidence['url'] = $parameters['evidence_url'];
-				}
-
-				if ( isset( $evidence ) ) {
-					$request_body['evidence'] = array( $evidence );
-				}
-
-				if ( true == empty($request_body) ) {
-					// Nothing to change, update not possible
-					return false;
-				}
-
-				// Make PUT request to /v2/assertions/{entity_id}. Only changed fields are required.
-				$response = self::get_client()->put( '/v2/assertions/' . $assertion_slug, $request_body );
-
-				// Check for 200 response.
-				if ( null !== $response && 200 === $response->getStatusCode() ) {
-
-					return true;
-				}
-		
+		if ( isset( $parameters['issued_on'] ) && 0 !== strlen( $parameters['issued_on'] ) ) {
+			try {
+				$issue_date = new DateTime( $parameters['issued_on'] );
+			} catch ( \Exception $e ) {
 				return false;
+			}
+
+			$request_body['issuedOn'] = $issue_date->format( 'c' );
+		}
+
+		if ( isset( $parameters['evidence_narrative'] ) && 0 !== strlen( $parameters['evidence_narrative'] ) ) {
+			$evidence['narrative'] = $parameters['evidence_narrative'];
+		}
+
+		if ( isset( $parameters['evidence_url'] ) && 0 !== strlen( $parameters['evidence_url'] ) ) {
+			$evidence['url'] = $parameters['evidence_url'];
+		}
+
+		if ( isset( $evidence ) ) {
+			$request_body['evidence'] = array( $evidence );
+		}
+
+		if ( isset( $parameters['recipient'] ) ) {
+			$request_body['recipient'] = $parameters['recipient'];
+		}
+
+		if ( empty( $request_body ) ) {
+			// Nothing to change, update not possible.
+			return false;
+		}
+
+		// Make PUT request to /v2/assertions/{entity_id}. Only changed fields are required.
+		$response = self::get_client()->put( '/v2/assertions/' . $assertion_slug, $request_body );
+
+		// Check for 200 response.
+		if ( null !== $response && 200 === $response->getStatusCode() ) {
+
+			return true;
+		}
+
+		return false;
 	}
 
 
