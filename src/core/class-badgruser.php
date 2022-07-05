@@ -363,7 +363,7 @@ class BadgrUser {
 	 * Profile update hook.
 	 *
 	 * @param int $user_id User ID.
-	 * @return void
+	 * @return bool
 	 */
 	public static function update_user( $user_id ) {
 		$badgr_user_state = get_user_meta( $user_id, self::$meta_key_for_user_state, true );
@@ -376,6 +376,7 @@ class BadgrUser {
 				$user->user_email
 			);
 		}
+		return $result;
 	}
 
 	/**
