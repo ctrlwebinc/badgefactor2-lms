@@ -242,4 +242,33 @@ class BadgeFactor2_CLI extends WP_CLI_Command {
 
 		WP_CLI::success( json_encode(AssertionPrivacy::generate_ajax_callback_parameters( $args[0] )));
 	}
+
+	public function make_badge_request_forms_require_login( $args, $assoc_args ) {
+		if ( ! class_exists( 'GFCommon' ) ) {
+			WP_CLI::error( sprintf( 'Gravity Forms is not active!' ) );
+		}
+
+		$badge_pages = BadgePage::all();
+		$count = count( $badge_pages );
+		$progress = WP_CLI\Utils\make_progress_bar( sprintf( '%d badge pages to verify.', $count ), $count );
+		$fixed = 0;
+		foreach ( BadgePage::all() as $badge_page ) {
+			$metas = get_post_meta( $badge_page->ID );
+
+			if ( 'gravityforms' === $metas['badge_request_form_type'][0] && isset( $metas['badge_request_form_id'][0] ) ) {
+				$gravityform = \GFAPI::get_form( $metas['badge_request_form_id'][0] );
+				if ( $gravityform && ( ! isset( $gravityform['requireLogin'] ) || false === $gravityform['requireLogin'] ) ) {
+					$gravityform['requireLogin'] = true;
+					$result = \GFAPI::update_form( $gravityform );
+					if ( ! $result ) {
+						WP_CLI::error( sprintf( 'An unknown error has occured.' ) );
+					}
+					$fixed++;
+				}
+			}
+			$progress->tick();
+		}
+		WP_CLI::log( sprintf( '%d badge request forms fixed!', $fixed ) );
+
+	}
 }
