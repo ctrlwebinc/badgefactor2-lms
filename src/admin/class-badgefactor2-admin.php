@@ -422,6 +422,33 @@ class BadgeFactor2_Admin {
 			)
 		);
 
+		$badgefactor2_settings->add_field(
+			array(
+				'name'    => __( 'Activate self-evaluation form?', BF2_DATA['TextDomain'] ),
+				'id'      => 'bf2_autoevaluation_form',
+				'type'    => 'checkbox',
+				'default' => false,
+			)
+		);
+
+		$badgefactor2_settings->add_field(
+			array(
+				'name'    => __( 'Login page slug', BF2_DATA['TextDomain'] ),
+				'id'      => 'bf2_login_page_slug',
+				'type'    => 'text',
+				'default' => '',
+			)
+		);
+
+		$badgefactor2_settings->add_field(
+			array(
+				'name'    => __( 'Registration page slug', BF2_DATA['TextDomain'] ),
+				'id'      => 'bf2_registration_page_slug',
+				'type'    => 'text',
+				'default' => '',
+			)
+		);
+
 		/**
 		 * Registers Emails settings page.
 		 */
