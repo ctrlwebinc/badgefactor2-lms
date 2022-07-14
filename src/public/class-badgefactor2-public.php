@@ -178,6 +178,18 @@ class BadgeFactor2_Public {
 		$registration_permalink = ( $registration_permalink != '' ) ? $registration_permalink : $registration_slug;
 		$registration_permalink = site_url( $registration_permalink ) . '/';
 
+		// Handles permalink with WPML
+		if ( class_exists( 'SitePress' ) ) {
+			$my_current_lang = apply_filters( 'wpml_current_language', NULL );
+			$login_permalink = apply_filters( 'wpml_permalink', $login_permalink, $my_current_lang, true ); 
+			
+			$registration_page = get_page_by_path( $registration_slug );
+			if ( !is_null( $registration_page ) ) {
+				$translated_registration_page_id = apply_filters( 'wpml_object_id', $registration_page->ID, 'page', FALSE, $my_current_lang );
+				$registration_permalink = get_permalink( $translated_registration_page_id );
+			}
+		}
+
 		if ( $registration_slug != '' ) {
 			$message = sprintf( 
 					__( 'Please <a href="%s">register</a> or <a href="%s">login</a> first.', BF2_GRAVITYFORMS_DATA['TextDomain'] ), 
