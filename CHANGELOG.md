@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## 1.6.5
+
+- Fixed: bug in BadgrUser.
+
 ## 1.6.4
 
 - Added: WP-CLI command to update badge request forms to require user login.

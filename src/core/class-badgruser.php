@@ -366,6 +366,7 @@ class BadgrUser {
 	 * @return bool
 	 */
 	public static function update_user( $user_id ) {
+		$result = null;
 		$badgr_user_state = get_user_meta( $user_id, self::$meta_key_for_user_state, true );
 		if ( null !== $badgr_user_state && 'created' === $badgr_user_state ) {
 			$user   = get_userdata( $user_id );
