@@ -835,6 +835,28 @@ class BadgeFactor2_Admin {
 
 		$send_by_emails_settings = new_cmb2_box( $args );
 
+		// Legend.
+		$legend  = '';
+		$legend .= '<div style="clear:both;">';
+		$legend .= '<table>';
+		$legend .= sprintf( '<thead><tr><th style="padding: 5px 0">%s</th><th style="padding: 5px 0">%s</th></tr></thead>', __( 'Variable', BF2_DATA['TextDomain'] ), __( 'Description', BF2_DATA['TextDomain'] ) );
+		$legend .= '<tbody>';
+		$legend .= sprintf( '<tr><td style="padding:0"><strong>$site_name$</strong></td><td style="padding:0">%s</td></tr>', __( 'Site name', BF2_DATA['TextDomain'] ) );
+		$legend .= sprintf( '<tr><td style="padding:0"><strong>$award_type$</strong></td><td style="padding:0">%s</td></tr>', __( 'Type: diploma or certificate', BF2_DATA['TextDomain'] ) );
+		$legend .= sprintf( '<tr><td style="padding:0"><strong>$registration_link$</strong></td><td style="padding:0">%s</td></tr>', __( 'The link to the registration page', BF2_DATA['TextDomain'] ) );
+		$legend .= '</tbody>';
+		$legend .= '</table>';
+		$legend .= '</div>';
+
+		$send_by_emails_settings->add_field(
+			array(
+				'name' => 'Available variables',
+				'desc' => $legend,
+				'type' => 'title',
+				'id'   => 'send_certificate_by_email_instructions',
+			)
+		);
+
 		$send_by_emails_settings->add_field(
 			array(
 				'name'    => __( 'Title', BF2_DATA['TextDomain'] ),

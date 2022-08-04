@@ -52,13 +52,24 @@ class SendByEmail {
 					<i class="fa fa-window-close close_send_email" aria-hidden="true"></i>
 				</div>
 				<div class="send_email_popup_content">
+					<div class="sending_message">
+						<span><?php _e( 'We are sending your e-mail...', BF2_DATA['TextDomain'] ) ?></span>
+						<div class="progress container">
+							<span></span>
+							<span></span>
+							<span></span>
+							<span></span>
+						</div>
+					</div>	
 					<div class="send_email_popup_action_message"></div>
-					<p>Send this certificate to someone by email</p>
+					<p class="description"><?php _e( 'Enter the recipient email address in the field below', BF2_DATA['TextDomain'] ) ?></p>
 					<form id="send_email_form" action="" method="post">
 						<input type="hidden" id="badge_page" value="<?php echo get_query_var( 'badge' ) ?>" />
-						<input type="text" required placeholder="Send to email address" id="send_to_email_address" />
+						<input type="hidden" id="badge_type" value="" />
+						<input type="hidden" id="success_message" value="<?php _e( 'Email successfully sent.', BF2_DATA['TextDomain'] ) ?>" />
+						<input type="text" required placeholder="<?php _e( 'E-mail address', BF2_DATA['TextDomain'] ) ?>" id="send_to_email_address" />
 						<?php wp_nonce_field('send-basic-certificate', 'send-basic-certificate-nonce');?>
-						<p><button type="submit" id="send_email_btn_confirm">Send</button></p>
+						<p><button type="submit" id="send_email_btn_confirm"><?php _e( 'Send', BF2_DATA['TextDomain'] ) ?></button></p>
 					</form>
 				</div>
 			</div>
@@ -88,7 +99,7 @@ class SendByEmail {
 			header( 'Content-Type: application/json' );
 			echo json_encode( array( 
 				'success' => false, 
-				'errors' => ['You must be logged in to send this email']
+				'errors' => [ __( 'You must be logged in to send this email.', BF2_DATA['TextDomain'] ) ]
 				) );
 			exit;
 		}
@@ -103,14 +114,14 @@ class SendByEmail {
 		$type = $_REQUEST['type'] ?? 'certificate';
 		
 		if ( empty( $email ) || ! filter_var($email, FILTER_VALIDATE_EMAIL ) ) {
-			$return['errors']['email'] = __( 'Invalide email address.', 'oshin' );
+			$return['errors']['email'] = __( 'Invalide email address.', BF2_DATA['TextDomain'] );
 		}
 
 		// Generates certifate pdf file
 		if ( $type == 'certificate' ) {
 			$filename = BasicCerficateHelper::generate_and_save_certificate( $bage_page_slug );
 		} else {
-			// $filename = CerficateHelper::generate_and_save_certificate( $bage_page_slug );	
+			$filename = CerficateHelper::generate_and_save_certificate( $bage_page_slug );	
 		}
 		
 		
@@ -120,7 +131,7 @@ class SendByEmail {
 
 			$links = self::get_login_registration_links();
 			$array_search = [ '$site_name$', '$award_type$', '$registration_link$' ];
-			$array_replace = [ get_bloginfo( 'sitename' ), 'certificat', self::generate_link_from_url( $links['registration'] ) ];
+			$array_replace = [ get_bloginfo( 'sitename' ), $type, self::generate_link_from_url( $links['registration'] ) ];
 
 			$subject = $email_settings['send_certificate_by_email_subject'];
 			$subject = str_replace( $array_search, $array_replace, $subject );
@@ -133,7 +144,7 @@ class SendByEmail {
 		}
 		$return['success'] = $send;
 		if ( !$send ) {
-			$return['errors']['system'] = 'There was a problem sending the email';
+			$return['errors']['system'] = __( 'There was a problem sending the email.', BF2_DATA['TextDomain'] );
 		} else {
 			unlink( $filename ); // delete file after sending the email
 		}

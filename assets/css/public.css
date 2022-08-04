@@ -334,3 +334,43 @@ textarea.c-bf2__input {
   color: #999;
   cursor: not-allowed;
 }
+
+/* loader */
+.sending_message {
+  text-align: center;
+  display: none;
+  margin-bottom: 20px;
+}
+.progress{
+  height: 40px;
+  position: absolute;
+  top: 40px;
+  left: 50%;
+  margin: -20px 0 0 -40px;
+}
+.progress span{
+  transition: all 500ms ease;
+  background: #4A72DA;
+  box-shadow: 1px 2px 3px #999;
+  height: 10px;
+  width: 10px;  
+  display: inline-block;
+  border-radius: 10px;
+  animation: wave 2s ease  infinite;
+}  
+
+.progress span:nth-child(1){  animation-delay: 0; }
+.progress span:nth-child(2){  animation-delay: 100ms; }
+.progress span:nth-child(3){  animation-delay: 200ms; }
+.progress span:nth-child(4){  animation-delay: 300ms; }
+
+@keyframes wave{
+  0%, 40%, 100% { 
+    transform: translate(0, 0);
+    background-color: #4A72DA;    
+  }
+  10% { 
+    transform: translate(0, -15px); 
+    background-color: #4FC2DA;    
+  }  
+}

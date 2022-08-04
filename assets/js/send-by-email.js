@@ -24,6 +24,8 @@ jQuery(document).ready(function ($) {
         $('.send_email_popup_action_message').html('');
         $('.send_email_popup_action_message').hide();
         var popupOverlay = $('.send_email_popup_overlay');
+        var badgeType = $(this).attr('data-type');
+        $('#badge_type').val(badgeType);
         popupOverlay.css('opacity','1');
         popupOverlay.css('display','flex');
     });
@@ -42,9 +44,13 @@ jQuery(document).ready(function ($) {
         var popupOverlay = $('.send_email_popup_overlay');
         $('#send_email_btn_confirm').text('Sending...');
         $('#send_email_btn_confirm').prop('disabled', true);
+        $('.sending_message').show();
+        $('.send_email_popup_content .description').hide();
         var nonce = $('#send-basic-certificate-nonce').val();
         var toEmail = $('#send_to_email_address').val();
         var badgePage = $('#badge_page').val();
+        var badgeType = $('#badge_type').val();
+        var successMessage = $('#success_message').val();
         var message = '';
 
         $('.send_email_popup_action_message').removeClass('error');
@@ -60,7 +66,8 @@ jQuery(document).ready(function ($) {
                 action: "send_basic_certificate_email",
                 badge_page: badgePage,
                 nonce: nonce,
-                to_email: toEmail
+                to_email: toEmail,
+                type: badgeType
             },
             success: function (response) {
                 if (response.success === false) {
@@ -79,13 +86,17 @@ jQuery(document).ready(function ($) {
                     $('.send_email_popup_action_message').text();
                     $('#send_email_btn_confirm').text("Send");
                     $('#send_email_btn_confirm').prop('disabled', false);
+                    $('.sending_message').hide();
+                    $('.send_email_popup_content .description').show();
 
                 } else {
                     $('.send_email_popup_action_message').addClass('success');
                     $('.send_email_popup_action_message').show();
-                    $('.send_email_popup_action_message').html('Email successfully sent');
+                    $('.send_email_popup_action_message').html(successMessage);
                     $('#send_email_btn_confirm').text("Send");
                     $('#send_email_btn_confirm').prop('disabled', false);
+                    $('.sending_message').hide();
+                    $('.send_email_popup_content .description').show();
                 }
 
             },
