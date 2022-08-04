@@ -813,7 +813,7 @@ class BadgeFactor2_Admin {
 				'name'    => __( 'Title', BF2_DATA['TextDomain'] ),
 				'id'      => 'send_certificate_by_email_subject',
 				'type'    => 'text',
-				'default' => 'This is my %award_type% from %site_name%',
+				'default' => 'This is my $award_type$ from $site_name$',
 			)
 		);
 

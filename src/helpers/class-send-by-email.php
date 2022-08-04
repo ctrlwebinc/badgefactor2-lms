@@ -80,6 +80,7 @@ class SendByEmail {
 			'errors'   => array(),
 		);
 		$send = false;
+		$email_settings = get_option( 'badgefactor2_send_emails_settings' );
 
 		$current_user = wp_get_current_user();
 
@@ -110,12 +111,17 @@ class SendByEmail {
 		$from_email = $current_user->user_email;
 
 		if ( empty( $return['errors'] ) ) {
+
+			$subject = $email_settings['send_certificate_by_email_subject'];
+			$subject = str_replace( '$site_name$', get_bloginfo( 'sitename' ), $subject );
+			$subject = str_replace( '$award_type$', 'certficate', $subject );
+
+			$body = apply_filters( 'the_content', $email_settings['send_certificate_by_email_body'] );
+
 			$to = $email;
-			$subject = 'Look at my certificate!';
-			$message = 'This is the email content';
 			$headers = array ( 'Content-Type: text/html; charset=UTF-8' );
 			$attachments = array( $filename );
-			$send = wp_mail( $to, $subject, $message, $headers, $attachments );
+			$send = wp_mail( $to, $subject, $body, $headers, $attachments );
 		}
 		$return['success'] = $send;
 		if ( !$send ) {
@@ -125,5 +131,45 @@ class SendByEmail {
 		header( 'Content-Type: application/json' );
 		echo json_encode( $return );
 		die;
+	}
+
+	
+	/**
+	 * Sets From email for wp_mail headers
+	 */
+	public static function new_mail_from() {
+		$current_user = wp_get_current_user();
+
+		$from_email = get_bloginfo( 'admin_email' );
+
+		if ( $current_user->ID > 0 ) {
+			$from_email = $current_user->user_email;
+		}
+
+		return $from_email;
+	}
+
+	/**
+	 * Sets From name for wp_mail headers
+	 */
+	public static function new_mail_from_name() {
+		$current_user = wp_get_current_user();
+
+		$from_name = get_bloginfo( 'blogname' );
+
+		if ( $current_user->ID > 0 ) {
+			$from_name = $current_user->first_name . ' ' . $current_user->last_name;
+			$from_name = ( $from_name != '' ) ? $from_name : $current_user->user_nicename;
+			$from_name = ( $from_name != '' ) ? $from_name : get_bloginfo( 'blogname' );
+		}
+
+		return $from_name;
+	}
+
+	/**
+	 * Returns registration link
+	 */
+	public static function get_registration_link() {
+		return "";
 	}
 }
