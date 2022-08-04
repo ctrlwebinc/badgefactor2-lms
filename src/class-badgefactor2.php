@@ -132,6 +132,7 @@ class BadgeFactor2 {
 
 		// Helpers with hooks.
 		Helpers\SocialShare::init_hooks();
+		Helpers\SendByEmail::init_hooks();
 
 		// Admin.
 		if ( is_admin() || ( defined( 'WP_CLI' ) && WP_CLI ) ) {
@@ -171,6 +172,7 @@ class BadgeFactor2 {
 		require_once BF2_ABSPATH . 'src/helpers/class-template.php';
 		require_once BF2_ABSPATH . 'src/helpers/class-text.php';
 		require_once BF2_ABSPATH . 'src/helpers/class-social-share.php';
+		require_once BF2_ABSPATH . 'src/helpers/class-send-by-email.php';
 
 		// Traits.
 		require_once BF2_ABSPATH . 'src/core/trait-singleton.php';

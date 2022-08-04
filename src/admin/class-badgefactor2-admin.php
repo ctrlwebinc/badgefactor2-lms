@@ -786,6 +786,45 @@ class BadgeFactor2_Admin {
 				'default' => false,
 			)
 		);
+
+		/**
+		 * Send by email setting.
+		 */
+		$args = array(
+			'id'           => 'badgefactor2_send_emails_settings_page',
+			'menu_title'   => __( 'Share by email', BF2_DATA['TextDomain'] ),
+			'object_types' => array( 'options-page' ),
+			'option_key'   => 'badgefactor2_send_emails_settings',
+			'parent_slug'  => 'badgefactor2',
+			'tab_group'    => 'badgefactor2',
+			'tab_title'    => __( 'Share by email', BF2_DATA['TextDomain'] ),
+			'capability'   => 'manage_badgr',
+		);
+
+		// 'tab_group' property is supported in > 2.4.0.
+		if ( version_compare( CMB2_VERSION, '2.4.0' ) ) {
+			$args['display_cb'] = 'badgefactor2_options_display_with_tabs';
+		}
+
+		$send_by_emails_settings = new_cmb2_box( $args );
+
+		$send_by_emails_settings->add_field(
+			array(
+				'name'    => __( 'Title', BF2_DATA['TextDomain'] ),
+				'id'      => 'send_certificate_by_email_subject',
+				'type'    => 'text',
+				'default' => 'This is my %award_type% from %site_name%',
+			)
+		);
+
+		$send_by_emails_settings->add_field(
+			array(
+				'name'    => __( 'Body', BF2_DATA['TextDomain'] ),
+				'id'      => 'send_certificate_by_email_body',
+				'type'    => 'wysiwyg',
+				'default' => 'Here is the body of the email'
+			)
+		);
 	}
 
 
