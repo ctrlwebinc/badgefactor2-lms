@@ -54,6 +54,7 @@ class BadgeFactor2_Public {
 		add_filter( 'template_include', array( Issuer_Controller::class, 'archive' ), 20 );
 		add_filter( 'template_include', array( Issuer_Controller::class, 'single' ), 20 );
 		add_filter( 'document_title_parts', array( Assertion_Controller::class, 'title' ), 20 );
+		add_filter( 'unlogged_user_badge_request_form_message', array( self::class, 'badge_request_message_for_unlogged_user' ), 20, 2 );
 	}
 
 
@@ -159,5 +160,49 @@ class BadgeFactor2_Public {
 	public static function load_resources() {
 		wp_enqueue_style( 'badgefactor2-css', BF2_BASEURL . 'assets/css/public.css', array(), BF2_DATA['Version'], 'all' );
 		wp_enqueue_script( 'badgefactor2-js', BF2_BASEURL . 'assets/js/public.js', array( 'jquery' ), BF2_DATA['Version'], true );
+	}
+
+	/**
+	 * Shows message for unlogged in users on badge request form
+	 * 
+	 * @return string $permalink
+	 */
+	public static function badge_request_message_for_unlogged_user ( $login_permalink = '', $registration_permalink = '' ) {
+		$options = get_option( 'badgefactor2' );
+
+		$login_slug = ! empty( $options['bf2_login_page_slug'] ) ? $options['bf2_login_page_slug'] : '';
+		$login_permalink = ( $login_permalink != '' ) ? $login_permalink : $login_slug;
+		$login_permalink = site_url( $login_permalink ) . '/';
+
+		$registration_slug = ! empty( $options['bf2_registration_page_slug'] ) ? $options['bf2_registration_page_slug'] : '';
+		$registration_permalink = ( $registration_permalink != '' ) ? $registration_permalink : $registration_slug;
+		$registration_permalink = site_url( $registration_permalink ) . '/';
+
+		// Handles permalink with WPML
+		if ( class_exists( 'SitePress' ) ) {
+			$my_current_lang = apply_filters( 'wpml_current_language', NULL );
+			$login_permalink = apply_filters( 'wpml_permalink', $login_permalink, $my_current_lang, true ); 
+			
+			$registration_page = get_page_by_path( $registration_slug );
+			if ( !is_null( $registration_page ) ) {
+				$translated_registration_page_id = apply_filters( 'wpml_object_id', $registration_page->ID, 'page', FALSE, $my_current_lang );
+				$registration_permalink = get_permalink( $translated_registration_page_id );
+			}
+		}
+
+		if ( $registration_slug != '' ) {
+			$message = sprintf( 
+					__( 'Please <a href="%s">register</a> or <a href="%s">login</a> first.', BF2_GRAVITYFORMS_DATA['TextDomain'] ), 
+					$registration_permalink,
+					$login_permalink
+				);
+		} else {
+			$message = sprintf( 
+					__( 'Please <a href="%s">login</a> first.', BF2_GRAVITYFORMS_DATA['TextDomain'] ), 
+					$login_permalink
+				);
+		}
+			
+		return sprintf( '<p><em>%s</em></p>', $message);
 	}
 }
