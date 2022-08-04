@@ -38,6 +38,7 @@ class SendByEmail {
 	 * @return void
 	 */
 	public static function init_hooks() {
+		add_action( 'init', array( self::class, 'create_attachment_folder' ) );
 		add_action( 'wp_enqueue_scripts', array( self::class, 'add_send_by_email_scripts' ) );
         add_action( 'wp_footer', array( self::class, 'send_certificate_html_code' ) );
 		add_action( 'wp_ajax_send_basic_certificate_email', array( self::class, 'send_by_email' ) );
@@ -220,5 +221,15 @@ class SendByEmail {
 
 	public static function generate_link_from_url( $url ) {
 		return '<a href="' . $url . '" target="_blank">' . $url . '</a>';
+	}
+
+	public static function create_attachment_folder() {
+		$attachment_folder = WP_CONTENT_DIR . '/attachments/';
+		if ( ! is_dir( $attachment_folder ) ) {
+			mkdir( $attachment_folder );
+			$myfile = fopen( $attachment_folder . "index.php", "w");
+			fclose($myfile);
+		}
+			
 	}
 }
