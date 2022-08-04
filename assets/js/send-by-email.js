@@ -23,6 +23,7 @@ jQuery(document).ready(function ($) {
         e.preventDefault();
         $('.send_email_popup_action_message').html('');
         $('.send_email_popup_action_message').hide();
+        $('.sending_message').hide();
         var popupOverlay = $('.send_email_popup_overlay');
         var badgeType = $(this).attr('data-type');
         $('#badge_type').val(badgeType);
@@ -36,6 +37,7 @@ jQuery(document).ready(function ($) {
         var popupOverlay = $('.send_email_popup_overlay');
         $('.send_email_popup_action_message').html('');
         $('.send_email_popup_action_message').hide();
+        $('.sending_message').hide();
         popupOverlay.css('display','none');
     });
 
