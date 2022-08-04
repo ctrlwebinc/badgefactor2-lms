@@ -81,7 +81,7 @@ class SendByEmail {
 		);
 		$send = false;
 		$email_settings = get_option( 'badgefactor2_send_emails_settings' );
-
+		
 		$current_user = wp_get_current_user();
 
 		if ( $current_user->ID == 0 ) {
@@ -100,24 +100,32 @@ class SendByEmail {
 		}
 		$email = $_REQUEST['to_email'] ?? null;
 		$bage_page_slug = $_REQUEST['badge_page'] ?? '';
+		$type = $_REQUEST['type'] ?? 'certificate';
 		
 		if ( empty( $email ) || ! filter_var($email, FILTER_VALIDATE_EMAIL ) ) {
 			$return['errors']['email'] = __( 'Invalide email address.', 'oshin' );
 		}
 
 		// Generates certifate pdf file
-		$filename = BasicCerficateHelper::generate_and_save_certificate( $bage_page_slug );
+		if ( $type == 'certificate' ) {
+			$filename = BasicCerficateHelper::generate_and_save_certificate( $bage_page_slug );
+		} else {
+			// $filename = CerficateHelper::generate_and_save_certificate( $bage_page_slug );	
+		}
+		
 		
 		$from_email = $current_user->user_email;
 
 		if ( empty( $return['errors'] ) ) {
 
+			$links = self::get_login_registration_links();
+			$array_search = [ '$site_name$', '$award_type$', '$registration_link$' ];
+			$array_replace = [ get_bloginfo( 'sitename' ), 'certificat', self::generate_link_from_url( $links['registration'] ) ];
+
 			$subject = $email_settings['send_certificate_by_email_subject'];
-			$subject = str_replace( '$site_name$', get_bloginfo( 'sitename' ), $subject );
-			$subject = str_replace( '$award_type$', 'certficate', $subject );
-
+			$subject = str_replace( $array_search, $array_replace, $subject );
 			$body = apply_filters( 'the_content', $email_settings['send_certificate_by_email_body'] );
-
+			$body = str_replace( $array_search, $array_replace, $body );
 			$to = $email;
 			$headers = array ( 'Content-Type: text/html; charset=UTF-8' );
 			$attachments = array( $filename );
@@ -126,6 +134,8 @@ class SendByEmail {
 		$return['success'] = $send;
 		if ( !$send ) {
 			$return['errors']['system'] = 'There was a problem sending the email';
+		} else {
+			unlink( $filename ); // delete file after sending the email
 		}
 
 		header( 'Content-Type: application/json' );
@@ -169,7 +179,35 @@ class SendByEmail {
 	/**
 	 * Returns registration link
 	 */
-	public static function get_registration_link() {
-		return "";
+	public static function get_login_registration_links() {
+		
+		$options = get_option( 'badgefactor2' );
+
+		$login_slug = ! empty( $options['bf2_login_page_slug'] ) ? $options['bf2_login_page_slug'] : 'connexion';
+		$login_permalink = site_url( $login_slug ) . '/';
+
+		$registration_slug = ! empty( $options['bf2_registration_page_slug'] ) ? $options['bf2_registration_page_slug'] : 'inscription';
+		$registration_permalink = site_url( $registration_slug ) . '/';
+
+		// Handles permalink with WPML
+		if ( class_exists( 'SitePress' ) ) {
+			$my_current_lang = apply_filters( 'wpml_current_language', NULL );
+			$login_permalink = apply_filters( 'wpml_permalink', $login_permalink, $my_current_lang, true ); 
+			
+			$registration_page = get_page_by_path( $registration_slug );
+			if ( !is_null( $registration_page ) ) {
+				$translated_registration_page_id = apply_filters( 'wpml_object_id', $registration_page->ID, 'page', FALSE, $my_current_lang );
+				$registration_permalink = get_permalink( $translated_registration_page_id );
+			}
+		}
+
+		return [
+			'login' => $login_permalink,
+			'registration' => $registration_permalink
+		];
+	}
+
+	public static function generate_link_from_url( $url ) {
+		return '<a href="' . $url . '" target="_blank">' . $url . '</a>';
 	}
 }
