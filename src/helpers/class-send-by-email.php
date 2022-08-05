@@ -113,6 +113,7 @@ class SendByEmail {
 		$email = $_REQUEST['to_email'] ?? null;
 		$bage_page_slug = $_REQUEST['badge_page'] ?? '';
 		$type = $_REQUEST['type'] ?? 'certificate';
+		$award_type = ( $type == 'certficiate' ) ? __( 'certificate', BF2_DATA['TextDomain'] ) : __( 'diploma', BF2_DATA['TextDomain'] );
 		
 		if ( empty( $email ) || ! filter_var($email, FILTER_VALIDATE_EMAIL ) ) {
 			$return['errors']['email'] = __( 'Invalide email address.', BF2_DATA['TextDomain'] );
@@ -132,7 +133,7 @@ class SendByEmail {
 
 			$links = self::get_login_registration_links();
 			$array_search = [ '$site_name$', '$award_type$', '$registration_link$' ];
-			$array_replace = [ get_bloginfo( 'sitename' ), $type, self::generate_link_from_url( $links['registration'] ) ];
+			$array_replace = [ get_bloginfo( 'sitename' ), $award_type, self::generate_link_from_url( $links['registration'] ) ];
 
 			$subject = $email_settings['send_certificate_by_email_subject'];
 			$subject = str_replace( $array_search, $array_replace, $subject );
