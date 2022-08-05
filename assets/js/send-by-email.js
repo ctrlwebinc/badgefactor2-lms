@@ -43,8 +43,10 @@ jQuery(document).ready(function ($) {
 
     $('body').on('submit', '#send_email_form', function (e) {
         e.preventDefault();
-        var popupOverlay = $('.send_email_popup_overlay');
-        $('#send_email_btn_confirm').text('Sending...');
+        // var popupOverlay = $('.send_email_popup_overlay');
+        var btnText = $('#send_email_btn_confirm').text();
+        var btnSendingText = $('#send_email_btn_confirm').attr('data-sending-message');
+        $('#send_email_btn_confirm').text(btnSendingText);
         $('#send_email_btn_confirm').prop('disabled', true);
         $('.sending_message').show();
         $('.send_email_popup_content .description').hide();
@@ -86,7 +88,7 @@ jQuery(document).ready(function ($) {
                     $('.send_email_popup_action_message').html(message);
 
                     $('.send_email_popup_action_message').text();
-                    $('#send_email_btn_confirm').text("Send");
+                    $('#send_email_btn_confirm').text(btnText);
                     $('#send_email_btn_confirm').prop('disabled', false);
                     $('.sending_message').hide();
                     $('.send_email_popup_content .description').show();
@@ -95,7 +97,7 @@ jQuery(document).ready(function ($) {
                     $('.send_email_popup_action_message').addClass('success');
                     $('.send_email_popup_action_message').show();
                     $('.send_email_popup_action_message').html(successMessage);
-                    $('#send_email_btn_confirm').text("Send");
+                    $('#send_email_btn_confirm').text(btnText);
                     $('#send_email_btn_confirm').prop('disabled', false);
                     $('.sending_message').hide();
                     $('.send_email_popup_content .description').show();
@@ -103,7 +105,6 @@ jQuery(document).ready(function ($) {
 
             },
             complete: function (response) {
-                // grecaptcha.reset();
             }
         });
     });

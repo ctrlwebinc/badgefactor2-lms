@@ -70,7 +70,7 @@ class SendByEmail {
 						<input type="hidden" id="success_message" value="<?php _e( 'Email successfully sent.', BF2_DATA['TextDomain'] ) ?>" />
 						<input type="text" required placeholder="<?php _e( 'E-mail address', BF2_DATA['TextDomain'] ) ?>" id="send_to_email_address" />
 						<?php wp_nonce_field('send-basic-certificate', 'send-basic-certificate-nonce');?>
-						<p><button type="submit" id="send_email_btn_confirm"><?php _e( 'Send', BF2_DATA['TextDomain'] ) ?></button></p>
+						<p><button type="submit" data-sending-message="<?php _e( 'Sending...', BF2_DATA['TextDomain'] ) ?>" id="send_email_btn_confirm"><?php _e( 'Send', BF2_DATA['TextDomain'] ) ?></button></p>
 					</form>
 				</div>
 			</div>

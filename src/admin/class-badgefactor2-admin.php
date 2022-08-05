@@ -819,12 +819,12 @@ class BadgeFactor2_Admin {
 		 */
 		$args = array(
 			'id'           => 'badgefactor2_send_emails_settings_page',
-			'menu_title'   => __( 'Share by email', BF2_DATA['TextDomain'] ),
+			'menu_title'   => __( 'Share by e-mail', BF2_DATA['TextDomain'] ),
 			'object_types' => array( 'options-page' ),
 			'option_key'   => 'badgefactor2_send_emails_settings',
 			'parent_slug'  => 'badgefactor2',
 			'tab_group'    => 'badgefactor2',
-			'tab_title'    => __( 'Share by email', BF2_DATA['TextDomain'] ),
+			'tab_title'    => __( 'Share by e-mail', BF2_DATA['TextDomain'] ),
 			'capability'   => 'manage_badgr',
 		);
 

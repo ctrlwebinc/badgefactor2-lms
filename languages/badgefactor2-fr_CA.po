@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Badge Factor 2\n"
 "POT-Creation-Date: 2021-04-28 09:40-0400\n"
-"PO-Revision-Date: 2022-08-04 23:26+0300\n"
+"PO-Revision-Date: 2022-08-05 16:02+0300\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: fr_CA\n"
@@ -1956,6 +1956,10 @@ msgid "Site name"
 msgstr "Nom du site web"
 
 #: src/admin/class-badgefactor2-admin.php
+msgid "Share by e-mail"
+msgstr "Partage par courriel"
+
+#: src/admin/class-badgefactor2-admin.php
 msgid "Type: diploma or certificate"
 msgstr "Type: diplôme ou certificat"
 
@@ -1963,23 +1967,23 @@ msgstr "Type: diplôme ou certificat"
 msgid "The link to the registration page"
 msgstr "Le lien vers la page d'inscription"
 
-#: src/admin/class-badgefactor2-admin.php
+#: src/helpers/class-send-by-email.php
 msgid "Enter the recipient email address in the field below"
 msgstr "Entrer le courriel du destinataire dans le champ ci-dessous"
 
-#: src/admin/class-badgefactor2-admin.php
+#: src/helpers/class-send-by-email.php
 msgid "E-mail address"
 msgstr "Adresse courriel"
 
-#: src/admin/class-badgefactor2-admin.php
+#: src/helpers/class-send-by-email.php
 msgid "Send"
 msgstr "Envoyer"
 
-#: src/admin/class-badgefactor2-admin.php
+#: src/helpers/class-send-by-email.php
 msgid "Invalide email address."
 msgstr "Adresse couriel non valide."
 
-#: src/admin/class-badgefactor2-admin.php
+#: src/helpers/class-send-by-email.php
 msgid "There was a problem sending the email."
 msgstr "Il y a eu un problème lors de l'envoi."
 
@@ -1994,6 +1998,10 @@ msgstr "Envoi de votre courriel en cours..."
 #: src/helpers/class-send-by-email.php
 msgid "Email successfully sent."
 msgstr "Courriel envoyé avec succès."
+
+#: src/helpers/class-send-by-email.php
+msgid "Sending..."
+msgstr "Envoi en cours..."
 
 #~ msgid "You are not an approver for this badge."
 #~ msgstr "Vous n’êtes pas un approbateur pour ce badge."
