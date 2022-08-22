@@ -271,4 +271,32 @@ class BadgeFactor2_CLI extends WP_CLI_Command {
 		WP_CLI::log( sprintf( '%d badge request forms fixed!', $fixed ) );
 
 	}
+
+	public function update_badge_requests_meta_content ( $args, $assoc_args ) {
+		global $wpdb;
+		$results = $wpdb->get_results( "
+			SELECT p.ID, post_content, meta_value 
+			FROM {$wpdb->posts} p
+			JOIN {$wpdb->postmeta} pm
+			ON p.ID = pm.post_id
+			WHERE meta_key = 'content'
+			AND meta_value = 'Formulaire soumis'", 
+			OBJECT 
+		);
+
+		foreach( $results as $post ) {
+			$wpdb->update( 
+				$wpdb->postmeta, 
+				array( 
+					'meta_value' => $post->post_content 
+				), 
+				array( 'post_id' => $post->ID ), 
+				array( 
+					'%s',   // value1
+				), 
+				array( '%d' ) 
+			);
+			echo 'Updating post ID : ' . $post->ID . PHP_EOL;
+		}
+	}
 }
