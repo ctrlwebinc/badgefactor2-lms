@@ -274,6 +274,11 @@ class BadgeFactor2_CLI extends WP_CLI_Command {
 
 	public function update_badge_requests_meta_content ( $args, $assoc_args ) {
 		global $wpdb;
+
+		if ( count( $args ) > 0 ) {
+			WP_CLI::error( 'Usage: update_badge_requests_meta_content' );
+		}
+
 		$results = $wpdb->get_results( "
 			SELECT p.ID, post_content, meta_value 
 			FROM {$wpdb->posts} p
@@ -284,19 +289,45 @@ class BadgeFactor2_CLI extends WP_CLI_Command {
 			OBJECT 
 		);
 
-		foreach( $results as $post ) {
-			$wpdb->update( 
-				$wpdb->postmeta, 
-				array( 
-					'meta_value' => $post->post_content 
-				), 
-				array( 'post_id' => $post->ID ), 
-				array( 
-					'%s',   // value1
-				), 
-				array( '%d' ) 
-			);
-			echo 'Updating post ID : ' . $post->ID . PHP_EOL;
+		$to_update = count( $results );
+		$updated = 0;
+
+		
+
+		if ( $to_update > 0 ) {
+			WP_CLI::log( sprintf( '%d badge requests to update', $to_update ) );
+
+			foreach( $results as $post ) {
+				
+				// update post meta
+				update_post_meta( $post->ID, 'content', $post->post_content );
+
+				// update post, set post_content to blank
+				$wpdb->update( 
+					$wpdb->posts, 
+					array( 
+						'post_content' => '' 
+					), 
+					array( 'ID' => $post->ID ), 
+					array( 
+						'%s',   // value1
+					), 
+					array( '%d' ) 
+				);
+								
+				// stamp
+				update_post_meta( $post->ID, 'cli_update_stamp', 'CLI update on ' . date( 'Y-m-d H:i:s' ) );
+
+				WP_CLI::log( sprintf( 'Post ID %d updated', $post->ID ) );
+				
+				$updated++;
+			}
+			
+			WP_CLI::log( sprintf( '%d badge requests updated!', $updated ) );
+		} else {
+			WP_CLI::log( 'There is nothing to update.' );
 		}
+
+		
 	}
 }
