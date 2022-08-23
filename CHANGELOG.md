@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+
+## 1.6.4
+
+- Fixed: CLI that fixes badge requests meta content
+
 ## 1.6.3
 
 - Added: get_user method to BadgrProvider class.
