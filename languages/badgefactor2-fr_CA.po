@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Badge Factor 2\n"
 "POT-Creation-Date: 2021-04-28 09:40-0400\n"
-"PO-Revision-Date: 2022-07-15 15:59+0300\n"
+"PO-Revision-Date: 2022-08-17 16:46+0300\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: fr_CA\n"
@@ -1933,15 +1933,7 @@ msgstr "Lien copié dans le presse-papier"
 
 #: template/single-assertion.tpl.php
 msgid "Share the badge on social networks"
-msgstr "Partager le badge sur le réseaux sociaux"
-
-#: src/helpers/class-buddypress.php
-msgid "My account"
-msgstr "Mon compte"
-
-#: src/helpers/class-buddypress.php
-msgid "Logout"
-msgstr "Se déconnecter"
+msgstr "Partager le badge sur les réseaux sociaux"
 
 #~ msgid "You are not an approver for this badge."
 #~ msgstr "Vous n’êtes pas un approbateur pour ce badge."
