@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- Fixed: bug in badgr user
+- Added: WP-CLI command to update badge request forms to require user login.
+- Corrected typo orthographe "Partager sur les réseaux sociaux"
 
 ## 1.6.4
 
