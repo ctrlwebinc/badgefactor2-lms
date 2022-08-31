@@ -1917,7 +1917,7 @@ msgstr "ne pas modifier la visibilité de ce badge et annuler votre partage."
 
 #: template/single-assertion.tpl.php
 msgid "To add the badge on Linkedin"
-msgstr "Pour ajouter le badge sur Linkedin"
+msgstr "Pour ajouter le badge à votre profil Linkedin"
 
 #: template/single-assertion.tpl.php
 msgid "Copy the link"
@@ -1933,7 +1933,7 @@ msgstr "Lien copié dans le presse-papier"
 
 #: template/single-assertion.tpl.php
 msgid "Share the badge on social networks"
-msgstr "Partager le badge sur les réseaux sociaux"
+msgstr "Partager le badge dans les réseaux sociaux"
 
 #~ msgid "You are not an approver for this badge."
 #~ msgstr "Vous n’êtes pas un approbateur pour ce badge."
