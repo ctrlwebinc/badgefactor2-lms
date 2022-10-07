@@ -133,6 +133,9 @@ class BadgePage_Controller extends Page_Controller {
 
 			$fields = array();
 
+			$current_user    = wp_get_current_user();
+			$has_free_access = apply_filters( 'bf2_has_free_access', null );
+
 			if ( 1 === intval( get_query_var( 'form' ) ) &&
 				class_exists( 'BadgeFactor2\BF2_Courses' ) &&
 				class_exists( 'BadgeFactor2\BF2_WooCommerce' ) ) {
@@ -144,7 +147,7 @@ class BadgePage_Controller extends Page_Controller {
 					$product_id = get_post_meta( $course_id, 'course_product', true );
 					if ( $product_id ) {
 						// The client has not purchased this product, redirect to the product page.
-						if ( ! wc_customer_bought_product( wp_get_current_user()->user_email, wp_get_current_user()->ID, $product_id ) ) {
+						if ( ! $has_free_access && ! wc_customer_bought_product( $current_user->user_email, $current_user->ID, $product_id ) ) {
 							wp_redirect( get_permalink( $product_id ) );
 							exit;
 						}

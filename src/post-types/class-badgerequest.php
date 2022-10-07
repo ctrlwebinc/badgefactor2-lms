@@ -549,6 +549,8 @@ class BadgeRequest {
 		$current_user = wp_get_current_user();
 		$badge_id     = $_POST['badge_id'] ?? null;
 
+		$has_free_access = apply_filters( 'bf2_has_free_access', null );
+
 		// The Courses add-on and the WooCommerce add-on are installed.
 		if ( class_exists( 'BadgeFactor2\BF2_Courses' ) &&
 			class_exists( 'BadgeFactor2\BF2_WooCommerce' ) ) {
@@ -561,7 +563,7 @@ class BadgeRequest {
 				$product_id = get_post_meta( $course_id, 'course_product', true );
 				if ( $product_id ) {
 					// The client has not purchased this product, redirect to the product page.
-					if ( ! wc_customer_bought_product( $current_user->user_email, $current_user->ID, $product_id ) ) {
+					if ( ! $has_free_access && ! wc_customer_bought_product( $current_user->user_email, $current_user->ID, $product_id ) ) {
 						$status_code         = 402;
 						$response['message'] = __( 'You must purchase this product before you can access it.', BF2_DATA['TextDomain'] );
 						wp_send_json( $response, $status_code );
