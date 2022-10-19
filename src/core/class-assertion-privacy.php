@@ -97,9 +97,13 @@ class AssertionPrivacy {
 
             $flag_count = $wpdb->get_var( $wpdb->prepare($query,[$badge_slug,$user_id]) );
 
-            static::$privacy_flags[ $badge_slug ] = ( $flag_count > 0);
+            if ( ! isset( static::$privacy_flags[ $badge_slug ] ) ) {
+                static::$privacy_flags[ $badge_slug ] = array();
+            }
+
+            static::$privacy_flags[ $badge_slug ][ $user_id ] = ( $flag_count > 0);
         }
-        return static::$privacy_flags[ $badge_slug ];
+        return static::$privacy_flags[ $badge_slug ][ $user_id ];
     }
 
     public static function get_user_privacy_flags( $user_id ) {
