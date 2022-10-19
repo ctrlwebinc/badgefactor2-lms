@@ -87,7 +87,7 @@ class AssertionPrivacy {
      */
     public static function has_privacy_flag( $badge_slug, $user_id) {
 
-        if ( ! isset( static::$privacy_flags[ $badge_slug ] ) ) {
+        if ( ! isset( static::$privacy_flags[ $badge_slug ][ $user_id ] ) ) {
             global $wpdb;
 
             $table_name = self::get_table_name();
