@@ -136,6 +136,13 @@ class BadgePage_Controller extends Page_Controller {
 			$current_user    = wp_get_current_user();
 			$has_free_access = apply_filters( 'bf2_has_free_access', null );
 
+			$fields['badge_page']      = $post;
+			$fields['badge_entity_id'] = get_post_meta( $post->ID, 'badge', true );
+			$fields['badge_criteria']  = get_post_meta( $post->ID, 'badge_criteria', true );
+			$fields['badge']           = BadgeClass::get( $fields['badge_entity_id'] );
+			$fields['issuer']          = $fields['badge'] ? Issuer::get( $fields['badge']->issuer ) : null;
+			$fields['courses']         = BadgePage::get_courses( $post->ID );
+
 			if ( 1 === intval( get_query_var( 'form' ) ) &&
 				class_exists( 'BadgeFactor2\BF2_Courses' ) &&
 				class_exists( 'BadgeFactor2\BF2_WooCommerce' ) ) {
@@ -159,6 +166,8 @@ class BadgePage_Controller extends Page_Controller {
 			$fields['display-badge-request-form']  = false;
 			$fields['display-page']                = true;
 			if ( 1 === intval( get_query_var( 'form' ) ) ) {
+				$fields['display-members'] = false;
+
 				if ( 1 === intval( get_query_var( 'autoevaluation' ) ) ) {
 					$fields['display-autoevaluation-form'] = true;
 					$fields['display-page']                = false;
@@ -167,7 +176,6 @@ class BadgePage_Controller extends Page_Controller {
 					$fields['display-page']               = false;
 				}
 
-				$fields['display-members'] = false;
 			} else {
 				$fields['display-members'] = true;
 				$assertions = BadgrProvider::get_all_assertions_by_badge_class_slug( $fields['badge_entity_id'] );
@@ -184,7 +192,7 @@ class BadgePage_Controller extends Page_Controller {
 					}
 				);
 				$members = array();
-				 foreach ( $assertions as $assertion ) {
+				foreach ( $assertions as $assertion ) {
 					$user = get_user_by( 'email', $assertion->recipient->plaintextIdentity );
 					if ( $user ) {
 						if (
@@ -202,12 +210,6 @@ class BadgePage_Controller extends Page_Controller {
 				$fields['members']       = $members;
 			}
 
-			$fields['badge_page']      = $post;
-			$fields['badge_entity_id'] = get_post_meta( $post->ID, 'badge', true );
-			$fields['badge_criteria']  = get_post_meta( $post->ID, 'badge_criteria', true );
-			$fields['badge']           = BadgeClass::get( $fields['badge_entity_id'] );
-			$fields['issuer']          = $fields['badge'] ? Issuer::get( $fields['badge']->issuer ) : null;
-			$fields['courses']         = BadgePage::get_courses( $post->ID );
 			foreach ( $fields['courses'] as $i => $course ) {
 				$fields['courses'][ $i ]->is_accessible  = Course::is_accessible( $course->ID );
 				$fields['courses'][ $i ]->is_purchasable = Course::is_purchasable( $course->ID );
