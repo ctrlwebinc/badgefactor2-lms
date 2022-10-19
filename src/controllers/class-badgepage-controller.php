@@ -205,6 +205,15 @@ class BadgePage_Controller extends Page_Controller {
 			if ( ! $assertions ) {
 				$assertions = array();
 			}
+			usort(
+				$assertions,
+				function( $a, $b ) {
+					$datetime1 = strtotime( $a->issuedOn );
+					$datetime2 = strtotime( $b->issuedOn );
+
+					return $datetime2 - $datetime1;
+				}
+			);
 			$members = array();
  			foreach ( $assertions as $assertion ) {
 				$user = get_user_by( 'email', $assertion->recipient->plaintextIdentity );
@@ -216,13 +225,11 @@ class BadgePage_Controller extends Page_Controller {
 						$members[ $assertion->recipient->plaintextIdentity ] = $user;
 					}
 				}
-			}
-			usort(
-				$members,
-				function( $a, $b ) {
-					return strnatcasecmp( $a->display_name, $b->display_name );
+				if ( count( $members ) >= 4 ) {
+					break;
 				}
-			); 
+			}
+			$fields['members_count'] = count( $assertions );
 			$fields['members'] = $members;
 
 			global $bf2_template;
