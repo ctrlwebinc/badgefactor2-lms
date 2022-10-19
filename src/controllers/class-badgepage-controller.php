@@ -166,6 +166,40 @@ class BadgePage_Controller extends Page_Controller {
 					$fields['display-badge-request-form'] = true;
 					$fields['display-page']               = false;
 				}
+
+				$fields['display-members'] = false;
+			} else {
+				$fields['display-members'] = true;
+				$assertions = BadgrProvider::get_all_assertions_by_badge_class_slug( $fields['badge_entity_id'] );
+				if ( ! $assertions ) {
+					$assertions = array();
+				}
+				usort(
+					$assertions,
+					function( $a, $b ) {
+						$datetime1 = strtotime( $a->issuedOn );
+						$datetime2 = strtotime( $b->issuedOn );
+
+						return $datetime2 - $datetime1;
+					}
+				);
+				$members = array();
+				 foreach ( $assertions as $assertion ) {
+					$user = get_user_by( 'email', $assertion->recipient->plaintextIdentity );
+					if ( $user ) {
+						if (
+							!AssertionPrivacy::has_privacy_flag( $fields['badge_entity_id'], $user->ID) // check badge visibility
+							&& FALSE === $assertion->revoked // hide revoked assertion
+						) {
+							$members[ $assertion->recipient->plaintextIdentity ] = $user;
+						}
+					}
+					if ( count( $members ) >= 4 ) {
+						break;
+					}
+				}
+				$fields['members_count'] = count( $assertions );
+				$fields['members']       = $members;
 			}
 
 			$fields['badge_page']      = $post;
@@ -200,37 +234,6 @@ class BadgePage_Controller extends Page_Controller {
 					);
 				}
 			}
-
-			$assertions = BadgrProvider::get_all_assertions_by_badge_class_slug( $fields['badge_entity_id'] );
-			if ( ! $assertions ) {
-				$assertions = array();
-			}
-			usort(
-				$assertions,
-				function( $a, $b ) {
-					$datetime1 = strtotime( $a->issuedOn );
-					$datetime2 = strtotime( $b->issuedOn );
-
-					return $datetime2 - $datetime1;
-				}
-			);
-			$members = array();
- 			foreach ( $assertions as $assertion ) {
-				$user = get_user_by( 'email', $assertion->recipient->plaintextIdentity );
-				if ( $user ) {
-					if ( 
-						!AssertionPrivacy::has_privacy_flag( $fields['badge_entity_id'], $user->ID) // check badge visibility
-						&& FALSE === $assertion->revoked // hide revoked assertion
-					) {
-						$members[ $assertion->recipient->plaintextIdentity ] = $user;
-					}
-				}
-				if ( count( $members ) >= 4 ) {
-					break;
-				}
-			}
-			$fields['members_count'] = count( $assertions );
-			$fields['members'] = $members;
 
 			global $bf2_template;
 			$bf2_template         = new stdClass();
