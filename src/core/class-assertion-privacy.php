@@ -34,6 +34,8 @@ class AssertionPrivacy {
 
     public static $visibility_toggle_action = 'bf2_toggle_assertion_visibility';
 
+    private static $privacy_flags = array();
+
     private static function get_table_name() {
         global $wpdb;
 
@@ -76,17 +78,28 @@ class AssertionPrivacy {
 
     }
 
+    /**
+     * Undocumented function.
+     *
+     * @param string $badge_slug
+     * @param int $user_id
+     * @return boolean
+     */
     public static function has_privacy_flag( $badge_slug, $user_id) {
-        global $wpdb;
 
-        $table_name = self::get_table_name();
+        if ( ! isset( static::$privacy_flags[ $badge_slug ] ) ) {
+            global $wpdb;
 
-        $query = "SELECT COUNT(*) FROM $table_name 
-        WHERE badge_class_slug = %s AND user_id = %d";
+            $table_name = self::get_table_name();
 
-        $flag_count = $wpdb->get_var( $wpdb->prepare($query,[$badge_slug,$user_id]) );
+            $query = "SELECT COUNT(*) FROM $table_name 
+            WHERE badge_class_slug = %s AND user_id = %d";
 
-        return ( $flag_count > 0);
+            $flag_count = $wpdb->get_var( $wpdb->prepare($query,[$badge_slug,$user_id]) );
+
+            static::$privacy_flags[ $badge_slug ] = ( $flag_count > 0);
+        }
+        return static::$privacy_flags[ $badge_slug ];
     }
 
     public static function get_user_privacy_flags( $user_id ) {
