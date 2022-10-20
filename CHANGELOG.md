@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## 1.8.0
-- Refactorisation: Suppression des commandes à 0$ pour les clients institutionnels. Amélioration des performances.
+- Refactored: fixed performance issues.
 
 ## 1.7.0
 
