@@ -141,7 +141,7 @@ jQuery(document).ready(function ($) {
             var form = $(this).closest("form");
             if (confirm(button.data("confirm"))) {
                 action_buttons.attr("disabled", true);
-                var post_id = form.find("input#post_ID").val(),
+                var post_id = form.find("input#post_ID").val();
 
                 $.post(
                     ajaxurl,
