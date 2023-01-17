@@ -677,7 +677,7 @@ class BadgeFactor2_Admin {
 		$emails_settings->add_field(
 			array(
 				'name'    => __( 'Body', BF2_DATA['TextDomain'] ),
-				'id'      => 'badge_request_revision_confirmation_email_body',
+				'id'      => 'badge_request_cancel_revision_confirmation_email_body',
 				'type'    => 'wysiwyg',
 				'default' => 'The revision request for your badge request for the badge $badge$ has been cancelled.<br/>You don\'t need to resubmit your request.',
 				'desc'    => __( 'Available variables: $badge$', BF2_DATA['TextDomain'] ),
