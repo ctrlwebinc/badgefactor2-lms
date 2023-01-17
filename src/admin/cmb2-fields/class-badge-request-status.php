@@ -71,13 +71,13 @@ class Badge_Request_Status {
 
 		if ( 'revision' === $badge_request_status ) {
 			echo '<span class="button-group" style="margin-top: 1rem">';
-			echo sprintf( '<button data-confirm="%s" class="button button-secondary" id="cancel-revise-badge">%s</button>', __( 'Cancel this badge request revision?', BF2_DATA['TextDomain'] ), __( 'Approve', BF2_DATA['TextDomain'] ) );
+			echo sprintf( '<button data-confirm="%s" class="button button-secondary" id="cancel-revise-badge">%s</button>', __( 'Cancel this badge request revision?', BF2_DATA['TextDomain'] ), __( 'Cancel revision', BF2_DATA['TextDomain'] ) );
 			echo '</span>';
 		}
 
 		if ( 'rejected' === $badge_request_status ) {
 			echo '<span class="button-group" style="margin-top: 1rem">';
-			echo sprintf( '<button data-confirm="%s" class="button button-secondary" id="approve-badge">%s</button>', __( 'Cancel this badge request rejection?', BF2_DATA['TextDomain'] ), __( 'Approve', BF2_DATA['TextDomain'] ) );
+			echo sprintf( '<button data-confirm="%s" class="button button-secondary" id="cancel-reject-badge">%s</button>', __( 'Cancel this badge request rejection?', BF2_DATA['TextDomain'] ), __( 'Cancel rejection', BF2_DATA['TextDomain'] ) );
 			echo '</span>';
 		}
 
