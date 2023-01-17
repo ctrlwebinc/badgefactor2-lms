@@ -931,14 +931,14 @@ class BadgeFactor2_Admin {
 			$badge_page      = BadgePage::get_by_badgeclass_id( $badge_entity_id );
 			$approvers       = get_post_meta( $badge_page->ID, 'badge_request_approver', true );
 
-			update_post_meta( $badge_request_id, 'status', 'rejected' );
+			update_post_meta( $badge_request_id, 'status', 'requested' );
 			update_post_meta( $badge_request_id, 'approver', $approver->ID );
-			update_post_meta( $badge_request_id, 'rejection_reason', $rejection_reason );
-			add_post_meta( $badge_request_id, 'dates', array( 'rejected' => gmdate( 'Y-m-d H:i:s' ) ) );
-			do_action( 'badge_request_rejection_confirmation_email', $badge_request_id );
+			//update_post_meta( $badge_request_id, 'rejection_reason', $rejection_reason );
+			add_post_meta( $badge_request_id, 'dates', array( 'rejection cancelled' => gmdate( 'Y-m-d H:i:s' ) ) );
+			//do_action( 'badge_request_rejection_confirmation_email', $badge_request_id );
 			$response = array(
 				'status'  => 'success',
-				'message' => __( 'The badge request has been rejected.', BF2_DATA['TextDomain'] ),
+				'message' => __( 'The badge request rejection has been cancelled.', BF2_DATA['TextDomain'] ),
 			);
 		}
 		wp_send_json( $response );
@@ -1293,8 +1293,6 @@ class BadgeFactor2_Admin {
 		$current_user = wp_get_current_user();
 		if ( $current_user > 0 ) {
 			$badge_request_id = $_POST['badge_request_id'];
-			$rejection_reason = $_POST['rejection_reason'];
-
 			do_action( 'cancel_reject_badge_request', $current_user, $badge_request_id, $rejection_reason, true );
 		}
 	}
