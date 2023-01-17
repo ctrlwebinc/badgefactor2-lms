@@ -334,7 +334,7 @@ class BadgeFactor2_Admin {
 		wp_enqueue_style( 'cmb2-styles-css', BF2_BASEURL . 'lib/CMB2/css/cmb2.min.css', array(), '5.2.5', 'all' );
 		wp_enqueue_script( 'cmb2-conditional-logic', BF2_BASEURL . 'lib/CMB2-conditional-logic/cmb2-conditional-logic.min.js', array( 'jquery' ), '1.0.0', true );
 		wp_enqueue_style( 'badgefactor2-admin-css', BF2_BASEURL . 'assets/css/admin.css', array(), BF2_DATA['Version'], 'all' );
-		wp_enqueue_script( 'badgefactor2-admin-js', BF2_BASEURL . 'assets/js/admin.js', array( 'jquery' ), 'ml04' /*BF2_DATA['Version']*/, true );
+		wp_enqueue_script( 'badgefactor2-admin-js', BF2_BASEURL . 'assets/js/admin.js', array( 'jquery' ), BF2_DATA['Version'], true );
 	}
 
 
