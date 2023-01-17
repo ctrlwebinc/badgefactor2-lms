@@ -934,7 +934,7 @@ class BadgeFactor2_Admin {
 			update_post_meta( $badge_request_id, 'status', 'requested' );
 			update_post_meta( $badge_request_id, 'approver', $approver->ID );
 			//update_post_meta( $badge_request_id, 'rejection_reason', $rejection_reason );
-			add_post_meta( $badge_request_id, 'dates', array( 'rejection cancelled' => gmdate( 'Y-m-d H:i:s' ) ) );
+			add_post_meta( $badge_request_id, 'dates', array( 'rejection_cancelled' => gmdate( 'Y-m-d H:i:s' ) ) );
 			//do_action( 'badge_request_rejection_confirmation_email', $badge_request_id );
 			$response = array(
 				'status'  => 'success',
