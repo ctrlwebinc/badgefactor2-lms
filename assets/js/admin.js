@@ -199,14 +199,13 @@ jQuery(document).ready(function ($) {
             var form = $(this).closest("form");
             if (confirm(button.data("confirm"))) {
                 action_buttons.attr("disabled", true);
-                var post_id = form.find("input#post_ID").val(),
+                var post_id = form.find("input#post_ID").val();
 
                 $.post(
                     ajaxurl,
                     {
                         action: "cancel_revise_badge_request",
                         badge_request_id: post_id,
-                        revision_reason: revision_reason
                     },
                     function (response) {
                         location.reload();
