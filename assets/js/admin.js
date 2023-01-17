@@ -147,7 +147,7 @@ jQuery(document).ready(function ($) {
                 $.post(
                     ajaxurl,
                     {
-                        action: "cancel-reject_badge_request",
+                        action: "cancel_reject_badge_request",
                         badge_request_id: post_id,
                     },
                     function (response) {
