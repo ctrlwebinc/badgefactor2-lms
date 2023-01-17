@@ -134,7 +134,6 @@ jQuery(document).ready(function ($) {
         })
         .on("click", "button#cancel-reject-badge", function (e) {
             e.preventDefault();
-            console.log('badge rejection cancellation');
             var button = $(this);
             var action_buttons = $(this)
                 .closest(".button-group")
