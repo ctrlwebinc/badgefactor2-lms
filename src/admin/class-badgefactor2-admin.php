@@ -84,6 +84,8 @@ class BadgeFactor2_Admin {
 		add_action( 'badge_request_approval_confirmation_email', array( self::class, 'badge_request_approval_confirmation_email' ), 10 );
 		add_action( 'badge_request_rejection_confirmation_email', array( self::class, 'badge_request_rejection_confirmation_email' ), 10 );
 		add_action( 'badge_request_revision_confirmation_email', array( self::class, 'badge_request_revision_confirmation_email' ), 10 );
+		add_action( 'badge_request_cancel_rejection_confirmation_email', array( self::class, 'badge_request_cancel_rejection_confirmation_email' ), 10 );
+		add_action( 'badge_request_cancel_revision_confirmation_email', array( self::class, 'badge_request_cancel_revision_confirmation_email' ), 10 );
 		add_action( 'reject_badge_request', array( self::class, 'reject_badge_request' ), 10, 4 );
 		add_action( 'revise_badge_request', array( self::class, 'revise_badge_request' ), 10, 4 );
 		add_action( 'cancel_reject_badge_request', array( self::class, 'cancel_reject_badge_request' ), 10, 4 );
@@ -569,6 +571,44 @@ class BadgeFactor2_Admin {
 			)
 		);
 
+		// Rejection cancellation confirmation - Badge Request.
+		$emails_settings->add_field(
+			array(
+				'name' => __( 'Badge Request - Rejection cancellation confirmation', BF2_DATA['TextDomain'] ),
+				'desc' => __( 'This email will be sent to a user when a the rejection of a badge request is cancelled.', BF2_DATA['TextDomain'] ),
+				'id'   => 'badge_request_cancel_rejection_confirmation_email',
+				'type' => 'title',
+			)
+		);
+
+		$emails_settings->add_field(
+			array(
+				'name'    => __( 'Email from', BF2_DATA['TextDomain'] ),
+				'id'      => 'badge_request_cancel_rejection_confirmation_email_from',
+				'type'    => 'text',
+				'default' => get_option( 'admin_email' ),
+			)
+		);
+
+		$emails_settings->add_field(
+			array(
+				'name'    => __( 'Title', BF2_DATA['TextDomain'] ),
+				'id'      => 'badge_request_cancel_rejection_confirmation_email_subject',
+				'type'    => 'text',
+				'default' => 'Your badge request has been rejected.',
+			)
+		);
+
+		$emails_settings->add_field(
+			array(
+				'name'    => __( 'Body', BF2_DATA['TextDomain'] ),
+				'id'      => 'badge_request_cancel_rejection_confirmation_email_body',
+				'type'    => 'wysiwyg',
+				'default' => 'The rejection of your request for the badge $badge$ has been cancelled.<br/>You don\'t need to resubmit your request.',
+				'desc'    => __( 'Available variables: $badge$', BF2_DATA['TextDomain'] ),
+			)
+		);
+
 		// Revision request confirmation - Badge Request.
 		$emails_settings->add_field(
 			array(
@@ -606,6 +646,43 @@ class BadgeFactor2_Admin {
 			)
 		);
 
+		// Revision request cancellation - Badge Request.
+		$emails_settings->add_field(
+			array(
+				'name' => __( 'Badge Request - Revision cancellation', BF2_DATA['TextDomain'] ),
+				'desc' => __( 'This email will be sent to a user when a badge request revision is cancelled.', BF2_DATA['TextDomain'] ),
+				'id'   => 'badge_request_cancel_revision_confirmation_email',
+				'type' => 'title',
+			)
+		);
+
+		$emails_settings->add_field(
+			array(
+				'name'    => __( 'Email from', BF2_DATA['TextDomain'] ),
+				'id'      => 'badge_request_cancel_revision_confirmation_email_from',
+				'type'    => 'text',
+				'default' => get_option( 'admin_email' ),
+			)
+		);
+
+		$emails_settings->add_field(
+			array(
+				'name'    => __( 'Title', BF2_DATA['TextDomain'] ),
+				'id'      => 'badge_request_cancel_revision_confirmation_email_subject',
+				'type'    => 'text',
+				'default' => 'The request for you to revise your badge request has been cancelled.',
+			)
+		);
+
+		$emails_settings->add_field(
+			array(
+				'name'    => __( 'Body', BF2_DATA['TextDomain'] ),
+				'id'      => 'badge_request_revision_confirmation_email_body',
+				'type'    => 'wysiwyg',
+				'default' => 'The revision request for your badge request for the badge $badge$ has been cancelled.<br/>You don\'t need to resubmit your request.',
+				'desc'    => __( 'Available variables: $badge$', BF2_DATA['TextDomain'] ),
+			)
+		);
 		/**
 		 * Registers Badgr settings page.
 		 */
@@ -933,9 +1010,8 @@ class BadgeFactor2_Admin {
 
 			update_post_meta( $badge_request_id, 'status', 'requested' );
 			update_post_meta( $badge_request_id, 'approver', $approver->ID );
-			//update_post_meta( $badge_request_id, 'rejection_reason', $rejection_reason );
 			add_post_meta( $badge_request_id, 'dates', array( 'rejection_cancelled' => gmdate( 'Y-m-d H:i:s' ) ) );
-			//do_action( 'badge_request_rejection_confirmation_email', $badge_request_id );
+			do_action( 'badge_request_cancel_rejection_confirmation_email', $badge_request_id );
 			$response = array(
 				'status'  => 'success',
 				'message' => __( 'The badge request rejection has been cancelled.', BF2_DATA['TextDomain'] ),
@@ -1003,9 +1079,8 @@ class BadgeFactor2_Admin {
 
 			update_post_meta( $badge_request_id, 'status', 'requested' );
 			update_post_meta( $badge_request_id, 'approver', $approver->ID );
-			//update_post_meta( $badge_request_id, 'revision_reason', $revision_reason );
 			add_post_meta( $badge_request_id, 'dates', array( 'revision_cancelled' => gmdate( 'Y-m-d H:i:s' ) ) );
-			//do_action( 'badge_request_revision_confirmation_email', $badge_request_id );
+			do_action( 'badge_request_cancel_revision_confirmation_email', $badge_request_id );
 			$response = array(
 				'status'  => 'success',
 				'message' => __( 'The revision for this badge request has been cancelled.', BF2_DATA['TextDomain'] ),
@@ -1134,6 +1209,45 @@ class BadgeFactor2_Admin {
 		return wp_mail( $recipient->user_email, $email_subject, $email_body, array( 'Content-Type: text/html; charset=UTF-8', $from ) );
 	}
 
+	public static function badge_request_cancel_rejection_confirmation_email( $badge_request_id ) {
+		$badge_request = get_post( $badge_request_id );
+		if ( ! $badge_request ) {
+			return false;
+		}
+
+		$badge_entity_id  = get_post_meta( $badge_request_id, 'badge', true );
+		$badge_page       = BadgePage::get_by_badgeclass_id( $badge_entity_id );
+		$badge            = BadgeClass::get( $badge_entity_id );
+		
+		if ( ! $badge_page ) {
+			return false;
+		}
+
+		$recipient_id = get_post_meta( $badge_request_id, 'recipient', true );
+		$recipient    = get_user_by( 'ID', $recipient_id );
+		$email_body       = '';
+
+		$email_subject = cmb2_get_option( 'badgefactor2_emails_settings', 'badge_request_cancel_rejection_confirmation_email_subject', __( 'The rejection of your badge request has been cancelled.', BF2_DATA['TextDomain'] ) );
+		$email_body   .= '<div style="font-family: Sans-serif">';
+		$email_body   .= cmb2_get_option( 'badgefactor2_emails_settings', 'badge_request_cancel_rejection_confirmation_email_body', __( 'The rejection of your request for the badge $badge$ has been cancelled.<br/>You don\'t need to resubmit your request.', BF2_DATA['TextDomain'] ) );
+		$email_body    = str_replace( '$badge$', $badge->name, $email_body );
+		$email_body    = apply_filters( 'the_content', $email_body );
+		$email_body   .= '</div>';
+
+		$sanitized_blog_name = str_replace( '"', "'", get_option( 'blog_name' ) );
+		$from_email          = cmb2_get_option( 'badgefactor2_emails_settings', 'badge_request_rejection_confirmation_email_from', get_option( 'admin_email' ) );
+		$from                = sprintf( "From: \"%s\" <%s>;\n\r", $sanitized_blog_name, $from_email );
+
+		add_filter(
+			'wp_mail_from',
+			function( $original_email_address ) use ( $from_email ) {
+				return $from_email;
+			}
+		);
+
+		return wp_mail( $recipient->user_email, $email_subject, $email_body, array( 'Content-Type: text/html; charset=UTF-8', $from ) );
+	}
+
 
 	/**
 	 * Sends a Badge Request revision request confirmation email.
@@ -1172,7 +1286,46 @@ class BadgeFactor2_Admin {
 		$email_body = str_replace( '$link$', '<a href="' . $email_link . '">' . $email_link . '</a>', $email_body );
 
 		$sanitized_blog_name = str_replace( '"', "'", get_option( 'blog_name' ) );
-		$from_email          = cmb2_get_option( 'badgefactor2_emails_settings', 'badge_request_revision_confirmation_email_from', get_option( 'admin_email' ) );
+		$from_email          = cmb2_get_option( 'badgefactor2_emails_settings', 'badge_request_cancel_revision_confirmation_email_from', get_option( 'admin_email' ) );
+		$from                = sprintf( "From: \"%s\" <%s>;\n\r", $sanitized_blog_name, $from_email );
+
+		add_filter(
+			'wp_mail_from',
+			function( $original_email_address ) use ( $from_email ) {
+				return $from_email;
+			}
+		);
+
+		return wp_mail( $recipient->user_email, $email_subject, $email_body, array( 'Content-Type: text/html; charset=UTF-8', $from ) );
+	}
+
+	public static function badge_request_cancel_revision_confirmation_email( $badge_request_id ) {
+		$badge_request = get_post( $badge_request_id );
+		if ( ! $badge_request ) {
+			return false;
+		}
+
+		$badge_entity_id = get_post_meta( $badge_request_id, 'badge', true );
+		$badge_page      = BadgePage::get_by_badgeclass_id( $badge_entity_id );
+		$badge           = BadgeClass::get( $badge_entity_id );
+		
+		if ( ! $badge_page ) {
+			return false;
+		}
+
+		$recipient_id = get_post_meta( $badge_request_id, 'recipient', true );
+		$recipient    = get_user_by( 'ID', $recipient_id );
+		$email_body      = '';
+		
+		$email_subject = cmb2_get_option( 'badgefactor2_emails_settings', 'badge_request_cancel_revision_confirmation_email_subject', __( 'The request to revise your badge request has been cancelled', BF2_DATA['TextDomain'] ) );
+		$email_body   .= '<div style="font-family: Sans-serif">';
+		$email_body   .= cmb2_get_option( 'badgefactor2_emails_settings', 'badge_request_cancel_revision_confirmation_email_body', __( 'The request to revise your badge request for the badge $badge$ has been cancelled.<br/>You don\'t need to resubmit your request.', BF2_DATA['TextDomain'] ) );
+		$email_body    = str_replace( '$badge$', $badge->name, $email_body );
+		$email_body    = apply_filters( 'the_content', $email_body );
+		$email_body   .= '</div>';
+
+		$sanitized_blog_name = str_replace( '"', "'", get_option( 'blog_name' ) );
+		$from_email          = cmb2_get_option( 'badgefactor2_emails_settings', 'badge_request_cancel_revision_confirmation_email_from', get_option( 'admin_email' ) );
 		$from                = sprintf( "From: \"%s\" <%s>;\n\r", $sanitized_blog_name, $from_email );
 
 		add_filter(
