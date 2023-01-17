@@ -135,11 +135,11 @@ jQuery(document).ready(function ($) {
         .on("click", "button#cancel-reject-badge", function (e) {
             e.preventDefault();
             console.log('badge rejection cancellation');
-            var button = $(this);
-            var action_buttons = $(this)
+            //var button = $(this);
+            /*var action_buttons = $(this)
                 .closest(".button-group")
-                .find("button");
-            var form = $(this).closest("form");
+                .find("button");*/
+            /*var form = $(this).closest("form");
             if (confirm(button.data("confirm"))) {
                 action_buttons.attr("disabled", true);
                 var post_id = form.find("input#post_ID").val();
@@ -155,7 +155,7 @@ jQuery(document).ready(function ($) {
                     }
                 );
             }
-            return false;
+            return false; */
         })
         .on("click", "button#start-badge-revision", function (e) {
             e.preventDefault();
