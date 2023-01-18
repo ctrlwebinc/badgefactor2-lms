@@ -1977,3 +1977,37 @@ msgstr "https://badgefactor2.com/"
 
 #~ msgid "Plugins"
 #~ msgstr "Modules"
+
+msgid "Badge Request - Rejection cancellation confirmation"
+msgstr "Demande de badge - Confirmation d'annulation de rejet"
+
+msgid "This email will be sent to a user when a the rejection of a badge request is cancelled."
+msgstr "Ce courriel sera envoyé à un utilisateur quand un rejet de demande de badge a été annulé."
+
+msgid "Available variables: $badge$"
+msgstr "Variables disponibles: $badge$"
+
+msgid "Badge Request - Revision cancellation"
+msgstr "Demande de badge - Révision annulée"
+
+msgid "This email will be sent to a user when a badge request revision is cancelled."
+msgstr "Ce courriel sera envoyé quand une demande de révision de demande de badge est annulée."
+
+msgid "The badge request rejection has been cancelled."
+msgstr "Le rejet de la demande de badge a été annulé."
+
+msgid "The revision for this badge request has been cancelled."
+msgstr "La révision pour cette demande de badge a été annulée"
+
+msgid "The rejection of your badge request has been cancelled."
+msgstr "Le rejet de votre demande de badge a été annulé."
+
+msgid "The rejection of your request for the badge $badge$ has been cancelled.<br/>You don\'t need to resubmit your request."
+msgstr "Le rejet de votre demande de badge pour le badge $badge$ a été annulé.<br/>Vous n'avez pas à soummettre votre demande à nouveau."
+
+msgid "The request to revise your badge request has been cancelled"
+msgstr "Le demande de révision de votre demande de badge a été anulée"
+
+msgid "The request to revise your badge request for the badge $badge$ has been cancelled.<br/>You don\'t need to resubmit your request."
+msgstr "La demande de révision de votre demande de badge pour le badge $badge$ a été annulée.<br/>Vous n'avez pas à soumettre votre demande à nouveau."
+
