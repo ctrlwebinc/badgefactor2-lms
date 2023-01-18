@@ -2001,3 +2001,20 @@ msgstr "Le demande de révision de votre demande de badge a été anulée"
 msgid "The request to revise your badge request for the badge $badge$ has been cancelled.<br/>You don\'t need to resubmit your request."
 msgstr "La demande de révision de votre demande de badge pour le badge $badge$ a été annulée.<br/>Vous n'avez pas à soumettre votre demande à nouveau."
 
+msgid "Revision cancelled"
+msgstr "Révision annulée"
+
+msgid "Rejection cancelled"
+msgstr "Rejet annulé"
+
+msgid "Cancel this badge request revision?"
+msgstr "Annuler cette révision de demande de badge?"
+
+msgid "Cancel revision"
+msgstr "Annuler révision"
+
+msgid "Cancel this badge request rejection?"
+msgstr "Annuler ce rejet de demande de badge?"
+
+msgid "Cancel rejection"
+msgstr "Annuler rejet"

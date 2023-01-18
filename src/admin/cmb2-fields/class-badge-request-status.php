@@ -57,6 +57,9 @@ class Badge_Request_Status {
 			'granted'   => __( 'Granted', BF2_DATA['TextDomain'] ),
 			'rejected'  => __( 'Rejected', BF2_DATA['TextDomain'] ),
 			'revision'  => __( 'Revision requested', BF2_DATA['TextDomain'] ),
+			'revoked'   => __( 'Revoked', BF2_DATA['TextDomain'] ),
+			'revision_cancelled'   => __( 'Revision cancelled', BF2_DATA['TextDomain'] ),
+			'rejection_cancelled'   => __( 'Rejection cancelled', BF2_DATA['TextDomain'] ),
 		);
 
 		echo sprintf( '<div style="margin-top: 6px">%s</div>', $options[ $badge_request_status ]);
