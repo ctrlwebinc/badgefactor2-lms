@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Added: cancellation of rejected and revised badge requests
 
+## 1.9.0
+- Added : new field criteria badge list on badgr
+
 ## 1.8.0
 - Refactored: fixed performance issues.
 

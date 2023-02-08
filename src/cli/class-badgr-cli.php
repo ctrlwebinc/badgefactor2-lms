@@ -325,33 +325,37 @@ class Badgr_CLI extends WP_CLI_Command {
 	 * @return void
 	 */
 	public function add_badge_class( $args, $assoc_args ) {
-		if ( count( $args ) !== 4 ) {
-			WP_CLI::error( 'Usage: add_badge_class name issuer_slug description image_filename' );
-		}
+        if ( count( $args ) !== 5 ) {
+            WP_CLI::error( 'Usage: add_badge_class name issuer_slug description image_filename' );
+        }
 
-		if ( strlen( $args[0] ) < 1 ) {
-			WP_CLI::error( 'Please provide a name as the 1st argument' );
-		}
+        if ( strlen( $args[0] ) < 1 ) {
+            WP_CLI::error( 'Please provide a name as the 1st argument' );
+        }
 
-		if ( strlen( $args[1] ) < 1 ) {
-			WP_CLI::error( 'Please provide an issuer slug as the 2nd argument' );
-		}
+        if ( strlen( $args[1] ) < 1 ) {
+            WP_CLI::error( 'Please provide an issuer slug as the 2nd argument' );
+        }
 
-		if ( strlen( $args[2] ) < 1 ) {
-			WP_CLI::error( 'Please provide a description as the 3rd argument' );
-		}
+        if ( strlen( $args[2] ) < 1 ) {
+            WP_CLI::error( 'Please provide a description as the 3rd argument' );
+        }
 
-		if ( strlen( $args[3] ) < 1 || ! file_exists( $args[3] ) ) {
-			WP_CLI::error( 'Please provide the name of an existing image file as the 4th argument' );
-		}
+        if ( strlen( $args[3] ) < 1 || ! file_exists( $args[3] ) ) {
+            WP_CLI::error( 'Please provide the name of an existing image file as the 4th argument' );
+        }
 
-		$slug = BadgrProvider::add_badge_class( $args[0], $args[1], $args[2], $args[3] );
+        if ( strlen( $args[4] ) < 1 ) {
+            WP_CLI::error( 'Please provide a criteria as the 4th argument' );
+        }
 
-		if ( $slug ) {
-			WP_CLI::success( 'Badge class added with slug ' . $slug );
-		} else {
-			WP_CLI::error( 'Adding badge class failed.' );
-		}
+        $slug = BadgrProvider::add_badge_class( $args[0], $args[1], $args[2], $args[3], $args[4] );
+
+        if ( $slug ) {
+            WP_CLI::success( 'Badge class added with slug ' . $slug );
+        } else {
+            WP_CLI::error( 'Adding badge class failed.' );
+        }
 	}
 
 
@@ -389,31 +393,35 @@ class Badgr_CLI extends WP_CLI_Command {
 	 * @return void
 	 */
 	public function update_badge_class( $args, $assoc_args ) {
-		if ( ! ( count( $args ) === 3 || count( $args ) === 4 ) ) {
-			WP_CLI::error( 'Usage: update_badge_class badge_class_slug name description [image_filename]' );
-		}
+        if ( ! ( count( $args ) === 4 || count( $args ) === 5 ) ) {
+            WP_CLI::error( 'Usage: update_badge_class badge_class_slug name description [image_filename]' );
+        }
 
-		if ( strlen( $args[0] ) < 1 ) {
-			WP_CLI::error( 'Please provide a badge_class_slug as the 1st argument' );
-		}
+        if ( strlen( $args[0] ) < 1 ) {
+            WP_CLI::error( 'Please provide a badge_class_slug as the 1st argument' );
+        }
 
-		if ( strlen( $args[1] ) < 1 ) {
-			WP_CLI::error( 'Please provide a name as the 2nd argument' );
-		}
+        if ( strlen( $args[1] ) < 1 ) {
+            WP_CLI::error( 'Please provide a name as the 2nd argument' );
+        }
 
-		if ( strlen( $args[2] ) < 1 ) {
-			WP_CLI::error( 'Please provide a description as the 3rd argument' );
-		}
+        if ( strlen( $args[2] ) < 1 ) {
+            WP_CLI::error( 'Please provide a description as the 3rd argument' );
+        }
 
-		if ( count( $args ) === 4 && ( strlen( $args[3] ) < 1 || ! file_exists( $args[3] ) ) ) {
-			WP_CLI::error( 'Please provide the name of an existing image file as the 4th argument' );
-		}
+        if ( count( $args ) === 5 && ( strlen( $args[3] ) < 1 || ! file_exists( $args[3] ) ) ) {
+            WP_CLI::error( 'Please provide the name of an existing image file as the 4th argument' );
+        }
 
-		if ( BadgrProvider::update_badge_class( $args[0], $args[1], $args[2], $args[3] ) ) {
-			WP_CLI::success( 'Updated badge class with slug ' . $args[0] );
-		} else {
-			WP_CLI::error( 'Updating badge class failed.' );
-		}
+        if ( strlen( $args[4] ) < 1 ) {
+            WP_CLI::error( 'Please provide a criteria as the 4th argument' );
+        }
+
+        if ( BadgrProvider::update_badge_class( $args[0], $args[1], $args[2], $args[3] ) ) {
+            WP_CLI::success( 'Updated badge class with slug ' . $args[0] );
+        } else {
+            WP_CLI::error( 'Updating badge class failed.' );
+        }
 	}
 
 

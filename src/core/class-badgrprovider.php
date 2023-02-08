@@ -430,7 +430,7 @@ class BadgrProvider {
 	 * @param string $image Badge Image.
 	 * @return string|boolean BadgeClass Entity ID or false on error.
 	 */
-	public static function add_badge_class( $class_name, $issuer_slug, $description, $image = null ) {
+	public static function add_badge_class( $class_name, $issuer_slug, $description, $image = null, $criteria ) {
 		$image_data = null;
 
 		if ( null !== $image ) {
@@ -447,6 +447,7 @@ class BadgrProvider {
 			'image'       => $image_data,
 			'issuer'      => $issuer_slug,
 			'description' => $description,
+            'criteriaNarrative' => $criteria
 		);
 
 		// Make POST request to /v2/badgeclasses.
@@ -611,7 +612,7 @@ class BadgrProvider {
 	 * @param string $image Badge Image.
 	 * @return string|boolean BadgeClass Entity ID or false on error.
 	 */
-	public static function update_badge_class( $badge_class_slug, $class_name, $description, $image = null ) {
+	public static function update_badge_class( $badge_class_slug, $class_name, $description, $image = null, $criteria ) {
 
 		$image_data = null;
 
@@ -626,6 +627,7 @@ class BadgrProvider {
 		$request_body = array(
 			'name'        => $class_name,
 			'description' => $description,
+            'criteriaNarrative' => $criteria
 		);
 
 		if ( null !== $image_data ) {
