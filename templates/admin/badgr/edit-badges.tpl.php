@@ -86,14 +86,10 @@
 				</div>
                 <div class="cmb-row cmb-type-text table-layout">
                     <div class="cmb-th">
-                        <label for="name"><?php echo __( 'Critère', BF2_DATA['TextDomain'] ); ?></label>
+                        <label for="name"><?php echo __( 'Critères', BF2_DATA['TextDomain'] ); ?></label>
                     </div>
                     <div class="cmb-td">
-                        <input type="text" name="criteria" class="cmb2-text cmb2-text-medium regular-text" required
-                            <?php
-                            if ( isset( $entity ) ) :
-                                ?>
-                                value="<?php echo $entity->criteriaNarrative; ?>"<?php endif; ?>>
+                       <textarea class="bf2_tinymce" name="criteria" cols="60" rows="10"><?php if ( isset( $entity ) ) : ?><?php echo $entity->criteriaNarrative; ?><?php endif; ?></textarea>
                     </div>
                 </div>
 				<div class="cmb-row cmb-type-file table-layout">
