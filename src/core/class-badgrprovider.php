@@ -428,9 +428,10 @@ class BadgrProvider {
 	 * @param string $issuer_slug Issuer slug.
 	 * @param string $description BadgeClass description.
 	 * @param string $image Badge Image.
+	 * @param string $criteria Badge Criteria.
 	 * @return string|boolean BadgeClass Entity ID or false on error.
 	 */
-	public static function add_badge_class( $class_name, $issuer_slug, $description, $image = null, $criteria ) {
+	public static function add_badge_class( $class_name, $issuer_slug, $description, $image = null, $criteria = null) {
 		$image_data = null;
 
 		if ( null !== $image ) {
@@ -610,9 +611,10 @@ class BadgrProvider {
 	 * @param string $class_name BadgeClass name.
 	 * @param string $description BadgeClass description.
 	 * @param string $image Badge Image.
+	 * @param string $criteria Badge Criteria.
 	 * @return string|boolean BadgeClass Entity ID or false on error.
 	 */
-	public static function update_badge_class( $badge_class_slug, $class_name, $description, $image = null, $criteria ) {
+	public static function update_badge_class( $badge_class_slug, $class_name, $description, $image = null, $criteria = null ) {
 
 		$image_data = null;
 
