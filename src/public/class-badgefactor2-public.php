@@ -207,7 +207,7 @@ class BadgeFactor2_Public {
 			
 		return sprintf( '<p><em>%s</em></p>', $message);
 
-
+	}
 
 	/**
 	 * Base filter which denies free access to everyone.
