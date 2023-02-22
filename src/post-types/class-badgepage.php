@@ -52,6 +52,7 @@ class BadgePage {
 	 */
 	private static $slug_plural = 'badge-pages';
 
+	private static $courses = false;
 
 	/**
 	 * Init hooks.
@@ -805,20 +806,25 @@ class BadgePage {
 	 * @return array Courses array.
 	 */
 	public static function get_courses( $badgepage_id ) {
-		if ( is_plugin_active( sprintf( '%s/%s.php', 'bf2-courses', 'bf2-courses' ) ) ) {
-			$query = new \WP_Query(
-				array(
-					'post_type'    => 'course',
-					'meta_key'     => 'course_badge_page',
-					'meta_value'   => $badgepage_id,
-					'meta_compare' => '=',
-					'post_status'  => 'publish',
-				)
-			);
-			$posts = $query->get_posts();
-			return $posts;
+
+		if ( false === static::$courses ) {
+			if ( is_plugin_active( sprintf( '%s/%s.php', 'bf2-courses', 'bf2-courses' ) ) ) {
+				$query = new \WP_Query(
+					array(
+						'post_type'    => 'course',
+						'meta_key'     => 'course_badge_page',
+						'meta_value'   => $badgepage_id,
+						'meta_compare' => '=',
+						'post_status'  => 'publish',
+					)
+				);
+				$posts = $query->get_posts();
+				static::$courses = $posts;
+			} else {
+				static::$courses = array();
+			}
 		}
-		return array();
+		return static::$courses;
 	}
 
 	/**

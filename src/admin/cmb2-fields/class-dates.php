@@ -59,6 +59,8 @@ class Dates {
 			'rejected'  => __( 'Rejected', BF2_DATA['TextDomain'] ),
 			'revision'  => __( 'Revision requested', BF2_DATA['TextDomain'] ),
 			'revoked'   => __( 'Revoked', BF2_DATA['TextDomain'] ),
+			'revision_cancelled'   => __( 'Revision cancelled', BF2_DATA['TextDomain'] ),
+			'rejection_cancelled'   => __( 'Rejection cancelled', BF2_DATA['TextDomain'] ),
 		);
 
 		foreach ( $dates as $data ) {

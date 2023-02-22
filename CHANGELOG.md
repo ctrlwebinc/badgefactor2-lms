@@ -7,13 +7,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- Added: cancellation of rejected and revised badge requests
+
+## 1.9.0
+- Added : new field criteria badge list on badgr
+
+## 1.8.0
+- Refactored: fixed performance issues.
+
+## 1.7.0
+
+- Fixed: client terminology preference
+- Fixed: bug in badgr user
+- Added: WP-CLI command to update badge request forms to require user login.
+
 ## 1.6.5
 
-- Fixed: bug in BadgrUser.
+- Corrected: typo "Partager le badge sur les réseaux sociaux"
 
 ## 1.6.4
 
-- Added: WP-CLI command to update badge request forms to require user login.
+- Fixed: CLI that fixes badge requests meta content
 
 ## 1.6.3
 

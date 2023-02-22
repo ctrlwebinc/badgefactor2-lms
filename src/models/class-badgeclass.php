@@ -132,7 +132,7 @@ class BadgeClass implements Badgr_Entity {
 	 */
 	public static function create( $values, $files = null, $create = true ) {
 		if ( self::validate( $values, $files, $create ) ) {
-			$result = BadgrProvider::add_badge_class( $values['name'], $values['issuer_slug'], $values['description'], $files['image']['tmp_name'] );
+			$result = BadgrProvider::add_badge_class( $values['name'], $values['issuer_slug'], $values['description'], $files['image']['tmp_name'], $values['criteria'] );
 			do_action( 'bf2_add_badge_class', $result );
 			return $result;
 		}
@@ -155,7 +155,7 @@ class BadgeClass implements Badgr_Entity {
 		$badge = BadgeClass::get( $entity_id );
 
 		if ( $badge && self::validate( $values, $files, $create ) ) {
-			$result = BadgrProvider::update_badge_class( $entity_id, $values['name'], $values['description'], $files );
+			$result = BadgrProvider::update_badge_class( $entity_id, $values['name'], $values['description'], $files, $values['criteria'] );
 			do_action('bf2_update_badge_class', $result, $entity_id);
 			return $result;
 		}

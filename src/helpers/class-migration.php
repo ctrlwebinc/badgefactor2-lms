@@ -309,11 +309,12 @@ class Migration {
 			// TODO: trim description.
 			$description = $badge_post->post_content;
 			$image       = get_home_path() . 'wp-content/uploads/' . $badge_post->image_name;
+            $criteria = $badge_post->criteriaNarrative;
 
 			$badge_class_slug = get_post_meta( $badge_post_id, 'badgr_badge_class_slug', true );
 
 			if ( ! $badge_class_slug ) {
-				$badge_class_slug = BadgrProvider::add_badge_class( $class_name, $issuer_slug, $description, $image );
+				$badge_class_slug = BadgrProvider::add_badge_class( $class_name, $issuer_slug, $description, $image, $criteria );
 
 				if ( false === $badge_class_slug ) {
 					update_post_meta( $badge_post_id, 'badgr_badge_class_failed', 'failed' );

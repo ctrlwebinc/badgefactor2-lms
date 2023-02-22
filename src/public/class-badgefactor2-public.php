@@ -47,6 +47,8 @@ class BadgeFactor2_Public {
 		add_filter( 'query_vars', array( self::class, 'add_custom_query_vars' ) );
 		add_action( 'wp_enqueue_scripts', array( self::class, 'load_resources' ) );
 
+		add_filter( 'bf2_has_free_access', array( self::class, 'no_free_access' ), 1 );
+
 		if ( ! BuddyPress::is_active() ) {
 			add_filter( 'template_include', array( self::class, 'member_template' ) );
 		}
@@ -204,5 +206,15 @@ class BadgeFactor2_Public {
 		}
 			
 		return sprintf( '<p><em>%s</em></p>', $message);
+
+
+
+	/**
+	 * Base filter which denies free access to everyone.
+	 *
+	 * @return bool
+	 */
+	public static function no_free_access( $has_access = false ) {
+		return $has_access;
 	}
 }

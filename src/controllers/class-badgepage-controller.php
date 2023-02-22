@@ -133,6 +133,16 @@ class BadgePage_Controller extends Page_Controller {
 
 			$fields = array();
 
+			$current_user    = wp_get_current_user();
+			$has_free_access = apply_filters( 'bf2_has_free_access', null );
+
+			$fields['badge_page']      = $post;
+			$fields['badge_entity_id'] = get_post_meta( $post->ID, 'badge', true );
+			$fields['badge_criteria']  = get_post_meta( $post->ID, 'badge_criteria', true );
+			$fields['badge']           = BadgeClass::get( $fields['badge_entity_id'] );
+			$fields['issuer']          = $fields['badge'] ? Issuer::get( $fields['badge']->issuer ) : null;
+			$fields['courses']         = BadgePage::get_courses( $post->ID );
+
 			if ( 1 === intval( get_query_var( 'form' ) ) &&
 				class_exists( 'BadgeFactor2\BF2_Courses' ) &&
 				class_exists( 'BadgeFactor2\BF2_WooCommerce' ) ) {
@@ -144,7 +154,7 @@ class BadgePage_Controller extends Page_Controller {
 					$product_id = get_post_meta( $course_id, 'course_product', true );
 					if ( $product_id ) {
 						// The client has not purchased this product, redirect to the product page.
-						if ( ! wc_customer_bought_product( wp_get_current_user()->user_email, wp_get_current_user()->ID, $product_id ) ) {
+						if ( ! $has_free_access && ! wc_customer_bought_product( $current_user->user_email, $current_user->ID, $product_id ) ) {
 							wp_redirect( get_permalink( $product_id ) );
 							exit;
 						}
@@ -156,6 +166,8 @@ class BadgePage_Controller extends Page_Controller {
 			$fields['display-badge-request-form']  = false;
 			$fields['display-page']                = true;
 			if ( 1 === intval( get_query_var( 'form' ) ) ) {
+				$fields['display-members'] = false;
+
 				if ( 1 === intval( get_query_var( 'autoevaluation' ) ) ) {
 					$fields['display-autoevaluation-form'] = true;
 					$fields['display-page']                = false;
@@ -163,14 +175,41 @@ class BadgePage_Controller extends Page_Controller {
 					$fields['display-badge-request-form'] = true;
 					$fields['display-page']               = false;
 				}
+
+			} else {
+				$fields['display-members'] = true;
+				$assertions = BadgrProvider::get_all_assertions_by_badge_class_slug( $fields['badge_entity_id'] );
+				if ( ! $assertions ) {
+					$assertions = array();
+				}
+				usort(
+					$assertions,
+					function( $a, $b ) {
+						$datetime1 = strtotime( $a->issuedOn );
+						$datetime2 = strtotime( $b->issuedOn );
+
+						return $datetime2 - $datetime1;
+					}
+				);
+				$members = array();
+				foreach ( $assertions as $assertion ) {
+					$user = get_user_by( 'email', $assertion->recipient->plaintextIdentity );
+					if ( $user ) {
+						if (
+							!AssertionPrivacy::has_privacy_flag( $fields['badge_entity_id'], $user->ID) // check badge visibility
+							&& FALSE === $assertion->revoked // hide revoked assertion
+						) {
+							$members[ $assertion->recipient->plaintextIdentity ] = $user;
+						}
+					}
+					if ( count( $members ) >= 4 ) {
+						break;
+					}
+				}
+				$fields['members_count'] = count( $assertions );
+				$fields['members']       = $members;
 			}
 
-			$fields['badge_page']      = $post;
-			$fields['badge_entity_id'] = get_post_meta( $post->ID, 'badge', true );
-			$fields['badge_criteria']  = get_post_meta( $post->ID, 'badge_criteria', true );
-			$fields['badge']           = BadgeClass::get( $fields['badge_entity_id'] );
-			$fields['issuer']          = $fields['badge'] ? Issuer::get( $fields['badge']->issuer ) : null;
-			$fields['courses']         = BadgePage::get_courses( $post->ID );
 			foreach ( $fields['courses'] as $i => $course ) {
 				$fields['courses'][ $i ]->is_accessible  = Course::is_accessible( $course->ID );
 				$fields['courses'][ $i ]->is_purchasable = Course::is_purchasable( $course->ID );
@@ -197,30 +236,6 @@ class BadgePage_Controller extends Page_Controller {
 					);
 				}
 			}
-
-			$assertions = BadgrProvider::get_all_assertions_by_badge_class_slug( $fields['badge_entity_id'] );
-			if ( ! $assertions ) {
-				$assertions = array();
-			}
-			$members = array();
- 			foreach ( $assertions as $assertion ) {
-				$user = get_user_by( 'email', $assertion->recipient->plaintextIdentity );
-				if ( $user ) {
-					if ( 
-						!AssertionPrivacy::has_privacy_flag( $fields['badge_entity_id'], $user->ID) // check badge visibility
-						&& FALSE === $assertion->revoked // hide revoked assertion
-					) {
-						$members[ $assertion->recipient->plaintextIdentity ] = $user;
-					}
-				}
-			}
-			usort(
-				$members,
-				function( $a, $b ) {
-					return strnatcasecmp( $a->display_name, $b->display_name );
-				}
-			); 
-			$fields['members'] = $members;
 
 			global $bf2_template;
 			$bf2_template         = new stdClass();

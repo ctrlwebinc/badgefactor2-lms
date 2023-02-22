@@ -132,6 +132,30 @@ jQuery(document).ready(function ($) {
             }
             return false;
         })
+        .on("click", "button#cancel-reject-badge", function (e) {
+            e.preventDefault();
+            var button = $(this);
+            var action_buttons = $(this)
+                .closest(".button-group")
+                .find("button");
+            var form = $(this).closest("form");
+            if (confirm(button.data("confirm"))) {
+                action_buttons.attr("disabled", true);
+                var post_id = form.find("input#post_ID").val();
+
+                $.post(
+                    ajaxurl,
+                    {
+                        action: "cancel_reject_badge_request",
+                        badge_request_id: post_id,
+                    },
+                    function (response) {
+                        location.reload();
+                    }
+                );
+            }
+            return false;
+        })
         .on("click", "button#start-badge-revision", function (e) {
             e.preventDefault();
             $(".cmb-type-badge-request-rejection-reason").fadeOut(function () {
@@ -157,6 +181,30 @@ jQuery(document).ready(function ($) {
                         action: "revise_badge_request",
                         badge_request_id: post_id,
                         revision_reason: revision_reason
+                    },
+                    function (response) {
+                        location.reload();
+                    }
+                );
+            }
+            return false;
+        })
+        .on("click", "button#cancel-revise-badge", function (e) {
+            e.preventDefault();
+            var button = $(this);
+            var action_buttons = $(this)
+                .closest(".button-group")
+                .find("button");
+            var form = $(this).closest("form");
+            if (confirm(button.data("confirm"))) {
+                action_buttons.attr("disabled", true);
+                var post_id = form.find("input#post_ID").val();
+
+                $.post(
+                    ajaxurl,
+                    {
+                        action: "cancel_revise_badge_request",
+                        badge_request_id: post_id,
                     },
                     function (response) {
                         location.reload();

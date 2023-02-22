@@ -54,6 +54,6 @@ class Badge_Request_Content {
 		$badge_request_content = end( $content );
 
 		echo sprintf( '<div style="margin-top: 6px">%s</div>', $badge_request_content );
-		echo sprintf( '<input type="hidden" name="content" value="%s">', $badge_request_content );
+		echo sprintf( '<input type="hidden" name="content" value="%s">', htmlspecialchars( $badge_request_content ) );
 	}
 }

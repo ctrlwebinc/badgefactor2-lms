@@ -57,6 +57,9 @@ class Badge_Request_Status {
 			'granted'   => __( 'Granted', BF2_DATA['TextDomain'] ),
 			'rejected'  => __( 'Rejected', BF2_DATA['TextDomain'] ),
 			'revision'  => __( 'Revision requested', BF2_DATA['TextDomain'] ),
+			'revoked'   => __( 'Revoked', BF2_DATA['TextDomain'] ),
+			'revision_cancelled'   => __( 'Revision cancelled', BF2_DATA['TextDomain'] ),
+			'rejection_cancelled'   => __( 'Rejection cancelled', BF2_DATA['TextDomain'] ),
 		);
 
 		echo sprintf( '<div style="margin-top: 6px">%s</div>', $options[ $badge_request_status ]);
@@ -66,6 +69,18 @@ class Badge_Request_Status {
 			echo sprintf( '<button data-confirm="%s" class="button button-secondary" id="approve-badge">%s</button>', __( 'Approve this badge request?', BF2_DATA['TextDomain'] ), __( 'Approve', BF2_DATA['TextDomain'] ) );
 			echo sprintf( '<button class="button button-secondary" id="start-badge-revision">%s</button>', __( 'Request Revision', BF2_DATA['TextDomain'] ) );
 			echo sprintf( '<button class="button button-secondary" id="start-badge-rejection">%s</button>', __( 'Reject', BF2_DATA['TextDomain'] ) );
+			echo '</span>';
+		}
+
+		if ( 'revision' === $badge_request_status ) {
+			echo '<span class="button-group" style="margin-top: 1rem">';
+			echo sprintf( '<button data-confirm="%s" class="button button-secondary" id="cancel-revise-badge">%s</button>', __( 'Cancel this badge request revision?', BF2_DATA['TextDomain'] ), __( 'Cancel revision', BF2_DATA['TextDomain'] ) );
+			echo '</span>';
+		}
+
+		if ( 'rejected' === $badge_request_status ) {
+			echo '<span class="button-group" style="margin-top: 1rem">';
+			echo sprintf( '<button data-confirm="%s" class="button button-secondary" id="cancel-reject-badge">%s</button>', __( 'Cancel this badge request rejection?', BF2_DATA['TextDomain'] ), __( 'Cancel rejection', BF2_DATA['TextDomain'] ) );
 			echo '</span>';
 		}
 

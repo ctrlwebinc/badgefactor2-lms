@@ -84,6 +84,14 @@
 						<textarea class="bf2_tinymce" name="description" cols="60" rows="10"><?php if ( isset( $entity ) ) : ?><?php echo $entity->description; ?><?php endif; ?></textarea>
 					</div>
 				</div>
+                <div class="cmb-row cmb-type-text table-layout">
+                    <div class="cmb-th">
+                        <label for="name"><?php echo __( 'Critères', BF2_DATA['TextDomain'] ); ?></label>
+                    </div>
+                    <div class="cmb-td">
+                       <textarea class="bf2_tinymce" name="criteria" cols="60" rows="10"><?php if ( isset( $entity ) ) : ?><?php echo $entity->criteriaNarrative; ?><?php endif; ?></textarea>
+                    </div>
+                </div>
 				<div class="cmb-row cmb-type-file table-layout">
 					<div class="cmb-th">
 						<label for="image"><?php echo __( 'Image', BF2_DATA['TextDomain'] ); ?></label>
