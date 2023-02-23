@@ -134,22 +134,20 @@ class BadgeFactor2 {
 		Helpers\SocialShare::init_hooks();
 
 		// Admin.
-		if ( is_admin() || ( defined( 'WP_CLI' ) && WP_CLI ) ) {
-			BadgeFactor2_Admin::init_hooks();
-			BuddyPress::init_hooks();
-			Addons::init_hooks();
-			Badge::init_hooks();
-			Badge_Request_Approver::init_hooks();
-			Badge_Request_Content::init_hooks();
-			Badge_Request_Rejection_Reason::init_hooks();
-			Badge_Request_Revision_Reason::init_hooks();
-			Badge_Request_Status::init_hooks();
-			Badge_Request_Type::init_hooks();
-			Dates::init_hooks();
-			Recipient::init_hooks();
-			Notices::init_hooks();
-		}
-
+		BadgeFactor2_Admin::init_hooks();
+		BuddyPress::init_hooks();
+		Addons::init_hooks();
+		Badge::init_hooks();
+		Badge_Request_Approver::init_hooks();
+		Badge_Request_Content::init_hooks();
+		Badge_Request_Rejection_Reason::init_hooks();
+		Badge_Request_Revision_Reason::init_hooks();
+		Badge_Request_Status::init_hooks();
+		Badge_Request_Type::init_hooks();
+		Dates::init_hooks();
+		Recipient::init_hooks();
+		Notices::init_hooks();
+			
 		self::$initialized = true;
 	}
 
@@ -218,25 +216,23 @@ class BadgeFactor2 {
 		require_once BF2_ABSPATH . 'src/public/class-badgr-public-urls.php';
 
 		// Admin / CLI classes.
-		if ( is_admin() || ( defined( 'WP_CLI' ) && WP_CLI ) ) {
-			require_once BF2_ABSPATH . 'src/admin/class-notices.php';
-			require_once BF2_ABSPATH . 'src/admin/class-badgefactor2-admin.php';
-			require_once BF2_ABSPATH . 'src/admin/class-badgr-list.php';
-			require_once BF2_ABSPATH . 'src/admin/buddypress/class-buddypress.php';
-			require_once BF2_ABSPATH . 'src/admin/cmb2-fields/class-addons.php';
-			require_once BF2_ABSPATH . 'src/admin/cmb2-fields/class-badge.php';
-			require_once BF2_ABSPATH . 'src/admin/cmb2-fields/class-badge-request-approver.php';
-			require_once BF2_ABSPATH . 'src/admin/cmb2-fields/class-badge-request-content.php';
-			require_once BF2_ABSPATH . 'src/admin/cmb2-fields/class-badge-request-rejection-reason.php';
-			require_once BF2_ABSPATH . 'src/admin/cmb2-fields/class-badge-request-revision-reason.php';
-			require_once BF2_ABSPATH . 'src/admin/cmb2-fields/class-badge-request-status.php';
-			require_once BF2_ABSPATH . 'src/admin/cmb2-fields/class-badge-request-type.php';
-			require_once BF2_ABSPATH . 'src/admin/cmb2-fields/class-dates.php';
-			require_once BF2_ABSPATH . 'src/admin/cmb2-fields/class-recipient.php';
-			require_once BF2_ABSPATH . 'src/admin/lists/class-issuers.php';
-			require_once BF2_ABSPATH . 'src/admin/lists/class-badges.php';
-			require_once BF2_ABSPATH . 'src/admin/lists/class-assertions.php';
-		}
+		require_once BF2_ABSPATH . 'src/admin/class-notices.php';
+		require_once BF2_ABSPATH . 'src/admin/class-badgefactor2-admin.php';
+		require_once BF2_ABSPATH . 'src/admin/class-badgr-list.php';
+		require_once BF2_ABSPATH . 'src/admin/buddypress/class-buddypress.php';
+		require_once BF2_ABSPATH . 'src/admin/cmb2-fields/class-addons.php';
+		require_once BF2_ABSPATH . 'src/admin/cmb2-fields/class-badge.php';
+		require_once BF2_ABSPATH . 'src/admin/cmb2-fields/class-badge-request-approver.php';
+		require_once BF2_ABSPATH . 'src/admin/cmb2-fields/class-badge-request-content.php';
+		require_once BF2_ABSPATH . 'src/admin/cmb2-fields/class-badge-request-rejection-reason.php';
+		require_once BF2_ABSPATH . 'src/admin/cmb2-fields/class-badge-request-revision-reason.php';
+		require_once BF2_ABSPATH . 'src/admin/cmb2-fields/class-badge-request-status.php';
+		require_once BF2_ABSPATH . 'src/admin/cmb2-fields/class-badge-request-type.php';
+		require_once BF2_ABSPATH . 'src/admin/cmb2-fields/class-dates.php';
+		require_once BF2_ABSPATH . 'src/admin/cmb2-fields/class-recipient.php';
+		require_once BF2_ABSPATH . 'src/admin/lists/class-issuers.php';
+		require_once BF2_ABSPATH . 'src/admin/lists/class-badges.php';
+		require_once BF2_ABSPATH . 'src/admin/lists/class-assertions.php';
 
 		// CLI-only classes.
 		if ( defined( 'WP_CLI' ) && WP_CLI ) {
