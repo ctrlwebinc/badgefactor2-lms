@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## 1.10.0
+
 - Added: cancellation of rejected and revised badge requests
 - Added: profile helper
 - Added: configurable redirect when not connected
