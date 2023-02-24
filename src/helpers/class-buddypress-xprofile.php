@@ -36,7 +36,8 @@ class BuddypressXProfile {
 	 * @return void
 	 */
 	public static function init_hooks() {
-		add_action( 'bp_init', array( self::class, 'bp_xprofile_default_avatar_field' ) );
+	    /* add this in your theme if you want to show this permanently */
+		/*add_action( 'bp_init', array( self::class, 'bp_xprofile_default_avatar_field' ) );*/
     }
     
     /**
