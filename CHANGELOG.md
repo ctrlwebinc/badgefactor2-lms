@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## 1.10.1
+- absorb sexto hot-fix
+
 ## 1.10.0
 
 - Added: cancellation of rejected and revised badge requests
@@ -15,6 +18,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## 1.9.0
 - Added : new field criteria badge list on badgr
+
+## 1.8.1
+- Fixed: add test for free products
 
 ## 1.8.0
 - Refactored: fixed performance issues.
