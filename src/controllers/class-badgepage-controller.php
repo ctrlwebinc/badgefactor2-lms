@@ -153,8 +153,9 @@ class BadgePage_Controller extends Page_Controller {
 					// A product is linked to the course.
 					$product_id = get_post_meta( $course_id, 'course_product', true );
 					if ( $product_id ) {
-						// The client has not purchased this product, redirect to the product page.
-						if ( ! $has_free_access && ! wc_customer_bought_product( $current_user->user_email, $current_user->ID, $product_id ) ) {
+						// The client has not purchased this product and the product isn't free, redirect to the product page.
+						$is_free = get_post_meta( $product_id, 'price', true ) == null;
+						if ( ! $is_free && ! $has_free_access && ! wc_customer_bought_product( $current_user->user_email, $current_user->ID, $product_id ) ) {
 							wp_redirect( get_permalink( $product_id ) );
 							exit;
 						}
