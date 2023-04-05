@@ -52,3 +52,9 @@ Uses the templating engine, but returns a generated PDF, and therefore does not 
 ## Dependancies
 
 Version 1.1.0 requires BuddyPress.
+
+## A new version in the works
+
+A new version of Badgefactor 2 is in the works to handle pathways.
+
+The master-parcours and develop-parcours branches should be used to keep non-retroactively compatible changes out of master and develop.
