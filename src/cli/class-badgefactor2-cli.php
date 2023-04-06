@@ -22,11 +22,12 @@
 
 namespace BadgeFactor2;
 
+use BadgeFactor2\AssertionPrivacy;
+use BadgeFactor2\BadgrProvider;
 use BadgeFactor2\Helpers\Migration;
+use BadgeFactor2\Post_Types\BadgePage;
 use WP_CLI;
 use WP_CLI_Command;
-use BadgeFactor2\Post_Types\BadgePage;
-use BadgeFactor2\AssertionPrivacy;
 
 WP_CLI::add_command( 'bf2', BadgeFactor2_CLI::class );
 
@@ -327,7 +328,87 @@ class BadgeFactor2_CLI extends WP_CLI_Command {
 		} else {
 			WP_CLI::log( 'There is nothing to update.' );
 		}
+	}
 
-		
+	/**
+	 * Generates assertions using a list of recipients provided in a csv file.
+	 * There should be a header line which will be ignored, and the line
+	 * format should be: badge_class_slug, email, assertion_date
+	 *
+	 * @param array $args Arguments.
+	 * @param array $assoc_args Associative arguments.
+	 * @return void
+	 */
+	public function batch_process_assertions( $args, $assoc_args ) 
+	{
+		// Check if csv file is provided.
+		if ( count( $args ) !== 1 ) {
+			WP_CLI::error( 'Usage: wp bf2 batch_process_assertions /path/to/filename.csv' );
+		}
+
+		// Check if dry-run mode is activated.
+		$dry_run = isset( $assoc_args['dry-run'] );
+		if ( $dry_run ) {
+			WP_CLI::line( 'Dry-run mode enabled.' );
+		}
+
+		$recipients = array();
+		$file_to_read = fopen( $args[0], 'r');
+		if ( ! $file_to_read ) {
+			WP_CLI::error( 'Cannot open the csv file! Check your path and filename and try again.' );
+		}
+
+		WP_CLI::line( 'Reading csv file...' );
+
+		// Skip first line.
+		fgetcsv( $file_to_read );
+
+		// Generate an array from the remainder of the csv file.
+		while ( ! feof( $file_to_read ) ) {
+			$recipients[] = fgetcsv($file_to_read, 1000, ',');
+		}
+		fclose( $file_to_read );
+
+		// Generate an array of validated data.
+		$progress = WP_CLI\Utils\make_progress_bar( 'Validating data...', count( $recipients ) );
+		$badges = array();
+		foreach( $recipients as $recipient ) {
+
+			$badge_class_slug = $recipient[0];
+
+			// Validate each badge class only once.
+			if ( ! isset( $badges[$badge_class_slug] ) ) {
+				$badge_class = BadgrProvider::get_badge_class_by_badge_class_slug( $badge_class_slug );
+
+				// Exists if badge class does not exist.
+				if ( false === $badge_class ) {
+					WP_CLI::error( 'Badge class does not exist: ' . $badge_class_slug );
+				}
+	
+				$badges[$badge_class_slug] = array();
+			}
+
+			$email          = $recipient[1];
+			$assertion_date = $recipient[2];
+
+			// Eliminate duplicate recipient data from csv file.
+			if ( ! isset( $badges[$badge_class_slug][$email] ) ) {
+				$badges[$badge_class_slug][$email] = $date;
+			}
+			$progress->tick();
+		}
+		$progress->finish();
+
+		// Generate assertions in Badgr.
+		$progress = \WP_CLI\Utils\make_progress_bar( 'Generating assertions...', count( $badges ) );
+		foreach ( $badges as $badge_class => $emails ) {
+			foreach ( $emails as $email => $date ) {
+				if ( ! $dry_run ) {
+					$slug = BadgrProvider::add_assertion( $badge_class, $email, 'email', $date );
+				}
+			}
+			$progress->tick();
+		}
+		$progress->finish();
 	}
 }
