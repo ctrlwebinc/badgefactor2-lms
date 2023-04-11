@@ -372,7 +372,7 @@ class BadgeFactor2_CLI extends WP_CLI_Command {
 		fclose( $file_to_read );
 
 		// Generate an array of validated data.
-		$progress = WP_CLI\Utils\make_progress_bar( 'Validating data...', count( $recipients ) );
+		$progress = WP_CLI\Utils\make_progress_bar( 'Validating ' . count( $recipients ) . ' recipients...', count( $recipients ) );
 		$badges = array();
 		foreach( $recipients as $recipient ) {
 
@@ -404,7 +404,7 @@ class BadgeFactor2_CLI extends WP_CLI_Command {
 		$progress->finish();
 
 		// Generate assertions in Badgr.
-		$progress = \WP_CLI\Utils\make_progress_bar( 'Generating assertions...', count( $badges ) );
+		$progress = \WP_CLI\Utils\make_progress_bar( 'Generating ' . count( $badges ) . ' assertions...', count( $badges ) );
 		foreach ( $badges as $badge_class => $emails ) {
 			foreach ( $emails as $email => $date ) {
 				if ( ! $dry_run ) {
