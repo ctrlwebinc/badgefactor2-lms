@@ -333,7 +333,7 @@ class BadgeFactor2_CLI extends WP_CLI_Command {
 	/**
 	 * Generates assertions using a list of recipients provided in a csv file.
 	 * There should be a header line which will be ignored, and the line
-	 * format should be: badge_class_slug, email, assertion_date
+	 * format should be: badge_class_slug, email, assertion_date, badge_name
 	 *
 	 * @param array $args Arguments.
 	 * @param array $assoc_args Associative arguments.
@@ -341,6 +341,8 @@ class BadgeFactor2_CLI extends WP_CLI_Command {
 	 */
 	public function batch_process_assertions( $args, $assoc_args ) 
 	{
+		$today = date('Y-m-d');
+
 		// Check if csv file is provided.
 		if ( count( $args ) !== 1 ) {
 			WP_CLI::error( 'Usage: wp bf2 batch_process_assertions /path/to/filename.csv' );
@@ -389,7 +391,9 @@ class BadgeFactor2_CLI extends WP_CLI_Command {
 			}
 
 			$email          = $recipient[1];
-			$assertion_date = $recipient[2];
+			$assertion_date = ( isset( $recipient[2] ) && ! empty( $recipient[2] ) ) ? 
+				$recipient[2] :
+				$today;
 
 			// Eliminate duplicate recipient data from csv file.
 			if ( ! isset( $badges[$badge_class_slug][$email] ) ) {
