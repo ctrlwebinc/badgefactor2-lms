@@ -397,7 +397,7 @@ class BadgeFactor2_CLI extends WP_CLI_Command {
 
 			// Eliminate duplicate recipient data from csv file.
 			if ( ! isset( $badges[$badge_class_slug][$email] ) ) {
-				$badges[$badge_class_slug][$email] = $date;
+				$badges[$badge_class_slug][$email] = $assertion_date;
 			}
 			$progress->tick();
 		}
