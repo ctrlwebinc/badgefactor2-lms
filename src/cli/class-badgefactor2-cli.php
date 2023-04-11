@@ -404,7 +404,7 @@ class BadgeFactor2_CLI extends WP_CLI_Command {
 		$progress->finish();
 
 		// Generate assertions in Badgr.
-		$progress = \WP_CLI\Utils\make_progress_bar( 'Generating ' . count( $badges ) . ' assertions...', count( $badges ) );
+		$progress = \WP_CLI\Utils\make_progress_bar( 'Generating ' . array_sum( array_map( 'count', $badges ) ) . ' assertions...', count( $badges ) );
 		foreach ( $badges as $badge_class => $emails ) {
 			foreach ( $emails as $email => $date ) {
 				if ( ! $dry_run ) {
