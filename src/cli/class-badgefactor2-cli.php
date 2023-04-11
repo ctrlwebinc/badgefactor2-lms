@@ -410,8 +410,8 @@ class BadgeFactor2_CLI extends WP_CLI_Command {
 				if ( ! $dry_run ) {
 					$slug = BadgrProvider::add_assertion( $badge_class, $email, 'email', $date );
 				}
+				$progress->tick();
 			}
-			$progress->tick();
 		}
 		$progress->finish();
 	}
