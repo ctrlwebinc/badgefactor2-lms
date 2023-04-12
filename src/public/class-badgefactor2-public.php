@@ -162,6 +162,8 @@ class BadgeFactor2_Public {
 	public static function load_resources() {
 		wp_enqueue_style( 'badgefactor2-css', BF2_BASEURL . 'assets/css/public.css', array(), BF2_DATA['Version'], 'all' );
 		wp_enqueue_script( 'badgefactor2-js', BF2_BASEURL . 'assets/js/public.js', array( 'jquery' ), BF2_DATA['Version'], true );
+		wp_enqueue_style( 'badgefactor2-pathways-css', 'https://cadre21.ctrlweb.dev:2053/css/main-cadre21.css', array(), null,);
+		wp_enqueue_script( 'badgefactor2-pathways-js', 'https://cadre21.ctrlweb.dev:2053/js/app.js', array(), null, true );
 	}
 
 	/**
