@@ -25,6 +25,7 @@ namespace BadgeFactor2;
 use BadgeFactor2\AssertionPrivacy;
 use BadgeFactor2\BadgrProvider;
 use BadgeFactor2\Helpers\Migration;
+use BadgeFactor2\Models\Assertion;
 use BadgeFactor2\Post_Types\BadgePage;
 use WP_CLI;
 use WP_CLI_Command;
@@ -390,7 +391,11 @@ class BadgeFactor2_CLI extends WP_CLI_Command {
 				$badges[$badge_class_slug] = array();
 			}
 
-			$email          = $recipient[1];
+			$email          = strtolower($recipient[1]);
+			if ( ! filter_var( $email, FILTER_VALIDATE_EMAIL ) ) {
+				WP_CLI::error( 'Invalid email address: ' . $email );
+			}
+
 			$assertion_date = ( isset( $recipient[2] ) && ! empty( $recipient[2] ) ) ? 
 				$recipient[2] :
 				$today;
@@ -403,8 +408,29 @@ class BadgeFactor2_CLI extends WP_CLI_Command {
 		}
 		$progress->finish();
 
+		// Make sure badge is not already given.
+		$duplicates = 0;
+		$progress = \WP_CLI\Utils\make_progress_bar( 'Checking for duplicates...', array_sum( array_map( 'count', $badges ) ) );
+		foreach ( $badges as $badge_class => $emails ) {
+			$assertions = Assertion::all( -1, 1, array(
+				'filter_type'  => 'Badges',
+				'filter_value' => $badge_class,
+			) );
+			foreach ( $emails as $email => $date ) {
+				foreach ( $assertions as $assertion ) {
+					if ( $assertion->recipient->plaintextIdentity === $email ) {
+						unset($badges[$badge_class][$email]);
+						$duplicates++;
+					}
+				}
+				$progress->tick();
+			}
+		}
+		$progress->finish();
+		WP_CLI::line( $duplicates . ' duplicates removed...' );
+
 		// Generate assertions in Badgr.
-		$progress = \WP_CLI\Utils\make_progress_bar( 'Generating ' . array_sum( array_map( 'count', $badges ) ) . ' assertions...', count( $badges ) );
+		$progress = \WP_CLI\Utils\make_progress_bar( 'Generating ' . array_sum( array_map( 'count', $badges ) ) . ' assertions...', array_sum( array_map( 'count', $badges ) ) );
 		foreach ( $badges as $badge_class => $emails ) {
 			foreach ( $emails as $email => $date ) {
 				if ( ! $dry_run ) {
