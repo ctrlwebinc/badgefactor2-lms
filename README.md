@@ -58,3 +58,17 @@ Version 1.1.0 requires BuddyPress.
 A new version of Badgefactor 2 is in the works to handle pathways.
 
 The master-parcours and develop-parcours branches should be used to keep non-retroactively compatible changes out of master and develop.
+
+### Pathways support utility
+
+Badgefactor 2 supports pathways by connecting to a Laravel-based utility that does the heavy lifting.
+
+Pathways are integrated into Badgefactor 2 by introducing a minimal amount of new Wordpress functionality. New Wordpress templates sometimes contain specifically-identified divs to allow supplemental js to fill these parts
+asynchonously through AJAX to the laravel badges utility.
+
+The following entries must be added to the Wordpress site's wp-config.php to enable patheways:
+
+````
+define( 'BF2_PATHWAYS_SUPPLEMENTAL_JS_URL','https://cadre21.ctrlweb.dev:2053/js/cadre21-supplemental.js' );
+define( 'BF2_PATHWAYS_SUPPLEMENTAL_CSS_URL','https://cadre21.ctrlweb.dev:2053/css/main-cadre21.css' );
+````
