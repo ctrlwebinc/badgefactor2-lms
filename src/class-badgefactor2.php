@@ -126,7 +126,7 @@ class BadgeFactor2 {
 		// Post Types.
 		Post_Types\BadgePage::init_hooks();
 		Post_Types\BadgeRequest::init_hooks();
-
+		Post_Types\ParcoursBadge::init_hooks();
 		// Roles.
 		Roles\Approver::init_hooks();
 
@@ -203,7 +203,8 @@ class BadgeFactor2 {
 		require_once BF2_ABSPATH . 'src/controllers/class-badgepage-controller.php';
 		require_once BF2_ABSPATH . 'src/controllers/class-badgerequest-controller.php';
 		require_once BF2_ABSPATH . 'src/controllers/class-issuer-controller.php';
-
+		
+		require_once BF2_ABSPATH . 'src/controllers/class-parcours-controller.php';
 		// Shortcodes.
 		require_once BF2_ABSPATH . 'src/public/shortcodes/class-badges.php';
 		require_once BF2_ABSPATH . 'src/public/shortcodes/class-issuers.php';
@@ -216,6 +217,8 @@ class BadgeFactor2 {
 		require_once BF2_ABSPATH . 'src/roles/class-approver.php';
 		require_once BF2_ABSPATH . 'src/post-types/class-badgepage.php';
 		require_once BF2_ABSPATH . 'src/post-types/class-badgerequest.php';
+		
+		require_once BF2_ABSPATH . 'src/post-types/class-parcours_badge.php';
 
 		// Public (site) class.
 		require_once BF2_ABSPATH . 'src/public/class-badgefactor2-public.php';
