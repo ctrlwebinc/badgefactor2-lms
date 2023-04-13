@@ -157,8 +157,7 @@ class DataImport {
 			$progress->tick();
 		}
 		$progress->finish();
-
-
+        return $badges;
     }
 
     public static function check_for_assertions_duplicate( $badges )
