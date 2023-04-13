@@ -1578,7 +1578,7 @@ class BadgeFactor2_Admin {
 		}
 
 		$tmp_file = $_FILES['csv-file']['tmp_name'];
-		$output = DataImport::batch_process_assertions( $tmp_file, true, true );
+		$output = DataImport::batch_process_assertions( $tmp_file );
 		return wp_send_json( array( 'output' => $output ) );
 	}
 
