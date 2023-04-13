@@ -355,6 +355,15 @@ class Badgr_List extends \WP_List_Table
         if (isset($_GET['action'])) {
             $this->manage_actions();
         } else {
+            if ( BadgrClient::is_active() && 'assertions' === $_GET['page'] ) {
+                echo '<form id="csv-file-upload-form" method="post">';
+                echo '<label class="csv-file-upload-label">' . __('Import assertions: ') . '</label>';
+                echo '<label class="csv-file-upload"><input type="file" name="csv-file" id="csv-file" accept=".csv" />' . __('Select CSV file', BF2_DATA['TextDomain']) . '</label>';
+                wp_nonce_field( 'ajax_file_nonce', 'assertions-csv' );
+                echo '<input name="action" value="mass_import_assertions" type="hidden" />';
+                echo '<input type="submit" class="button button-secondary" id="send-csv-file" value="' . __('Upload', BF2_DATA['TextDomain']) . '" disabled />';
+                echo '</form>';
+            }
             echo '<form id="bf2-admin-filter" method="get">
     		<input type="hidden" name="page" value="' . $_REQUEST['page'] . '" />';
             parent::display();

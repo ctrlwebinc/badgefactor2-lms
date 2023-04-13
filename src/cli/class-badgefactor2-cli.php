@@ -24,6 +24,7 @@ namespace BadgeFactor2;
 
 use BadgeFactor2\AssertionPrivacy;
 use BadgeFactor2\BadgrProvider;
+use BadgeFactor2\Helpers\DataImport;
 use BadgeFactor2\Helpers\Migration;
 use BadgeFactor2\Models\Assertion;
 use BadgeFactor2\Post_Types\BadgePage;
@@ -342,8 +343,6 @@ class BadgeFactor2_CLI extends WP_CLI_Command {
 	 */
 	public function batch_process_assertions( $args, $assoc_args ) 
 	{
-		$today = date('Y-m-d');
-
 		// Check if csv file is provided.
 		if ( count( $args ) !== 1 ) {
 			WP_CLI::error( 'Usage: wp bf2 batch_process_assertions /path/to/filename.csv' );
@@ -355,90 +354,9 @@ class BadgeFactor2_CLI extends WP_CLI_Command {
 			WP_CLI::line( 'Dry-run mode enabled.' );
 		}
 
-		$recipients = array();
-		$file_to_read = fopen( $args[0], 'r');
-		if ( ! $file_to_read ) {
-			WP_CLI::error( 'Cannot open the csv file! Check your path and filename and try again.' );
-		}
-
-		WP_CLI::line( 'Reading csv file...' );
-
-		// Skip first line.
-		fgetcsv( $file_to_read );
-
-		// Generate an array from the remainder of the csv file.
-		while ( ! feof( $file_to_read ) ) {
-			$recipients[] = fgetcsv($file_to_read, 1000, ',');
-		}
-		fclose( $file_to_read );
-
-		// Generate an array of validated data.
-		$progress = WP_CLI\Utils\make_progress_bar( 'Validating ' . count( $recipients ) . ' recipients...', count( $recipients ) );
-		$badges = array();
-		foreach( $recipients as $recipient ) {
-
-			$badge_class_slug = $recipient[0];
-
-			// Validate each badge class only once.
-			if ( ! isset( $badges[$badge_class_slug] ) ) {
-				$badge_class = BadgrProvider::get_badge_class_by_badge_class_slug( $badge_class_slug );
-
-				// Exists if badge class does not exist.
-				if ( false === $badge_class ) {
-					WP_CLI::error( 'Badge class does not exist: ' . $badge_class_slug );
-				}
-	
-				$badges[$badge_class_slug] = array();
-			}
-
-			$email          = strtolower($recipient[1]);
-			if ( ! filter_var( $email, FILTER_VALIDATE_EMAIL ) ) {
-				WP_CLI::error( 'Invalid email address: ' . $email );
-			}
-
-			$assertion_date = ( isset( $recipient[2] ) && ! empty( $recipient[2] ) ) ? 
-				$recipient[2] :
-				$today;
-
-			// Eliminate duplicate recipient data from csv file.
-			if ( ! isset( $badges[$badge_class_slug][$email] ) ) {
-				$badges[$badge_class_slug][$email] = $assertion_date;
-			}
-			$progress->tick();
-		}
-		$progress->finish();
-
-		// Make sure badge is not already given.
-		$duplicates = 0;
-		$progress = \WP_CLI\Utils\make_progress_bar( 'Checking for duplicates...', array_sum( array_map( 'count', $badges ) ) );
-		foreach ( $badges as $badge_class => $emails ) {
-			$assertions = Assertion::all( -1, 1, array(
-				'filter_type'  => 'Badges',
-				'filter_value' => $badge_class,
-			) );
-			foreach ( $emails as $email => $date ) {
-				foreach ( $assertions as $assertion ) {
-					if ( $assertion->recipient->plaintextIdentity === $email ) {
-						unset($badges[$badge_class][$email]);
-						$duplicates++;
-					}
-				}
-				$progress->tick();
-			}
-		}
-		$progress->finish();
-		WP_CLI::line( $duplicates . ' duplicates removed...' );
-
-		// Generate assertions in Badgr.
-		$progress = \WP_CLI\Utils\make_progress_bar( 'Generating ' . array_sum( array_map( 'count', $badges ) ) . ' assertions...', array_sum( array_map( 'count', $badges ) ) );
-		foreach ( $badges as $badge_class => $emails ) {
-			foreach ( $emails as $email => $date ) {
-				if ( ! $dry_run ) {
-					$slug = BadgrProvider::add_assertion( $badge_class, $email, 'email', $date );
-				}
-				$progress->tick();
-			}
-		}
-		$progress->finish();
+		$recipients = DataImport::assertions_csv_file_to_recipients_array( $args[0] );
+		$badges = DataImport::validate_assertions_recipients_array( $recipients );
+		$badges = DataImport::check_for_assertions_duplicate( $badges );
+		DataImport::generate_assertions_from_array( $badges );
 	}
 }
