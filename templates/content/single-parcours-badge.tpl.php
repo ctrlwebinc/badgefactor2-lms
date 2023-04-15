@@ -39,7 +39,7 @@ $fields = $bf2_template->fields;
 		<?php echo c21_breadcrumbs( $post ) ?>
 
 			<div class="badge-page-warp parcours-page-warp">
-				<div id="parcours-sidebar"  class="badge-page-sidebar parcours-sidebar">
+				<div id="bf2-pathways-action-list"  class="badge-page-sidebar parcours-sidebar">
 					
 				</div>
 
