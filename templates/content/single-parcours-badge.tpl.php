@@ -63,7 +63,7 @@ $fields = $bf2_template->fields;
 
 					<div class="section-separator"></div>
 					
-					<div class="diagramme-wrap" >
+					<div id="pathways-diagram-container" >
 					</div>
 					
 					<div class="section-separator"></div>
