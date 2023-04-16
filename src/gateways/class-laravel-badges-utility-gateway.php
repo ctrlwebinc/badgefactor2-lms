@@ -26,7 +26,7 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Exception\GuzzleException;
 use BadgeFactor2\BadgrProvider;
-use BadgeFactor2\Assertion;
+use BadgeFactor2\Models\Assertion;
 
 
 /**
