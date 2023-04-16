@@ -135,6 +135,9 @@ class BadgeFactor2 {
 		Helpers\SendByEmail::init_hooks();
 		Helpers\BuddypressXProfile::init_hooks();
 
+		// Gateway
+		LaravelBadgesUtilityGateway::init_hooks();
+
 		// Admin.
 		if ( is_admin() || ( defined( 'WP_CLI' ) && WP_CLI ) ) {
 			BadgeFactor2_Admin::init_hooks();

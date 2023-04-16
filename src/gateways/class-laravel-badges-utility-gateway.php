@@ -35,6 +35,10 @@ class LaravelBadgesUtilityGateway {
 
     public static $clientInstance;
 
+    public static function init_hooks() {
+		add_action( 'init', array( self::class, 'init' ) );
+    }
+
     public static function init() {
         add_action( 'rest_api_init', [self::class,'setupRestRoutes']);
     }
