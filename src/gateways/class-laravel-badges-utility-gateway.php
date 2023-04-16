@@ -41,6 +41,14 @@ class LaravelBadgesUtilityGateway {
 
         return self::$clientInstance;
     }
+
+    protected function getLBUGatewayUrl() {
+        if ( defined('LBU_URL') ) {
+            return LBU_URL;
+        }
+
+        return 'https://localhost';
+    }
     
     public function iAmHere() {
         return 'I am here.';
@@ -61,9 +69,9 @@ class LaravelBadgesUtilityGateway {
         ];
 
         try {
-            $response = $client->request( $method, 'https://cadre21.ctrlweb.dev:2053/from-wp', $args );
+            $response = $client->request( $method, $this->getLBUGatewayUrl() . '/from-wp', $args );
 
-            return $response;
+            return $response->getBody();
 
         } catch ( ConnectException $e ) {
             return 'Connect exception';
