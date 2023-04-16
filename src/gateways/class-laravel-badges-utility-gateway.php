@@ -46,7 +46,7 @@ class LaravelBadgesUtilityGateway {
     public static function setupRestRoutes() {
         register_rest_route( 'lbu/v1', '/emit', [
             'methods' => 'POST',
-            'callback' => [self::class,'my_awesome_func'],
+            'callback' => [self::class,'handleEmit'],
             'permission_callback' => function() {return true;},
          ] );
     }
