@@ -31,9 +31,45 @@ use GuzzleHttp\Exception\GuzzleException;
  * BadgrProvider Class.
  */
 class LaravelBadgesUtilityGateway {
+
+    public static $clientInstance;
+
+    protected getClientInstance() {
+        if ( null === self::$clientInstance ) {
+            self::$clientInstance = new Client();
+        }
+
+        return self::$clientInstance;
+    }
     
     public function iAmHere() {
         return 'I am here.';
+    }
+
+    public function simplePostToLBU() {
+
+        $client = $this->getClientInstance();
+		$method = 'POST';
+        $args = [
+            'json' => [
+                'word1' => 'Hello',
+                'word2' => 'World',
+            ],
+            'headers' => [
+                'Accept' => 'application/json',
+            ],
+        ];
+
+        try {
+            $response = $client->request( $method, 'https://cadre21.ctrlweb.dev:2053/from-wp', $args );
+
+            return $response;
+
+        } catch ( ConnectException $e ) {
+            return 'Connect exception';
+        } catch ( GuzzleException $e ) {
+            return 'Guzzle exception';
+        }
     }
 
     // Listen to ajax requests through wp rest: setup, declare callback
