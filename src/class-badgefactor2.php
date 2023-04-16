@@ -246,7 +246,7 @@ class BadgeFactor2 {
 		}
 
 		// Gateway
-		require_once BF2_ABSPATH . 'src/gateways/class-laravel-badges-utility.php';
+		require_once BF2_ABSPATH . 'src/gateways/class-laravel-badges-utility-gateway.php';
 
 		// CLI-only classes.
 		if ( defined( 'WP_CLI' ) && WP_CLI ) {
