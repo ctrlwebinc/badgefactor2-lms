@@ -25,6 +25,7 @@ namespace BadgeFactor2;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Exception\GuzzleException;
+use BadgeFactor2\BadgrProvider;
 
 
 /**
@@ -33,6 +34,24 @@ use GuzzleHttp\Exception\GuzzleException;
 class LaravelBadgesUtilityGateway {
 
     public static $clientInstance;
+
+    public static function init() {
+        add_action( 'rest_api_init', [self::class,'setupRestRoutes']);
+    }
+
+    protected static function setupRestRoutes() {
+        register_rest_route( 'lbu/v1', '/emit', [
+            'methods' => 'POST',
+            'callback' => [self::class,'my_awesome_func'],
+         ] );
+    }
+
+    public static function handleEmit( WP_REST_Request $request ) {
+        $parameters = $request->get_json_params();
+        return $parameters;
+    }
+
+
 
     protected function getClientInstance() {
         if ( null === self::$clientInstance ) {
@@ -82,9 +101,16 @@ class LaravelBadgesUtilityGateway {
         } catch ( GuzzleException $e ) {
             error_log('GuzzleException ' . $e->getMessage());
         }
+    }
 
-        // Emit badge
-        BadgrProvider::add_assertion( 'qv8OeHFMRSepdf-zgl2BHw', $recipient );
+    public function emitAssertion( $badge, $recipient) {
+        $assertionParameters = [
+            'badge' => $badge,
+            'recipient' => $recipient,
+        ];
+
+        Assertion::create($assertionParameters);
+
     }
 
     // Listen to ajax requests through wp rest: setup, declare callback
