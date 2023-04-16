@@ -54,6 +54,10 @@ class LaravelBadgesUtilityGateway {
         return 'I am here.';
     }
 
+    public static function postNewAssertion( $recipient, $badgeClass, $assertionSlug) {
+        error_log('Recipient ' . $recipient . ' obtained assertion ' . $assertionSlug . ' for badge class ' . $badgeClass);
+    }
+
     public function simplePostToLBU() {
 
         $client = $this->getClientInstance();
