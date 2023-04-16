@@ -252,7 +252,7 @@ class BadgeFactor2 {
 		if ( defined( 'WP_CLI' ) && WP_CLI ) {
 			require_once BF2_ABSPATH . 'src/cli/class-badgefactor2-cli.php';
 			require_once BF2_ABSPATH . 'src/cli/class-badgr-cli.php';
-			require_once BF2_ABSPATH . 'class-laravel-badges-utility-cli.php';
+			require_once BF2_ABSPATH . 'src/cli/class-laravel-badges-utility-cli.php';
 		}
 	}
 
