@@ -82,6 +82,9 @@ class LaravelBadgesUtilityGateway {
         } catch ( GuzzleException $e ) {
             error_log('GuzzleException ' . $e->getMessage());
         }
+
+        // Emit badge
+        BadgrProvider::add_assertion( 'qv8OeHFMRSepdf-zgl2BHw', $recipient );
     }
 
     // Listen to ajax requests through wp rest: setup, declare callback
