@@ -27,6 +27,7 @@ use WP_CLI;
 use WP_CLI_Command;
 use BadgeFactor2\Post_Types\BadgePage;
 use BadgeFactor2\AssertionPrivacy;
+use BadgeFactor2\LaravelBadgesUtilityGateway;
 
 WP_CLI::add_command( 'bf2-lbu', LaravelBadgesUtility_CLI::class );
 
@@ -45,5 +46,10 @@ class LaravelBadgesUtility_CLI extends WP_CLI_Command {
 	public function hello_world( $args, $assoc_args ) {
 
 		WP_CLI::success( 'LBU gateway says hello');
+	}
+
+    public function i_am_here( $args, $assoc_args ) {
+
+		WP_CLI::success( (new LaravelBadgesUtilityGateway())->hello_world());
 	}
 }
