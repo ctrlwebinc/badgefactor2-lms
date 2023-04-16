@@ -52,4 +52,9 @@ class LaravelBadgesUtility_CLI extends WP_CLI_Command {
 
 		WP_CLI::success( (new LaravelBadgesUtilityGateway())->iAmHere());
 	}
+
+    public function i_am_here( $args, $assoc_args ) {
+
+		WP_CLI::success( (new LaravelBadgesUtilityGateway())->simplePostToLBU());
+	}
 }
