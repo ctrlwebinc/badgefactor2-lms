@@ -74,9 +74,9 @@ class LaravelBadgesUtilityGateway {
             return $response->getBody();
 
         } catch ( ConnectException $e ) {
-            return 'Connect exception';
+            error_log('ConnectException ' . $e->getMessage());
         } catch ( GuzzleException $e ) {
-            return 'Guzzle exception';
+            error_log('GuzzleException ' . $e->getMessage());
         }
     }
 
