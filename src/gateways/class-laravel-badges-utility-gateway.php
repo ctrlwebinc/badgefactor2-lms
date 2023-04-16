@@ -43,6 +43,7 @@ class LaravelBadgesUtilityGateway {
         register_rest_route( 'lbu/v1', '/emit', [
             'methods' => 'POST',
             'callback' => [self::class,'my_awesome_func'],
+            'permission_callback' => function() {return true;},
          ] );
     }
 
@@ -50,8 +51,6 @@ class LaravelBadgesUtilityGateway {
         $parameters = $request->get_json_params();
         return $parameters;
     }
-
-
 
     protected function getClientInstance() {
         if ( null === self::$clientInstance ) {
