@@ -51,7 +51,7 @@ class LaravelBadgesUtilityGateway {
          ] );
     }
 
-    public static function handleEmit( WP_REST_Request $request ) {
+    public static function handleEmit( \WP_REST_Request $request ) {
         $parameters = $request->get_json_params();
         return $parameters;
     }
