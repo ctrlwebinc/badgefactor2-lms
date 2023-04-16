@@ -34,7 +34,7 @@ class LaravelBadgesUtilityGateway {
 
     public static $clientInstance;
 
-    protected getClientInstance() {
+    protected function getClientInstance() {
         if ( null === self::$clientInstance ) {
             self::$clientInstance = new Client();
         }
