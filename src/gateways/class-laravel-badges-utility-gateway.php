@@ -67,7 +67,7 @@ class LaravelBadgesUtilityGateway {
         return false;
     }
 
-    protected function getClientInstance() {
+    protected static function getClientInstance() {
         if ( null === self::$clientInstance ) {
             self::$clientInstance = new Client();
         }
@@ -75,20 +75,39 @@ class LaravelBadgesUtilityGateway {
         return self::$clientInstance;
     }
 
-    protected function getLBUGatewayUrl() {
+    protected static function getLBUGatewayUrl() {
         if ( defined('LBU_URL') ) {
             return LBU_URL;
         }
 
         return 'https://localhost';
     }
-    
-    public function iAmHere() {
-        return 'I am here.';
-    }
 
     public static function postNewAssertion( $recipient, $badgeClass, $assertionSlug) {
-        error_log('Recipient ' . $recipient . ' obtained assertion ' . $assertionSlug . ' for badge class ' . $badgeClass);
+        $client = self::getClientInstance();
+		$method = 'POST';
+        $args = [
+            'json' => [
+                'operation' => 'newAssertion',
+                'badge' => $badgeClass,
+                'recipient' => $recipient,
+                'assertion' => $assertionSlug
+            ],
+            'headers' => [
+                'Accept' => 'application/json',
+            ],
+        ];
+
+        try {
+            $response = $client->request( $method, $this->getLBUGatewayUrl() . '/from-wp', $args );
+
+            return $response->getBody();
+
+        } catch ( ConnectException $e ) {
+            error_log('ConnectException ' . $e->getMessage());
+        } catch ( GuzzleException $e ) {
+            error_log('GuzzleException ' . $e->getMessage());
+        }
     }
 
     public function simplePostToLBU() {
@@ -115,16 +134,6 @@ class LaravelBadgesUtilityGateway {
         } catch ( GuzzleException $e ) {
             error_log('GuzzleException ' . $e->getMessage());
         }
-    }
-
-    public function emitAssertion( $badge, $recipient) {
-        $assertionParameters = [
-            'badge' => $badge,
-            'recipient' => $recipient,
-        ];
-
-        Assertion::create($assertionParameters);
-
     }
 
     // Listen to ajax requests through wp rest: setup, declare callback
