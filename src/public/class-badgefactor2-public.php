@@ -165,8 +165,12 @@ class BadgeFactor2_Public {
 		if ( defined('BF2_PATHWAYS_SUPPLEMENTAL_CSS_URL') ) {
 			wp_enqueue_style( 'badgefactor2-pathways-css', BF2_PATHWAYS_SUPPLEMENTAL_CSS_URL, array(), null,);
 		}
-		if ( defined('BF2_PATHWAYS_SUPPLEMENTAL_JS_URL') ) {
+		if ( defined('BF2_PATHWAYS_SUPPLEMENTAL_JS_URL') && defined ('LBU_URL')) {
 			wp_enqueue_script( 'badgefactor2-pathways-js', BF2_PATHWAYS_SUPPLEMENTAL_JS_URL, array(), null, true );
+			wp_localize_script( 'badgefactor2-pathways-js', 'badgefactor2-pathways-js-data', [
+				'current_user' => wp_get_current_user(),
+				'lbu_url' => LBU_URL,
+			]);
 		}
 	}
 
