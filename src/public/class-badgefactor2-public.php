@@ -169,8 +169,8 @@ class BadgeFactor2_Public {
 			wp_enqueue_script( 'badgefactor2-pathways-js', BF2_PATHWAYS_SUPPLEMENTAL_JS_URL, array(), null, true );
 			$script_parameters['lbu_url'] = LBU_URL;
 			$current_user = wp_get_current_user();
-			if ( 0 !== $current_user) {
-				$script_parameters['has_current_user'] = $current_user;
+			if ( 0 !== $current_user->ID ) {
+				$script_parameters['has_current_user'] = true;
 				$script_parameters['user_id'] = $current_user->ID;
 				$script_parameters['user_email'] = $current_user->user_email;
 				$script_parameters['username'] = $current_user->user_nicename;
