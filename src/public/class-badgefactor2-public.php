@@ -167,10 +167,17 @@ class BadgeFactor2_Public {
 		}
 		if ( defined('BF2_PATHWAYS_SUPPLEMENTAL_JS_URL') && defined ('LBU_URL')) {
 			wp_enqueue_script( 'badgefactor2-pathways-js', BF2_PATHWAYS_SUPPLEMENTAL_JS_URL, array(), null, true );
-			wp_localize_script( 'badgefactor2-pathways-js', 'badgefactor2-pathways-js-data', [
-				'current_user' => wp_get_current_user(),
-				'lbu_url' => LBU_URL,
-			]);
+			$script_parameters['lbu_url'] = LBU_URL;
+			$current_user = wp_get_current_user();
+			if ( 0 !== $current_user) {
+				$script_parameters['has_current_user'] = true;
+				$script_parameters['user_id'] = $current_user->ID;
+				$script_parameters['user_email'] = $current_user->user_email;
+				$script_parameters['username'] = $current_user->user_nicename;
+			} else {
+				$script_parameters['has_current_user'] = false;
+			}
+			wp_localize_script( 'badgefactor2-pathways-js', 'badgefactor2-pathways-js-data', $script_parameters);
 		}
 	}
 
