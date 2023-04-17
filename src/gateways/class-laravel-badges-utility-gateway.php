@@ -61,10 +61,10 @@ class LaravelBadgesUtilityGateway {
                 'recipient' => $parameters['recipient'],
             ];
     
-            Assertion::create($assertionParameters);
+            return Assertion::create($assertionParameters);
          }
         
-        return $parameters;
+        return false;
     }
 
     protected function getClientInstance() {
