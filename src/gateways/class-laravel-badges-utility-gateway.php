@@ -99,7 +99,7 @@ class LaravelBadgesUtilityGateway {
         ];
 
         try {
-            $response = $client->request( $method, $this->getLBUGatewayUrl() . '/from-wp', $args );
+            $response = $client->request( $method, self::getLBUGatewayUrl() . '/from-wp', $args );
 
             return $response->getBody();
 
