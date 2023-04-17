@@ -177,7 +177,7 @@ class BadgeFactor2_Public {
 			} else {
 				$script_parameters['has_current_user'] = false;
 			}
-			wp_localize_script( 'badgefactor2-pathways-js', 'badgefactor2-pathways-js-data', $script_parameters);
+			wp_localize_script( 'badgefactor2-pathways-js', 'badgefactor2_pathways_js_data', $script_parameters);
 		}
 	}
 
