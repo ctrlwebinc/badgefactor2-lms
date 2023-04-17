@@ -55,18 +55,16 @@ class LaravelBadgesUtilityGateway {
     public static function handleEmit( \WP_REST_Request $request ) {
         $parameters = $request->get_json_params();
 
-/*         if ( isset($parameters['badge']) && '' != $parameters['badge'] && isset($parameters['recipient']) && '' != $parameters['recipient']) {
+        if ( isset($parameters['badge']) && '' != $parameters['badge'] && isset($parameters['recipient']) && '' != $parameters['recipient']) {
             $assertionParameters = [
                 'badge' => $parameters['badge'],
                 'recipient' => $parameters['recipient'],
             ];
     
             Assertion::create($assertionParameters);
-         } */
-
-        $assertionSlug = BadgrProvider::add_assertion($parameters['badge'],$parameters['recipient']);
+         }
         
-        return $assertionSlug;
+        return $parameters;
     }
 
     protected function getClientInstance() {
