@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## 1.11.1
+- Fixed: missing version in plugin base file.
+
 ## 1.11.0
 
 - Added: wp-cli command to batch process assertions from a csv file.
