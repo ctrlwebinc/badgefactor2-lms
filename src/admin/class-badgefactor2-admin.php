@@ -29,6 +29,7 @@ use BadgeFactor2\Admin\Lists\Assertions;
 use BadgeFactor2\Admin\Lists\Badges;
 use BadgeFactor2\Admin\Lists\Issuers;
 use BadgeFactor2\BadgrClient;
+use BadgeFactor2\Helpers\DataImport;
 use BadgeFactor2\Models\BadgeClass;
 use BadgeFactor2\Post_Types\BadgePage;
 use CMB2_Field;
@@ -78,6 +79,7 @@ class BadgeFactor2_Admin {
 		add_action( 'wp_ajax_revise_badge_request', array( self::class, 'ajax_revise_badge_request' ) );
 		add_action( 'wp_ajax_cancel_revise_badge_request', array( self::class, 'ajax_cancel_revise_badge_request' ) );
 		add_action( 'wp_ajax_cancel_reject_badge_request', array( self::class, 'ajax_cancel_reject_badge_request' ) );
+		add_action( 'wp_ajax_mass_import_assertions', array( self::class, 'ajax_mass_import_assertions' ) );
 
 		// BadgeFactor2 Hooks.
 		add_action( 'approve_badge_request', array( self::class, 'approve_badge_request' ), 10, 3 );
@@ -104,6 +106,7 @@ class BadgeFactor2_Admin {
 		add_action( 'init', array( self::class, 'hook_flush_rewrite_rules' ), 100 );
 		add_action( 'load-edit.php', array( self::class, 'all_by_default_in_admin' ), 10 );
 		add_filter( 'pw_cmb2_field_select2_asset_path', array( self::class, 'pw_cmb2_field_select2_asset_path' ), 10 );
+		add_action( 'admin_notices', array( self::class, 'add_admin_header_section' ), 10 );
 	}
 
 
@@ -1566,6 +1569,19 @@ class BadgeFactor2_Admin {
 		}
 	}
 
+	public static function ajax_mass_import_assertions()
+	{
+		check_ajax_referer('ajax_file_nonce', 'assertions-csv');
+
+		if(!(is_array($_POST) && is_array($_FILES) && defined('DOING_AJAX') && DOING_AJAX)){
+			return;
+		}
+
+		$tmp_file = $_FILES['csv-file']['tmp_name'];
+		$output = DataImport::batch_process_assertions( $tmp_file );
+		return wp_send_json( array( 'output' => $output ) );
+	}
+
 
 	/**
 	 * CMB2 Select2 field asset path.
@@ -1588,6 +1604,13 @@ class BadgeFactor2_Admin {
 			flush_rewrite_rules();
 		}
 	}
+
+	public static function add_admin_header_section()
+    {
+		if ('assertions' === $_GET['page']) {
+			echo '<div class="csv-assertions-process-output"></div>';
+		}
+    }
 
 
 	/**

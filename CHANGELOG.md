@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## 1.11.0
+
+- Added: wp-cli command to batch process assertions from a csv file.
+
 ## 1.10.1
 - absorb sexto hot-fix
 
