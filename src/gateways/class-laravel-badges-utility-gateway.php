@@ -77,7 +77,7 @@ class LaravelBadgesUtilityGateway {
         $parameters = $request->get_json_params();
 
         if ( isset($parameters['wp_user_id']) && is_numeric($parameters['wp_user_id']) && 0 < $parameters['wp_user_id'] ) {
-            $badgr_user = new BadgrUser( $user );
+            $badgr_user = new BadgrUser( $parameters['wp_user_id'] );
             $backpack = BadgrProvider::get_all_assertions_from_user_backpack( $badgr_user );
         }
 
