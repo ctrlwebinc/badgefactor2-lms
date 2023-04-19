@@ -139,6 +139,7 @@ class BadgePage_Controller extends Page_Controller {
 			$fields['badge_page']      = $post;
 			$fields['badge_entity_id'] = get_post_meta( $post->ID, 'badge', true );
 			$fields['badge_criteria']  = get_post_meta( $post->ID, 'badge_criteria', true );
+			$fields['badge_approval_type'] = get_post_meta( $post->ID, 'badge_approval_type', true );
 			$fields['badge']           = BadgeClass::get( $fields['badge_entity_id'] );
 			$fields['issuer']          = $fields['badge'] ? Issuer::get( $fields['badge']->issuer ) : null;
 			$fields['courses']         = BadgePage::get_courses( $post->ID );
