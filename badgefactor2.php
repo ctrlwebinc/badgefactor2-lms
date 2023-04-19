@@ -24,7 +24,7 @@
  * GitHub Plugin URI: https://github.com/ctrlwebinc/badgefactor2
  * Description: Issues and manages Open Badges with Badgr server
  * Author: ctrlweb
- * Version: 1.10.1-rc
+ * Version: 2.1.0-rc
  * Author URI: https://badgefactor2.com/
  * License: GNU AGPL
  * Text Domain: badgefactor2
