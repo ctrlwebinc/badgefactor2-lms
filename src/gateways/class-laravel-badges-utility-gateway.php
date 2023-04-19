@@ -26,6 +26,7 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Exception\GuzzleException;
 use BadgeFactor2\BadgrProvider;
+use BadgeFactor2\BadgrUser;
 use BadgeFactor2\Models\Assertion;
 
 
@@ -50,6 +51,11 @@ class LaravelBadgesUtilityGateway {
             'callback' => [self::class,'handleEmit'],
             'permission_callback' => function() {return true;},
          ] );
+         register_rest_route( 'lbu/v1', '/fetch_backpack', [
+            'methods' => 'POST',
+            'callback' => [self::class,'handleFetchBackpack'],
+            'permission_callback' => function() {return true;},
+         ] );
     }
 
     public static function handleEmit( \WP_REST_Request $request ) {
@@ -64,6 +70,17 @@ class LaravelBadgesUtilityGateway {
             return Assertion::create($assertionParameters);
          }
         
+        return false;
+    }
+
+    public static function handleFetchBackpack( \WP_REST_Request $request ) {
+        $parameters = $request->get_json_params();
+
+        if ( isset($parameters['wp_user_id']) && is_numeric($parameters['wp_user_id']) && 0 < $parameters['wp_user_id'] ) {
+            $badgr_user = new BadgrUser( $user );
+            $backpack = BadgrProvider::get_all_assertions_from_user_backpack( $badgr_user );
+        }
+
         return false;
     }
 
@@ -135,10 +152,4 @@ class LaravelBadgesUtilityGateway {
             error_log('GuzzleException ' . $e->getMessage());
         }
     }
-
-    // Listen to ajax requests through wp rest: setup, declare callback
-
-    // Send events to lbu
-
-    // Get starting status when starting a pathway
 }
