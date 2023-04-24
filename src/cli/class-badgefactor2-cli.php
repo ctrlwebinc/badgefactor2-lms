@@ -22,11 +22,14 @@
 
 namespace BadgeFactor2;
 
+use BadgeFactor2\AssertionPrivacy;
+use BadgeFactor2\BadgrProvider;
+use BadgeFactor2\Helpers\DataImport;
 use BadgeFactor2\Helpers\Migration;
+use BadgeFactor2\Models\Assertion;
+use BadgeFactor2\Post_Types\BadgePage;
 use WP_CLI;
 use WP_CLI_Command;
-use BadgeFactor2\Post_Types\BadgePage;
-use BadgeFactor2\AssertionPrivacy;
 
 WP_CLI::add_command( 'bf2', BadgeFactor2_CLI::class );
 
@@ -327,7 +330,33 @@ class BadgeFactor2_CLI extends WP_CLI_Command {
 		} else {
 			WP_CLI::log( 'There is nothing to update.' );
 		}
+	}
 
-		
+	/**
+	 * Generates assertions using a list of recipients provided in a csv file.
+	 * There should be a header line which will be ignored, and the line
+	 * format should be: badge_class_slug, email, assertion_date, badge_name
+	 *
+	 * @param array $args Arguments.
+	 * @param array $assoc_args Associative arguments.
+	 * @return void
+	 */
+	public function batch_process_assertions( $args, $assoc_args ) 
+	{
+		// Check if csv file is provided.
+		if ( count( $args ) !== 1 ) {
+			WP_CLI::error( 'Usage: wp bf2 batch_process_assertions /path/to/filename.csv' );
+		}
+
+		// Check if dry-run mode is activated.
+		$dry_run = isset( $assoc_args['dry-run'] );
+		if ( $dry_run ) {
+			WP_CLI::line( 'Dry-run mode enabled.' );
+		}
+
+		$recipients = DataImport::assertions_csv_file_to_recipients_array( $args[0] );
+		$badges = DataImport::validate_assertions_recipients_array( $recipients );
+		$badges = DataImport::check_for_assertions_duplicate( $badges );
+		DataImport::generate_assertions_from_array( $badges );
 	}
 }

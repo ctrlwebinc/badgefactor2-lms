@@ -172,6 +172,7 @@ class BadgeFactor2 {
 
 		// Helpers.
 		require_once BF2_ABSPATH . 'src/helpers/class-buddypress.php';
+		require_once BF2_ABSPATH . 'src/helpers/class-data-import.php';
 		require_once BF2_ABSPATH . 'src/helpers/class-migration.php';
 		require_once BF2_ABSPATH . 'src/helpers/class-template.php';
 		require_once BF2_ABSPATH . 'src/helpers/class-text.php';
