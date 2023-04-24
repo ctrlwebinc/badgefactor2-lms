@@ -126,7 +126,7 @@ class BadgeFactor2 {
 		// Post Types.
 		Post_Types\BadgePage::init_hooks();
 		Post_Types\BadgeRequest::init_hooks();
-
+		Post_Types\ParcoursBadge::init_hooks();
 		// Roles.
 		Roles\Approver::init_hooks();
 
@@ -134,6 +134,9 @@ class BadgeFactor2 {
 		Helpers\SocialShare::init_hooks();
 		Helpers\SendByEmail::init_hooks();
 		Helpers\BuddypressXProfile::init_hooks();
+
+		// Gateway
+		LaravelBadgesUtilityGateway::init_hooks();
 
 		// Admin.
 		if ( is_admin() || ( defined( 'WP_CLI' ) && WP_CLI ) ) {
@@ -204,7 +207,8 @@ class BadgeFactor2 {
 		require_once BF2_ABSPATH . 'src/controllers/class-badgepage-controller.php';
 		require_once BF2_ABSPATH . 'src/controllers/class-badgerequest-controller.php';
 		require_once BF2_ABSPATH . 'src/controllers/class-issuer-controller.php';
-
+		
+		require_once BF2_ABSPATH . 'src/controllers/class-parcours-controller.php';
 		// Shortcodes.
 		require_once BF2_ABSPATH . 'src/public/shortcodes/class-badges.php';
 		require_once BF2_ABSPATH . 'src/public/shortcodes/class-issuers.php';
@@ -217,6 +221,8 @@ class BadgeFactor2 {
 		require_once BF2_ABSPATH . 'src/roles/class-approver.php';
 		require_once BF2_ABSPATH . 'src/post-types/class-badgepage.php';
 		require_once BF2_ABSPATH . 'src/post-types/class-badgerequest.php';
+		
+		require_once BF2_ABSPATH . 'src/post-types/class-parcours_badge.php';
 
 		// Public (site) class.
 		require_once BF2_ABSPATH . 'src/public/class-badgefactor2-public.php';
@@ -243,10 +249,14 @@ class BadgeFactor2 {
 			require_once BF2_ABSPATH . 'src/admin/lists/class-assertions.php';
 		}
 
+		// Gateway
+		require_once BF2_ABSPATH . 'src/gateways/class-laravel-badges-utility-gateway.php';
+
 		// CLI-only classes.
 		if ( defined( 'WP_CLI' ) && WP_CLI ) {
 			require_once BF2_ABSPATH . 'src/cli/class-badgefactor2-cli.php';
 			require_once BF2_ABSPATH . 'src/cli/class-badgr-cli.php';
+			require_once BF2_ABSPATH . 'src/cli/class-laravel-badges-utility-cli.php';
 		}
 	}
 

@@ -24,6 +24,7 @@ namespace BadgeFactor2;
 
 use \Datetime;
 use BadgeFactor2\BadgrUser;
+use BadgeFactor2\LaravelBadgesUtilityGateway;
 
 /**
  * BadgrProvider Class.
@@ -718,7 +719,8 @@ class BadgrProvider {
 			if ( isset( $response_info->status->success ) &&
 				true === $response_info->status->success &&
 				isset( $response_info->result[0]->entityId ) ) {
-				return $response_info->result[0]->entityId;
+					LaravelBadgesUtilityGateway::postNewAssertion($recipient_identifier, $badge_class_slug, $response_info->result[0]->entityId);
+					return $response_info->result[0]->entityId;
 			}
 		}
 

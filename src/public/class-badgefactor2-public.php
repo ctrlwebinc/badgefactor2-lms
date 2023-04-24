@@ -162,6 +162,23 @@ class BadgeFactor2_Public {
 	public static function load_resources() {
 		wp_enqueue_style( 'badgefactor2-css', BF2_BASEURL . 'assets/css/public.css', array(), BF2_DATA['Version'], 'all' );
 		wp_enqueue_script( 'badgefactor2-js', BF2_BASEURL . 'assets/js/public.js', array( 'jquery' ), BF2_DATA['Version'], true );
+		if ( defined('BF2_PATHWAYS_SUPPLEMENTAL_CSS_URL') ) {
+			wp_enqueue_style( 'badgefactor2-pathways-css', BF2_PATHWAYS_SUPPLEMENTAL_CSS_URL, array(), null,);
+		}
+		if ( defined('BF2_PATHWAYS_SUPPLEMENTAL_JS_URL') && defined ('LBU_URL')) {
+			wp_enqueue_script( 'badgefactor2-pathways-js', BF2_PATHWAYS_SUPPLEMENTAL_JS_URL, array(), null, true );
+			$script_parameters['lbu_url'] = LBU_URL;
+			$current_user = wp_get_current_user();
+			if ( 0 !== $current_user->ID ) {
+				$script_parameters['has_current_user'] = true;
+				$script_parameters['user_id'] = $current_user->ID;
+				$script_parameters['user_email'] = $current_user->user_email;
+				$script_parameters['username'] = $current_user->user_nicename;
+			} else {
+				$script_parameters['has_current_user'] = false;
+			}
+			wp_localize_script( 'badgefactor2-pathways-js', 'badgefactor2_pathways_js_data', $script_parameters);
+		}
 	}
 
 	/**
