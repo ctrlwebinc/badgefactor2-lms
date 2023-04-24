@@ -212,6 +212,16 @@ jQuery(document).ready(function ($) {
                 );
             }
             return false;
+        })
+        .on("change", '#csv-file', function(e) {
+            if (e.target.files[0]) {
+                $('#csv-file-upload-form .csv-file-upload').addClass('valid');
+                $('#send-csv-file').prop('disabled', false);
+            } else {
+                $('#csv-file-upload-form .csv-file-upload').removeClass('valid');
+                $('#send-csv-file').prop('disabled', true);
+            }
+
         });
     $(document).on(
         "change",
@@ -226,7 +236,24 @@ jQuery(document).ready(function ($) {
             }
             window.location.href = url;
         }
-    );
+    )
+    .on("submit", '#csv-file-upload-form', function(e) {
+        e.preventDefault();
+        $('#send-csv-file').prop('disabled', true);
+        $(document.body).css({'cursor' : 'wait'});
+        $.ajax({
+            url: ajaxurl,
+            type:"POST",
+            processData: false,
+            contentType: false,
+            data:  new FormData(this),
+            success: function (response) {
+                $('.csv-assertions-process-output').html(response.output);
+                $('#send-csv-file').prop('disabled', false);
+                $(document.body).css({'cursor' : 'default'});
+            }
+        });
+    });
     $("#menu-posts-badge-page img").each(function () {
         var $img = $(this);
         var imgID = $img.attr("id");
