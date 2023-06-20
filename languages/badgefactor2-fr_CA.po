@@ -1959,50 +1959,6 @@ msgstr "Type: diplôme ou certificat"
 msgid "The link to the registration page"
 msgstr "Le lien vers la page d'inscription"
 
-#: src/helpers/class-send-by-email.php
-msgid "Enter the recipient email address in the field below"
-msgstr "Entrer le courriel du destinataire dans le champ ci-dessous"
-
-#: src/helpers/class-send-by-email.php
-msgid "E-mail address"
-msgstr "Adresse courriel"
-
-#: src/helpers/class-send-by-email.php
-msgid "Send"
-msgstr "Envoyer"
-
-#: src/helpers/class-send-by-email.php
-msgid "certificate"
-msgstr "certificat"
-
-#: src/helpers/class-send-by-email.php
-msgid "diploma"
-msgstr "diplôme"
-
-#: src/helpers/class-send-by-email.php
-msgid "Invalide email address."
-msgstr "Adresse couriel non valide."
-
-#: src/helpers/class-send-by-email.php
-msgid "There was a problem sending the email."
-msgstr "Il y a eu un problème lors de l'envoi."
-
-#: src/helpers/class-send-by-email.php
-msgid "You must be logged in to send this email."
-msgstr "Vous devez être connecté pour envoyer ce courriel."
-
-#: src/helpers/class-send-by-email.php
-msgid "We are sending your e-mail..."
-msgstr "Envoi de votre courriel en cours..."
-
-#: src/helpers/class-send-by-email.php
-msgid "Email successfully sent."
-msgstr "Courriel envoyé avec succès."
-
-#: src/helpers/class-send-by-email.php
-msgid "Sending..."
-msgstr "Envoi en cours..."
-
 #~ msgid "You are not an approver for this badge."
 #~ msgstr "Vous n’êtes pas un approbateur pour ce badge."
 
