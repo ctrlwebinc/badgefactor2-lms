@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## 1.13.0
+
+- Add support to check that user has a verified email in Badgr
+- Add check_if_user_has_badgr_verfied_email command in badgr CLI commands
+
 ## 1.12.1
 
 - Fixed: various bugfixes.
