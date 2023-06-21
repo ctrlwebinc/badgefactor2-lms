@@ -405,6 +405,20 @@ class BadgrUser {
 		return false;
 	}
 
+	public function check_if_user_has_verified_email() {
+		$profile = BadgrProvider::get_profile_associated_to_badgr_user( $this );
+
+		if ( false !== $profile && !empty($profile->emails)) {
+			foreach ( $profile->emails as $email ) {
+				if ( true == $email->verified ) {
+					return true;
+				}
+			}
+		}
+
+		return false;
+	}
+
 	/**
 	 * Reset password.
 	 *
