@@ -132,7 +132,7 @@ class Badgr_CLI extends WP_CLI_Command {
 			WP_CLI::error( 'No such user ' . $args[0] );
 		}
 
-		if ( true === ( new BadgrUser( $args[0]) )->check_if_user_has_verified_email() ) {
+		if ( true === ( new BadgrUser( $user ) )->check_if_user_has_verified_email() ) {
 			WP_CLI::success( sprintf( 'User %s has a verfied email in Badgr', $args[0]) );
 		} else {
 			WP_CLI::success( sprintf( 'User %s doesn\'t have a verfied email in Badgr', $args[0]) );
