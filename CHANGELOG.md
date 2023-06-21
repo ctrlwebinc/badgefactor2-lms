@@ -7,11 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## 1.12.1
+
+- Fixed: various bugfixes.
+
 ## 1.12.0
 
 - Added: support for pathways
 
 ## 1.11.1
+
 - Fixed: missing version in plugin base file.
 
 ## 1.11.0
@@ -19,6 +24,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added: wp-cli command to batch process assertions from a csv file.
 
 ## 1.10.1
+
 - absorb sexto hot-fix
 
 ## 1.10.0
@@ -28,12 +34,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added: configurable redirect when not connected
 
 ## 1.9.0
+
 - Added : new field criteria badge list on badgr
 
 ## 1.8.1
+
 - Fixed: add test for free products
 
 ## 1.8.0
+
 - Refactored: fixed performance issues.
 
 ## 1.7.0
