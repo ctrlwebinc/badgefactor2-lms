@@ -26,6 +26,7 @@ namespace BadgeFactor2\Helpers;
 
 use BadgeFactor2\BadgrProvider;
 use BadgeFactor2\Models\Assertion;
+use DateTime;
 
 class DummyProgressBar {
 
@@ -150,6 +151,11 @@ class DataImport {
 				$recipient[2] :
 				$today;
 
+            $is_valid_format_date = static::is_valid_format_date($assertion_date);
+            if( ! $is_valid_format_date ) {
+                static::output_error( 'Invalid date format: ' . $assertion_date );
+            }
+
 			// Eliminate duplicate recipient data from csv file.
 			if ( ! isset( $badges[$badge_class_slug][$email] ) ) {
 				$badges[$badge_class_slug][$email] = $assertion_date;
@@ -199,6 +205,12 @@ class DataImport {
 		}
 		$progress->finish();
         return true;
+    }
+
+    public static function is_valid_format_date($date, $format = 'Y-m-d')
+    {
+        $dt = DateTime::createFromFormat($format, $date);
+        return $dt && $dt->format($format) === $date;
     }
 
 }
