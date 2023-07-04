@@ -7,9 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## 1.13.1
-- Fix : format date
-- Verification : Line number csv file
+## A venir
+- Fix : controler le format de la date (date en FR non accepté)
+- Verification : Nombre de ligne du fichier CSV (max à 1000 lignes)
 
 ## 1.13.0
 
