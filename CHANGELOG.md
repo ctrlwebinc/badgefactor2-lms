@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## A venir
 - Fix : controler le format de la date (date en FR non accepté)
 - Verification : Nombre de ligne du fichier CSV (max à 1000 lignes)
+- Traduction : ajout traduction du résultat de l'importation du fichier csv
 
 ## 1.13.0
 

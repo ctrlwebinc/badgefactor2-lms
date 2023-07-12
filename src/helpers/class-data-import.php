@@ -81,10 +81,10 @@ class DataImport {
     {
         if ( defined('DOING_AJAX') && DOING_AJAX ) {
             ob_start();
-            echo "<h2>Import result</h2>";
+            echo "<h2>". __( 'Import result', BF2_DATA['TextDomain'] ) . "</h2>";
         }
         if ( $dry_run ) {
-			static::output_line( 'Dry-run mode enabled.' );
+			static::output_line( __( 'Dry-run mode enabled.', BF2_DATA['TextDomain'] ) );
 		}
         $recipients = static::assertions_csv_file_to_recipients_array( $csv_file );
 		$badges = static::validate_assertions_recipients_array( $recipients );
@@ -101,10 +101,10 @@ class DataImport {
         $recipients = array();
 		$file_resource = fopen( $file, 'r');
 		if ( ! $file_resource ) {
-            static::output_error( 'Cannot open the csv file! Check your path and filename and try again.' );
+            static::output_error( __( 'Cannot open the csv file! Check your path and filename and try again.', BF2_DATA['TextDomain'] ) );
 		}
 
-		static::output_line( 'Reading csv file...' );
+		static::output_line( __( 'Reading csv file...', BF2_DATA['TextDomain'] ) );
 
         // Skip first line.
 		fgetcsv( $file_resource );
@@ -124,7 +124,7 @@ class DataImport {
 		$today = date('Y-m-d');
 
 		// Generate an array of validated data.
-		$progress = static::output_progress( 'Validating ' . count( $recipients ) . ' recipients...', count( $recipients ) );
+		$progress = static::output_progress( __( 'Validating ', BF2_DATA['TextDomain'] ) . count( $recipients ) . __( ' recipients...', BF2_DATA['TextDomain'] ), count( $recipients ) );
 		$badges = array();
 		foreach ( $recipients as $recipient ) {
 
@@ -136,7 +136,7 @@ class DataImport {
 
 				// Exists if badge class does not exist.
 				if ( false === $badge_class ) {
-                    static::output_error( 'Badge class does not exist: ' . $badge_class_slug );
+                    static::output_error( __( 'Badge class does not exist:', BF2_DATA['TextDomain'] ) . $badge_class_slug );
 				}
 	
 				$badges[$badge_class_slug] = array();
@@ -144,16 +144,15 @@ class DataImport {
 
 			$email = strtolower($recipient[1]);
 			if ( ! filter_var( $email, FILTER_VALIDATE_EMAIL ) ) {
-                static::output_error( 'Invalid email address: ' . $email );
+                static::output_error( __( 'Invalid email address:', BF2_DATA['TextDomain'] ) . $email );
 			}
 
 			$assertion_date = ( isset( $recipient[2] ) && ! empty( $recipient[2] ) ) ? 
 				$recipient[2] :
 				$today;
-
             $is_valid_format_date = static::is_valid_format_date($assertion_date);
             if( ! $is_valid_format_date ) {
-                static::output_error( 'Invalid date format: ' . $assertion_date );
+                static::output_error( __( 'Invalid date format:', BF2_DATA['TextDomain'] ) . $assertion_date );
             }
 
 			// Eliminate duplicate recipient data from csv file.
@@ -170,7 +169,7 @@ class DataImport {
     {
         // Make sure badge is not already given.
 		$duplicates = 0;
-		$progress = static::output_progress( 'Checking for duplicates...', array_sum( array_map( 'count', $badges ) ) );
+		$progress = static::output_progress( __( 'Checking for duplicates...', BF2_DATA['TextDomain'] ), array_sum( array_map( 'count', $badges ) ) );
 		foreach ( $badges as $badge_class => $emails ) {
 			$assertions = Assertion::all( -1, 1, array(
 				'filter_type'  => 'Badges',
@@ -187,14 +186,14 @@ class DataImport {
 			}
 		}
 		$progress->finish();
-		static::output_line( $duplicates . ' duplicates removed...' );
+		static::output_line( $duplicates . __( 'duplicates removed...', BF2_DATA['TextDomain'] ) );
         return $badges;
     }
 
     public static function generate_assertions_from_array( $badges )
     {
         // Generate assertions in Badgr.
-		$progress = static::output_progress( 'Generating ' . array_sum( array_map( 'count', $badges ) ) . ' assertions...', array_sum( array_map( 'count', $badges ) ) );
+		$progress = static::output_progress( __( 'Generating', BF2_DATA['TextDomain'] ) . array_sum( array_map( 'count', $badges ) ) . __( 'assertions...', BF2_DATA['TextDomain'] ), array_sum( array_map( 'count', $badges ) ) );
 		foreach ( $badges as $badge_class => $emails ) {
 			foreach ( $emails as $email => $date ) {
 				if ( ! $dry_run ) {
