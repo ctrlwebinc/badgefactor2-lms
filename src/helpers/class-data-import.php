@@ -33,7 +33,7 @@ class DummyProgressBar {
     public function tick() {}
 
     public function finish() {
-        echo " -- completed!<br/>";
+        echo " -- " . __('completed!', BF2_DATA['TextDomain']) . "<br />";
     }
 }
 
@@ -49,6 +49,7 @@ class DataImport {
         } else {
             if ( defined('DOING_AJAX') && DOING_AJAX ) {
                 echo "<br/>" . $error_message . "<br/>";
+                echo "<br/>". __( "Cancel file import", BF2_DATA['TextDomain'] ) . "<br/>";
                 $output = ob_get_clean();
                 wp_send_json( array( 'output' => $output ) );
             } else {
@@ -89,7 +90,7 @@ class DataImport {
         $recipients = static::assertions_csv_file_to_recipients_array( $csv_file );
 		$badges = static::validate_assertions_recipients_array( $recipients );
 		$badges = static::check_for_assertions_duplicate( $badges );
-		static::generate_assertions_from_array( $badges );
+		static::generate_assertions_from_array( $badges, $dry_run );
         if ( defined('DOING_AJAX') && DOING_AJAX ) {
             $output = ob_get_clean();
             wp_send_json( array( 'output' => $output ) );
@@ -122,12 +123,13 @@ class DataImport {
     public static function validate_assertions_recipients_array(array $recipients)
     {
 		$today = date('Y-m-d');
-
 		// Generate an array of validated data.
 		$progress = static::output_progress( __( 'Validating ', BF2_DATA['TextDomain'] ) . count( $recipients ) . __( ' recipients...', BF2_DATA['TextDomain'] ), count( $recipients ) );
 		$badges = array();
-		foreach ( $recipients as $recipient ) {
-
+		foreach ( $recipients as $key => $recipient ) {
+		    $key+=1;
+		    echo '<br>---<br>';
+		    echo __('Line treatment:', BF2_DATA['TextDomain']) . $key;
 			$badge_class_slug = $recipient[0];
 
 			// Validate each badge class only once.
@@ -190,7 +192,7 @@ class DataImport {
         return $badges;
     }
 
-    public static function generate_assertions_from_array( $badges )
+    public static function generate_assertions_from_array( $badges, $dry_run = false )
     {
         // Generate assertions in Badgr.
 		$progress = static::output_progress( __( 'Generating', BF2_DATA['TextDomain'] ) . array_sum( array_map( 'count', $badges ) ) . __( 'assertions...', BF2_DATA['TextDomain'] ), array_sum( array_map( 'count', $badges ) ) );

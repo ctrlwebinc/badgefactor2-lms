@@ -8,8 +8,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## A venir
+- Traduction du plugin avec po & mo
+- Ajout message un peu plus clair sur le traitement de l'importation du fichier csv (savoir sur quelle ligne l'importation situe une erreur et savoir si l'importation est bien annulée)
+- Correction : variable non définie dans la fonction generate_assertions_from_array & test slug dans la function
 
-# 1.13.1
+## 1.13.1
+
 - Fix : controler le format de la date (date en FR non accepté)
 - Verification : Nombre de ligne du fichier CSV (max à 1000 lignes)
 - Traduction : ajout traduction du résultat de l'importation du fichier csv
