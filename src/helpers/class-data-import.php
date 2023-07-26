@@ -128,8 +128,6 @@ class DataImport {
 		$badges = array();
 		foreach ( $recipients as $key => $recipient ) {
 		    $key+=1;
-		    echo '<br>---<br>';
-		    echo __('Line treatment:', BF2_DATA['TextDomain']) . $key;
 			$badge_class_slug = $recipient[0];
 
 			// Validate each badge class only once.
@@ -138,6 +136,8 @@ class DataImport {
 
 				// Exists if badge class does not exist.
 				if ( false === $badge_class ) {
+                    echo '<br>---<br>';
+                    echo __('Line treatment:', BF2_DATA['TextDomain']) . $key;
                     static::output_error( __( 'Badge class does not exist:', BF2_DATA['TextDomain'] ) . $badge_class_slug );
 				}
 	
@@ -146,6 +146,8 @@ class DataImport {
 
 			$email = strtolower($recipient[1]);
 			if ( ! filter_var( $email, FILTER_VALIDATE_EMAIL ) ) {
+                echo '<br>---<br>';
+                echo __('Line treatment:', BF2_DATA['TextDomain']) . $key;
                 static::output_error( __( 'Invalid email address:', BF2_DATA['TextDomain'] ) . $email );
 			}
 
@@ -154,6 +156,8 @@ class DataImport {
 				$today;
             $is_valid_format_date = static::is_valid_format_date($assertion_date);
             if( ! $is_valid_format_date ) {
+                echo '<br>---<br>';
+                echo __('Line treatment:', BF2_DATA['TextDomain']) . $key;
                 static::output_error( __( 'Invalid date format:', BF2_DATA['TextDomain'] ) . $assertion_date );
             }
 
