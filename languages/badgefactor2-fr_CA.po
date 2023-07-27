@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Badge Factor 2\n"
 "POT-Creation-Date: 2021-04-28 09:40-0400\n"
-"PO-Revision-Date: 2023-07-26 21:04+0300\n"
+"PO-Revision-Date: 2023-07-27 12:31+0300\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: fr_CA\n"
@@ -1936,3 +1936,12 @@ msgstr "Me déconnecter"
 
 msgid "My account"
 msgstr "Mon profil"
+
+msgid "Select CSV file"
+msgstr "Sélectionner un fichier CSV"
+
+msgid "Import assertions:"
+msgstr "Importer des assertions: "
+
+msgid "Upload"
+msgstr "Télécharger"
