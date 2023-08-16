@@ -120,7 +120,7 @@ class LaravelBadgesUtilityGateway {
         ];
 
         try {
-            $response = $client->request( $method, self::getLBUGatewayUrl() . '/feep-pathway/collect-wp-events', $args );
+            $response = $client->request( $method, self::getLBUGatewayUrl() . '/pathways/collect-wp-events', $args );
 
             return $response->getBody();
 
