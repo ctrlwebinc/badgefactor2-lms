@@ -32,10 +32,12 @@ use BadgeFactor2\Helpers\Template;
 $member = isset( $wp_query->query_vars['member'] ) ? get_user_by( 'slug', $wp_query->query_vars['member'] ) : null;
 global $bf2_template;
 $fields = $bf2_template->fields;
+$pathway_slug = end(explode('/parcours/', get_permalink()));
+
 ?>
 <div class="c-bf2 c-bf2--single section-inner" <?php post_class(); ?> id="post-<?php the_ID(); ?>">
 
-	<div class="main-badge-page main-parcours-page-warp">
+	<div id="bf2-pathways-page-wrapper" data-pathways-pathway_slug="<?php echo $pathway_slug; ?>" class="main-badge-page main-parcours-page-warp">
 		<?php echo c21_breadcrumbs( $post ) ?>
 
 			<div class="badge-page-warp parcours-page-warp">
@@ -105,6 +107,7 @@ $fields = $bf2_template->fields;
 							</div>
 						</div>
 					</div>
+
 				</div>
 			</div>
 		
