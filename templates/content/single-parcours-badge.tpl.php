@@ -33,7 +33,7 @@ $member = isset( $wp_query->query_vars['member'] ) ? get_user_by( 'slug', $wp_qu
 global $bf2_template;
 $fields = $bf2_template->fields;
 $path_elements = explode('/parcours/', get_permalink());
-$pathway_slug = rtrim(end($path));
+$pathway_slug = rtrim(end($path_elements));
 
 ?>
 <div class="c-bf2 c-bf2--single section-inner" <?php post_class(); ?> id="post-<?php the_ID(); ?>">
