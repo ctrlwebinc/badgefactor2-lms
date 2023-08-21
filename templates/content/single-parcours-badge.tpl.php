@@ -111,7 +111,7 @@ $pathway_slug = rtrim(end($path_elements),'/');
 
 				</div>
 				<div id="bf2-steps-modal" class="modal" tabindex="-1" role="dialog">
-					<div class="modal-dialog" role="document">
+					<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
 						<div class="modal-content">
 						<div class="modal-header">
 							<h5 class="modal-title">Modal title</h5>
