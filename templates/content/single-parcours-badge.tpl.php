@@ -101,10 +101,10 @@ $pathway_slug = rtrim(end($path_elements),'/');
 					<div class="support-links">
 						<div class="row">
 							<div class="technical-support">
-								<a href="#" class="c21-secondary-transparent-button" target="_blank">Soutien technique</a>
+								<a href="<?php echo '/soutien-technique/?badge='.urlencode($pathway_slug); ?>" class="c21-secondary-transparent-button" target="_blank">Soutien technique</a>
 							</div>
 							<div class="support">
-								<a href="#" class="c21-secondary-transparent-button" target="_blank">Soutien d’accompagnement</a>
+								<a href="<?php echo '/soutien-daccompagnement/?badge='.urlencode($pathway_slug); ?>" class="c21-secondary-transparent-button" target="_blank">Soutien d’accompagnement</a>
 							</div>
 						</div>
 					</div>
