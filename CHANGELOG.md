@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## A venir
 
+## 1.14.0
+- Ajout: image dans la page de parcours
+- Ajout: modales de parcours
+- Ajustement: adaptation à la dernière version de lbu
+- Ajustement: modularisation de certains éléments des parcours
+
 ## 1.13.2
 - Traduction du plugin avec po & mo
 - Ajout message un peu plus clair sur le traitement de l'importation du fichier csv (savoir sur quelle ligne l'importation situe une erreur et savoir si l'importation est bien annulée)
