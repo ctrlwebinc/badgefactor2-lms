@@ -119,10 +119,10 @@ class BuddyPress {
 			$item .=	 '</ul>';
 			$item .= '</li>';
 		} else {
-			$item .= '<li class="menu-item">';
+			$item .= '<li class="menu-item menu-item-login">';
 			$item .=     '<a href="' . $login_permalink . '">' . $login_page_title . '</a>';
 			$item .= '</li>';
-			$item .= '<li class="menu-item">';
+			$item .= '<li class="menu-item menu-item-registration">';
 			$item .=     '<a href="' . $registration_permalink . '">' . $registration_page_title . '</a>';
 			$item .= '</li>';
 		}
