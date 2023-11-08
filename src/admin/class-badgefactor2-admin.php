@@ -102,7 +102,6 @@ class BadgeFactor2_Admin {
 		// WordPress Hooks.
 		add_action( 'admin_enqueue_scripts', array( self::class, 'load_resources' ) );
 		add_action( 'admin_init', array( self::class, 'add_role_and_capabilities' ), 10 );
-		add_action( 'admin_menu', array( self::class, 'admin_menus' ) );
 		add_action( 'init', array( self::class, 'hook_flush_rewrite_rules' ), 100 );
 		add_action( 'load-edit.php', array( self::class, 'all_by_default_in_admin' ), 10 );
 		add_filter( 'pw_cmb2_field_select2_asset_path', array( self::class, 'pw_cmb2_field_select2_asset_path' ), 10 );
@@ -132,201 +131,6 @@ class BadgeFactor2_Admin {
 	public static function admin_init() {
 		self::register_settings_metaboxes();
 	}
-
-
-	/**
-	 * Admin menus.
-	 *
-	 * @return void
-	 */
-	public static function admin_menus() {
-		global $menu;
-
-		$menu[] = array( '', 'read', 'separator-badgefactor2', '', 'wp-menu-separator badgefactor2' );
-
-		$menus = array(
-			array(
-				__( 'Issuers', BF2_DATA['TextDomain'] ),
-				'issuers',
-			),
-			array(
-				__( 'Badges', BF2_DATA['TextDomain'] ),
-				'badges',
-			),
-			array(
-				__( 'Assertions', BF2_DATA['TextDomain'] ),
-				'assertions',
-			),
-		);
-
-		add_menu_page(
-			'Badgr',
-			'Badgr',
-			'manage_badgr',
-			$menus[0][1],
-			array( self::class, $menus[0][1] . '_page' ),
-			BF2_BASEURL . 'assets/images/badgr.svg'
-		);
-
-		foreach ( $menus as $m ) {
-			$hook = add_submenu_page(
-				$menus[0][1],
-				$m[0],
-				$m[0],
-				'manage_badgr',
-				$m[1],
-				array( self::class, $m[1] . '_page' )
-			);
-
-			add_action(
-				"load-$hook",
-				array( self::class, $m[1] . '_options' )
-			);
-		}
-
-	}
-
-
-	/**
-	 * Issuers Page.
-	 *
-	 * @return void
-	 */
-	public static function issuers_page() {
-		?>
-		<div class="wrap">
-			<h2><?php echo __( 'Issuers', 'badgefactor' ); ?></h2>
-
-			<div id="poststuff">
-				<div id="post-body" class="metabox-holder columns-2">
-					<div id="post-body-content">
-						<div class="meta-box-sortables ui-sortable">
-							<?php
-							self::$issuers->prepare_items();
-							self::$issuers->display();
-							?>
-						</div>
-					</div>
-				</div>
-				<br class="clear">
-			</div>
-		</div>
-		<?php
-	}
-
-
-	/**
-	 * Badges Page.
-	 *
-	 * @return void
-	 */
-	public static function badges_page() {
-		?>
-		<div class="wrap">
-			<h2><?php echo __( 'Badges', 'badgefactor' ); ?></h2>
-
-			<div id="poststuff">
-				<div id="post-body" class="metabox-holder columns-2">
-					<div id="post-body-content">
-						<div class="meta-box-sortables ui-sortable">
-							<?php
-							self::$badges->prepare_items();
-							self::$badges->display();
-							?>
-						</div>
-					</div>
-				</div>
-				<br class="clear">
-			</div>
-		</div>
-		<?php
-	}
-
-
-	/**
-	 * Assertions Page.
-	 *
-	 * @return void
-	 */
-	public static function assertions_page() {
-		?>
-		<div class="wrap">
-			<h2><?php echo __( 'Assertions', 'badgefactor' ); ?></h2>
-
-			<div id="poststuff">
-				<div id="post-body" class="metabox-holder columns-2">
-					<div id="post-body-content">
-						<div class="meta-box-sortables ui-sortable">
-							<?php
-							self::$assertions->prepare_items();
-							self::$assertions->display();
-							?>
-						</div>
-					</div>
-				</div>
-				<br class="clear">
-			</div>
-		</div>
-		<?php
-	}
-
-
-	/**
-	 * Issuers Options.
-	 *
-	 * @return void
-	 */
-	public static function issuers_options() {
-		$option = 'per_page';
-		$args   = array(
-			'label'   => __( 'Issuers', BF2_DATA['TextDomain'] ),
-			'default' => 10,
-			'option'  => 'issuers_per_page',
-		);
-
-		add_screen_option( $option, $args );
-
-		self::$issuers = new Issuers();
-	}
-
-
-	/**
-	 * Badges Options.
-	 *
-	 * @return void
-	 */
-	public static function badges_options() {
-		$option = 'per_page';
-		$args   = array(
-			'label'   => __( 'Badges', BF2_DATA['TextDomain'] ),
-			'default' => 10,
-			'option'  => 'badges_per_page',
-		);
-
-		add_screen_option( $option, $args );
-
-		self::$badges = new Badges();
-	}
-
-
-	/**
-	 * Assertions Options.
-	 *
-	 * @return void
-	 */
-	public static function assertions_options() {
-		$option = 'per_page';
-		$args   = array(
-			'label'   => __( 'Assertions', BF2_DATA['TextDomain'] ),
-			'default' => 10,
-			'option'  => 'assertions_per_page',
-		);
-
-		add_screen_option( $option, $args );
-
-		self::$assertions = new Assertions();
-	}
-
 
 	/**
 	 * Admin Resources Loader.
@@ -366,6 +170,7 @@ class BadgeFactor2_Admin {
 
 		$badgefactor2_settings = new_cmb2_box( $args );
 
+		/*
 		$badgefactor2_settings->add_field(
 			array(
 				'name' => __( 'Send WordPress registration emails?', BF2_DATA['TextDomain'] ),
@@ -374,7 +179,9 @@ class BadgeFactor2_Admin {
 				'type' => 'checkbox',
 			)
 		);
+		*/
 
+		/*
 		$badgefactor2_settings->add_field(
 			array(
 				'name'       => __( 'Make issued badges public or private by default?', BF2_DATA['TextDomain'] ),
@@ -390,6 +197,25 @@ class BadgeFactor2_Admin {
 				),
 			)
 		);
+		*/
+
+		$badgefactor2_settings->add_field(
+			array(
+				'name'    => __( 'Website Public URL', BF2_DATA['TextDomain'] ),
+				'id'      => 'bf2_nuxt_url',
+				'type'    => 'text',
+				'default' => 'https://url.com',
+			)
+		);
+
+		$badgefactor2_settings->add_field(
+			array(
+				'name'    => __( 'Website Back-Office URL', BF2_DATA['TextDomain'] ),
+				'id'      => 'bf2_laravel_url',
+				'type'    => 'text',
+				'default' => 'https://url.com',
+			)
+		);
 
 		$badgefactor2_settings->add_field(
 			array(
@@ -400,6 +226,7 @@ class BadgeFactor2_Admin {
 			)
 		);
 
+		/*
 		$badgefactor2_settings->add_field(
 			array(
 				'name'    => __( 'Issuers slug', BF2_DATA['TextDomain'] ),
@@ -408,6 +235,7 @@ class BadgeFactor2_Admin {
 				'default' => 'issuers',
 			)
 		);
+		*/
 
 		$badgefactor2_settings->add_field(
 			array(
@@ -440,6 +268,7 @@ class BadgeFactor2_Admin {
 			)
 		);
 
+		/*
 		$badgefactor2_settings->add_field(
 			array(
 				'name'    => __( 'Login page slug', BF2_DATA['TextDomain'] ),
@@ -457,6 +286,7 @@ class BadgeFactor2_Admin {
 				'default' => '',
 			)
 		);
+		*/
 
 		/**
 		 * Registers Emails settings page.

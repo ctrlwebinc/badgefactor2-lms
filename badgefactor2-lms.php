@@ -1,7 +1,7 @@
 <?php
 /**
- * Badge Factor 2
- * Copyright (C) 2019 ctrlweb
+ * Badge Factor 2 LMS
+ * Copyright (C) 2023 ctrlweb
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -19,12 +19,12 @@
  *
  * @package Badge_Factor_2
  *
- * Plugin Name: Badge Factor 2
- * Plugin URI: https://github.com/ctrlwebinc/badgefactor2
- * GitHub Plugin URI: https://github.com/ctrlwebinc/badgefactor2
- * Description: Issues and manages Open Badges with Badgr server
- * Author: ctrlweb
- * Version: 1.12.0
+ * Plugin Name: Badge Factor 2 LMS
+ * Plugin URI: https://github.com/ctrlwebinc/badgefactor2-lms
+ * GitHub Plugin URI: https://github.com/ctrlwebinc/badgefactor2-lms
+ * Description: LMS for Badge Factor 2 (Laravel Edition)
+ * Author: Laniakea Labs
+ * Version: 1.0.0
  * Author URI: https://badgefactor2.com/
  * License: GNU AGPL
  * Text Domain: badgefactor2

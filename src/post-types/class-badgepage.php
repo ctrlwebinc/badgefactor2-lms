@@ -60,7 +60,6 @@ class BadgePage {
 	 * @return void
 	 */
 	public static function init_hooks() {
-		add_action( 'init', array( self::class, 'init' ), 10 );
 		add_action( 'init', array( self::class, 'register_taxonomies' ), 10 );
 		add_action( 'admin_init', array( self::class, 'add_capabilities' ), 10 );
 		add_filter( 'post_updated_messages', array( self::class, 'updated_messages' ), 10 );
@@ -70,71 +69,6 @@ class BadgePage {
 		add_filter( 'archive_template', array( BadgePage_Controller::class, 'archive' ) );
 		add_action( 'update_badge_page', array( self::class, 'update_badge_page' ) );
 		add_action( 'create_badge_page', array( self::class, 'create_badge_page' ) );
-	}
-
-
-	/**
-	 * Registers the `badge_page` post type.
-	 */
-	public static function init() {
-
-		register_post_type(
-			self::$slug,
-			array(
-				'labels'            => array(
-					'name'                  => __( 'Badge Pages', BF2_DATA['TextDomain'] ),
-					'singular_name'         => __( 'Badge Page', BF2_DATA['TextDomain'] ),
-					'all_items'             => __( 'All Badge Pages', BF2_DATA['TextDomain'] ),
-					'archives'              => __( 'Badge Page Archives', BF2_DATA['TextDomain'] ),
-					'attributes'            => __( 'Badge Page Attributes', BF2_DATA['TextDomain'] ),
-					'insert_into_item'      => __( 'Insert into Badge Page', BF2_DATA['TextDomain'] ),
-					'uploaded_to_this_item' => __( 'Uploaded to this Badge Page', BF2_DATA['TextDomain'] ),
-					'featured_image'        => _x( 'Featured Image', self::$slug, BF2_DATA['TextDomain'] ),
-					'set_featured_image'    => _x( 'Set featured image', self::$slug, BF2_DATA['TextDomain'] ),
-					'remove_featured_image' => _x( 'Remove featured image', self::$slug, BF2_DATA['TextDomain'] ),
-					'use_featured_image'    => _x( 'Use as featured image', self::$slug, BF2_DATA['TextDomain'] ),
-					'filter_items_list'     => __( 'Filter Badge Pages list', BF2_DATA['TextDomain'] ),
-					'items_list_navigation' => __( 'Badge Pages list navigation', BF2_DATA['TextDomain'] ),
-					'items_list'            => __( 'Badge Pages list', BF2_DATA['TextDomain'] ),
-					'new_item'              => __( 'New Badge Page', BF2_DATA['TextDomain'] ),
-					'add_new'               => __( 'Add New', BF2_DATA['TextDomain'] ),
-					'add_new_item'          => __( 'Add New Badge Page', BF2_DATA['TextDomain'] ),
-					'edit_item'             => __( 'Edit Badge Page', BF2_DATA['TextDomain'] ),
-					'view_item'             => __( 'View Badge Page', BF2_DATA['TextDomain'] ),
-					'view_items'            => __( 'View Badge Pages', BF2_DATA['TextDomain'] ),
-					'search_items'          => __( 'Search Badge Pages', BF2_DATA['TextDomain'] ),
-					'not_found'             => __( 'No Badge Pages found', BF2_DATA['TextDomain'] ),
-					'not_found_in_trash'    => __( 'No Badge Pages found in trash', BF2_DATA['TextDomain'] ),
-					'parent_item_colon'     => __( 'Parent Badge Page:', BF2_DATA['TextDomain'] ),
-					'menu_name'             => __( 'Badge Pages', BF2_DATA['TextDomain'] ),
-				),
-				'public'            => true,
-				'hierarchical'      => false,
-				'show_ui'           => true,
-				'show_in_nav_menus' => true,
-				'supports'          => array( 'title', 'editor' ),
-				'has_archive'       => true,
-				'rewrite'           => array( 'slug' => 'badges' ),
-				'query_var'         => true,
-				'menu_position'     => 50,
-				'menu_icon'         => BF2_BASEURL . 'assets/images/badge.svg',
-				'show_in_rest'      => false,
-				'taxonomies'        => array( 'badge-category' ),
-				'capability_type'   => array( self::$slug, self::$slug_plural ),
-				'capabilities'      => array(
-					'edit_post'           => 'edit_' . self::$slug,
-					'edit_posts'          => 'edit_' . self::$slug_plural,
-					'edit_others_posts'   => 'edit_others_' . self::$slug_plural,
-					'publish_posts'       => 'publish_' . self::$slug_plural,
-					'read_post'           => 'read_' . self::$slug,
-					'read_private_posts'  => 'read_private_' . self::$slug_plural,
-					'delete_posts'        => 'delete_' . self::$slug,
-					'delete_others_posts' => 'delete_' . self::$slug,
-				),
-				'map_meta_cap'      => true,
-			)
-		);
-
 	}
 
 

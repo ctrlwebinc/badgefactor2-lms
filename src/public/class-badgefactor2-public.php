@@ -40,6 +40,7 @@ class BadgeFactor2_Public {
 	 * @return void
 	 */
 	public static function init_hooks() {
+		add_action( 'init', array( self::class, 'redirect_to_laravel' ), 10, 0 );
 		add_action( 'init', array( self::class, 'add_rewrite_tags' ), 10, 0 );
 		add_action( 'init', array( self::class, 'add_rewrite_rules' ), 10, 0 );
 		remove_action( 'register_new_user', 'wp_send_new_user_notifications' );
@@ -59,6 +60,14 @@ class BadgeFactor2_Public {
 		add_filter( 'unlogged_user_badge_request_form_message', array( self::class, 'badge_request_message_for_unlogged_user' ), 20, 2 );
 	}
 
+	/**
+	 * Rewrite tags.
+	 *
+	 * @return void
+	 */
+	public static function redirect_to_laravel() {
+
+	}
 
 	/**
 	 * Rewrite tags.
@@ -98,13 +107,13 @@ class BadgeFactor2_Public {
 
 		$form_slug                = ! empty( $options['bf2_form_slug'] ) ? $options['bf2_form_slug'] : 'form';
 		$autoevaluation_form_slug = ! empty( $options['bf2_autoevaluation_form_slug'] ) ? $options['bf2_autoevaluation_form_slug'] : 'autoevaluation';
-		$issuers_slug             = ! empty( $options['bf2_issuers_slug'] ) ? $options['bf2_issuers_slug'] : 'issuers';
+		//$issuers_slug             = ! empty( $options['bf2_issuers_slug'] ) ? $options['bf2_issuers_slug'] : 'issuers';
 
 		add_rewrite_rule( "badges/([^/]+)/{$form_slug}/?$", 'index.php?badge-page=$matches[1]&form=1', 'top' );
 		add_rewrite_rule( "badges/([^/]+)/{$autoevaluation_form_slug}/?$", 'index.php?badge-page=$matches[1]&form=1&autoevaluation=1', 'top' );
 		add_rewrite_rule( "{$members_page}/([^/]+)/badges/([^/]+)/?$", 'index.php?member=$matches[1]&badge=$matches[2]', 'top' );
-		add_rewrite_rule( "{$issuers_slug}/?$", 'index.php?issuers=1', 'top' );
-		add_rewrite_rule( "{$issuers_slug}/([^/]+)/?$", 'index.php?issuer=$matches[1]', 'top' );
+		//add_rewrite_rule( "{$issuers_slug}/?$", 'index.php?issuers=1', 'top' );
+		//add_rewrite_rule( "{$issuers_slug}/([^/]+)/?$", 'index.php?issuer=$matches[1]', 'top' );
 	}
 
 
@@ -147,10 +156,12 @@ class BadgeFactor2_Public {
 	 * @return void
 	 */
 	public static function suppress_new_user_notifications( $user_id, $notify = 'both' ) {
+		/*
 		$badgefactor2_options = get_option( 'badgefactor2' );
 		if ( isset( $badgefactor2_options['bf2_send_new_user_notifications'] ) && 'on' === $badgefactor2_options['bf2_send_new_user_notifications'] ) {
 			wp_send_new_user_notifications( $user_id, $notify );
 		}
+		*/
 	}
 
 
@@ -189,6 +200,7 @@ class BadgeFactor2_Public {
 	public static function badge_request_message_for_unlogged_user ( $login_permalink = '', $registration_permalink = '' ) {
 		$options = get_option( 'badgefactor2' );
 
+		/*
 		$login_slug = ! empty( $options['bf2_login_page_slug'] ) ? $options['bf2_login_page_slug'] : '';
 		$login_permalink = ( $login_permalink != '' ) ? $login_permalink : $login_slug;
 		$login_permalink = site_url( $login_permalink ) . '/';
@@ -223,6 +235,7 @@ class BadgeFactor2_Public {
 		}
 			
 		return sprintf( '<p><em>%s</em></p>', $message);
+		*/
 
 	}
 
