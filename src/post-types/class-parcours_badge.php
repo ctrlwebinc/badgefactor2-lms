@@ -468,6 +468,36 @@ class ParcoursBadge {
             'type' => 'textarea_small',
 			'name' => 'Public cible ',
         ));
+		//
+        $cmb = new_cmb2_box(
+            array(
+                'id'           => 'parcours_media',
+                'title'        => 'Visuels supplémentaires',
+                'object_types' => array( self::$slug ),
+                'context'      => 'normal',
+                'priority'     => 'default',
+                'show_names'   => true,
+                'capability'   => 'manage_badgr',
+            )
+        );
+
+        $cmb->add_field( array(
+                'name'         => 'Image',
+                'id'           => 'parcours_supplementary_image',
+                'type'         => 'file',
+                'options'      => array(
+                    'url' => false,
+                ),
+                'text'         => array(
+                    'add_upload_file_text' => 'Ajouter image',
+                ),
+                'query_args'   => array(
+                    'type' => 'image/png',
+                ),
+                'preview_size' => 'medium',
+                'capability'   => 'manage_badgr',
+        ));
+
 	}
 
 

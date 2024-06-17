@@ -26,6 +26,7 @@ list_assertions_by_issuer issuer_slug
 list_assertions_by_badge_class badge_class_slug
 get_assertion_by_slug slug
 revoke_assertion slug reason
+check_if_user_has_badgr_verfied_email
 ```
 
 Add user example:

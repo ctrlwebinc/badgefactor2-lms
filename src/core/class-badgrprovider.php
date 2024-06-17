@@ -1065,6 +1065,26 @@ class BadgrProvider {
 	}
 	/**
 	 * Undocumented function
+	 * @param BadgrUser $badgr_user Badgr User to get profile for
+	 * @return boolean|object
+	 */
+	public static function get_profile_associated_to_badgr_user( BadgrUser $badgr_user) {
+		$response = $badgr_user->get_client()->get( '/v2/users/self' );
+
+		// Check for 200 response.
+		if ( null !== $response && $response->getStatusCode() === 200 ) {
+			$response_info = json_decode( $response->getBody() );
+			if ( isset( $response_info->status->success ) &&
+				true === $response_info->status->success &&
+				isset( $response_info->result[0] ) ) {
+				return $response_info->result[0];
+			}
+		}
+
+		return false;
+	}
+	/**
+	 * Undocumented function
 	 *
 	 * @param string $image Image path.
 	 * @return boolean|string

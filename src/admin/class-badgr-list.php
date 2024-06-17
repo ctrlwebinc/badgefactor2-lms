@@ -357,7 +357,7 @@ class Badgr_List extends \WP_List_Table
         } else {
             if ( BadgrClient::is_active() && 'assertions' === $_GET['page'] ) {
                 echo '<form id="csv-file-upload-form" method="post">';
-                echo '<label class="csv-file-upload-label">' . __('Import assertions: ') . '</label>';
+                echo '<label class="csv-file-upload-label">' . __('Import assertions:', BF2_DATA['TextDomain']) . '</label>';
                 echo '<label class="csv-file-upload"><input type="file" name="csv-file" id="csv-file" accept=".csv" />' . __('Select CSV file', BF2_DATA['TextDomain']) . '</label>';
                 wp_nonce_field( 'ajax_file_nonce', 'assertions-csv' );
                 echo '<input name="action" value="mass_import_assertions" type="hidden" />';

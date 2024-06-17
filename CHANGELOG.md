@@ -7,7 +7,41 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## A venir
+
+## 1.14.0
+- Ajout: image dans la page de parcours
+- Ajout: modales de parcours
+- Ajustement: adaptation à la dernière version de lbu
+- Ajustement: modularisation de certains éléments des parcours
+
+## 1.13.2
+- Traduction du plugin avec po & mo
+- Ajout message un peu plus clair sur le traitement de l'importation du fichier csv (savoir sur quelle ligne l'importation situe une erreur et savoir si l'importation est bien annulée)
+- Correction : variable non définie dans la fonction generate_assertions_from_array & test slug dans la function
+
+## 1.13.1
+
+- Fix : controler le format de la date (date en FR non accepté)
+- Verification : Nombre de ligne du fichier CSV (max à 1000 lignes)
+- Traduction : ajout traduction du résultat de l'importation du fichier csv
+- Défaut à corriger: pas de message en français pour l'octroi de masse
+
+## 1.13.0
+
+- Add support to check that user has a verified email in Badgr
+- Add check_if_user_has_badgr_verfied_email command in badgr CLI commands
+
+## 1.12.1
+
+- Fixed: various bugfixes.
+
+## 1.12.0
+
+- Added: support for pathways
+
 ## 1.11.1
+
 - Fixed: missing version in plugin base file.
 
 ## 1.11.0
@@ -15,6 +49,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added: wp-cli command to batch process assertions from a csv file.
 
 ## 1.10.1
+
 - absorb sexto hot-fix
 
 ## 1.10.0
@@ -24,12 +59,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added: configurable redirect when not connected
 
 ## 1.9.0
+
 - Added : new field criteria badge list on badgr
 
 ## 1.8.1
+
 - Fixed: add test for free products
 
 ## 1.8.0
+
 - Refactored: fixed performance issues.
 
 ## 1.7.0

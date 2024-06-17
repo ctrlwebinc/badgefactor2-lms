@@ -32,10 +32,13 @@ use BadgeFactor2\Helpers\Template;
 $member = isset( $wp_query->query_vars['member'] ) ? get_user_by( 'slug', $wp_query->query_vars['member'] ) : null;
 global $bf2_template;
 $fields = $bf2_template->fields;
+$path_elements = explode('/parcours/', get_permalink());
+$pathway_slug = rtrim(end($path_elements),'/');
+
 ?>
 <div class="c-bf2 c-bf2--single section-inner" <?php post_class(); ?> id="post-<?php the_ID(); ?>">
 
-	<div class="main-badge-page main-parcours-page-warp">
+	<div id="bf2-pathways-page-wrapper" data-pathways-pathway_slug="<?php echo $pathway_slug; ?>" class="main-badge-page main-parcours-page-warp">
 		<?php echo c21_breadcrumbs( $post ) ?>
 
 			<div class="badge-page-warp parcours-page-warp">
@@ -98,11 +101,18 @@ $fields = $bf2_template->fields;
 					<div class="support-links">
 						<div class="row">
 							<div class="technical-support">
-								<a href="#" class="c21-secondary-transparent-button" target="_blank">Soutien technique</a>
+								<a href="<?php echo '/soutien-technique/?badge='.urlencode($pathway_slug); ?>" class="c21-secondary-transparent-button" target="_blank">Soutien technique</a>
 							</div>
 							<div class="support">
-								<a href="#" class="c21-secondary-transparent-button" target="_blank">Soutien d’accompagnement</a>
+								<a href="<?php echo '/soutien-daccompagnement/?badge='.urlencode($pathway_slug); ?>" class="c21-secondary-transparent-button" target="_blank">Soutien d’accompagnement</a>
 							</div>
+						</div>
+					</div>
+
+				</div>
+				<div id="bf2-steps-modal" class="bu-modal modal" tabindex="-1" role="dialog">
+					<div class="modal-dialog bu-modal-dialog bu-modal-xl modal-xl" role="document">
+						<div class="bu-modal-content modal-content">
 						</div>
 					</div>
 				</div>

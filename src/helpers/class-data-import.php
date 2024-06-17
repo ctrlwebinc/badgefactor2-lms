@@ -26,13 +26,14 @@ namespace BadgeFactor2\Helpers;
 
 use BadgeFactor2\BadgrProvider;
 use BadgeFactor2\Models\Assertion;
+use DateTime;
 
 class DummyProgressBar {
 
     public function tick() {}
 
     public function finish() {
-        echo " -- completed!<br/>";
+        echo " -- " . __('completed!', BF2_DATA['TextDomain']) . "<br />";
     }
 }
 
@@ -48,6 +49,7 @@ class DataImport {
         } else {
             if ( defined('DOING_AJAX') && DOING_AJAX ) {
                 echo "<br/>" . $error_message . "<br/>";
+                echo "<br/>". __( "Cancel file import", BF2_DATA['TextDomain'] ) . "<br/>";
                 $output = ob_get_clean();
                 wp_send_json( array( 'output' => $output ) );
             } else {
@@ -80,15 +82,15 @@ class DataImport {
     {
         if ( defined('DOING_AJAX') && DOING_AJAX ) {
             ob_start();
-            echo "<h2>Import result</h2>";
+            echo "<h2>". __( 'Import result', BF2_DATA['TextDomain'] ) . "</h2>";
         }
         if ( $dry_run ) {
-			static::output_line( 'Dry-run mode enabled.' );
+			static::output_line( __( 'Dry-run mode enabled.', BF2_DATA['TextDomain'] ) );
 		}
         $recipients = static::assertions_csv_file_to_recipients_array( $csv_file );
 		$badges = static::validate_assertions_recipients_array( $recipients );
 		$badges = static::check_for_assertions_duplicate( $badges );
-		static::generate_assertions_from_array( $badges );
+		static::generate_assertions_from_array( $badges, $dry_run );
         if ( defined('DOING_AJAX') && DOING_AJAX ) {
             $output = ob_get_clean();
             wp_send_json( array( 'output' => $output ) );
@@ -100,10 +102,10 @@ class DataImport {
         $recipients = array();
 		$file_resource = fopen( $file, 'r');
 		if ( ! $file_resource ) {
-            static::output_error( 'Cannot open the csv file! Check your path and filename and try again.' );
+            static::output_error( __( 'Cannot open the csv file! Check your path and filename and try again.', BF2_DATA['TextDomain'] ) );
 		}
 
-		static::output_line( 'Reading csv file...' );
+		static::output_line( __( 'Reading csv file...', BF2_DATA['TextDomain'] ) );
 
         // Skip first line.
 		fgetcsv( $file_resource );
@@ -121,12 +123,11 @@ class DataImport {
     public static function validate_assertions_recipients_array(array $recipients)
     {
 		$today = date('Y-m-d');
-
 		// Generate an array of validated data.
-		$progress = static::output_progress( 'Validating ' . count( $recipients ) . ' recipients...', count( $recipients ) );
+		$progress = static::output_progress( __( 'Validating ', BF2_DATA['TextDomain'] ) . count( $recipients ) . __( ' recipients...', BF2_DATA['TextDomain'] ), count( $recipients ) );
 		$badges = array();
-		foreach ( $recipients as $recipient ) {
-
+		foreach ( $recipients as $key => $recipient ) {
+		    $key+=1;
 			$badge_class_slug = $recipient[0];
 
 			// Validate each badge class only once.
@@ -135,7 +136,9 @@ class DataImport {
 
 				// Exists if badge class does not exist.
 				if ( false === $badge_class ) {
-                    static::output_error( 'Badge class does not exist: ' . $badge_class_slug );
+                    echo '<br>---<br>';
+                    echo __('Line treatment:', BF2_DATA['TextDomain']) . $key;
+                    static::output_error( __( 'Badge class does not exist:', BF2_DATA['TextDomain'] ) . $badge_class_slug );
 				}
 	
 				$badges[$badge_class_slug] = array();
@@ -143,12 +146,20 @@ class DataImport {
 
 			$email = strtolower($recipient[1]);
 			if ( ! filter_var( $email, FILTER_VALIDATE_EMAIL ) ) {
-                static::output_error( 'Invalid email address: ' . $email );
+                echo '<br>---<br>';
+                echo __('Line treatment:', BF2_DATA['TextDomain']) . $key;
+                static::output_error( __( 'Invalid email address:', BF2_DATA['TextDomain'] ) . $email );
 			}
 
 			$assertion_date = ( isset( $recipient[2] ) && ! empty( $recipient[2] ) ) ? 
 				$recipient[2] :
 				$today;
+            $is_valid_format_date = static::is_valid_format_date($assertion_date);
+            if( ! $is_valid_format_date ) {
+                echo '<br>---<br>';
+                echo __('Line treatment:', BF2_DATA['TextDomain']) . $key;
+                static::output_error( __( 'Invalid date format:', BF2_DATA['TextDomain'] ) . $assertion_date );
+            }
 
 			// Eliminate duplicate recipient data from csv file.
 			if ( ! isset( $badges[$badge_class_slug][$email] ) ) {
@@ -164,7 +175,7 @@ class DataImport {
     {
         // Make sure badge is not already given.
 		$duplicates = 0;
-		$progress = static::output_progress( 'Checking for duplicates...', array_sum( array_map( 'count', $badges ) ) );
+		$progress = static::output_progress( __( 'Checking for duplicates...', BF2_DATA['TextDomain'] ), array_sum( array_map( 'count', $badges ) ) );
 		foreach ( $badges as $badge_class => $emails ) {
 			$assertions = Assertion::all( -1, 1, array(
 				'filter_type'  => 'Badges',
@@ -181,14 +192,14 @@ class DataImport {
 			}
 		}
 		$progress->finish();
-		static::output_line( $duplicates . ' duplicates removed...' );
+		static::output_line( $duplicates . __( 'duplicates removed...', BF2_DATA['TextDomain'] ) );
         return $badges;
     }
 
-    public static function generate_assertions_from_array( $badges )
+    public static function generate_assertions_from_array( $badges, $dry_run = false )
     {
         // Generate assertions in Badgr.
-		$progress = static::output_progress( 'Generating ' . array_sum( array_map( 'count', $badges ) ) . ' assertions...', array_sum( array_map( 'count', $badges ) ) );
+		$progress = static::output_progress( __( 'Generating', BF2_DATA['TextDomain'] ) . array_sum( array_map( 'count', $badges ) ) . __( 'assertions...', BF2_DATA['TextDomain'] ), array_sum( array_map( 'count', $badges ) ) );
 		foreach ( $badges as $badge_class => $emails ) {
 			foreach ( $emails as $email => $date ) {
 				if ( ! $dry_run ) {
@@ -199,6 +210,12 @@ class DataImport {
 		}
 		$progress->finish();
         return true;
+    }
+
+    public static function is_valid_format_date($date, $format = 'Y-m-d')
+    {
+        $dt = DateTime::createFromFormat($format, $date);
+        return $dt && $dt->format($format) === $date;
     }
 
 }

@@ -28,6 +28,7 @@ use WP_CLI_Command;
 use BadgeFactor2\Models\Issuer;
 use BadgeFactor2\Models\BadgeClass;
 use BadgeFactor2\Models\Assertion;
+use BadgeFactor2\BadgrUser;
 
 WP_CLI::add_command( 'badgr', Badgr_CLI::class );
 
@@ -111,6 +112,31 @@ class Badgr_CLI extends WP_CLI_Command {
 		$slug  = get_user_meta( $user->ID, 'badgr_user_slug', true );
 
 		WP_CLI::success( sprintf( 'User %s has state %s and slug %s', $args[0], $state, $slug ) );
+	}
+
+		/**
+	 * Get user badgr information.
+	 *
+	 * @param array $args Arguments.
+	 * @param array $assoc_args Associative Arguments.
+	 * @return void
+	 */
+	public function check_if_user_has_badgr_verfied_email( $args, $assoc_args ) {
+		if ( count( $args ) !== 1 ) {
+			WP_CLI::error( 'Usage: check_if_user_has_badgr_verfied_email user_id' );
+		}
+
+		$user = get_userdata( $args[0] );
+
+		if ( false === $user ) {
+			WP_CLI::error( 'No such user ' . $args[0] );
+		}
+
+		if ( true === ( new BadgrUser( $user ) )->check_if_user_has_verified_email() ) {
+			WP_CLI::success( sprintf( 'User %s has a verified email in Badgr', $args[0]) );
+		} else {
+			WP_CLI::success( sprintf( 'User %s doesn\'t have a verified email in Badgr', $args[0]) );
+		}
 	}
 
 
