@@ -897,6 +897,44 @@ class BadgeFactor2_Admin {
 				'default' => false,
 			)
 		);
+
+		/**
+		 * Registers Portfolio settings page.
+		 */
+		$args = array(
+			'id'           => 'badgefactor2_portfolio_settings_page',
+			'menu_title'   => __( 'Portfolio', 'badgefactor2' ),
+			'object_types' => array( 'options-page' ),
+			'option_key'   => 'badgefactor2_portfolio_settings_page',
+			'parent_slug'  => 'badgefactor2',
+			'tab_group'    => 'badgefactor2',
+			'tab_title'    => __( 'Portfolio', 'badgefactor2' ),
+			'capability'   => 'manage_badgr',
+		);
+
+		// 'tab_group' property is supported in > 2.4.0.
+		if ( version_compare( CMB2_VERSION, '2.4.0' ) ) {
+			$args['display_cb'] = 'badgefactor2_options_display_with_tabs';
+		}
+
+		$portfolio_settings = new_cmb2_box( $args );
+		
+		$portfolio_settings->add_field(
+			array(
+				'name'    => __( 'Activate portfolio badge sending', 'badgefactor2' ),
+				'id'      => 'bf2_portfolio_sending_facebook',
+				'type'    => 'checkbox',
+				'default' => false,
+			)
+		);
+
+		$portfolio_settings->add_field(
+			array(
+				'name' => __( 'Url du portfolio', 'badgefactor2' ),
+				'id'   => 'bf2_portfolio_url_facebook',
+				'type' => 'text',
+			)
+		);
 	}
 
 
@@ -970,6 +1008,20 @@ class BadgeFactor2_Admin {
 			$assertion_entity_id = BadgrProvider::add_assertion( $badge_entity_id, $recipient->user_email, 'email', $issued_on, $evidence_url);
 			add_post_meta( $badge_request_id, 'assertion', $assertion_entity_id );
 			do_action( 'badge_request_approval_confirmation_email', $badge_request_id );
+
+			$options = get_option('badgefactor2_portfolio_settings_page');
+
+			$active_portfolio = $options['bf2_portfolio_sending_badge'] ?? false;
+			$url = $options['bf2_portfolio_url_badge'] ?? null ;
+			
+			if($active_portfolio != null && $active_portfolio != false && $url != null && $url != ""){
+				
+				$url = $url . "/" . $recipient->user_email;
+				
+				$new_response = wp_remote_get( $url);				
+				
+			}
+			
 			$response = array(
 				'status'  => 'success',
 				'message' => __( 'The badge request has been approved!', BF2_DATA['TextDomain'] ),
